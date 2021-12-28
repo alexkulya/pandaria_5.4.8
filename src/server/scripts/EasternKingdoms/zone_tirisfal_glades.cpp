@@ -79,7 +79,7 @@ enum TirisfalGlades
     RISEN_RECRUIT_TEXT_01                   = 0,
 
     RISEN_RECRUIT_PATH_01                   = 50414*100,
-    RISEN_RECRUIT_PATH_02                   = 50414*100+1,
+    RISEN_RECRUIT_PATH_02                   = 50414*100+01,
 
     MINDLESS_ZOMBIE_ATTACK_EVENT_STEP_01    = 1,
     MINDLESS_ZOMBIE_ATTACK_EVENT_STEP_02    = 2
@@ -433,19 +433,19 @@ struct npc_undertaker_mordo : public ScriptedAI
                 m_phase = TirisfalGlades::UNDERTAKER_MORDO_PHASE_03;
                 break;
             case TirisfalGlades::UNDERTAKER_MORDO_PHASE_03:
-                me->HandleEmoteCommandWithDelay(6 * TimeConstants::IN_MILLISECONDS, EMOTE_STATE_USE_STANDING);
-                me->HandleEmoteCommandWithDelay(7 * TimeConstants::IN_MILLISECONDS, EMOTE_STATE_NONE);
+                me->m_Events.Schedule(4 * TimeConstants::IN_MILLISECONDS, [this]() { me->SetUInt32Value(UNIT_FIELD_NPC_EMOTESTATE, Emote::EMOTE_STATE_USE_STANDING); });
+                me->m_Events.Schedule(6 * TimeConstants::IN_MILLISECONDS, [this]() { me->SetUInt32Value(UNIT_FIELD_NPC_EMOTESTATE, Emote::EMOTE_STATE_NONE); });
                 m_timer = uint32(7.5) * TimeConstants::IN_MILLISECONDS;
                 m_phase = TirisfalGlades::UNDERTAKER_MORDO_PHASE_04;
                 break;
             case TirisfalGlades::UNDERTAKER_MORDO_PHASE_04:
                 me->HandleEmoteCommand(Emote::EMOTE_ONESHOT_POINT);
-                m_timer = uint32(2.5) * TimeConstants::IN_MILLISECONDS;
+                m_timer = uint32(3.5) * TimeConstants::IN_MILLISECONDS;
                 m_phase = TirisfalGlades::UNDERTAKER_MORDO_PHASE_05;
                 break;
             case TirisfalGlades::UNDERTAKER_MORDO_PHASE_05:
                 Talk(UNDERTAKER_MORDO_TEXT_02);
-                me->HandleEmoteCommand(Emote::EMOTE_ONESHOT_TALK);
+                me->HandleEmoteCommandWithDelay(1 * TimeConstants::IN_MILLISECONDS, Emote::EMOTE_ONESHOT_TALK);
                 m_timer = uint32(0.5) * TimeConstants::IN_MILLISECONDS;
                 m_phase = TirisfalGlades::UNDERTAKER_MORDO_PHASE_06;
                 break;
