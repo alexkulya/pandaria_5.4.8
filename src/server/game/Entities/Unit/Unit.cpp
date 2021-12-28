@@ -28,6 +28,7 @@
 #include "CreatureAIImpl.h"
 #include "CreatureGroups.h"
 #include "Creature.h"
+#include "CreatureTextMgr.h"
 #include "Formulas.h"
 #include "GridNotifiersImpl.h"
 #include "Group.h"
@@ -20213,4 +20214,82 @@ uint32 Unit::RecaculateHealing(uint32 healamount) // calculate healing here
 		}
 	}
 	return healamount;
+}
+
+void Unit::HandleEmoteCommandWithDelay(uint32 Delay, uint8 Id)
+{
+    class HandleEmoteCommandWithDelay : public BasicEvent
+    {
+        public:
+            HandleEmoteCommandWithDelay(Unit* _creature, uint8 _id, uint32 const& _delay) : creature(_creature), id(_id), delay(_delay) { }
+
+        bool Execute(uint64 /*execTime*/, uint32 /*diff*/)
+        {
+            sCreatureTextMgr->SendEmote(creature, id);
+            return true;
+        }
+
+        private:
+            Unit* creature;
+            uint8 id;
+            uint32 delay;
+    };
+
+    m_Events.AddEvent(new HandleEmoteCommandWithDelay(this, Id, Delay), m_Events.CalculateTime(Delay));
+}
+
+void Unit::CastWithDelay(uint32 delay, Unit* victim, uint32 spellid, bool triggered, bool repeat)
+{
+    class CastDelayEvent : public BasicEvent
+    {
+    public:
+        CastDelayEvent(Unit* _me, uint64 _victimGuid, uint32 const& _spellId, bool const& _triggered, bool const& _repeat, uint32 const& _delay) :
+          me(_me), victimGuid(_victimGuid), spellId(_spellId), triggered(_triggered), repeat(_repeat), delay(_delay) { }
+
+        bool Execute(uint64 /*execTime*/, uint32 /*diff*/)
+        {
+            Unit* victim = ObjectAccessor::GetUnit(*me, victimGuid);
+            me->CastSpell(victim, spellId, triggered);
+
+            if (repeat)
+                me->CastWithDelay(delay, victim, spellId, triggered, repeat);
+            return true;
+        }
+
+    private:
+        Unit* me;
+        uint64 victimGuid;
+        uint32 const spellId;
+        uint32 const delay;
+        bool const triggered;
+        bool const repeat;
+    };
+
+    m_Events.AddEvent(new CastDelayEvent(this, victim ? victim->GetGUID() : 0, spellid, triggered, repeat, delay), m_Events.CalculateTime(delay));
+}
+
+void Unit::JumpWithDelay(uint32 delay, float x, float y, float z, float speedXY, float speedZ, uint32 id)
+{
+    struct DelayJumpEvent : public BasicEvent
+    {
+        DelayJumpEvent(Unit *unit, float x, float y, float z, float speedXY, float speedZ, uint32 id) : BasicEvent(), _unit(unit), _x(x), _y(y), _z(z), _speedXY(speedXY), _speedZ(speedZ), _id(id) { }
+
+        bool Execute(uint64, uint32)
+        {
+            _unit->ExitVehicle();
+            _unit->GetMotionMaster()->MoveJump(_x, _y, _z, _speedXY, _speedZ, _id);
+            return true;
+        }
+
+    private:
+        Unit *_unit;
+        float _x;
+        float _y;
+        float _z;
+        float _speedXY;
+        float _speedZ;
+        uint32 _id;
+    };
+
+    m_Events.AddEvent(new DelayJumpEvent(this, x, y, z, speedXY, speedZ, id), m_Events.CalculateTime(delay));
 }

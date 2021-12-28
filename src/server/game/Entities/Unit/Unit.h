@@ -1352,27 +1352,27 @@ enum ReactiveType
 
 enum SummonSlot
 {
-    SUMMON_SLOT_PET         = 0,
-    SUMMON_SLOT_TOTEM       = 1,
-    SUMMON_SLOT_TOTEM_FIRE  = 1,
-    SUMMON_SLOT_TOTEM_EARTH = 2,
-    SUMMON_SLOT_TOTEM_WATER = 3,
-    SUMMON_SLOT_TOTEM_AIR   = 4,
-    SUMMON_SLOT_MAX_TOTEM   = 5,
-    SUMMON_SLOT_MINIPET     = 5,
-    SUMMON_SLOT_QUEST       = 6,
-    SUMMON_SLOT_TOTEM_EXTRA = 7,
-    SUMMON_SLOT_MAX         = 8,
+    SUMMON_SLOT_PET                         = 0,
+    SUMMON_SLOT_TOTEM                       = 1,
+    SUMMON_SLOT_TOTEM_FIRE                  = 1,
+    SUMMON_SLOT_TOTEM_EARTH                 = 2,
+    SUMMON_SLOT_TOTEM_WATER                 = 3,
+    SUMMON_SLOT_TOTEM_AIR                   = 4,
+    SUMMON_SLOT_MAX_TOTEM                   = 5,
+    SUMMON_SLOT_MINIPET                     = 5,
+    SUMMON_SLOT_QUEST                       = 6,
+    SUMMON_SLOT_TOTEM_EXTRA                 = 7,
+    SUMMON_SLOT_MAX                         = 8
 };
 
 #define MAX_GAMEOBJECT_SLOT 4
 
 enum PlayerTotemType
 {
-    SUMMON_TYPE_TOTEM_FIRE = 63,
-    SUMMON_TYPE_TOTEM_EARTH = 81,
-    SUMMON_TYPE_TOTEM_WATER = 82,
-    SUMMON_TYPE_TOTEM_AIR = 83
+    SUMMON_TYPE_TOTEM_FIRE                  = 63,
+    SUMMON_TYPE_TOTEM_EARTH                 = 81,
+    SUMMON_TYPE_TOTEM_WATER                 = 82,
+    SUMMON_TYPE_TOTEM_AIR                   = 83
 };
 
 // delay time next attack to prevent client attack animation problems
@@ -1404,13 +1404,9 @@ public:
     class RemainingPeriodicAmount final
     {
     public:
-        RemainingPeriodicAmount(int32 total, int32 ticks)
-            : _total(total), _ticks(ticks) { }
-
+        RemainingPeriodicAmount(int32 total, int32 ticks) : _total(total), _ticks(ticks) { }
         int32 Total() const { return _total; }
-
         int32 PerTick() const { return _total ? _total / _ticks : 0; }
-
     private:
         int32 _total;
         int32 _ticks;
@@ -1657,7 +1653,7 @@ public:
         SetStatInt32Value(UNIT_FIELD_RESISTANCES + school, val);
     }
 
-    uint32 GetHealth()    const
+    uint32 GetHealth() const
     {
         return GetUInt32Value(UNIT_FIELD_HEALTH);
     }
@@ -1882,27 +1878,27 @@ public:
 
     MeleeHitOutcome RollMeleeOutcomeAgainst(const Unit* victim, WeaponAttackType attType) const;
 
-    bool IsVendor()       const
+    bool IsVendor() const
     {
         return HasFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_VENDOR);
     }
-    bool IsTrainer()      const
+    bool IsTrainer() const
     {
         return HasFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_TRAINER);
     }
-    bool IsQuestGiver()   const
+    bool IsQuestGiver() const
     {
         return HasFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
     }
-    bool IsGossip()       const
+    bool IsGossip() const
     {
         return HasFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
     }
-    bool IsTaxi()         const
+    bool IsTaxi() const
     {
         return HasFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_FLIGHTMASTER);
     }
-    bool IsGuildMaster()  const
+    bool IsGuildMaster() const
     {
         return HasFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_PETITIONER);
     }
@@ -1910,11 +1906,11 @@ public:
     {
         return HasFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_BATTLEMASTER);
     }
-    bool IsBanker()       const
+    bool IsBanker() const
     {
         return HasFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_BANKER);
     }
-    bool IsInnkeeper()    const
+    bool IsInnkeeper() const
     {
         return HasFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_INNKEEPER);
     }
@@ -1922,19 +1918,19 @@ public:
     {
         return HasFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPIRITHEALER);
     }
-    bool IsSpiritGuide()  const
+    bool IsSpiritGuide() const
     {
         return HasFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPIRITGUIDE);
     }
-    bool IsTabardDesigner()const
+    bool IsTabardDesigner() const
     {
         return HasFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_TABARDDESIGNER);
     }
-    bool IsAuctioner()    const
+    bool IsAuctioner() const
     {
         return HasFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_AUCTIONEER);
     }
-    bool IsArmorer()      const
+    bool IsArmorer() const
     {
         return HasFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_REPAIR);
     }
@@ -1944,12 +1940,12 @@ public:
         return HasFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPIRITHEALER | UNIT_NPC_FLAG_SPIRITGUIDE);
     }
 
-    bool IsInFlight()  const
+    bool IsInFlight() const
     {
         return HasUnitState(UNIT_STATE_IN_FLIGHT);
     }
 
-    bool IsInCombat()  const
+    bool IsInCombat() const
     {
         return HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IN_COMBAT);
     }
@@ -1972,7 +1968,7 @@ public:
     bool HasBreakableByDamageAuraType(AuraType type, uint32 excludeAura = 0) const;
     bool HasBreakableByDamageCrowdControlAura(Unit* excludeCasterChannel = NULL) const;
 
-    bool HasStealthAura()      const
+    bool HasStealthAura() const
     {
         return HasAuraType(SPELL_AURA_MOD_STEALTH);
     }
@@ -1980,7 +1976,7 @@ public:
     {
         return HasAuraType(SPELL_AURA_MOD_INVISIBILITY);
     }
-    bool isFeared()  const
+    bool isFeared() const
     {
         return HasAuraType(SPELL_AURA_MOD_FEAR) || HasAuraType(SPELL_AURA_MOD_FEAR_2);
     }
@@ -2867,11 +2863,11 @@ public:
     uint64 LastCharmerGUID;
     bool CreateVehicleKit(uint32 id, uint32 creatureEntry, bool loading = false);
     void RemoveVehicleKit(bool remove = false);
-    Vehicle* GetVehicleKit()const
+    Vehicle* GetVehicleKit() const
     {
         return m_vehicleKit.get();
     }
-    Vehicle* GetVehicle()   const
+    Vehicle* GetVehicle() const
     {
         return m_vehicle;
     }
@@ -2883,7 +2879,7 @@ public:
     bool IsOnVehicle(const Unit* vehicle) const;
     Unit* GetVehicleBase()  const;
     Creature* GetVehicleCreatureBase() const;
-    uint64 GetTransGUID()   const;
+    uint64 GetTransGUID() const;
     /// Returns the transport this unit is on directly (if on vehicle and transport, return vehicle)
     TransportBase* GetDirectTransport() const;
 
@@ -3000,6 +2996,7 @@ public:
     float GetTotalAuraEffectValue(AuraType type) const
     {
         auto it = m_totalAuraEffectValue.find(type);
+
         if (it == m_totalAuraEffectValue.end())
             return 0.0f;
         return it->second;
@@ -3023,6 +3020,10 @@ public:
     float GetScallingDamageMod() const;
 
     bool PetNeedsLOSCheckOnAttackStart() const;
+
+    void HandleEmoteCommandWithDelay(uint32 Delay, uint8 Id);
+    void CastWithDelay(uint32 delay, Unit* victim, uint32 spellid, bool triggered = false, bool repeat = false);
+    void JumpWithDelay(uint32 delay, float x, float y, float z, float speedXY, float speedZ, uint32 id);
 
 protected:
     explicit Unit(bool isWorldObject);
@@ -3110,7 +3111,7 @@ protected:
 
     void DisableSpline();
 
-    private:
+private:
     bool IsTriggeredAtSpellProcEvent(Unit* victim, ProcTriggeredData& triggerData, SpellInfo const* procSpell, uint32 procFlag, uint32 procExtra, WeaponAttackType attType, bool isVictim, bool active);
     bool HandleAuraProcOnPowerAmount(Unit* victim, uint32 damage, AuraEffect* triggeredByAura, SpellInfo const* procSpell, uint32 procFlag, uint32 procEx, uint32 cooldown, ProcTriggerContext const& context);
     bool HandleDummyAuraProc(Unit* victim, uint32 damage, AuraEffect* triggeredByAura, SpellInfo const* procSpell, uint32 procFlag, uint32 procEx, uint32 cooldown, ProcTriggerContext const& context);
@@ -3128,7 +3129,7 @@ protected:
     // player or player's pet
     float GetCombatRatingReduction(CombatRating cr) const;
 
-    protected:
+protected:
     void SetFeared(bool apply);
     void SetConfused(bool apply);
     void SetStunned(bool apply);
@@ -3136,8 +3137,7 @@ protected:
 
     uint32 m_movementCounter;       ///< Incrementing counter used in movement packets
 
-    private:
-
+private:
     class AINotifyTask;
     class VisibilityUpdateTask;
     Position m_lastVisibilityUpdPos;
@@ -3187,33 +3187,33 @@ namespace Trinity
     class PowerPctOrderPred
     {
         public:
-        PowerPctOrderPred(Powers power, bool ascending = true) : m_power(power), m_ascending(ascending)
-        { }
-        bool operator() (const Unit* a, const Unit* b) const
-        {
-            float rA = a->GetMaxPower(m_power) ? float(a->GetPower(m_power)) / float(a->GetMaxPower(m_power)) : 0.0f;
-            float rB = b->GetMaxPower(m_power) ? float(b->GetPower(m_power)) / float(b->GetMaxPower(m_power)) : 0.0f;
-            return m_ascending ? rA < rB : rA > rB;
-        }
-        private:
-        const Powers m_power;
-        const bool m_ascending;
+            PowerPctOrderPred(Powers power, bool ascending = true) : m_power(power), m_ascending(ascending)
+            { }
+            bool operator() (const Unit* a, const Unit* b) const
+            {
+                float rA = a->GetMaxPower(m_power) ? float(a->GetPower(m_power)) / float(a->GetMaxPower(m_power)) : 0.0f;
+                float rB = b->GetMaxPower(m_power) ? float(b->GetPower(m_power)) / float(b->GetMaxPower(m_power)) : 0.0f;
+                return m_ascending ? rA < rB : rA > rB;
+            }
+            private:
+            const Powers m_power;
+            const bool m_ascending;
     };
 
     // Binary predicate for sorting Units based on percent value of health
     class HealthPctOrderPred
     {
         public:
-        HealthPctOrderPred(bool ascending = true) : m_ascending(ascending)
-        { }
-        bool operator() (const Unit* a, const Unit* b) const
-        {
-            float rA = a->GetMaxHealth() ? float(a->GetHealth()) / float(a->GetMaxHealth()) : 0.0f;
-            float rB = b->GetMaxHealth() ? float(b->GetHealth()) / float(b->GetMaxHealth()) : 0.0f;
-            return m_ascending ? rA < rB : rA > rB;
-        }
+            HealthPctOrderPred(bool ascending = true) : m_ascending(ascending)
+            { }
+            bool operator() (const Unit* a, const Unit* b) const
+            {
+                float rA = a->GetMaxHealth() ? float(a->GetHealth()) / float(a->GetMaxHealth()) : 0.0f;
+                float rB = b->GetMaxHealth() ? float(b->GetHealth()) / float(b->GetMaxHealth()) : 0.0f;
+                return m_ascending ? rA < rB : rA > rB;
+            }
         private:
-        const bool m_ascending;
+            const bool m_ascending;
     };
 
     struct HealthPctOrderWorldObjectPred
@@ -3224,6 +3224,7 @@ namespace Trinity
         {
             Unit const* a = l->ToUnit();
             Unit const* b = r->ToUnit();
+
             if (!a)
                 return false;
             if (!b)
@@ -3233,8 +3234,9 @@ namespace Trinity
             float rB = b->GetMaxHealth() ? float(b->GetHealth()) / float(b->GetMaxHealth()) : 0.0f;
             return m_ascending ? rA < rB : rA > rB;
         }
-    private:
-        bool m_ascending;
+
+        private:
+            bool m_ascending;
     };
 
     // Binary predicate for sorting Units based on value of distance of an GameObject
