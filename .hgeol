@@ -1,0 +1,4 @@
+[patterns]
+**.cpp = LF
+**.h = LF
+**.sql = LF

@@ -1,0 +1,104 @@
+/*
+ * Copyright (C) 2015 Warmane <http://www.warmane.com/>
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#ifndef BATTLE_PET_SPAWN_MGR
+#define BATTLE_PET_SPAWN_MGR
+
+#include <ace/Singleton.h>
+#include "BattlePet.h"
+#include "Common.h"
+
+#define BATTLE_PET_SPAWN_MGR_UPDATE 2000
+
+//          replacement  
+typedef std::map<uint64, BattlePet*> BattlePetInfoStore;
+//             replaced  replacement
+typedef std::map<uint64, uint64> CreatureReplacedRelationStore;
+//         toBeReplaced
+typedef std::set<uint64> ReadyReplacementStore;
+
+struct BattlePetSpawnTemplate
+{
+    uint16 Species;
+    uint32 Entry;
+    uint8 Max;
+    uint8 MinLevel;
+    uint8 MaxLevel;
+
+    BattlePetInfoStore WildBattlePetInfo;                       // contains BattlePet info for replacement creatures
+    CreatureReplacedRelationStore CreaturesRelation;            // contains replaced guids and their replacements
+    ReadyReplacementStore CreaturesReadyForReplace;             // contains creatures currently in the world ready for replacement
+};
+
+typedef std::vector<BattlePetSpawnTemplate> WildBattlePetSpawnVec;
+
+// handles spawning of battle pets in a particular zone
+class BattlePetSpawnZoneMgr
+{
+public:
+    void AddTemplate(BattlePetSpawnTemplate spawnTemplate) { m_spawnTemplates.push_back(spawnTemplate); }
+
+    void PopulateZone();
+    void DepopulateZone();
+
+    void OnAddToZone(Creature* creature);
+    void OnRemoveFromZone(Creature* creature);
+    void OnRespawn(Creature* creature, BattlePet* battlePet);
+
+    void SpawnCreature(uint64 guid, BattlePetSpawnTemplate* spawnTemplate);
+    void RemoveCreature(uint64 guid, BattlePetSpawnTemplate* spawnTemplate);
+
+    WildBattlePetSpawnVec m_spawnTemplates;
+};
+
+typedef std::map<uint32, BattlePetSpawnZoneMgr> WildBattlePetZonePool;
+typedef std::map<uint32, WildBattlePetZonePool> WildBattlePetMapPool;
+
+// handles global spawning of battle pets
+class BattlePetSpawnMgr
+{
+public:
+
+    static BattlePetSpawnMgr* instance()
+    {
+        static BattlePetSpawnMgr _instance;
+        return &_instance;
+    }
+
+    void Initialise();
+    void Update(uint32 diff);
+
+    BattlePet* GetWildBattlePet(Creature* creature);
+
+    void OnAddToMap(Creature* creature);
+    void OnRemoveFromMap(Creature* creature);
+    void OnRespawn(Creature* creature);
+
+    void EnteredBattle(Creature* creature);
+    void LeftBattle(Creature* creature, bool killed);
+
+    void PopulateWorld();
+    void DepopulateMap(uint32 map);
+
+private:
+    WildBattlePetMapPool m_battlePetMapPools;
+    uint32 m_updateTimer;
+};
+
+#define sBattlePetSpawnMgr BattlePetSpawnMgr::instance()
+
+#endif

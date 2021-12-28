@@ -1,0 +1,9 @@
+{
+    "install_dir"     : "",
+    "source_dir"      : "",
+    "build_dir"       : "",
+    "updater_path"    : "",
+    "updater_config"  : "",
+    "target_name"     : "",
+    "executable_name" : ""
+}
