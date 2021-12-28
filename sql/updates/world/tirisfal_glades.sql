@@ -142,8 +142,8 @@ INSERT INTO `creature_text` (`entry`, `groupid`, `id`, `text`, `text_female`, `t
 (50374, 9, 0, "%s enrages and transforms into a Mindless Zombie and runs away.", "", 16, 0, 100, 0, 0, 0, "Risen Dead"),
 (50374, 10, 0, "%s walks off towards the barracks.", "", 16, 0, 100, 0, 0, 0, "Risen Dead");
 
-DELETE FROM `creature` WHERE `guid` IN (193857, 193848, 193854, 193855);
-DELETE FROM `creature_addon` WHERE `guid` IN (193857, 193848, 193854, 193855);
+DELETE FROM `creature` WHERE `guid` IN (193857, 193848, 193854, 193855, 193850);
+DELETE FROM `creature_addon` WHERE `guid` IN (193857, 193848, 193854, 193855, 193850);
 
 DELETE FROM `waypoint_data` WHERE `id` IN (50374*100, 50374*100+01);
 INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `position_z`, `orientation`, `delay`, `move_flag`) VALUES
@@ -162,3 +162,23 @@ INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `positio
 
 UPDATE `creature_template` SET `ScriptName` = "npc_mindless_zombie" WHERE `entry` = 1501;
 UPDATE `creature` SET `spawndist` = 5, `MovementType` = 1 WHERE `id` = 1501;
+
+UPDATE `creature_template` SET `InhabitType` = 4 WHERE `entry` = 20725;
+
+UPDATE `creature_template` SET `AIName` = "", `ScriptName` = "npc_undertaker_mordo" WHERE `entry` = 1568;
+
+DELETE FROM `waypoint_data` WHERE `id` IN (50414*100, 50414*100+01);
+INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `position_z`, `orientation`, `delay`, `move_flag`, `entry`) VALUES
+(50414*100, 1, 1694.16, 1677.08, 134.786, 0, 0, 0, 50414),
+(50414*100, 2, 1691.29, 1675.84, 135.295, 0, 0, 0, 50414),
+
+(50414*100+01, 1, 1691.29, 1675.85, 135.295, 0, 0, 0, 50414),
+(50414*100+01, 2, 1690.59, 1661.87, 131.92, 0, 0, 0, 50414),
+(50414*100+01, 3, 1719.38, 1633.98, 121.065, 0, 0, 0, 50414);
+
+DELETE FROM `creature_text` WHERE `entry` IN (1568, 50414);
+INSERT INTO `creature_text` (`entry`, `groupid`, `id`, `text`, `text_female`, `type`, `language`, `probability`, `emote`, `duration`, `sound`, `comment`) VALUES 
+(1568, 0, 0, "Let's see, I just saw a corpse with a jaw that would fit you...", "", 12, 0, 100, 0, 0, 0, "Undertaker Mordo"),
+(1568, 1, 0, "That should do the job. Come back right away if it falls off again.", "", 12, 0, 100, 0, 0, 0, "Undertaker Mordo"),
+
+(50414, 0, 0, "T-thank you, Under-t-taker.", "", 12, 0, 100, 0, 0, 0, "Risen Recruit");
