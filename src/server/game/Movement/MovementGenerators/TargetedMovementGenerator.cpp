@@ -203,7 +203,13 @@ bool TargetedMovementGeneratorMedium<T, D>::_setTargetLocation(T* owner, bool up
     // Using the same condition for facing target as the one that is used for SetInFront on movement end
     // - applies to ChaseMovementGenerator mostly
     if (i_angle == 0.f)
+    {
         init.SetFacing(i_target.getTarget());
+    }
+    else
+    {
+        init.SetFacing(i_target->GetOrientation());
+    }
 
     init.Launch();
 
