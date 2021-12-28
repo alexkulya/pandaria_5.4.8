@@ -713,6 +713,11 @@ class WorldObject : public Object, public WorldLocation
         void GetClosePoint(float &x, float &y, float &z, float size, float distance2d = 0, float angle = 0) const;
         void MovePosition(Position &pos, float dist, float angle);
         void GetNearPosition(Position &pos, float dist, float angle);
+        Position GetNearPositionAlternate(float dist, float angle);
+        Position GetPositionAlternate() const
+        {
+            return *this;
+        }
         void MovePositionToFirstCollision(Position &pos, float dist, float angle, float offsetZ = 0.0f);
         inline bool IsOnGround()
         {

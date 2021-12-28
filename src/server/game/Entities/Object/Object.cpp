@@ -3281,6 +3281,13 @@ void WorldObject::MovePosition(Position &pos, float dist, float angle)
     pos.SetOrientation(GetOrientation());
 }
 
+Position WorldObject::GetNearPositionAlternate(float dist, float angle)
+{
+    Position pos = GetPositionAlternate();
+    MovePosition(pos, dist, angle);
+    return pos;
+}
+
 void WorldObject::MovePositionToFirstCollision(Position &pos, float dist, float angle, float offsetZ)
 {
     angle += GetOrientation();
