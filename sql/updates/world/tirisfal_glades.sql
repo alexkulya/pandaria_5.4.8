@@ -182,3 +182,19 @@ INSERT INTO `creature_text` (`entry`, `groupid`, `id`, `text`, `text_female`, `t
 (1568, 1, 0, "That should do the job. Come back right away if it falls off again.", "", 12, 0, 100, 0, 0, 0, "Undertaker Mordo"),
 
 (50414, 0, 0, "T-thank you, Under-t-taker.", "", 12, 0, 100, 0, 0, 0, "Risen Recruit");
+
+UPDATE `creature_template` SET `ScriptName` = "npc_darnell" WHERE `entry` = 49141;
+
+DELETE FROM `creature_text` WHERE `entry` = 49141;
+INSERT INTO `creature_text` (`entry`, `groupid`, `id`, `text`, `text_female`, `type`, `language`, `probability`, `emote`, `duration`, `sound`, `comment`) VALUES
+(49141, 0, 0, "Greetings, $n.", "", 12, 0, 100, 3, 0, 0, "Darnell"),
+(49141, 1, 0, "The Shadow Grave is this way.  Follow me, $n.", "", 12, 0, 100, 1, 0, 0, "Darnell"),
+(49141, 2, 0, "This way!", "", 12, 0, 100, 1, 0, 0, "Darnell"),
+(49141, 3, 0, "Now, where could those supplies be?", "", 12, 0, 100, 1, 0, 0, "Darnell"),
+(49141, 4, 0, "Maybe they're over here?", "", 12, 0, 100, 1, 0, 0, "Darnell"),
+(49141, 5, 0, "Hmm...", "", 12, 0, 100, 1, 0, 0, "Darnell"),
+(49141, 6, 0, "No, not over here.", "", 12, 0, 100, 1, 0, 0, "Darnell"),
+(49141, 7, 0, "Hey, give me a hand, $n!  I can't find the supplies that Mordo needed!", "", 12, 0, 100, 1, 0, 0, "Darnell"),
+(49141, 8, 0, "Let's see now... where could they be...", "", 12, 0, 100, 1, 0, 0, "Darnell"),
+(49141, 9, 0, "Nice work!  You've found them.  Let's bring these back to Mordo.", "", 12, 0, 100, 1, 0, 0, "Darnell"),
+(49141, 10, 0, "I saw someone up there whose jaw fell off.  I wonder if Mordo can fix him up?", "", 12, 0, 100, 1, 0, 0, "Darnell");

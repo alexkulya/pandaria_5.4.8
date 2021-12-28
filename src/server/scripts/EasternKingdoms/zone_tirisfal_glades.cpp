@@ -1,5 +1,7 @@
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
+#include "Object.h"
+#include "Player.h"
 
 enum TirisfalGlades
 {
@@ -82,7 +84,64 @@ enum TirisfalGlades
     RISEN_RECRUIT_PATH_02                   = 50414*100+01,
 
     MINDLESS_ZOMBIE_ATTACK_EVENT_STEP_01    = 1,
-    MINDLESS_ZOMBIE_ATTACK_EVENT_STEP_02    = 2
+    MINDLESS_ZOMBIE_ATTACK_EVENT_STEP_02    = 2,
+
+    QUEST_THE_SHADOW_GRAVE                  = 28608,
+    SPELL_SUMMON_DARNELL                    = 91576,
+
+    AREA_THE_DEATHKNELL_GRAVES              = 5692,
+    AREA_SHADOW_GRAVE                       = 2117,
+
+    ITEM_THICK_EMBALMING_FLUID              = 64582,
+    ITEM_CORPSE_STITCHING_TWINE             = 64581,
+
+    DARNELL_TEXT_01                         = 0,
+    DARNELL_TEXT_02                         = 1,
+    DARNELL_TEXT_03                         = 2,
+    DARNELL_TEXT_04                         = 3,
+    DARNELL_TEXT_05                         = 4,
+    DARNELL_TEXT_06                         = 5,
+    DARNELL_TEXT_07                         = 6,
+    DARNELL_TEXT_08                         = 7,
+    DARNELL_TEXT_09                         = 8,
+    DARNELL_TEXT_10                         = 9,
+
+    DARNELL_MOVE_POINT_01                   = 1,
+    DARNELL_MOVE_POINT_02                   = 2,
+    DARNELL_MOVE_POINT_03                   = 3,
+    DARNELL_MOVE_POINT_04                   = 4,
+    DARNELL_MOVE_POINT_05                   = 5,
+    DARNELL_MOVE_POINT_06                   = 6,
+    DARNELL_MOVE_POINT_07                   = 7,
+    DARNELL_MOVE_POINT_08                   = 8,
+
+    DARNELL_PATH_00                         = 0,
+    DARNELL_PATH_01                         = 1,
+    DARNELL_PATH_02                         = 2,
+    DARNELL_PATH_03                         = 3,
+    DARNELL_PATH_04                         = 4,
+    DARNELL_PATH_05                         = 5,
+    DARNELL_PATH_06                         = 6,
+    DARNELL_PATH_07                         = 7,
+    DARNELL_PATH_08                         = 8,
+
+    DARNELL_MOVE_EVENT_01                   = 1,
+    DARNELL_MOVE_EVENT_02                   = 2,
+    DARNELL_MOVE_EVENT_03                   = 3,
+    DARNELL_MOVE_EVENT_04                   = 4,
+
+    DARNELL_METHOD_00                        = 0,
+    DARNELL_METHOD_01                        = 1,
+    DARNELL_METHOD_02                        = 2,
+    DARNELL_METHOD_03                        = 3,
+    DARNELL_METHOD_04                        = 4,
+    DARNELL_METHOD_05                        = 5,
+
+    DARNELL_PHASE_00                        = 0,
+    DARNELL_PHASE_01                        = 1,
+
+    COUNTER_0                               = 0,
+    COUNTER_10                              = 10
 };
 
 struct npc_aradne : public ScriptedAI
@@ -484,11 +543,11 @@ struct npc_undertaker_mordo : public ScriptedAI
         }
     }
 
-    /*void sQuestAccept(Player* player, Quest const* quest) override
+    void sQuestAccept(Player* player, Quest const* quest) override
     {
         if (quest->GetQuestId() == TirisfalGlades::QUEST_THE_SHADOW_GRAVE)
             player->CastSpell(player, TirisfalGlades::SPELL_SUMMON_DARNELL);
-    }*/
+    }
 };
 
 struct npc_mindless_zombie : public ScriptedAI
@@ -551,6 +610,343 @@ struct npc_mindless_zombie : public ScriptedAI
     }
 };
 
+enum PlaceDescription
+{
+    Unknown                                 = 0,
+    Outsite                                 = 1,
+    Entrance                                = 2,
+    Stairs_1                                = 3,
+    Stairs_2                                = 4,
+    Ground                                  = 5
+};
+
+struct npc_darnell : public ScriptedAI
+{
+    npc_darnell(Creature *c) : ScriptedAI(c) { }
+
+    void Reset() override
+    {
+        m_timer = urand(30, 45) * TimeConstants::IN_MILLISECONDS;
+        m_phase = TirisfalGlades::DARNELL_PHASE_00;
+        m_method = TirisfalGlades::DARNELL_METHOD_00;
+
+        if (Unit* npc = me->GetCharmerOrOwner())
+        {
+            if (m_player = npc->ToPlayer())
+            {
+                if (m_player->GetQuestStatus(TirisfalGlades::QUEST_THE_SHADOW_GRAVE) == QuestStatus::QUEST_STATUS_INCOMPLETE)
+                {
+                    m_method = TirisfalGlades::DARNELL_METHOD_01;
+                    m_phase = TirisfalGlades::DARNELL_PHASE_01;
+                    m_timer = 1 * TimeConstants::IN_MILLISECONDS;
+                    m_counter = TirisfalGlades::COUNTER_0;
+                    m_path = TirisfalGlades::DARNELL_PATH_00;
+                    m_FoundGround = false;
+                    m_ItemsFound = false;
+                    m_OldPosition = m_player->GetPositionAlternate();
+                    m_player_pos = m_player->GetPositionAlternate();
+                    m_player_area = m_player->GetAreaId();
+                    Talk(TirisfalGlades::DARNELL_TEXT_01, m_player);
+                }
+            }
+        }
+    }
+
+    void MovementInform(uint32 type, uint32 id) override
+    {
+        if (!CheckPlayerValid())
+            return;
+
+        if (type == MovementGeneratorType::POINT_MOTION_TYPE)
+            m_arrived = true;
+    }
+
+    void MoveInLineOfSight(Unit* who) override
+    {
+        if (who->GetGUID() != m_player->GetGUID())
+            return;
+
+        m_player_pos = who->GetPositionAlternate();
+        m_player_area = who->GetAreaId();
+
+        if (m_method == TirisfalGlades::DARNELL_METHOD_01 && me->GetMotionMaster()->GetCurrentMovementGeneratorType() != MovementGeneratorType::FOLLOW_MOTION_TYPE)
+            if (m_arrived)
+                if (me->GetDistance(m_player) < 4.0f)
+                    me->GetMotionMaster()->MoveFollow(m_player, 0.0f, 0.0f);
+    }
+
+    void UpdateAI(const uint32 diff) override
+    {
+        if (!CheckPlayerValid())
+            return;
+
+        if (m_timer <= diff)
+        {
+            m_timer = 1 * TimeConstants::IN_MILLISECONDS;
+            StartAnimation();
+        }
+        else m_timer -= diff;
+    }
+
+    void StartAnimation()
+    {
+        if (m_FoundGround)
+        {
+            SearchOnGround();
+            return;
+        }
+
+        switch (GetPlaceDescription())
+        {
+            case PlaceDescription::Outsite:
+                InviteToFollow();
+                break;
+            case PlaceDescription::Entrance:
+                InviteToFollowDeeper1();
+                break;
+            case PlaceDescription::Stairs_1:
+                InviteToFollowDeeper2();
+                break;
+            case PlaceDescription::Stairs_2:
+                InviteToFollowToGround();
+                break;
+            case PlaceDescription::Ground:
+                SearchOnGround();
+                break;
+        }
+    }
+
+    void InviteToFollow()
+    {
+        m_counter++;
+
+        if (GetMovedPlayerDistance() > 1.0f)
+            m_counter = TirisfalGlades::COUNTER_0;
+
+        if (m_counter >= TirisfalGlades::COUNTER_10)
+        {
+            Talk(TirisfalGlades::DARNELL_TEXT_02, m_player);
+            me->GetMotionMaster()->MovePoint(TirisfalGlades::DARNELL_MOVE_POINT_01, 1665.368896f, 1662.722656f, 141.850983f);
+            m_path = TirisfalGlades::DARNELL_PATH_01;
+            m_arrived = false;
+            m_counter = TirisfalGlades::COUNTER_0;
+        }
+    }
+
+    void InviteToFollowDeeper1()
+    {
+        m_counter++;
+
+        if (GetMovedPlayerDistance() > 1.0f)
+            m_counter = TirisfalGlades::COUNTER_0;
+
+        if (m_counter >= TirisfalGlades::COUNTER_10)
+        {
+            Talk(TirisfalGlades::DARNELL_TEXT_03);
+            me->GetMotionMaster()->MovePoint(TirisfalGlades::DARNELL_MOVE_POINT_02, 1642.761963f, 1662.547729f, 132.477753f);
+            m_path = TirisfalGlades::DARNELL_PATH_02;
+            m_arrived = false;
+            m_counter = TirisfalGlades::COUNTER_0;
+        }
+    }
+
+    void InviteToFollowDeeper2()
+    {
+        m_counter++;
+
+        if (GetMovedPlayerDistance() > 1.0f)
+            m_counter = TirisfalGlades::COUNTER_0;
+
+        if (m_counter >= TirisfalGlades::COUNTER_10)
+        {
+            Talk(TirisfalGlades::DARNELL_TEXT_03);
+            me->GetMotionMaster()->MovePoint(TirisfalGlades::DARNELL_MOVE_POINT_03, 1642.498779f, 1677.809937f, 126.932129f);
+            m_path = TirisfalGlades::DARNELL_PATH_03;
+            m_arrived = false;
+            m_counter = TirisfalGlades::COUNTER_0;
+        }
+    }
+
+    void InviteToFollowToGround()
+    {
+        m_counter++;
+
+        if (GetMovedPlayerDistance() > 1.0f)
+            m_counter = TirisfalGlades::COUNTER_0;
+
+        if (m_counter >= TirisfalGlades::COUNTER_10)
+        {
+            Talk(TirisfalGlades::DARNELL_TEXT_03);
+            me->GetMotionMaster()->MovePoint(TirisfalGlades::DARNELL_MOVE_POINT_04, 1656.714478f, 1678.538330f, 120.718788f);
+            m_path = TirisfalGlades::DARNELL_PATH_04;
+            m_arrived = false;
+            m_counter = TirisfalGlades::COUNTER_0;
+        }
+    }
+
+    void SearchOnGround()
+    {
+        if (CheckPlayerFoundItems())
+        {
+            if (m_ItemsFound == false)
+            {
+                m_ItemsFound = true;
+                Talk(TirisfalGlades::DARNELL_TEXT_10);
+                m_timer = 10 * TimeConstants::IN_MILLISECONDS;
+                return;
+            }
+            else
+                me->DespawnOrUnsummon();
+                return;
+        }
+
+        switch (m_method)
+        {
+            case TirisfalGlades::DARNELL_METHOD_02:
+                MoveToCenter();
+                break;
+            case TirisfalGlades::DARNELL_METHOD_03:
+                MoveToRandomCorner();
+                break;
+            case TirisfalGlades::DARNELL_METHOD_04:
+                SearchingOnCorner();
+                break;
+            case TirisfalGlades::DARNELL_METHOD_05:
+                break;
+            default:
+                m_method = TirisfalGlades::DARNELL_METHOD_02;
+                break;
+        }
+    }
+
+    void MoveToCenter()
+    {
+        if (m_path != TirisfalGlades::DARNELL_PATH_08)
+        {
+            me->GetMotionMaster()->MovePoint(TirisfalGlades::DARNELL_MOVE_POINT_08, 1664.128052f, 1679.201294f, 120.530205f);
+            m_arrived = false;
+            m_path = TirisfalGlades::DARNELL_PATH_08;
+        }
+        else if (m_arrived == false) { }
+        else
+        {
+            m_method = TirisfalGlades::DARNELL_METHOD_03;
+        }
+    }
+
+    void MoveToRandomCorner()
+    {
+        if (m_path == TirisfalGlades::DARNELL_PATH_08)
+        {
+            switch (urand(TirisfalGlades::DARNELL_MOVE_EVENT_01, TirisfalGlades::DARNELL_MOVE_EVENT_04))
+            {
+                case TirisfalGlades::DARNELL_MOVE_EVENT_01:
+                    me->GetMotionMaster()->MovePoint(TirisfalGlades::DARNELL_MOVE_POINT_04, 1663.849609f, 1694.495239f, 120.719284f);
+                    m_arrived = false;
+                    m_path = TirisfalGlades::DARNELL_PATH_04;
+                    break;
+                case TirisfalGlades::DARNELL_MOVE_EVENT_02:
+                    me->GetMotionMaster()->MovePoint(TirisfalGlades::DARNELL_MOVE_POINT_05, 1672.939331f, 1668.029541f, 120.719307f);
+                    m_arrived = false;
+                    m_path = TirisfalGlades::DARNELL_PATH_05;
+                    break;
+                case TirisfalGlades::DARNELL_MOVE_EVENT_03:
+                    me->GetMotionMaster()->MovePoint(TirisfalGlades::DARNELL_MOVE_POINT_06, 1656.963379f, 1667.456299f, 120.719093f);
+                    m_arrived = false;
+                    m_path = TirisfalGlades::DARNELL_PATH_06;
+                    break;
+                case TirisfalGlades::DARNELL_MOVE_EVENT_04:
+                    me->GetMotionMaster()->MovePoint(TirisfalGlades::DARNELL_MOVE_POINT_07, 1656.098999f, 1688.312866f, 120.719093f);
+                    m_arrived = false;
+                    m_path = TirisfalGlades::DARNELL_PATH_07;
+                    break;
+            }
+        }
+        else if (m_arrived == false) { }
+        else
+        {
+            m_method = TirisfalGlades::DARNELL_METHOD_04;
+        }
+    }
+
+    void SearchingOnCorner()
+    {
+        Talk(urand(TirisfalGlades::DARNELL_TEXT_04, TirisfalGlades::DARNELL_TEXT_09), m_player);
+        m_timer = 6 * TimeConstants::IN_MILLISECONDS;
+        m_method = TirisfalGlades::DARNELL_METHOD_02;
+    }
+
+    bool CheckPlayerFoundItems()
+    {
+        if (m_player->HasItemCount(TirisfalGlades::ITEM_THICK_EMBALMING_FLUID) && m_player->HasItemCount(TirisfalGlades::ITEM_CORPSE_STITCHING_TWINE))
+            return true;
+
+        return false;
+    }
+
+    bool CheckPlayerValid()
+    {
+        if (!m_player->IsInWorld() ||
+            m_player->isDead() ||
+            m_player->GetQuestStatus(TirisfalGlades::QUEST_THE_SHADOW_GRAVE) != QuestStatus::QUEST_STATUS_INCOMPLETE ||
+            (m_player->GetAreaId() != TirisfalGlades::AREA_THE_DEATHKNELL_GRAVES && m_player->GetAreaId() != TirisfalGlades::AREA_SHADOW_GRAVE))
+        {
+            me->DespawnOrUnsummon();
+            return false;
+        }
+
+        return true;
+    }
+
+    PlaceDescription GetPlaceDescription()
+    {
+        switch (m_player_area)
+        {
+            case TirisfalGlades::AREA_THE_DEATHKNELL_GRAVES:
+                return PlaceDescription::Outsite;
+            case TirisfalGlades::AREA_SHADOW_GRAVE:
+            {
+                if (m_player_pos.GetPositionZ() < 123.0)
+                {
+                    m_FoundGround = true;
+                    return PlaceDescription::Ground;
+                }
+
+                if (m_player_pos.GetPositionZ() < 127.0)
+                    return PlaceDescription::Stairs_2;
+
+                if (m_player_pos.GetPositionZ() < 133.0)
+                    return PlaceDescription::Stairs_1;
+
+                return PlaceDescription::Entrance;
+            }
+            default:
+                return PlaceDescription::Unknown;
+        }
+    }
+
+    float GetMovedPlayerDistance()
+    {
+        float dist = m_player->GetDistance(m_OldPosition);
+        m_OldPosition = m_player->GetPositionAlternate();
+        return dist;
+    }
+
+private:
+    bool m_arrived;
+    uint32 m_counter;
+    Position m_OldPosition;
+    Position m_player_pos;
+    uint32 m_player_area;
+    uint8 m_path;
+    uint8 m_method;
+    uint32 m_timer;
+    uint32 m_phase;
+    Player* m_player;
+    bool m_FoundGround;
+    bool m_ItemsFound;
+};
+
 void AddSC_tirisfal_glades()
 {
     new creature_script<npc_aradne>("npc_aradne");
@@ -558,4 +954,5 @@ void AddSC_tirisfal_glades()
     new creature_script<npc_risen_dead>("npc_risen_dead");
     new creature_script<npc_undertaker_mordo>("npc_undertaker_mordo");
     new creature_script<npc_mindless_zombie>("npc_mindless_zombie");
+    new creature_script<npc_darnell>("npc_darnell");
 }
