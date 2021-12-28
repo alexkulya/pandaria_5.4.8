@@ -47,6 +47,7 @@ public:
             { "invite",     SEC_ADMINISTRATOR,  true,   &HandleGuildInviteCommand,      },
             { "uninvite",   SEC_ADMINISTRATOR,  true,   &HandleGuildUninviteCommand,    },
             { "rank",       SEC_ADMINISTRATOR,  true,   &HandleGuildRankCommand,        },
+            { "level",      SEC_ADMINISTRATOR,  true,   &HandleGuildLevelCommand,       },
             { "rename",     SEC_ADMINISTRATOR,  true,   &HandleGuildRenameCommand,      },
         };
         static std::vector<ChatCommand> commandTable =
@@ -195,6 +196,48 @@ public:
 
         uint8 newRank = uint8(atoi(rankStr));
         return targetGuild->ChangeMemberRank(targetGuid, newRank);
+    }
+
+    static bool HandleGuildLevelCommand(ChatHandler* handler, char const* args)
+    {
+        char* nameStr;
+        char* levelStr;
+        handler->extractOptFirstArg((char*)args, &nameStr, &levelStr);
+
+        if (!levelStr)
+            return false;
+
+        Player* target;
+        uint64 targetGuid;
+        std::string target_name;
+
+        if (!handler->extractPlayerTarget(nameStr, &target, &targetGuid, &target_name))
+            return false;
+
+        uint32 guildId = target ? target->GetGuildId() : Player::GetGuildIdFromDB(targetGuid);
+
+        if (!guildId)
+            return false;
+
+        Guild* targetGuild = sGuildMgr->GetGuildById(guildId);
+
+        if (!targetGuild)
+            return false;
+
+        int newLevel = atoi(levelStr);
+
+        if (newLevel < 0)
+            newLevel = 0;
+
+        if (newLevel > 25)
+            newLevel = 25;
+
+        uint32 oldLevel = targetGuild->GetLevel();
+
+        for (int i  = targetGuild->GetLevel(); i < newLevel; i++)
+            targetGuild->LevelUp(oldLevel, target);
+
+        return true;
     }
 
     static bool HandleGuildRenameCommand(ChatHandler* handler, char const* _args)
