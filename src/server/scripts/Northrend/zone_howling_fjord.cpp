@@ -212,18 +212,25 @@ public:
 ## npc_razael_and_lyana
 ######*/
 
-#define GOSSIP_RAZAEL_REPORT "High Executor Anselm wants a report on the situation."
-#define GOSSIP_LYANA_REPORT "High Executor Anselm requests your report."
+#define GOSSIP_RAZAEL_REPORT_EN "High Executor Anselm wants a report on the situation."
+#define GOSSIP_RAZAEL_REPORT_RU "Верховный палач Ансельм желает выслушать твой доклад о текущей ситуации."
+#define GOSSIP_LYANA_REPORT_EN "High Executor Anselm requests your report."
+#define GOSSIP_LYANA_REPORT_RU "Верховный палач Ансельм ждет твоего отчета."
 
-enum Razael
+enum RazaelAndLyanaData
 {
-    QUEST_REPORTS_FROM_THE_FIELD = 11221,
-    NPC_RAZAEL = 23998,
-    NPC_LYANA = 23778,
-    GOSSIP_TEXTID_RAZAEL1 = 11562,
-    GOSSIP_TEXTID_RAZAEL2 = 11564,
-    GOSSIP_TEXTID_LYANA1 = 11586,
-    GOSSIP_TEXTID_LYANA2 = 11588
+    QUEST_REPORTS_FROM_THE_FIELD            = 11221,
+
+    NPC_RAZAEL                              = 23998,
+    NPC_LYANA                               = 23778,
+
+    GOSSIP_TEXT_ID_RAZAEL_1                 = 11562,
+    GOSSIP_TEXT_ID_RAZAEL_2                 = 11564,
+    GOSSIP_TEXT_ID_LYANA_1                  = 11586,
+    GOSSIP_TEXT_ID_LYANA_2                  = 11588,
+
+    SPELL_RAZAEL_KILL_CREDIT                = 42756,
+    SPELL_LYANA_KILL_CREDIT                 = 42799
 };
 
 class npc_razael_and_lyana : public CreatureScript
@@ -237,25 +244,30 @@ public:
             player->PrepareQuestMenu(creature->GetGUID());
 
         if (player->GetQuestStatus(QUEST_REPORTS_FROM_THE_FIELD) == QUEST_STATUS_INCOMPLETE)
+        {
+            bool ru = player->GetSession()->GetSessionDbLocaleIndex() == LOCALE_ruRU;
+
             switch (creature->GetEntry())
             {
                 case NPC_RAZAEL:
                     if (!player->GetReqKillOrCastCurrentCount(QUEST_REPORTS_FROM_THE_FIELD, NPC_RAZAEL))
                     {
-                        player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_RAZAEL_REPORT, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-                        player->SEND_GOSSIP_MENU(GOSSIP_TEXTID_RAZAEL1, creature->GetGUID());
+                        player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, ru ? GOSSIP_RAZAEL_REPORT_RU : GOSSIP_RAZAEL_REPORT_EN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+                        player->SEND_GOSSIP_MENU(GOSSIP_TEXT_ID_RAZAEL_1, creature->GetGUID());
                         return true;
                     }
                 break;
                 case NPC_LYANA:
                     if (!player->GetReqKillOrCastCurrentCount(QUEST_REPORTS_FROM_THE_FIELD, NPC_LYANA))
                     {
-                        player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_LYANA_REPORT, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
-                        player->SEND_GOSSIP_MENU(GOSSIP_TEXTID_LYANA1, creature->GetGUID());
+                        player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, ru ? GOSSIP_LYANA_REPORT_RU : GOSSIP_LYANA_REPORT_EN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+                        player->SEND_GOSSIP_MENU(GOSSIP_TEXT_ID_LYANA_1, creature->GetGUID());
                         return true;
                     }
                 break;
             }
+        }
+
         player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
         return true;
     }
@@ -263,17 +275,23 @@ public:
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
         player->PlayerTalkClass->ClearMenus();
+
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF + 1:
-                player->SEND_GOSSIP_MENU(GOSSIP_TEXTID_RAZAEL2, creature->GetGUID());
-                player->TalkedToCreature(NPC_RAZAEL, creature->GetGUID());
-                break;
+            {
+                player->CastSpell(player, SPELL_RAZAEL_KILL_CREDIT);
+                player->SEND_GOSSIP_MENU(GOSSIP_TEXT_ID_RAZAEL_2, creature->GetGUID());
+            }
+            break;
             case GOSSIP_ACTION_INFO_DEF + 2:
-                player->SEND_GOSSIP_MENU(GOSSIP_TEXTID_LYANA2, creature->GetGUID());
-                player->TalkedToCreature(NPC_LYANA, creature->GetGUID());
-                break;
+            {
+                player->CastSpell(player, SPELL_LYANA_KILL_CREDIT);
+                player->SEND_GOSSIP_MENU(GOSSIP_TEXT_ID_LYANA_2, creature->GetGUID());
+            }
+            break;
         }
+
         return true;
     }
 };
