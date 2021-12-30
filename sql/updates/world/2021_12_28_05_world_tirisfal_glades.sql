@@ -199,6 +199,95 @@ INSERT INTO `creature_text` (`entry`, `groupid`, `id`, `text`, `text_female`, `t
 (49141, 9, 0, "Nice work!  You've found them.  Let's bring these back to Mordo.", "", 12, 0, 100, 1, 0, 0, "Darnell"),
 (49141, 10, 0, "I saw someone up there whose jaw fell off.  I wonder if Mordo can fix him up?", "", 12, 0, 100, 1, 0, 0, "Darnell");
 
+-- Marshal Redpath
+UPDATE `creature_template` SET `AIName` = "", `ScriptName` = "npc_marshal_redpath", `gossip_menu_id` = 12485 WHERE `entry` = 49230;
+UPDATE `creature` SET `orientation` = 5.8555, `spawntimesecs` = 60 WHERE `id` = 49230;
+
+DELETE FROM `creature_text` WHERE `entry` = 49230;
+INSERT INTO `creature_text` (`entry`, `groupid`, `id`, `text`, `text_female`, `type`, `language`, `probability`, `emote`, `duration`, `sound`, `comment`) VALUES
+(49230, 0, 0, "BLEEAAAGGHHH! I'm a monster, don't look at me!", "", 12, 0, 100, 1, 0, 0, "Marshal Redpath"),
+(49230, 0, 1, "Who are you calling a monster? You're the monster! I'm just a man who died.", "", 12, 0, 100, 1, 0, 0, "Marshal Redpath");
+
+DELETE FROM `smart_scripts` WHERE `entryorguid` = 49230 AND `source_type` = 0;
+
+DELETE FROM `waypoint_data` WHERE `id` = 49230*100;
+INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `position_z`, `orientation`, `delay`, `move_flag`) VALUES
+(49230*100, 1, 1752.72, 1626.94, 116.001, 0, 0, 1),
+(49230*100, 2, 1758.17, 1604.42, 110.959, 0, 0, 1),
+(49230*100, 3, 1756.88, 1585.49, 111.543, 0, 0, 1),
+(49230*100, 4, 1751.61, 1564.8, 113.489, 0, 0, 1),
+(49230*100, 5, 1752.27, 1548.56, 113.92, 0, 0, 1),
+(49230*100, 6, 1763.14, 1538.02, 114.346, 0, 0, 1);
+
+UPDATE `gossip_menu_option` SET `action_menu_id` = 12486 WHERE `menu_id` = 12485;
+UPDATE `gossip_menu_option` SET `npc_option_npcflag` = 1 WHERE `menu_id` = 12486;
+
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 15 AND `SourceGroup` = 12485;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES
+(15,12485,0,0,9,24960,0,0,0,"","Show gossip if player has quest: The wakening");
+
+-- Lilian Voss
+UPDATE `creature_template` SET `AIName` = "", `ScriptName` = "npc_lilian_voss", `gossip_menu_id` = 12483 WHERE `entry` = 38895;
+UPDATE `creature` SET `spawntimesecs` = 60 WHERE `id` = 38895;
+
+DELETE FROM `creature_text` WHERE `entry` = 38895;
+INSERT INTO `creature_text` (`entry`, `groupid`, `id`, `text`, `text_female`, `type`, `language`, `probability`, `emote`, `duration`, `sound`, `comment`) VALUES
+(38895, 0, 0, "", "No. You're lying! My father will protect me!", 12, 0, 100, 1, 0, 0, "Lilian Voss"),
+(38895, 0, 1, "", "You don't understand... I CAN'T be undead! Not me, not now...", 12, 1, 100, 0, 0, 0, "Lilian Voss");
+
+DELETE FROM `creature_template_addon` WHERE `entry` = 38895;
+INSERT INTO `creature_template_addon` (`entry`, `bytes2`, `emote`) VALUES
+(38895, 4097, 431);
+
+DELETE FROM `smart_scripts` WHERE `entryorguid` = 38895 AND `source_type` = 0;
+
+DELETE FROM `waypoint_data` WHERE `id` = 38895*100;
+INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `position_z`, `orientation`, `delay`, `move_flag`) VALUES
+(38895*100, 1, 1752.21, 1652.93, 119.551, 0, 0, 1),
+(38895*100, 2, 1752.72, 1635.44, 116.883, 0, 0, 1),
+(38895*100, 3, 1755.51, 1611.9, 112.498, 0, 0, 1),
+(38895*100, 4, 1756.03, 1591.45, 111.872, 0, 0, 1),
+(38895*100, 5, 1755.69, 1570.22, 112.78, 0, 0, 1),
+(38895*100, 6, 1751.78, 1550.02, 114.082, 0, 0, 1),
+(38895*100, 7, 1762.13, 1539.01, 114.289, 0, 0, 1);
+
+UPDATE `gossip_menu_option` SET `action_menu_id` = 12484 WHERE `menu_id` = 12483;
+UPDATE `gossip_menu_option` SET `npc_option_npcflag` = 1 WHERE `menu_id` = 12484;
+
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 15 AND `SourceGroup` = 12483;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES
+(15,12483,0,0,9,24960,0,0,0,"","Show gossip if player has quest: The wakening");
+
+-- Valdred Moray
+UPDATE `creature_template` SET `AIName` = "", `ScriptName` = "npc_valdred_moray", `gossip_menu_id` = 12487 WHERE `entry` = 49231;
+UPDATE `creature` SET `spawntimesecs` = 60 WHERE `id` = 49231;
+
+DELETE FROM `creature_text` WHERE `entry` = 49231;
+INSERT INTO `creature_text` (`entry`, `groupid`, `id`, `text`, `text_female`, `type`, `language`, `probability`, `emote`, `duration`, `sound`, `comment`) VALUES
+(49231, 0, 0, "Valdred Moray, reporting for duty, sir!", "", 14, 0, 100, 66, 0, 0, "Valdred Moray"),
+(49231, 0, 1, "I see. Well then, let's get to work, $n! The Dark Lady needs us, right?", "", 12, 0, 100, 1, 0, 0, "Valdred Moray");
+
+DELETE FROM `creature_template_addon` WHERE `entry` = 49231;
+INSERT INTO `creature_template_addon` (`entry`, `bytes1`, `bytes2`) VALUES
+(49231, 8, 4097);
+
+DELETE FROM `smart_scripts` WHERE `entryorguid` = 49231 AND `source_type` = 0;
+
+DELETE FROM `waypoint_data` WHERE `id` = 49231*100;
+INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `position_z`, `orientation`, `delay`, `move_flag`) VALUES
+(49231*100, 1, 1728.97, 1696.68, 127.857, 0, 0, 0),
+(49231*100, 2, 1716.91, 1690.64, 132.728, 0, 0, 0),
+(49231*100, 3, 1707.91, 1685.12, 133.644, 0, 0, 0),
+(49231*100, 4, 1695.44, 1677.7, 134.632, 0, 0, 0);
+
+UPDATE `gossip_menu_option` SET `action_menu_id` = 12488 WHERE `menu_id` = 12487;
+UPDATE `gossip_menu_option` SET `action_menu_id` = 12489 WHERE `menu_id` = 12488;
+UPDATE `gossip_menu_option` SET `npc_option_npcflag` = 1 WHERE `menu_id` IN (12488, 12489);
+
+DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 15 AND `SourceGroup` = 12487;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES
+(15,12487,0,0,9,24960,0,0,0,"","Show gossip if player has quest: The wakening");
+
 UPDATE `creature_template` SET `AIName` = "", `ScriptName` = "npc_vile_fin_puddlejumper" WHERE `entry` = 1543;
 UPDATE `creature_template` SET `AIName` = "", `ScriptName` = "npc_vile_fin_minor_oracle" WHERE `entry` = 1544;
 UPDATE `creature_template` SET `AIName` = "", `ScriptName` = "npc_sedrick_calston" WHERE `entry` = 38925;
