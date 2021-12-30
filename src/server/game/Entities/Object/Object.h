@@ -848,10 +848,13 @@ class WorldObject : public Object, public WorldLocation
         TempSummon* SummonCreature(uint32 id, Position const &pos, TempSummonType spwtype = TEMPSUMMON_MANUAL_DESPAWN, uint32 despwtime = 0, uint32 vehId = 0, bool visibleBySummonerOnly = false);
         TempSummon* SummonCreature(uint32 id, float x, float y, float z, float ang = 0, TempSummonType spwtype = TEMPSUMMON_MANUAL_DESPAWN, uint32 despwtime = 0, bool visibleBySummonerOnly = false);
         GameObject* SummonGameObject(uint32 entry, float x, float y, float z, float ang, G3D::Quat const& rotation, uint32 respawnTime);
-        Creature*   SummonTrigger(float x, float y, float z, float ang, uint32 dur, CreatureAI* (*GetAI)(Creature*) = NULL);
+        Creature* SummonTrigger(float x, float y, float z, float ang, uint32 dur, CreatureAI* (*GetAI)(Creature*) = NULL);
         void SummonCreatureGroup(uint8 group, std::list<TempSummon*>* list = NULL);
 
-        Creature*   FindNearestCreature(uint32 entry, float range, bool alive = true) const;
+        Creature* FindNearestCreature(uint32 entry, float range, bool alive = true) const;
+        std::list<Creature*> FindNearestCreatures(uint32 entry, float range) const;
+        std::list<Creature*> FindNearestCreatures(std::list<uint32> entrys, float range) const;
+        std::vector<Creature*> FindNearestCreatures(uint32 entry, float range, bool alive) const;
         GameObject* FindNearestGameObject(uint32 entry, float range) const;
         GameObject* FindNearestGameObjectOfType(GameobjectTypes type, float range) const;
 

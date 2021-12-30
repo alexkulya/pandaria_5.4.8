@@ -141,7 +141,31 @@ enum TirisfalGlades
     DARNELL_PHASE_01                        = 1,
 
     COUNTER_0                               = 0,
-    COUNTER_10                              = 10
+    COUNTER_10                              = 10,
+
+    NPC_CAPTURED_PUDDLEJUMPER               = 38923,
+    NPC_CAPTURED_ORACLE                     = 39078,
+    NPC_PUDDLEJUMPER                        = 1543,
+    NPC_MINOR_ORACLE                        = 1544,
+
+    SPELL_MURLOC_LEACH                      = 73108,
+    SPELL_SUMMON_PUDDLEJUMPER               = 73110,
+    SPELL_SUMMON_ORACLE                     = 73434,
+    SPELL_VILE_FIN_GUARDIAN_AURA            = 94266,
+    SPELL_ROPE_BEAM                         = 84167,
+
+    SPELL_LEAPING_RUSH                      = 75002,
+    SPELL_LIGHTNING_BOLT                    = 9532,
+    SPELL_LIGHTNING_SHIELD                  = 12550,
+
+    NPC_CAPTURE_MURLOC_CREDIT               = 38923,
+    NPC_DELIVERED_MURLOC_CREDIT             = 38887,
+
+    QUEST_EVER_SO_LONELY                    = 24974,
+
+    TEXT_CAPTURE_READY                      = 0,
+
+    EVENT_CHECK_PLAYER                      = 999
 };
 
 struct npc_aradne : public ScriptedAI
@@ -947,6 +971,278 @@ private:
     bool m_ItemsFound;
 };
 
+struct npc_vile_fin_puddlejumper : public ScriptedAI
+{
+    npc_vile_fin_puddlejumper(Creature* creature) : ScriptedAI(creature) { }
+
+    uint64 m_playerGUID;
+
+    void Reset() override
+    {
+        uint64 m_playerGUID = 0;
+    }
+
+    void EnterCombat(Unit* who) override
+    {
+        me->CastSpell(who, SPELL_LEAPING_RUSH);
+    }
+
+    void DamageTaken(Unit* attacker, uint32& damage) 
+    { 
+        if (Player* player = attacker->ToPlayer())
+        {
+            if (me->GetHealthPct() <= 15.0f)
+            {
+                Talk(TEXT_CAPTURE_READY);
+                me->GetMotionMaster()->MoveIdle();
+                me->GetMotionMaster()->MoveFleeing(player);
+            }
+        }
+    }
+
+    void SpellHit(Unit* caster, SpellInfo const* spell)
+    {
+        if (caster->ToPlayer())
+        {
+            if (spell->Id == SPELL_MURLOC_LEACH)
+            {
+                me->CastSpell(caster, SPELL_SUMMON_PUDDLEJUMPER);
+                me->DespawnOrUnsummon(500);
+            }
+        }
+    }
+
+    void UpdateAI(const uint32 diff) override
+    {
+        if (UpdateVictim())
+            DoMeleeAttackIfReady();
+    }
+};
+
+struct npc_vile_fin_minor_oracle : public ScriptedAI
+{
+    npc_vile_fin_minor_oracle(Creature* creature) : ScriptedAI(creature) { }
+
+    uint64 m_playerGUID;
+    uint32 m_lightning_bolt_timer;
+    uint32 m_lightning_shield_timer;
+
+    void Reset() override
+    {
+        uint64 m_playerGUID = 0;
+        m_lightning_bolt_timer = urand(uint32(3.4), uint32(4.7)) * IN_MILLISECONDS;
+        me->CastSpell(me, SPELL_LIGHTNING_SHIELD);
+        m_lightning_shield_timer = 10 * MINUTE * IN_MILLISECONDS;
+    }
+
+    void DamageTaken(Unit* attacker, uint32& damage)
+    {
+        if (Player* player = attacker->ToPlayer())
+        {
+            if (me->GetHealthPct() <= 15.0f)
+            {
+                Talk(TEXT_CAPTURE_READY);
+                me->GetMotionMaster()->MoveIdle();
+                me->GetMotionMaster()->MoveFleeing(player);
+            }
+        }
+    }
+
+    void SpellHit(Unit* caster, SpellInfo const* spell)
+    {
+        if (caster->ToPlayer())
+        {
+            if (spell->Id == SPELL_MURLOC_LEACH)
+            {
+                me->CastSpell(caster, SPELL_SUMMON_ORACLE);
+                me->DespawnOrUnsummon(500);
+            }
+        }
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (m_lightning_shield_timer <= diff)
+        {
+            me->CastSpell(me, SPELL_LIGHTNING_SHIELD);
+            m_lightning_shield_timer = 10 * MINUTE * IN_MILLISECONDS;
+        }
+        else
+            m_lightning_shield_timer -= diff;
+
+        if (UpdateVictim())
+        {
+            if (m_lightning_bolt_timer <= diff)
+            {
+                DoCastVictim(SPELL_LIGHTNING_BOLT);
+                m_lightning_bolt_timer = urand(uint32(3.4), uint32(4.7)) * IN_MILLISECONDS;
+            }
+            else
+                m_lightning_bolt_timer -= diff;
+
+            DoMeleeAttackIfReady();
+        }
+    }
+};
+
+class spell_murloc_leash : public SpellScript
+{
+    PrepareSpellScript(spell_murloc_leash);
+
+    SpellCastResult CheckRequirement()
+    {
+        std::list<uint32>targets;
+        targets.push_back(NPC_CAPTURED_PUDDLEJUMPER);
+        targets.push_back(NPC_CAPTURED_ORACLE);
+
+        if (Player* player = GetCaster()->ToPlayer())
+        {
+            std::list<Creature*>npcs = player->FindNearestCreatures(targets, 10.0f);
+
+            if (npcs.size() > 0)
+                return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+        }
+
+        if (Unit* unit = GetExplTargetUnit())
+        {
+            if (unit->GetEntry() == NPC_PUDDLEJUMPER || unit->GetEntry() == NPC_MINOR_ORACLE)
+            {
+                if (unit->GetHealthPct() < 80.0f)
+                    return SPELL_CAST_OK;
+            }
+            else
+                return SPELL_FAILED_BAD_TARGETS;
+        }
+
+        return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+    }
+
+    void CheckTarget(WorldObject*& target)
+    {
+        if (Creature* npc = target->ToCreature())
+            if (npc->GetEntry() == NPC_PUDDLEJUMPER || npc->GetEntry() == NPC_MINOR_ORACLE)
+                if (npc->GetHealthPct() < 80.0f)
+                    return;
+
+        target = NULL;
+    }
+
+    void Register() override
+    {
+        OnCheckCast += SpellCheckCastFn(spell_murloc_leash::CheckRequirement);
+        OnObjectTargetSelect += SpellObjectTargetSelectFn(spell_murloc_leash::CheckTarget, EFFECT_0, TARGET_UNIT_TARGET_ANY);
+    }
+};
+
+struct npc_captured_vile_fin_puddlejumper : public ScriptedAI
+{
+    npc_captured_vile_fin_puddlejumper(Creature* creature) : ScriptedAI(creature) { }
+
+    EventMap m_events;
+    uint64 m_playerGUID;
+
+    void Reset()
+    {
+        m_events.Reset();
+        m_events.ScheduleEvent(EVENT_CHECK_PLAYER, 1 * IN_MILLISECONDS);
+        uint64 m_playerGUID = 0;
+    }
+
+    void IsSummonedBy(Unit* summoner)
+    { 
+        if (Player* player = summoner->ToPlayer())
+        {
+            m_playerGUID = player->GetGUID();
+            player->KilledMonsterCredit(NPC_CAPTURE_MURLOC_CREDIT);
+            me->GetMotionMaster()->MoveFollow(player, 0.0f, 0.0f);
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+            player->CastSpell(me, SPELL_ROPE_BEAM);
+        }
+    }
+};
+
+struct npc_captured_vile_fin_minor_oracle : public ScriptedAI
+{
+    npc_captured_vile_fin_minor_oracle(Creature* creature) : ScriptedAI(creature) { }
+
+    EventMap m_events;
+    uint64 m_playerGUID;
+
+    void Reset() override
+    {
+        m_events.Reset();
+        m_events.ScheduleEvent(EVENT_CHECK_PLAYER, 1 * IN_MILLISECONDS);
+        uint64 m_playerGUID = 0;
+    }
+
+    void IsSummonedBy(Unit* summoner)
+    {
+        if (Player* player = summoner->ToPlayer())
+        {
+            m_playerGUID = player->GetGUID();
+            player->KilledMonsterCredit(NPC_CAPTURE_MURLOC_CREDIT);
+            me->GetMotionMaster()->MoveFollow(player, 0.0f, 0.0f);
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+            player->CastSpell(me, SPELL_ROPE_BEAM);
+        }
+    }
+};
+
+struct npc_sedrick_calston : public ScriptedAI
+{
+    npc_sedrick_calston(Creature* creature) : ScriptedAI(creature) { }
+
+    EventMap m_events;
+
+    void Reset() override
+    {
+        m_events.Reset();
+        m_events.ScheduleEvent(EVENT_CHECK_PLAYER, 1 * IN_MILLISECONDS);
+    }
+
+    void UpdateAI(const uint32 diff) override
+    {
+        m_events.Update(diff);
+
+        while (uint32 eventId = m_events.ExecuteEvent())
+        {
+            switch (eventId)
+            {
+                case EVENT_CHECK_PLAYER:
+                {
+                    if (Player* player = me->FindNearestPlayer(7.0f))
+                    {
+                        if (player->GetQuestStatus(QUEST_EVER_SO_LONELY) == QUEST_STATUS_INCOMPLETE)
+                        {
+                            std::list<uint32>targets;
+                            targets.push_back(NPC_CAPTURED_PUDDLEJUMPER);
+                            targets.push_back(NPC_CAPTURED_ORACLE);
+                            std::list<Creature*> npcs = me->FindNearestCreatures(targets, 10.0f);
+
+                            if (npcs.size() > 0)
+                            {
+                                player->RemoveAura(SPELL_VILE_FIN_GUARDIAN_AURA);
+                                player->KilledMonsterCredit(NPC_DELIVERED_MURLOC_CREDIT);
+
+                                for (std::list<Creature*>::iterator itr = npcs.begin(); itr != npcs.end(); ++itr)
+                                    (*itr)->DespawnOrUnsummon(1);
+                            }
+                        }
+                    }
+
+                    m_events.ScheduleEvent(EVENT_CHECK_PLAYER, 1 * IN_MILLISECONDS);
+                    break;
+                }
+            }
+        }
+
+        if (!UpdateVictim())
+            return;
+        else
+            DoMeleeAttackIfReady();
+    }
+};
+
 void AddSC_tirisfal_glades()
 {
     new creature_script<npc_aradne>("npc_aradne");
@@ -955,4 +1251,10 @@ void AddSC_tirisfal_glades()
     new creature_script<npc_undertaker_mordo>("npc_undertaker_mordo");
     new creature_script<npc_mindless_zombie>("npc_mindless_zombie");
     new creature_script<npc_darnell>("npc_darnell");
+    new creature_script<npc_vile_fin_puddlejumper>("npc_vile_fin_puddlejumper");
+    new creature_script<npc_vile_fin_minor_oracle>("npc_vile_fin_minor_oracle");
+    new spell_script<spell_murloc_leash>("spell_murloc_leash");
+    new creature_script<npc_captured_vile_fin_puddlejumper>("npc_captured_vile_fin_puddlejumper");
+    new creature_script<npc_captured_vile_fin_minor_oracle>("npc_captured_vile_fin_minor_oracle");
+    new creature_script<npc_sedrick_calston>("npc_sedrick_calston");
 }

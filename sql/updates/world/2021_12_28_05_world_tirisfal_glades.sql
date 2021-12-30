@@ -198,3 +198,19 @@ INSERT INTO `creature_text` (`entry`, `groupid`, `id`, `text`, `text_female`, `t
 (49141, 8, 0, "Let's see now... where could they be...", "", 12, 0, 100, 1, 0, 0, "Darnell"),
 (49141, 9, 0, "Nice work!  You've found them.  Let's bring these back to Mordo.", "", 12, 0, 100, 1, 0, 0, "Darnell"),
 (49141, 10, 0, "I saw someone up there whose jaw fell off.  I wonder if Mordo can fix him up?", "", 12, 0, 100, 1, 0, 0, "Darnell");
+
+UPDATE `creature_template` SET `AIName` = "", `ScriptName` = "npc_vile_fin_puddlejumper" WHERE `entry` = 1543;
+UPDATE `creature_template` SET `AIName` = "", `ScriptName` = "npc_vile_fin_minor_oracle" WHERE `entry` = 1544;
+UPDATE `creature_template` SET `AIName` = "", `ScriptName` = "npc_sedrick_calston" WHERE `entry` = 38925;
+UPDATE `creature_template` SET `AIName` = "", `ScriptName` = "npc_captured_vile_fin_puddlejumper" WHERE `entry` = 38923;
+UPDATE `creature_template` SET `AIName` = "", `ScriptName` = "npc_captured_vile_fin_minor_oracle" WHERE `entry` = 39078;
+DELETE FROM `smart_scripts` WHERE `entryorguid` IN (1543, 1544) AND `source_type` = 0;
+DELETE FROM `spell_script_names` WHERE `spell_id` = 73108;
+INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES
+(73108, "spell_murloc_leash");
+
+DELETE FROM `creature_text` WHERE `entry` IN (1543, 1544);
+INSERT INTO `creature_text` (`entry`, `groupid`, `id`, `text`, `text_female`, `type`, `language`, `probability`, `emote`, `duration`, `sound`, `comment`) VALUES
+(1543, 0, 0, "The %s is ready to be captured!", "", 16, 0, 100, 0, 0, 0, "Vile Fin Puddlejumper"),
+
+(1544, 0, 0, "The %s is ready to be captured!", "", 16, 0, 100, 0, 0, 0, "Vile Fin Minor Oracle");

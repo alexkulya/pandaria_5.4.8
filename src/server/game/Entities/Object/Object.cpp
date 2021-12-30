@@ -2890,6 +2890,36 @@ Creature* WorldObject::FindNearestCreature(uint32 entry, float range, bool alive
     return creature;
 }
 
+std::list<Creature*> WorldObject::FindNearestCreatures(uint32 entry, float range) const
+{
+    std::list<Creature*> creatureList;    
+    GetCreatureListWithEntryInGrid(creatureList, entry, range);   
+    return creatureList;
+}
+
+std::list<Creature*> WorldObject::FindNearestCreatures(std::list<uint32> entrys, float range) const
+{
+    std::list<Creature*> creatureList;
+
+    for (std::list<uint32>::iterator itr = entrys.begin(); itr != entrys.end(); ++itr)
+        GetCreatureListWithEntryInGrid(creatureList, (*itr), range);
+    return creatureList;
+}
+
+std::vector<Creature*> WorldObject::FindNearestCreatures(uint32 entry, float range, bool alive) const
+{
+    std::list<Creature*> creatureList;
+    std::vector<Creature*> returnList;
+    GetCreatureListWithEntryInGrid(creatureList, entry, range);
+    
+    for (std::list<Creature*>::iterator itr = creatureList.begin(); itr != creatureList.end(); ++itr)
+    {
+        if ((*itr)->IsAlive() == alive)
+            returnList.push_back(*itr);
+    }
+    return returnList;
+}
+
 Player* WorldObject::FindNearestPlayer(float range) const
 {
     Player* player = NULL;
