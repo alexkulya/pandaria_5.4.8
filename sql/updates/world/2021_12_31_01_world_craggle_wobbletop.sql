@@ -58,4 +58,4 @@ INSERT INTO `npc_spellclick_spells` (`npc_entry`, `spell_id`, `cast_flags`, `use
 
 UPDATE `creature_template` SET `modelid1` = 22769, `modelid2` = 0 WHERE `entry` = 52361;
 
-DELETE FROM `creature` WHERE `guid` = 301890;
+DELETE FROM `creature` WHERE `guid` IN (301889, 301890);
