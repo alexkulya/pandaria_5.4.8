@@ -36,14 +36,14 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry
 (13, 1, 65614, 0, 0, 31, 0, 3, 34520, 315778, 0, 0, 0, "", "Wolvar Orphan");
 
 DELETE FROM `creature_text` WHERE `entry` IN (34519, 34520, 34365);
-INSERT INTO `creature_text` (`entry`, `groupid`, `id`, `text`, `type`, `language`, `probability`, `emote`, `duration`, `sound`, `TextRange`, `comment`) VALUES 
-(34519, 0, 0, "Give toy back!", 12, 0, 100, 1, 0, 0, 0, "Oracle Orphan"),
-(34519, 1, 0, "Stop!", 12, 0, 100, 1, 0, 0, 0, "Oracle Orphan"),
-(34519, 2, 0, "We tell orphan matron on you!", 12, 0, 100, 1, 0, 0, 0, "Oracle Orphan"),
+INSERT INTO `creature_text` (`entry`, `groupid`, `id`, `text`, `text_female`, `type`, `language`, `probability`, `emote`, `duration`, `sound`, `TextRange`, `comment`) VALUES 
+(34519, 0, 0, "Give toy back!", "", 12, 0, 100, 1, 0, 0, 0, "Oracle Orphan"),
+(34519, 1, 0, "Stop!", "", 12, 0, 100, 1, 0, 0, 0, "Oracle Orphan"),
+(34519, 2, 0, "We tell orphan matron on you!", "", 12, 0, 100, 1, 0, 0, 0, "Oracle Orphan"),
 
-(34520, 0, 0, "If you want, go get, big-tongue baby!", 12, 0, 100, 0, 0, 0, 0, "Wolvar Orphan"),
+(34520, 0, 0, "If you want, go get, big-tongue baby!", "", 12, 0, 100, 0, 0, 0, 0, "Wolvar Orphan"),
 
-(34365, 0, 0, "Children, please behave yourselves! No one will want to adopt you if you keep acting like that!", 12, 0, 100, 5, 0, 0, 0, "Orphan Matron Aria");
+(34365, 0, 0, "", "Children, please behave yourselves! No one will want to adopt you if you keep acting like that!", 12, 0, 100, 5, 0, 0, 0, "Orphan Matron Aria");
 
 DELETE FROM `conditions` WHERE `SourceTypeOrReferenceId` = 22 AND `SourceEntry` IN (34520, -315778, -315779, -315780);
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES 
