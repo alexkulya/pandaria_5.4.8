@@ -233,7 +233,7 @@ UPDATE `creature` SET `spawntimesecs` = 60 WHERE `id` = 38895;
 DELETE FROM `creature_text` WHERE `entry` = 38895;
 INSERT INTO `creature_text` (`entry`, `groupid`, `id`, `text`, `text_female`, `type`, `language`, `probability`, `emote`, `duration`, `sound`, `comment`) VALUES
 (38895, 0, 0, "", "No. You're lying! My father will protect me!", 12, 0, 100, 1, 0, 0, "Lilian Voss"),
-(38895, 0, 1, "", "You don't understand... I CAN'T be undead! Not me, not now...", 12, 1, 100, 0, 0, 0, "Lilian Voss");
+(38895, 0, 1, "", "You don't understand... I CAN'T be undead! Not me, not now...", 12, 0, 100, 22, 0, 0, "Lilian Voss");
 
 DELETE FROM `creature_template_addon` WHERE `entry` = 38895;
 INSERT INTO `creature_template_addon` (`entry`, `bytes2`, `emote`) VALUES
