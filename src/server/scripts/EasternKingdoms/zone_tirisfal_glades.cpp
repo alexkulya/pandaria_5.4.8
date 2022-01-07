@@ -141,7 +141,68 @@ enum TirisfalGlades
     DARNELL_PHASE_01                        = 1,
 
     COUNTER_0                               = 0,
-    COUNTER_10                              = 10
+    COUNTER_10                              = 10,
+
+    NPC_MARSHAL_REDPATH                     = 49230,
+    NPC_LILIAN_VOSS                         = 38895,
+    NPC_VALDRED_MORAY                       = 49231,
+
+    MARSHAL_REDPATH_PATH                    = 49230*100,
+    LILIAN_VOSS_PATH                        = 38895*100,
+    VALDRED_MORAY_PATH                      = 49231*100,
+
+    MARSHAL_REDPATH_TEXT                    = 0,
+    LILIAN_VOSS_TEXT                        = 0,
+    VALDRED_MORAY_TEXT                      = 0,
+
+    QUEST_THE_WAKENING                      = 24960,
+
+    GOSSIP_MENU_MARSHAL_REDPATH             = 12486,
+    GOSSIP_MENU_LILIAN_VOSS                 = 12484,
+    GOSSIP_MENU_VALDRED_MORAY               = 12489,
+
+    MARSHAL_REDPATH_PHASE_00                = 0,
+    MARSHAL_REDPATH_PHASE_01                = 1,
+    MARSHAL_REDPATH_PHASE_02                = 2,
+    MARSHAL_REDPATH_PHASE_03                = 3,
+    MARSHAL_REDPATH_PHASE_04                = 4,
+
+    LILIAN_VOSS_PHASE_00                    = 0,
+    LILIAN_VOSS_PHASE_01                    = 1,
+    LILIAN_VOSS_PHASE_02                    = 2,
+    LILIAN_VOSS_PHASE_03                    = 3,
+    LILIAN_VOSS_PHASE_04                    = 4,
+    LILIAN_VOSS_PHASE_05                    = 5,
+
+    VALDRED_MORAY_PHASE_00                  = 0,
+    VALDRED_MORAY_PHASE_01                  = 1,
+    VALDRED_MORAY_PHASE_02                  = 2,
+    VALDRED_MORAY_PHASE_03                  = 3,
+    VALDRED_MORAY_PHASE_04                  = 4,
+
+    NPC_CAPTURED_PUDDLEJUMPER               = 38923,
+    NPC_CAPTURED_ORACLE                     = 39078,
+    NPC_PUDDLEJUMPER                        = 1543,
+    NPC_MINOR_ORACLE                        = 1544,
+
+    SPELL_MURLOC_LEACH                      = 73108,
+    SPELL_SUMMON_PUDDLEJUMPER               = 73110,
+    SPELL_SUMMON_ORACLE                     = 73434,
+    SPELL_VILE_FIN_GUARDIAN_AURA            = 94266,
+    SPELL_ROPE_BEAM                         = 84167,
+
+    SPELL_LEAPING_RUSH                      = 75002,
+    SPELL_LIGHTNING_BOLT                    = 9532,
+    SPELL_LIGHTNING_SHIELD                  = 12550,
+
+    NPC_CAPTURE_MURLOC_CREDIT               = 38923,
+    NPC_DELIVERED_MURLOC_CREDIT             = 38887,
+
+    QUEST_EVER_SO_LONELY                    = 24974,
+
+    TEXT_CAPTURE_READY                      = 0,
+
+    EVENT_CHECK_PLAYER                      = 999
 };
 
 struct npc_aradne : public ScriptedAI
@@ -947,6 +1008,563 @@ private:
     bool m_ItemsFound;
 };
 
+class npc_marshal_redpath : public CreatureScript
+{
+public:
+    npc_marshal_redpath() : CreatureScript("npc_marshal_redpath") { }
+
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action) override
+    {
+        uint32 id = player->PlayerTalkClass->GetGossipMenu().GetMenuId();
+
+        if (player->GetQuestStatus(TirisfalGlades::QUEST_THE_WAKENING) == QUEST_STATUS_INCOMPLETE && id == TirisfalGlades::GOSSIP_MENU_MARSHAL_REDPATH)
+        {
+            player->PlayerTalkClass->SendCloseGossip();
+            CAST_AI(npc_marshal_redpathAI, creature->AI())->StartAnimation(player);
+            return false;
+        }
+
+        return false;
+    }
+
+    struct npc_marshal_redpathAI : public ScriptedAI
+    {
+        npc_marshal_redpathAI(Creature *c) : ScriptedAI(c) { }
+
+        uint32 m_timer;
+        uint32 m_phase;
+        Player* m_player;
+
+        void Reset() override
+        {
+            me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP | UNIT_NPC_FLAG_QUESTGIVER);
+            m_timer = 0;
+            m_phase = TirisfalGlades::MARSHAL_REDPATH_PHASE_00;
+            m_player = NULL;
+        }
+
+        void StartAnimation(Player* player)
+        {
+            if (!m_phase)
+            {
+                me->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP | UNIT_NPC_FLAG_QUESTGIVER);
+                m_player = player;
+                m_phase = TirisfalGlades::MARSHAL_REDPATH_PHASE_01;
+                m_timer = 100;
+            }
+        }
+
+        void UpdateAI(const uint32 diff) override
+        {
+            if (m_timer <= diff)
+            {
+                m_timer = 1 * IN_MILLISECONDS;
+                StartVisual();
+            }
+            else m_timer -= diff;
+        }
+
+        void StartVisual()
+        {
+            switch (m_phase)
+            {
+                case TirisfalGlades::MARSHAL_REDPATH_PHASE_01:
+                    me->SetFacingToObject(m_player);
+                    Talk(MARSHAL_REDPATH_TEXT, m_player);
+                    m_timer = 4 * IN_MILLISECONDS;
+                    m_phase = TirisfalGlades::MARSHAL_REDPATH_PHASE_02;
+                    break;
+                case TirisfalGlades::MARSHAL_REDPATH_PHASE_02:
+                    if (m_player)
+                        m_player->KilledMonsterCredit(TirisfalGlades::NPC_MARSHAL_REDPATH);
+
+                    m_timer = 4 * IN_MILLISECONDS;
+                    m_phase = TirisfalGlades::MARSHAL_REDPATH_PHASE_03;
+                    break;
+                case TirisfalGlades::MARSHAL_REDPATH_PHASE_03:
+                    me->GetMotionMaster()->MovePath(TirisfalGlades::MARSHAL_REDPATH_PATH, false);
+                    m_timer = 10 * IN_MILLISECONDS;
+                    m_phase = TirisfalGlades::MARSHAL_REDPATH_PHASE_04;
+                    break;
+                case TirisfalGlades::MARSHAL_REDPATH_PHASE_04:
+                    me->DespawnOrUnsummon();
+                    m_timer = 0;
+                    m_phase = TirisfalGlades::MARSHAL_REDPATH_PHASE_00;
+                    break;
+            }
+        }
+    };
+
+    CreatureAI* GetAI(Creature* pCreature) const override
+    {
+        return new npc_marshal_redpathAI(pCreature);
+    }
+};
+
+class npc_lilian_voss : public CreatureScript
+{
+public:
+    npc_lilian_voss() : CreatureScript("npc_lilian_voss") { }
+
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action) override
+    {
+        uint32 id = player->PlayerTalkClass->GetGossipMenu().GetMenuId();
+
+        if (player->GetQuestStatus(TirisfalGlades::QUEST_THE_WAKENING) == QUEST_STATUS_INCOMPLETE && id == TirisfalGlades::GOSSIP_MENU_LILIAN_VOSS)
+        {
+            player->PlayerTalkClass->SendCloseGossip();
+            CAST_AI(npc_lilian_vossAI, creature->AI())->StartAnimation(player);
+            return false;
+        }
+
+        return false;
+    }
+
+    struct npc_lilian_vossAI : public ScriptedAI
+    {
+        npc_lilian_vossAI(Creature *c) : ScriptedAI(c) { }
+
+        uint32 m_timer;
+        uint32 m_phase;
+        Player* m_player;
+
+        void Reset() override
+        {
+            me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP | UNIT_NPC_FLAG_QUESTGIVER);
+            m_timer = 0;
+            m_phase = TirisfalGlades::LILIAN_VOSS_PHASE_00;
+            m_player = NULL;
+        }
+
+        void StartAnimation(Player* player)
+        {
+            if (!m_phase)
+            {
+                me->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP | UNIT_NPC_FLAG_QUESTGIVER);
+                m_player = player;
+                m_phase = TirisfalGlades::LILIAN_VOSS_PHASE_01;
+                m_timer = 100;
+            }
+        }
+
+        void UpdateAI(const uint32 diff) override
+        {
+            if (m_timer <= diff)
+            {
+                m_timer = 1 * IN_MILLISECONDS;
+                StartVisual();
+            }
+            else m_timer -= diff;
+        }
+
+        void StartVisual()
+        {
+            switch (m_phase)
+            {
+                case TirisfalGlades::LILIAN_VOSS_PHASE_01:
+                    me->SetUInt32Value(UNIT_FIELD_NPC_EMOTESTATE, Emote::EMOTE_STATE_NONE);
+                    m_timer = 500;
+                    m_phase = TirisfalGlades::LILIAN_VOSS_PHASE_02;
+                    break;
+                case TirisfalGlades::LILIAN_VOSS_PHASE_02:
+                    me->SetFacingToObject(m_player);
+                    Talk(LILIAN_VOSS_TEXT);
+                    m_timer = 4 * IN_MILLISECONDS;
+                    m_phase = TirisfalGlades::LILIAN_VOSS_PHASE_03;
+                    break;
+                case TirisfalGlades::LILIAN_VOSS_PHASE_03:
+                    if (m_player)
+                        m_player->KilledMonsterCredit(TirisfalGlades::NPC_LILIAN_VOSS);
+
+                    m_timer = 5 * IN_MILLISECONDS;
+                    m_phase = TirisfalGlades::LILIAN_VOSS_PHASE_04;
+                    break;
+                case TirisfalGlades::LILIAN_VOSS_PHASE_04:
+                    me->GetMotionMaster()->MovePath(TirisfalGlades::LILIAN_VOSS_PATH, false);
+                    m_timer = 10 * IN_MILLISECONDS;
+                    m_phase = TirisfalGlades::LILIAN_VOSS_PHASE_05;
+                    break;
+                case TirisfalGlades::LILIAN_VOSS_PHASE_05:
+                    me->DespawnOrUnsummon();
+                    m_timer = 0;
+                    m_phase = TirisfalGlades::LILIAN_VOSS_PHASE_00;
+                    break;
+            }
+        }
+    };
+
+    CreatureAI* GetAI(Creature* pCreature) const override
+    {
+        return new npc_lilian_vossAI(pCreature);
+    }
+};
+
+class npc_valdred_moray : public CreatureScript
+{
+public:
+    npc_valdred_moray() : CreatureScript("npc_valdred_moray") { }
+
+    bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action) override
+    {
+        uint32 id = player->PlayerTalkClass->GetGossipMenu().GetMenuId();
+
+        if (player->GetQuestStatus(TirisfalGlades::QUEST_THE_WAKENING) == QUEST_STATUS_INCOMPLETE && id == TirisfalGlades::GOSSIP_MENU_VALDRED_MORAY)
+        {
+            player->PlayerTalkClass->SendCloseGossip();
+            CAST_AI(npc_valdred_morayAI, creature->AI())->StartAnimation(player);
+            return false;
+        }
+
+        return false;
+    }
+
+    struct npc_valdred_morayAI : public ScriptedAI
+    {
+        npc_valdred_morayAI(Creature *c) : ScriptedAI(c) { }
+
+        uint32 m_timer;
+        uint32 m_phase;
+        Player* m_player;
+
+        void Reset() override
+        {
+            me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP | UNIT_NPC_FLAG_QUESTGIVER);
+            m_timer = 0;
+            m_phase = TirisfalGlades::VALDRED_MORAY_PHASE_00;
+            m_player = NULL;
+        }
+
+        void StartAnimation(Player* player)
+        {
+            if (!m_phase)
+            {
+                me->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP | UNIT_NPC_FLAG_QUESTGIVER);
+                me->SetStandState(UNIT_STAND_STATE_STAND);
+                m_player = player;
+                m_phase = TirisfalGlades::VALDRED_MORAY_PHASE_01;
+                m_timer = 100;
+            }
+        }
+
+        void UpdateAI(const uint32 diff) override
+        {
+            if (m_timer <= diff)
+            {
+                m_timer = 1 * IN_MILLISECONDS;
+                StartVisual();
+            }
+            else m_timer -= diff;
+        }
+
+        void StartVisual()
+        {
+            switch (m_phase)
+            {
+                case TirisfalGlades::VALDRED_MORAY_PHASE_01:
+                    me->SetFacingToObject(m_player);
+                    Talk(VALDRED_MORAY_TEXT, m_player);
+                    m_timer = 4 * IN_MILLISECONDS;
+                    m_phase = TirisfalGlades::VALDRED_MORAY_PHASE_02;
+                    break;
+                case TirisfalGlades::VALDRED_MORAY_PHASE_02:
+                    if (m_player)
+                        m_player->KilledMonsterCredit(TirisfalGlades::NPC_VALDRED_MORAY);
+
+                    m_timer = 4 * IN_MILLISECONDS;
+                    m_phase = TirisfalGlades::VALDRED_MORAY_PHASE_03;
+                    break;
+                case TirisfalGlades::VALDRED_MORAY_PHASE_03:
+                    me->GetMotionMaster()->MovePath(TirisfalGlades::VALDRED_MORAY_PATH, false);
+                    m_timer = 6 * IN_MILLISECONDS;
+                    m_phase = TirisfalGlades::VALDRED_MORAY_PHASE_04;
+                    break;
+                case TirisfalGlades::VALDRED_MORAY_PHASE_04:
+                    me->DespawnOrUnsummon();
+                    m_timer = 0;
+                    m_phase = TirisfalGlades::VALDRED_MORAY_PHASE_00;
+                    break;
+            }
+        }
+    };
+
+    CreatureAI* GetAI(Creature* pCreature) const override
+    {
+        return new npc_valdred_morayAI(pCreature);
+    }
+};
+
+struct npc_vile_fin_puddlejumper : public ScriptedAI
+{
+    npc_vile_fin_puddlejumper(Creature* creature) : ScriptedAI(creature) { }
+
+    uint64 m_playerGUID;
+
+    void Reset() override
+    {
+        uint64 m_playerGUID = 0;
+    }
+
+    void EnterCombat(Unit* who) override
+    {
+        me->CastSpell(who, TirisfalGlades::SPELL_LEAPING_RUSH);
+    }
+
+    void DamageTaken(Unit* attacker, uint32& damage) 
+    { 
+        if (Player* player = attacker->ToPlayer())
+        {
+            if (me->GetHealthPct() <= 15.0f)
+            {
+                Talk(TirisfalGlades::TEXT_CAPTURE_READY);
+                me->GetMotionMaster()->MoveIdle();
+                me->GetMotionMaster()->MoveFleeing(player);
+            }
+        }
+    }
+
+    void SpellHit(Unit* caster, SpellInfo const* spell)
+    {
+        if (caster->ToPlayer())
+        {
+            if (spell->Id == TirisfalGlades::SPELL_MURLOC_LEACH)
+            {
+                me->CastSpell(caster, TirisfalGlades::SPELL_SUMMON_PUDDLEJUMPER);
+                me->DespawnOrUnsummon(500);
+            }
+        }
+    }
+
+    void UpdateAI(const uint32 diff) override
+    {
+        if (UpdateVictim())
+            DoMeleeAttackIfReady();
+    }
+};
+
+struct npc_vile_fin_minor_oracle : public ScriptedAI
+{
+    npc_vile_fin_minor_oracle(Creature* creature) : ScriptedAI(creature) { }
+
+    uint64 m_playerGUID;
+    uint32 m_lightning_bolt_timer;
+    uint32 m_lightning_shield_timer;
+
+    void Reset() override
+    {
+        uint64 m_playerGUID = 0;
+        m_lightning_bolt_timer = urand(uint32(3.4), uint32(4.7)) * IN_MILLISECONDS;
+        me->CastSpell(me, TirisfalGlades::SPELL_LIGHTNING_SHIELD);
+        m_lightning_shield_timer = 10 * MINUTE * IN_MILLISECONDS;
+    }
+
+    void DamageTaken(Unit* attacker, uint32& damage)
+    {
+        if (Player* player = attacker->ToPlayer())
+        {
+            if (me->GetHealthPct() <= 15.0f)
+            {
+                Talk(TirisfalGlades::TEXT_CAPTURE_READY);
+                me->GetMotionMaster()->MoveIdle();
+                me->GetMotionMaster()->MoveFleeing(player);
+            }
+        }
+    }
+
+    void SpellHit(Unit* caster, SpellInfo const* spell)
+    {
+        if (caster->ToPlayer())
+        {
+            if (spell->Id == TirisfalGlades::SPELL_MURLOC_LEACH)
+            {
+                me->CastSpell(caster, TirisfalGlades::SPELL_SUMMON_ORACLE);
+                me->DespawnOrUnsummon(500);
+            }
+        }
+    }
+
+    void UpdateAI(const uint32 diff)
+    {
+        if (m_lightning_shield_timer <= diff)
+        {
+            me->CastSpell(me, TirisfalGlades::SPELL_LIGHTNING_SHIELD);
+            m_lightning_shield_timer = 10 * MINUTE * IN_MILLISECONDS;
+        }
+        else
+            m_lightning_shield_timer -= diff;
+
+        if (UpdateVictim())
+        {
+            if (m_lightning_bolt_timer <= diff)
+            {
+                DoCastVictim(TirisfalGlades::SPELL_LIGHTNING_BOLT);
+                m_lightning_bolt_timer = urand(uint32(3.4), uint32(4.7)) * IN_MILLISECONDS;
+            }
+            else
+                m_lightning_bolt_timer -= diff;
+
+            DoMeleeAttackIfReady();
+        }
+    }
+};
+
+class spell_murloc_leash : public SpellScript
+{
+    PrepareSpellScript(spell_murloc_leash);
+
+    SpellCastResult CheckRequirement()
+    {
+        std::list<uint32>targets;
+        targets.push_back(TirisfalGlades::NPC_CAPTURED_PUDDLEJUMPER);
+        targets.push_back(TirisfalGlades::NPC_CAPTURED_ORACLE);
+
+        if (Player* player = GetCaster()->ToPlayer())
+        {
+            std::list<Creature*>npcs = player->FindNearestCreatures(targets, 10.0f);
+
+            if (npcs.size() > 0)
+                return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+        }
+
+        if (Unit* unit = GetExplTargetUnit())
+        {
+            if (unit->GetEntry() == TirisfalGlades::NPC_PUDDLEJUMPER || unit->GetEntry() == TirisfalGlades::NPC_MINOR_ORACLE)
+            {
+                if (unit->GetHealthPct() < 80.0f)
+                    return SPELL_CAST_OK;
+            }
+            else
+                return SPELL_FAILED_BAD_TARGETS;
+        }
+
+        return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+    }
+
+    void CheckTarget(WorldObject*& target)
+    {
+        if (Creature* npc = target->ToCreature())
+            if (npc->GetEntry() == TirisfalGlades::NPC_PUDDLEJUMPER || npc->GetEntry() == TirisfalGlades::NPC_MINOR_ORACLE)
+                if (npc->GetHealthPct() < 80.0f)
+                    return;
+
+        target = NULL;
+    }
+
+    void Register() override
+    {
+        OnCheckCast += SpellCheckCastFn(spell_murloc_leash::CheckRequirement);
+        OnObjectTargetSelect += SpellObjectTargetSelectFn(spell_murloc_leash::CheckTarget, EFFECT_0, TARGET_UNIT_TARGET_ANY);
+    }
+};
+
+struct npc_captured_vile_fin_puddlejumper : public ScriptedAI
+{
+    npc_captured_vile_fin_puddlejumper(Creature* creature) : ScriptedAI(creature) { }
+
+    EventMap m_events;
+    uint64 m_playerGUID;
+
+    void Reset()
+    {
+        m_events.Reset();
+        m_events.ScheduleEvent(TirisfalGlades::EVENT_CHECK_PLAYER, 1 * IN_MILLISECONDS);
+        uint64 m_playerGUID = 0;
+    }
+
+    void IsSummonedBy(Unit* summoner)
+    { 
+        if (Player* player = summoner->ToPlayer())
+        {
+            m_playerGUID = player->GetGUID();
+            player->KilledMonsterCredit(TirisfalGlades::NPC_CAPTURE_MURLOC_CREDIT);
+            me->GetMotionMaster()->MoveFollow(player, 0.0f, 0.0f);
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+            player->CastSpell(me, TirisfalGlades::SPELL_ROPE_BEAM);
+        }
+    }
+};
+
+struct npc_captured_vile_fin_minor_oracle : public ScriptedAI
+{
+    npc_captured_vile_fin_minor_oracle(Creature* creature) : ScriptedAI(creature) { }
+
+    EventMap m_events;
+    uint64 m_playerGUID;
+
+    void Reset() override
+    {
+        m_events.Reset();
+        m_events.ScheduleEvent(TirisfalGlades::EVENT_CHECK_PLAYER, 1 * IN_MILLISECONDS);
+        uint64 m_playerGUID = 0;
+    }
+
+    void IsSummonedBy(Unit* summoner)
+    {
+        if (Player* player = summoner->ToPlayer())
+        {
+            m_playerGUID = player->GetGUID();
+            player->KilledMonsterCredit(TirisfalGlades::NPC_CAPTURE_MURLOC_CREDIT);
+            me->GetMotionMaster()->MoveFollow(player, 0.0f, 0.0f);
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
+            player->CastSpell(me, TirisfalGlades::SPELL_ROPE_BEAM);
+        }
+    }
+};
+
+struct npc_sedrick_calston : public ScriptedAI
+{
+    npc_sedrick_calston(Creature* creature) : ScriptedAI(creature) { }
+
+    EventMap m_events;
+
+    void Reset() override
+    {
+        m_events.Reset();
+        m_events.ScheduleEvent(TirisfalGlades::EVENT_CHECK_PLAYER, 1 * IN_MILLISECONDS);
+    }
+
+    void UpdateAI(const uint32 diff) override
+    {
+        m_events.Update(diff);
+
+        while (uint32 eventId = m_events.ExecuteEvent())
+        {
+            switch (eventId)
+            {
+                case TirisfalGlades::EVENT_CHECK_PLAYER:
+                {
+                    if (Player* player = me->FindNearestPlayer(7.0f))
+                    {
+                        if (player->GetQuestStatus(TirisfalGlades::QUEST_EVER_SO_LONELY) == QUEST_STATUS_INCOMPLETE)
+                        {
+                            std::list<uint32>targets;
+                            targets.push_back(TirisfalGlades::NPC_CAPTURED_PUDDLEJUMPER);
+                            targets.push_back(TirisfalGlades::NPC_CAPTURED_ORACLE);
+                            std::list<Creature*> npcs = me->FindNearestCreatures(targets, 10.0f);
+
+                            if (npcs.size() > 0)
+                            {
+                                player->RemoveAura(TirisfalGlades::SPELL_VILE_FIN_GUARDIAN_AURA);
+                                player->KilledMonsterCredit(TirisfalGlades::NPC_DELIVERED_MURLOC_CREDIT);
+
+                                for (std::list<Creature*>::iterator itr = npcs.begin(); itr != npcs.end(); ++itr)
+                                    (*itr)->DespawnOrUnsummon(1);
+                            }
+                        }
+                    }
+
+                    m_events.ScheduleEvent(TirisfalGlades::EVENT_CHECK_PLAYER, 1 * IN_MILLISECONDS);
+                    break;
+                }
+            }
+        }
+
+        if (!UpdateVictim())
+            return;
+        else
+            DoMeleeAttackIfReady();
+    }
+};
+
 void AddSC_tirisfal_glades()
 {
     new creature_script<npc_aradne>("npc_aradne");
@@ -955,4 +1573,13 @@ void AddSC_tirisfal_glades()
     new creature_script<npc_undertaker_mordo>("npc_undertaker_mordo");
     new creature_script<npc_mindless_zombie>("npc_mindless_zombie");
     new creature_script<npc_darnell>("npc_darnell");
+    new npc_marshal_redpath();
+    new npc_lilian_voss();
+    new npc_valdred_moray();
+    new creature_script<npc_vile_fin_puddlejumper>("npc_vile_fin_puddlejumper");
+    new creature_script<npc_vile_fin_minor_oracle>("npc_vile_fin_minor_oracle");
+    new spell_script<spell_murloc_leash>("spell_murloc_leash");
+    new creature_script<npc_captured_vile_fin_puddlejumper>("npc_captured_vile_fin_puddlejumper");
+    new creature_script<npc_captured_vile_fin_minor_oracle>("npc_captured_vile_fin_minor_oracle");
+    new creature_script<npc_sedrick_calston>("npc_sedrick_calston");
 }

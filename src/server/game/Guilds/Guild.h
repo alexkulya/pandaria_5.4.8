@@ -930,6 +930,8 @@ public:
 
     uint64 GetBankMoney() const { return m_bankMoney; }
 
+    void LevelUp(uint32 oldLevel, Player *source);
+
 protected:
     uint32 m_id;
     std::string m_name;

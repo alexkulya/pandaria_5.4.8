@@ -3565,12 +3565,16 @@ class spell_gen_the_doctor_is_in : public AuraScript
 };
 
 // Guild Perk Level 11
-// 83958 - Mobile Banking 
+// 83958 - Mobile Banking
+enum MobileBankingData
+{
+    SPELL_SUMMON_CHEST_ALLIANCE             = 88304,
+    SPELL_SUMMON_CHEST_HORDE                = 88306
+};
+
 class spell_gen_mobile_banking : public SpellScript
 {
     PrepareSpellScript(spell_gen_mobile_banking);
-
-    enum { SPELL_GUILD_CHEST = 88306 };
 
     SpellCastResult ChechCast()
     {
@@ -3580,14 +3584,17 @@ class spell_gen_mobile_banking : public SpellScript
 
         if (player->GetReputationRank(GUILD_REPUTATION_ID) < REP_FRIENDLY)
             return SPELL_FAILED_REPUTATION;
+
         if (player->InBattleground())
             return SPELL_FAILED_NOT_HERE;
+
         return SPELL_CAST_OK;
     }
 
     void Summon()
     {
-        GetCaster()->CastSpell(GetCaster(), SPELL_GUILD_CHEST, true);
+        Player* caster = GetCaster()->ToPlayer();
+        caster->CastSpell(caster, caster->GetTeamId() == TEAM_ALLIANCE ? SPELL_SUMMON_CHEST_ALLIANCE : SPELL_SUMMON_CHEST_HORDE, true);
     }
 
     void Register() override
