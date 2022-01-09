@@ -172,3 +172,28 @@ INSERT INTO `creature_text` (`entry`, `groupid`, `id`, `text`, `text_female`, `t
 (49869, 1, 2, "Look alive, men! There are orcs and worgs about!", "", 14, 0, 15, 22, 0, 0, "Stormwind Infantry"),
 (49869, 1, 3, "Your filthy dogs won't be enough!", "", 14, 0, 15, 22, 0, 0, "Stormwind Infantry"),
 (49869, 1, 4, "Your worgs are no match for the might of Stormwind!", "", 14, 0, 15, 22, 0, 0, "Stormwind Infantry");
+
+DELETE FROM `creature_text` WHERE `entry` = 49874;
+INSERT INTO `creature_text` (`entry`, `groupid`, `id`, `text`, `text_female`, `type`, `language`, `probability`, `emote`, `duration`, `sound`, `comment`) VALUES
+(49874, 0, 0, "Orc KILL $r!", "Orc KILL $r!", 12, 0, 50, 0, 0, 0, "Blackrock Spy"),
+(49874, 0, 1, "Blackrock take forest!", "Blackrock take forest!", 12, 0, 50, 0, 0, 0, "Blackrock Spy"),
+(49874, 0, 2, "The grapes were VERY TASTY!", "The grapes were VERY TASTY!", 12, 0, 50, 0, 0, 0, "Blackrock Spy"),
+(49874, 0, 3, "Beg for life!", "Beg for life!", 12, 0, 50, 0, 0, 0, "Blackrock Spy"),
+(49874, 0, 4, "Eat you!", "Eat you!", 12, 0, 50, 0, 0, 0, "Blackrock Spy");
+
+UPDATE `creature_template` SET `ScriptName` = "npc_blackrock_invader" WHERE `entry` = 42937;
+DELETE FROM `creature_text` WHERE `entry` = 42937;
+INSERT INTO `creature_text` (`entry`, `groupid`, `id`, `text`, `text_female`, `type`, `language`, `probability`, `emote`, `duration`, `sound`, `comment`) VALUES
+(42937, 0, 0, "Orc KILL $r!", "Orc KILL $r!", 12, 0, 50, 0, 0, 0, "Blackrock Invader"),
+(42937, 0, 1, "Blackrock take forest!", "Blackrock take forest!", 12, 0, 50, 0, 0, 0, "Blackrock Invader"),
+(42937, 0, 2, "The grapes were VERY TASTY!", "The grapes were VERY TASTY!", 12, 0, 50, 0, 0, 0, "Blackrock Invader"),
+(42937, 0, 3, "Beg for life!", "Beg for life!", 12, 0, 50, 0, 0, 0, "Blackrock Invader"),
+(42937, 0, 4, "Eat you!", "Eat you!", 12, 0, 50, 0, 0, 0, "Blackrock Invader");
+
+UPDATE `creature_template` SET `ScriptName` = "npc_goblin_assassin" WHERE `entry` = 50039;
+DELETE FROM `creature_text` WHERE `entry` = 50039;
+INSERT INTO `creature_text` (`entry`, `groupid`, `id`, `text`, `text_female`, `type`, `language`, `probability`, `emote`, `duration`, `sound`, `comment`) VALUES
+(50039, 0, 0, "We'll kill anybody for the right price!", "We'll kill anybody for the right price!", 12, 0, 50, 0, 0, 0, "Goblin Assassin"),
+(50039, 0, 1, "Time to join your friends, kissin' the dirt!", "Time to join your friends, kissin' the dirt!", 12, 0, 50, 0, 0, 0, "Goblin Assassin"),
+(50039, 0, 2, "DIE!!!", "DIE!!!", 12, 0, 50, 0, 0, 0, "Goblin Assassin"),
+(50039, 0, 3, "We're gonna burn this place to the ground!", "We're gonna burn this place to the ground!", 12, 0, 50, 0, 0, 0, "Goblin Assassin");
