@@ -18,22 +18,59 @@
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* ScriptData
-SDName: Elwynn_Forest
-SD%Complete: 50
-SDCategory: Elwynn Forest
-EndScriptData */
-
-/* ContentData
-npc_blackrock_spy
-npc_blackrock_invader
-npc_stormwind_infantry
-npc_blackrock_battle_worg
-npc_goblin_assassin
-EndContentData */
-
 #include "ScriptPCH.h"
 #include "../AI/SmartScripts/SmartAI.h"
+
+enum ElwynnForest
+{
+    /// Infantries vs. Wolfs
+    // Texts
+    INFANTRY_HELP_YELL                      = 0,
+    INFANTRY_COMBAT_YELL                    = 1,
+    // Creatures
+    NPC_BLACKROCK_BATTLE_WORG               = 49871,
+    NPC_STORMWIND_INFANTRY                  = 49869,
+    // Spells
+    WORG_GROWL                              = 2649,
+    // Misc
+    WORG_FIGHTING_FACTION                   = 232,
+    WORG_FACTION_RESTORE                    = 32,
+    AI_HEALTH_MIN                           = 85,
+    INFANTRY_YELL_CHANCE                    = 10,
+
+    /// Brother Paxton
+    // Spells
+    SPELL_FORTITUDE                         = 13864,
+    SPELL_PENANCE                           = 66097,
+    SPELL_FLASH_HEAL                        = 38588,
+    SPELL_RENEW                             = 8362,
+    SPELL_REVIVE                            = 93799,
+    // Texts
+    BROTHER_PAXTON_TEXT                     = 0,
+    BROTHER_PAXTON_TEXT_PLAYER              = 1,
+    // Events
+    BROTHER_PAXTON_HEAL_EVENT_01            = 0,
+    BROTHER_PAXTON_HEAL_EVENT_02            = 1,
+    BROTHER_PAXTON_HEAL_EVENT_03            = 2,
+    BROTHER_PAXTON_HEAL_EVENT_04            = 3,
+    HEAL_EVENT_01_STEP_01                   = 1,
+    HEAL_EVENT_01_STEP_02                   = 2,
+    HEAL_EVENT_01_STEP_03                   = 3,
+    HEAL_EVENT_01_STEP_04                   = 4,
+    HEAL_EVENT_02_STEP_01                   = 5,
+    HEAL_EVENT_02_STEP_02                   = 6,
+    HEAL_EVENT_02_STEP_03                   = 7,
+    HEAL_EVENT_02_STEP_04                   = 8,
+    HEAL_EVENT_03_STEP_01                   = 9,
+    HEAL_EVENT_03_STEP_02                   = 10,
+    HEAL_EVENT_03_STEP_03                   = 11,
+    HEAL_EVENT_03_STEP_04                   = 12,
+    HEAL_EVENT_04_STEP_01                   = 13,
+    HEAL_EVENT_04_STEP_02                   = 14,
+    HEAL_EVENT_04_STEP_03                   = 15,
+    HEAL_EVENT_04_STEP_04                   = 16,
+    HEAL_EVENT_RESET                        = 17
+};
 
 enum eYells
 {
@@ -44,7 +81,6 @@ enum eYells
     SAY_BLACKROCK_COMBAT_5    = -1000019,
     SAY_ASSASSIN_COMBAT_1     = -1000020,
     SAY_ASSASSIN_COMBAT_2     = -1000021,
-    SAY_INFANTRY_YELL         = 1,          //Stormwind Infantry Yell phrase from Group 1
 
     // Alliance Way
     SAY_INTRO                 = 0,
@@ -69,15 +105,6 @@ enum eYells
     SAY_SPECIAL_19,
 };
 
-enum eMisc
-{
-    WORG_FIGHTING_FACTION = 232,        //Faction used by worgs to be able to attack infantry
-    WORG_FACTION_RESTORE  = 32,         //Default Blackrock Battle Worg Faction
-    WORG_GROWL            = 2649,       //Worg Growl Spell
-    AI_HEALTH_MIN         = 85,         //Minimum health for AI staged fight between Blackrock Battle Worgs and Stormwind Infantry
-    INFANTRY_YELL_CHANCE  = 10           //% Chance for Stormwind Infantry to Yell - May need further adjustment... should be low chance
-};
-
 enum eQuests
 {
     QUEST_ALLIANCE_WAY       = 30988,
@@ -90,8 +117,6 @@ enum eCreatures
     NPC_VARIAN_WRYNN_ALLIANCE_WAY = 61796,
     NPC_AYISA_ALLIANCE_WAY        = 61792,
     NPC_JO_JO_ALLIANCE_WAY        = 61793,
-    NPC_BLACKROCK_BATTLE_WORG     = 49871,      //Blackrock Battle Worg NPC ID
-    NPC_STORMWIND_INFANTRY        = 49869,      //Stormwind Infantry NPC ID
     NPC_WALK_WITH_VARIAN_CREDIT   = 61798,
     NPC_FIGHT_WITH_VARIAN_CREDIT  = 61824,
 };
@@ -135,6 +160,328 @@ const Position VarianHomePath[3]
     { -8338.44f, 274.53f, 157.34f, 3.78f },
     { -8362.87f, 254.89f, 155.34f, 3.78f },
     { -8363.05f, 232.23f, 157.07f, 2.23f },
+};
+
+struct npc_stormwind_infantry : public ScriptedAI
+{
+    npc_stormwind_infantry(Creature* creature) : ScriptedAI(creature)
+    {
+        me->SetUInt32Value(EUnitFields::UNIT_FIELD_NPC_EMOTESTATE, Emote::EMOTE_STATE_READY1H);
+    }
+
+    uint32 tSeek, cYell,tYell;
+
+    void Reset()
+    {
+        me->SetUInt32Value(EUnitFields::UNIT_FIELD_NPC_EMOTESTATE, Emote::EMOTE_STATE_READY1H);
+        tSeek = urand(1 * TimeConstants::IN_MILLISECONDS, 2 * TimeConstants::IN_MILLISECONDS);
+        cYell = urand(0, 100);
+        tYell = urand(5 * TimeConstants::IN_MILLISECONDS, 60 * TimeConstants::IN_MILLISECONDS);
+    }
+
+    void DamageTaken(Unit* who, uint32& damage)
+    {
+        if (who->GetTypeId() == TYPEID_PLAYER)
+        {
+            me->getThreatManager().resetAllAggro();
+            who->AddThreat(me, 1.0f);
+            me->AddThreat(who, 1.0f);
+            me->AI()->AttackStart(who);
+        }
+        else if (who->IsPet())
+        {
+            me->getThreatManager().resetAllAggro();
+            me->AddThreat(who, 1.0f);
+            me->AI()->AttackStart(who);
+        }
+
+        if (who->GetEntry() == ElwynnForest::NPC_BLACKROCK_BATTLE_WORG && me->HealthBelowPct(ElwynnForest::AI_HEALTH_MIN))
+        {
+            damage = 0;
+            me->AddThreat(who, 1.0f);
+            me->AI()->AttackStart(who);
+        }
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (!UpdateVictim())
+            return;
+        else
+        {
+            if (tYell <= diff)
+            {
+                if (cYell < ElwynnForest::INFANTRY_YELL_CHANCE)
+                {
+                    Talk(ElwynnForest::INFANTRY_COMBAT_YELL);
+                    tYell = urand(10 * TimeConstants::IN_MILLISECONDS, 120 * TimeConstants::IN_MILLISECONDS);
+                }
+                else
+                    tYell = urand(10 * TimeConstants::IN_MILLISECONDS, 120 * TimeConstants::IN_MILLISECONDS);
+            }
+            else
+            {
+                tYell -= diff;
+                DoMeleeAttackIfReady();
+            }
+        }
+    }
+};
+
+struct npc_blackrock_battle_worg : public ScriptedAI
+{
+    npc_blackrock_battle_worg(Creature* creature) : ScriptedAI(creature) { }
+
+    uint32 tSeek, tGrowl;
+
+    void Reset()
+    {
+        tSeek = urand(1 * TimeConstants::IN_MILLISECONDS, 2 * TimeConstants::IN_MILLISECONDS);
+        tGrowl = urand(8 * TimeConstants::IN_MILLISECONDS + 500, 10 * TimeConstants::IN_MILLISECONDS);
+        me->setFaction(ElwynnForest::WORG_FACTION_RESTORE);
+    }
+
+    void DamageTaken(Unit* who, uint32& damage)
+    {
+        if (who->GetTypeId() == TYPEID_PLAYER)
+        {
+            me->getThreatManager().resetAllAggro();
+            who->AddThreat(me, 1.0f);
+            me->AddThreat(who, 1.0f);
+            me->AI()->AttackStart(who);
+        }
+        else if (who->IsPet())
+        {
+            me->getThreatManager().resetAllAggro();
+            me->AddThreat(who, 1.0f);
+            me->AI()->AttackStart(who);
+        }
+
+        if (who->GetEntry() == ElwynnForest::NPC_STORMWIND_INFANTRY && me->HealthBelowPct(ElwynnForest::AI_HEALTH_MIN))
+        {
+            damage = 0;
+            me->AddThreat(who, 1.0f);
+            me->AI()->AttackStart(who);
+        }
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (tSeek <= diff)
+        {
+            if ((me->IsAlive()) && (!me->IsInCombat() && (me->GetDistance2d(me->GetHomePosition().GetPositionX(), me->GetHomePosition().GetPositionY()) <= 1.0f)))
+                if (Creature* enemy = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 1.0f, true))
+                {
+                    me->setFaction(ElwynnForest::WORG_FIGHTING_FACTION);
+                    me->AI()->AttackStart(enemy);
+                    tSeek = urand(1 * TimeConstants::IN_MILLISECONDS, 2 * TimeConstants::IN_MILLISECONDS);
+                }
+        }
+        else
+            tSeek -= diff;
+
+        if (UpdateVictim())
+        {
+            if (tGrowl <=diff)
+            {
+                DoCast(me->GetVictim(), ElwynnForest::WORG_GROWL);
+                tGrowl = urand(8 * TimeConstants::IN_MILLISECONDS + 500, 10 * TimeConstants::IN_MILLISECONDS);
+            }
+            else
+            {
+               tGrowl -= diff;
+               DoMeleeAttackIfReady();
+            }
+        }
+        else
+        {
+            me->setFaction(ElwynnForest::WORG_FACTION_RESTORE);
+            return;
+        }
+    }
+};
+
+struct npc_brother_paxton : public ScriptedAI
+{
+    npc_brother_paxton(Creature *c) : ScriptedAI(c) { }
+
+    EventMap _events;
+
+    uint32 _cooldownTimer;
+
+    bool _cooldown;
+
+    void Reset() override
+    {
+        _events.Reset();
+
+        me->SetFlag(EUnitFields::UNIT_FIELD_FLAGS, UnitFlags::UNIT_FLAG_IMMUNE_TO_PC | UnitFlags::UNIT_FLAG_IMMUNE_TO_NPC);
+        DoCast(me, ElwynnForest::SPELL_FORTITUDE);
+        me->InitializeReactState();
+
+        _cooldown = false;
+        _cooldownTimer = 0;
+    }
+
+    void EnterEvadeMode() override
+    {
+        return;
+    }
+
+    void MoveInLineOfSight(Unit* p_Who)
+    {
+        if (me->GetDistance(p_Who) < 15.0f)
+        {
+            if (p_Who && p_Who->GetTypeId() == TYPEID_PLAYER && !p_Who->HasAura(ElwynnForest::SPELL_FORTITUDE) && !_cooldown)
+            {
+               if (roll_chance_i(30))
+               {
+                    _cooldown = true;
+                    me->CastSpell(p_Who, ElwynnForest::SPELL_FORTITUDE);
+                    me->CastSpell(p_Who, ElwynnForest::SPELL_RENEW, true);
+                    Talk(ElwynnForest::BROTHER_PAXTON_TEXT_PLAYER, p_Who);
+                }
+            }
+        }
+    }
+
+    void EnterCombat(Unit* /*p_Who*/) override
+    {
+        return;
+    }
+
+    void MovementInform(uint32 p_Type, uint32 p_ID) override
+    {
+        if (p_Type == 2 && p_ID == 5 || p_ID == 14 || p_ID == 22 || p_ID == 33 || p_ID == 40 || p_ID == 51 || p_ID == 60 || p_ID == 62)
+        {
+            switch(urand(ElwynnForest::BROTHER_PAXTON_HEAL_EVENT_01, ElwynnForest::BROTHER_PAXTON_HEAL_EVENT_04))
+            {
+                case ElwynnForest::BROTHER_PAXTON_HEAL_EVENT_01:
+                    _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_01_STEP_01, uint32(0.5) * TimeConstants::IN_MILLISECONDS);
+                    break;
+                case ElwynnForest::BROTHER_PAXTON_HEAL_EVENT_02:
+                    _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_02_STEP_01, uint32(0.5) * TimeConstants::IN_MILLISECONDS);
+                    break;
+                case ElwynnForest::BROTHER_PAXTON_HEAL_EVENT_03:
+                    _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_03_STEP_01, uint32(0.5) * TimeConstants::IN_MILLISECONDS);
+                    break;
+                case ElwynnForest::BROTHER_PAXTON_HEAL_EVENT_04:
+                    _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_04_STEP_01, uint32(0.5) * TimeConstants::IN_MILLISECONDS);
+                    break;
+            }
+        }
+    }
+
+    void UpdateAI(const uint32 diff) override
+    {
+        if (_cooldownTimer <= diff)
+        {
+            _cooldown = false;
+            _cooldownTimer = 20 * TimeConstants::IN_MILLISECONDS;
+        }
+        else _cooldownTimer -= diff;
+
+        _events.Update(diff);
+
+        switch (_events.ExecuteEvent())
+        {
+            case ElwynnForest::HEAL_EVENT_01_STEP_01:
+                me->SetReactState(ReactStates::REACT_PASSIVE);
+
+                if (Creature* stormwind_infantry = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 6.0f))
+                    stormwind_infantry->AI()->Talk(ElwynnForest::INFANTRY_HELP_YELL);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_01_STEP_02, 1 * TimeConstants::IN_MILLISECONDS);
+                break;
+            case ElwynnForest::HEAL_EVENT_01_STEP_02:
+                if (Creature* stormwind_infantry = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 6.0f))
+                    me->SetFacingTo(me->GetAngle(stormwind_infantry));
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_01_STEP_03, 2 * TimeConstants::IN_MILLISECONDS);
+                break;
+            case ElwynnForest::HEAL_EVENT_01_STEP_03:
+                Talk(ElwynnForest::BROTHER_PAXTON_TEXT);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_01_STEP_04, 1 * TimeConstants::IN_MILLISECONDS);
+                break;
+            case ElwynnForest::HEAL_EVENT_01_STEP_04:
+                if (Creature* stormwind_infantry = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 6.0f))
+                    me->CastSpell(stormwind_infantry, ElwynnForest::SPELL_PENANCE);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_RESET, 4 * TimeConstants::IN_MILLISECONDS);
+                break;
+            case ElwynnForest::HEAL_EVENT_02_STEP_01:
+                me->SetReactState(ReactStates::REACT_PASSIVE);
+
+                if (Creature* stormwind_infantry = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 6.0f))
+                    stormwind_infantry->AI()->Talk(ElwynnForest::INFANTRY_HELP_YELL);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_02_STEP_02, 1 * TimeConstants::IN_MILLISECONDS);
+                break;
+            case HEAL_EVENT_02_STEP_02:
+                if (Creature* stormwind_infantry = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 6.0f))
+                    me->SetFacingTo(me->GetAngle(stormwind_infantry));
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_02_STEP_03, 2 * TimeConstants::IN_MILLISECONDS);
+                break;
+            case ElwynnForest::HEAL_EVENT_02_STEP_03:
+                Talk(ElwynnForest::BROTHER_PAXTON_TEXT);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_02_STEP_04, 1 * TimeConstants::IN_MILLISECONDS);
+                break;
+            case ElwynnForest::HEAL_EVENT_02_STEP_04:
+                if (Creature* stormwind_infantry = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 6.0f))
+                    me->CastSpell(stormwind_infantry, ElwynnForest::SPELL_FLASH_HEAL);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_RESET, 4 * TimeConstants::IN_MILLISECONDS);
+                break;
+            case ElwynnForest::HEAL_EVENT_03_STEP_01:
+                me->SetReactState(ReactStates::REACT_PASSIVE);
+
+                if (Creature* stormwind_infantry = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 6.0f))
+                    stormwind_infantry->AI()->Talk(ElwynnForest::INFANTRY_HELP_YELL);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_03_STEP_02, 1 * TimeConstants::IN_MILLISECONDS);
+                break;
+            case ElwynnForest::HEAL_EVENT_03_STEP_02:
+                if (Creature* stormwind_infantry = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 6.0f))
+                    me->SetFacingTo(me->GetAngle(stormwind_infantry));
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_03_STEP_03, 2 * TimeConstants::IN_MILLISECONDS);
+                break;
+            case ElwynnForest::HEAL_EVENT_03_STEP_03:
+                Talk(ElwynnForest::BROTHER_PAXTON_TEXT);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_03_STEP_04, 1 * TimeConstants::IN_MILLISECONDS);
+                break;
+            case ElwynnForest::HEAL_EVENT_03_STEP_04:
+                if (Creature* stormwind_infantry = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 6.0f))
+                    me->CastSpell(stormwind_infantry, ElwynnForest::SPELL_RENEW);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_RESET, 4 * TimeConstants::IN_MILLISECONDS);
+                break;
+            case ElwynnForest::HEAL_EVENT_04_STEP_01:
+                me->SetReactState(ReactStates::REACT_PASSIVE);
+
+                if (Creature* stormwind_infantry = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 6.0f))
+                    stormwind_infantry->AI()->Talk(ElwynnForest::INFANTRY_HELP_YELL);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_04_STEP_02, 1 * TimeConstants::IN_MILLISECONDS);
+                break;
+            case ElwynnForest::HEAL_EVENT_04_STEP_02:
+                if (Creature* stormwind_infantry = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 6.0f))
+                    me->SetFacingTo(me->GetAngle(stormwind_infantry));
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_04_STEP_03, 2 * TimeConstants::IN_MILLISECONDS);
+                break;
+            case ElwynnForest::HEAL_EVENT_04_STEP_03:
+                Talk(ElwynnForest::BROTHER_PAXTON_TEXT);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_04_STEP_04, 1 * TimeConstants::IN_MILLISECONDS);
+                break;
+            case ElwynnForest::HEAL_EVENT_04_STEP_04:
+                if (Creature* stormwind_infantry = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 6.0f))
+                    me->CastSpell(stormwind_infantry, ElwynnForest::SPELL_REVIVE);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_RESET, 4 * TimeConstants::IN_MILLISECONDS);
+                break;
+            case ElwynnForest::HEAL_EVENT_RESET:
+                me->ClearInCombat();
+                Reset();
+                break;
+            default:
+                break;
+        }
+
+        if (!UpdateVictim())
+            return;
+
+        DoMeleeAttackIfReady();
+    }
 };
 
 /*######
@@ -286,169 +633,6 @@ class npc_goblin_assassin : public CreatureScript
                     return;
 
                 DoMeleeAttackIfReady();
-            }
-        };
-};
-
-/*######
-## npc_stormwind_infantry
-######*/
-
-class npc_stormwind_infantry : public CreatureScript
-{
-    public:
-        npc_stormwind_infantry() : CreatureScript("npc_stormwind_infantry") {}
-
-        CreatureAI* GetAI(Creature* creature) const
-        {
-            return new npc_stormwind_infantryAI (creature);
-        }
-
-        struct npc_stormwind_infantryAI : public ScriptedAI
-        {
-            npc_stormwind_infantryAI(Creature* creature) : ScriptedAI(creature) {}
-
-            uint32 tSeek, cYell,tYell;
-
-            void Reset()
-            {
-                tSeek=urand(1000,2000);
-                cYell=urand(0, 100);
-                tYell=urand(5000, 60000);
-            }
-
-            void DamageTaken(Unit* who, uint32& damage)
-            {
-                if (who->GetTypeId() == TYPEID_PLAYER)//If damage taken from player
-                {
-                    me->getThreatManager().resetAllAggro();
-                    who->AddThreat(me, 1.0f);
-                    me->AddThreat(who, 1.0f);
-                    me->AI()->AttackStart(who);
-                }
-                else if (who->IsPet())//If damage taken from pet
-                {
-                    me->getThreatManager().resetAllAggro();
-                    me->AddThreat(who, 1.0f);
-                    me->AI()->AttackStart(who);
-                }
-                if (who->GetEntry() == NPC_BLACKROCK_BATTLE_WORG && me->HealthBelowPct(AI_HEALTH_MIN))//If damage taken from Blackrock Battle Worg
-                {
-                    damage = 0;//We do not want to do damage if Blackrock Battle Worg is below preset HP level (currently 85% - Blizzlike)
-                    me->AddThreat(who, 1.0f);
-                    me->AI()->AttackStart(who);
-                }
-            }
-
-            void UpdateAI(uint32 diff) override
-            {
-                if (!UpdateVictim())
-                    return;
-                else
-                {
-                    if (tYell <= diff)//Chance to yell every 5 to 10 seconds
-                    {
-                        if (cYell < INFANTRY_YELL_CHANCE)//Roll for random chance to Yell phrase
-                        {
-                            me->AI()->Talk(SAY_INFANTRY_YELL); //Yell phrase
-                            tYell=urand(10000, 120000);//After First yell, change time range from 10 to 120 seconds
-                        }
-                        else
-                            tYell=urand(10000, 120000);//From 10 to 120 seconds
-                    }
-                    else
-                    {
-                        tYell -= diff;
-                        DoMeleeAttackIfReady(); //Else do standard attack
-                    }
-                }
-            }
-        };
-};
-
-/*######
-## npc_blackrock_battle_worg
-######*/
-
-class npc_blackrock_battle_worg : public CreatureScript
-{
-    public:
-        npc_blackrock_battle_worg() : CreatureScript("npc_blackrock_battle_worg") {}
-
-        CreatureAI* GetAI(Creature* creature) const
-        {
-            return new npc_blackrock_battle_worgAI (creature);
-        }
-
-        struct npc_blackrock_battle_worgAI : public ScriptedAI
-        {
-            npc_blackrock_battle_worgAI(Creature* creature) : ScriptedAI(creature) {}
-
-            uint32 tSeek, tGrowl;
-
-            void Reset()
-            {
-                tSeek=urand(1000,2000);
-                tGrowl=urand(8500,10000);
-                me->setFaction(WORG_FACTION_RESTORE);//Restore our faction on reset
-            }
-
-            void DamageTaken(Unit* who, uint32& damage)
-            {
-                if (who->GetTypeId() == TYPEID_PLAYER)//If damage taken from player
-                {
-                    me->getThreatManager().resetAllAggro();
-                    who->AddThreat(me, 1.0f);
-                    me->AddThreat(who, 1.0f);
-                    me->AI()->AttackStart(who);
-                }
-                else if (who->IsPet())//If damage taken from pet
-                {
-                    me->getThreatManager().resetAllAggro();
-                    me->AddThreat(who, 1.0f);
-                    me->AI()->AttackStart(who);
-                }
-                if (who->GetEntry() == NPC_STORMWIND_INFANTRY && me->HealthBelowPct(AI_HEALTH_MIN))//If damage taken from Stormwind Infantry
-                {
-                    damage = 0;//We do not want to do damage if Stormwind Infantry is below preset HP level (currently 85% - Blizzlike)
-                    me->AddThreat(who, 1.0f);
-                    me->AI()->AttackStart(who);
-                }
-            }
-
-            void UpdateAI(uint32 diff) override
-            {
-                if (tSeek <= diff)
-                {
-                    if ((me->IsAlive()) && (!me->IsInCombat() && (me->GetDistance2d(me->GetHomePosition().GetPositionX(), me->GetHomePosition().GetPositionY()) <= 1.0f)))
-                        if (Creature* enemy = me->FindNearestCreature(NPC_STORMWIND_INFANTRY,1.0f, true))
-                        {
-                            me->setFaction(WORG_FIGHTING_FACTION);//We must change our faction to one which is able to attack Stormwind Infantry (Faction 232 works well)
-                            me->AI()->AttackStart(enemy);
-                            tSeek = urand(1000,2000);
-                        }
-                }
-                else
-                    tSeek -= diff;
-
-                if (UpdateVictim())
-                {
-                    if (tGrowl <=diff)
-                    {
-                        DoCast(me->GetVictim(), WORG_GROWL);//Do Growl if ready
-                        tGrowl=urand(8500,10000);
-                    }
-                    else
-                    {
-                       tGrowl -= diff;
-                       DoMeleeAttackIfReady();//Else do standard attack
-                    }
-                }
-                else
-                {
-                    me->setFaction(WORG_FACTION_RESTORE);//Reset my faction if not in combat
-                    return;
-                }
             }
         };
 };
@@ -1052,11 +1236,12 @@ struct npc_minion_of_hogger : public ScriptedAI
 
 void AddSC_elwynn_forest()
 {
+    new creature_script<npc_stormwind_infantry>("npc_stormwind_infantry");
+    new creature_script<npc_blackrock_battle_worg>("npc_blackrock_battle_worg");
+    new creature_script<npc_brother_paxton>("npc_brother_paxton");
     new npc_blackrock_spy();
     new npc_goblin_assassin();
     new npc_blackrock_invader();
-    new npc_stormwind_infantry();
-    new npc_blackrock_battle_worg();
     new npc_king_varian_wrynn();
     new npc_varian_wrynn_alliance_way_quest();
     new npc_ayisa_jojo_alliance_way_quest();
