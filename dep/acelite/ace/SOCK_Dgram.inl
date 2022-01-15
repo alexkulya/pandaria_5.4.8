@@ -1,7 +1,4 @@
 // -*- C++ -*-
-//
-// $Id: SOCK_Dgram.inl 80826 2008-03-04 14:51:23Z wotte $
-
 // SOCK_Dgram.i
 
 #include "ace/OS_NS_sys_socket.h"
@@ -11,13 +8,13 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 // Here's the simple-minded constructor.
 
 ACE_INLINE
-ACE_SOCK_Dgram::ACE_SOCK_Dgram (void)
+ACE_SOCK_Dgram::ACE_SOCK_Dgram ()
 {
   ACE_TRACE ("ACE_SOCK_Dgram::ACE_SOCK_Dgram");
 }
 
 ACE_INLINE
-ACE_SOCK_Dgram::~ACE_SOCK_Dgram (void)
+ACE_SOCK_Dgram::~ACE_SOCK_Dgram ()
 {
   ACE_TRACE ("ACE_SOCK_Dgram::~ACE_SOCK_Dgram");
 }

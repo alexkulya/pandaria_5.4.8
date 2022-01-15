@@ -1,5 +1,3 @@
-// $Id: UPIPE_Stream.cpp 91286 2010-08-05 09:04:31Z johnnyw $
-
 #include "ace/UPIPE_Stream.h"
 
 
@@ -16,14 +14,14 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 ACE_ALLOC_HOOK_DEFINE(ACE_UPIPE_Stream)
 
-ACE_UPIPE_Stream::ACE_UPIPE_Stream (void)
+ACE_UPIPE_Stream::ACE_UPIPE_Stream ()
   : mb_last_ (0),
     reference_count_ (0)
 {
   ACE_TRACE ("ACE_UPIPE_Stream::ACE_UPIPE_STREAM");
 }
 
-ACE_UPIPE_Stream::~ACE_UPIPE_Stream (void)
+ACE_UPIPE_Stream::~ACE_UPIPE_Stream ()
 {
   if (this->mb_last_ != 0)
     {
@@ -43,7 +41,7 @@ ACE_UPIPE_Stream::control (int cmd,
 }
 
 void
-ACE_UPIPE_Stream::dump (void) const
+ACE_UPIPE_Stream::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   ACE_TRACE ("ACE_UPIPE_Stream::dump");
@@ -51,7 +49,7 @@ ACE_UPIPE_Stream::dump (void) const
 }
 
 int
-ACE_UPIPE_Stream::close (void)
+ACE_UPIPE_Stream::close ()
 {
   ACE_TRACE ("ACE_UPIPE_Stream::close");
   ACE_MT (ACE_GUARD_RETURN (ACE_Thread_Mutex, ace_mon, this->lock_, -1));

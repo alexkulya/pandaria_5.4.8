@@ -4,12 +4,10 @@
 /**
  *  @file    Process_Mutex.h
  *
- *  $Id: Process_Mutex.h 87179 2009-10-20 16:27:01Z shuston $
- *
  *   A wrapper for mutexes that can be used across processes on the
  *   same host machine, as well as within a process, of course.
  *
- * @author Douglas C. Schmidt <schmidt@uci.edu>
+ * @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  */
 //=============================================================================
 
@@ -200,8 +198,15 @@ public:
   const ACE_mutex_t &lock (void) const;
 #endif /* !_ACE_USE_SV_SEM */
 
+  /// Get the name used for the lock, or null if no name is used.
+  const ACE_TCHAR *name () const;
+
+  /// If a file was created as the underlying storage for the mutex,
+  /// remove it from the filesystem.
+  static int unlink (const ACE_TCHAR *name);
+
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

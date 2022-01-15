@@ -6,8 +6,6 @@
  *
  *  file control options
  *
- *  $Id: os_fcntl.h 93359 2011-02-11 11:33:12Z mcorino $
- *
  *  @author Don Hinton <dhinton@dresystems.com>
  *  @author This code was originally in various places including ace/OS.h.
  */
@@ -50,10 +48,6 @@ extern "C"
 #  define _O_BINARY O_BINARY
 #  define _O_TEXT   O_TEXT
 #endif /* __BORLANDC__ */
-
-#if defined (__DMC__)
-#  define _O_TEMPORARY 0x08 /* see fcntl.h */
-#endif /* __DMC__ */
 
 // defined Win32 specific macros for UNIX platforms
 #if !defined (O_BINARY)

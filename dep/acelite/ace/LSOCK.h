@@ -4,8 +4,6 @@
 /**
  *  @file    LSOCK.h
  *
- *  $Id: LSOCK.h 80826 2008-03-04 14:51:23Z wotte $
- *
  *  @author Doug Schmidt
  */
 //=============================================================================
@@ -48,7 +46,7 @@ public:
 #endif /* ACE_HAS_MSG */
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

@@ -4,9 +4,7 @@
 /**
  *  @file    Atomic_Op_T.h
  *
- *  $Id: Atomic_Op_T.h 95761 2012-05-15 18:23:04Z johnnyw $
- *
- *  @author Douglas C. Schmidt <schmidt@uci.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  */
 //=============================================================================
 
@@ -146,10 +144,7 @@ template <class ACE_LOCK, typename TYPE>
 class ACE_Atomic_Op_Ex
 {
 public:
-
   typedef typename ACE_Type_Traits<TYPE>::parameter_type arg_type;
-
-  // = Initialization methods.
 
   /// Initialize @c value_ to 0.
   ACE_Atomic_Op_Ex (ACE_LOCK & mtx);
@@ -160,7 +155,7 @@ public:
   // = Accessors.
 
   /// Atomically pre-increment @c value_.
-  TYPE operator++ (void);
+  TYPE operator++ ();
 
   /// Atomically post-increment @c value_.
   TYPE operator++ (int);
@@ -169,7 +164,7 @@ public:
   TYPE operator+= (arg_type rhs);
 
   /// Atomically pre-decrement @c value_.
-  TYPE operator-- (void);
+  TYPE operator-- ();
 
   /// Atomically post-decrement @c value_.
   TYPE operator-- (int);
@@ -206,13 +201,13 @@ public:
   TYPE exchange (TYPE newval);
 
   /// Explicitly return @c value_.
-  TYPE value (void) const;
+  TYPE value () const;
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
-  // ACE_ALLOC_HOOK_DECLARE;
-  // Declare the dynamic allocation hooks.
+  /// Declare the dynamic allocation hooks.
+  ACE_ALLOC_HOOK_DECLARE;
 
   /// Manage copying...
   ACE_Atomic_Op_Ex (ACE_Atomic_Op_Ex<ACE_LOCK, TYPE> const &);
@@ -225,7 +220,7 @@ public:
    *
    * @note The right name would be lock_, but HP/C++ will choke on that!
    */
-  ACE_LOCK & mutex (void);
+  ACE_LOCK & mutex ();
 
   /**
    * Explicitly return @c value_ (by reference).  This gives the user
@@ -233,7 +228,7 @@ public:
    * will usually be used in conjunction with explicit access to the
    * lock.  Use with care ;-)
    */
-  TYPE & value_i (void);
+  TYPE & value_i ();
 
 private:
   /// Type of synchronization mechanism.
@@ -261,11 +256,10 @@ template <class ACE_LOCK, typename TYPE>
 class ACE_Atomic_Op
 {
 public:
-
   typedef typename ACE_Type_Traits<TYPE>::parameter_type arg_type;
 
   /// Initialize @c value_ to 0.
-  ACE_Atomic_Op (void);
+  ACE_Atomic_Op ();
 
   /// Initialize @c value_ to c.
   ACE_Atomic_Op (arg_type c);
@@ -281,7 +275,7 @@ public:
     ACE_Atomic_Op<ACE_LOCK, TYPE> const & rhs);
 
   /// Atomically pre-increment @c value_.
-  TYPE operator++ (void);
+  TYPE operator++ ();
 
   /// Atomically post-increment @c value_.
   TYPE operator++ (int);
@@ -290,7 +284,7 @@ public:
   TYPE operator+= (arg_type rhs);
 
   /// Atomically pre-decrement @c value_.
-  TYPE operator-- (void);
+  TYPE operator-- ();
 
   /// Atomically post-decrement @c value_.
   TYPE operator-- (int);
@@ -320,10 +314,13 @@ public:
   TYPE exchange (TYPE newval);
 
   /// Explicitly return @c value_.
-  TYPE value (void) const;
+  TYPE value () const;
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
+
+  /// Declare the dynamic allocation hooks.
+  ACE_ALLOC_HOOK_DECLARE;
 
   /**
    * Explicitly return @c value_ (by reference).  This gives the user
@@ -331,7 +328,7 @@ public:
    * will usually be used in conjunction with explicit access to the
    * lock.  Use with care ;-)
    */
-  TYPE & value_i (void);
+  TYPE & value_i ();
 
 private:
   /// Type of synchronization mechanism.

@@ -1,7 +1,4 @@
 // -*- C++ -*-
-//
-// $Id: ace_wchar.inl 80826 2008-03-04 14:51:23Z wotte $
-
 // These are always inlined
 // FUZZ: disable check_for_inline
 
@@ -14,13 +11,13 @@
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 inline
-ACE_Wide_To_Ascii::~ACE_Wide_To_Ascii (void)
+ACE_Wide_To_Ascii::~ACE_Wide_To_Ascii ()
 {
   delete [] this->s_;
 }
 
 inline char *
-ACE_Wide_To_Ascii::char_rep (void)
+ACE_Wide_To_Ascii::char_rep ()
 {
   return this->s_;
 }
@@ -47,7 +44,7 @@ ACE_Wide_To_Ascii::convert (const wchar_t *wstr)
   while ((*wtemp) != 0) // Hopefully the string is null terminated!
     ++wtemp;
 
-  int const len = wtemp - wstr + 1;
+  size_t const len = wtemp - wstr + 1;
 # else  /* ACE_WIN32 */
   size_t const len = ::wcslen (wstr) + 1;
 # endif /* ACE_WIN32 */
@@ -104,13 +101,13 @@ ACE_Wide_To_Ascii::ACE_Wide_To_Ascii (const wchar_t *s)
 }
 
 inline
-ACE_Ascii_To_Wide::~ACE_Ascii_To_Wide (void)
+ACE_Ascii_To_Wide::~ACE_Ascii_To_Wide ()
 {
   delete [] this->s_;
 }
 
 inline wchar_t *
-ACE_Ascii_To_Wide::wchar_rep (void)
+ACE_Ascii_To_Wide::wchar_rep ()
 {
   return this->s_;
 }

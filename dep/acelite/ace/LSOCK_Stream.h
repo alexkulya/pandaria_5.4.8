@@ -4,8 +4,6 @@
 /**
  *  @file    LSOCK_Stream.h
  *
- *  $Id: LSOCK_Stream.h 92140 2010-10-04 12:37:52Z johnnyw $
- *
  *  @author Doug Schmidt
  */
 //=============================================================================
@@ -58,7 +56,7 @@ public:
   typedef ACE_UNIX_Addr PEER_ADDR;
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

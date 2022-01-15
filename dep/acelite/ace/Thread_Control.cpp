@@ -1,5 +1,3 @@
-// $Id: Thread_Control.cpp 94054 2011-05-11 18:28:20Z johnnyw $
-
 #include "ace/Thread_Control.h"
 #include "ace/Thread_Manager.h"
 
@@ -10,7 +8,7 @@
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 void
-ACE_Thread_Control::dump (void) const
+ACE_Thread_Control::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   ACE_OS_TRACE ("ACE_Thread_Control::dump");
@@ -49,7 +47,7 @@ ACE_Thread_Control::ACE_Thread_Control (ACE_Thread_Manager *t,
 }
 
 // Automatically kill thread on exit.
-ACE_Thread_Control::~ACE_Thread_Control (void)
+ACE_Thread_Control::~ACE_Thread_Control ()
 {
   ACE_OS_TRACE ("ACE_Thread_Control::~ACE_Thread_Control");
 

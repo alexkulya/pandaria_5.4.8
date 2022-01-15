@@ -2,11 +2,9 @@
 /**
  * @file Condition_Thread_Mutex.cpp
  *
- * $Id: Condition_Thread_Mutex.cpp 96077 2012-08-20 08:13:23Z johnnyw $
- *
  * Originally in Synch.cpp
  *
- * @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ * @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  */
 
 #include "ace/Condition_Thread_Mutex.h"
@@ -17,26 +15,26 @@
 #include "ace/Condition_Thread_Mutex.inl"
 #endif /* __ACE_INLINE__ */
 
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 ACE_ALLOC_HOOK_DEFINE(ACE_Condition<ACE_Thread_Mutex>)
 
 void
-ACE_Condition<ACE_Thread_Mutex>::dump (void) const
+ACE_Condition<ACE_Thread_Mutex>::dump () const
 {
 #if defined (ACE_HAS_DUMP)
 // ACE_TRACE ("ACE_Condition<ACE_Thread_Mutex>::dump");
 
-  ACE_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\n")));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\n")));
 #if defined (ACE_WIN32)
-  ACE_DEBUG ((LM_DEBUG,
+  ACELIB_DEBUG ((LM_DEBUG,
               ACE_TEXT ("waiters = %d\n"),
               this->cond_.waiters ()));
 #endif /* ACE_WIN32 */
-  ACE_DEBUG ((LM_DEBUG, ACE_END_DUMP));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_END_DUMP));
 #endif /* ACE_HAS_DUMP */
 }
 
@@ -51,7 +49,7 @@ ACE_Condition<ACE_Thread_Mutex>::ACE_Condition (ACE_Thread_Mutex &m,
                          (short) USYNC_THREAD,
                          name,
                          arg) != 0)
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT ("%p\n"),
                 ACE_TEXT ("ACE_Condition<ACE_Thread_Mutex>::ACE_Condition<ACE_Thread_Mutex>")));
 }
@@ -67,11 +65,11 @@ ACE_Condition<ACE_Thread_Mutex>::ACE_Condition (ACE_Thread_Mutex &m,
   if (ACE_OS::cond_init (&this->cond_,
                          const_cast<ACE_condattr_t &> (attributes.attributes ()),
                          name, arg) != 0)
-    ACE_ERROR ((LM_ERROR, ACE_TEXT ("%p\n"),
+    ACELIB_ERROR ((LM_ERROR, ACE_TEXT ("%p\n"),
                 ACE_TEXT ("ACE_Condition<ACE_Thread_Mutex>::ACE_Condition<ACE_Thread_Mutex>")));
 }
 
-ACE_Condition<ACE_Thread_Mutex>::~ACE_Condition (void)
+ACE_Condition<ACE_Thread_Mutex>::~ACE_Condition ()
 {
 // ACE_TRACE ("ACE_Condition<ACE_Thread_Mutex>::~ACE_Condition<ACE_Thread_Mutex>");
   this->remove ();
@@ -82,7 +80,7 @@ ACE_Condition<ACE_Thread_Mutex>::~ACE_Condition (void)
 // <abstime> using the <cond_timedwait> function.
 
 int
-ACE_Condition<ACE_Thread_Mutex>::wait (void)
+ACE_Condition<ACE_Thread_Mutex>::wait ()
 {
 // ACE_TRACE ("ACE_Condition<ACE_Thread_Mutex>::wait");
   return ACE_OS::cond_wait (&this->cond_, &this->mutex_.lock ());
@@ -106,14 +104,14 @@ ACE_Condition<ACE_Thread_Mutex>::wait (const ACE_Time_Value *abstime)
 }
 
 int
-ACE_Condition<ACE_Thread_Mutex>::signal (void)
+ACE_Condition<ACE_Thread_Mutex>::signal ()
 {
 // ACE_TRACE ("ACE_Condition<ACE_Thread_Mutex>::signal");
   return ACE_OS::cond_signal (&this->cond_);
 }
 
 int
-ACE_Condition<ACE_Thread_Mutex>::broadcast (void)
+ACE_Condition<ACE_Thread_Mutex>::broadcast ()
 {
 // ACE_TRACE ("ACE_Condition<ACE_Thread_Mutex>::broadcast");
   return ACE_OS::cond_broadcast (&this->cond_);

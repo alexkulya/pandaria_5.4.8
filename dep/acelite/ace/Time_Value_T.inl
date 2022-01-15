@@ -1,7 +1,4 @@
 // -*- C++ -*-
-//
-// $Id: Time_Value_T.inl 96061 2012-08-16 09:36:07Z mcorino $
-
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 template <class TIME_POLICY>
@@ -70,7 +67,7 @@ ACE_Time_Value_T<TIME_POLICY> ACE_Time_Value_T<TIME_POLICY>::operator++ (int)
 }
 
 template <class TIME_POLICY>
-ACE_Time_Value_T<TIME_POLICY> &ACE_Time_Value_T<TIME_POLICY>::operator++ (void)
+ACE_Time_Value_T<TIME_POLICY> &ACE_Time_Value_T<TIME_POLICY>::operator++ ()
 {
   this->ACE_Time_Value::operator ++();
   return *this;
@@ -85,7 +82,7 @@ ACE_Time_Value_T<TIME_POLICY> ACE_Time_Value_T<TIME_POLICY>::operator-- (int)
 }
 
 template <class TIME_POLICY>
-ACE_Time_Value_T<TIME_POLICY> &ACE_Time_Value_T<TIME_POLICY>::operator-- (void)
+ACE_Time_Value_T<TIME_POLICY> &ACE_Time_Value_T<TIME_POLICY>::operator-- ()
 {
   this->ACE_Time_Value::operator --();
   return *this;

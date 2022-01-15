@@ -4,9 +4,7 @@
 /**
  *  @file    SV_Message_Queue.h
  *
- *  $Id: SV_Message_Queue.h 80826 2008-03-04 14:51:23Z wotte $
- *
- *  @author Douglas C. Schmidt <schmidt@uci.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  */
 //===========================================================================
 
@@ -45,7 +43,6 @@ public:
     ACE_NOWAIT = IPC_NOWAIT
   };
 
-  // = Initialization and termination methods.
   /// Open a message queue using the <external_id>.
   ACE_SV_Message_Queue (void);
   ACE_SV_Message_Queue (key_t external_id,
@@ -84,7 +81,7 @@ public:
   void set_id (int);
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

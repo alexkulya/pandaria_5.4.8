@@ -1,7 +1,4 @@
 // -*- C++ -*-
-//
-// $Id: FILE_Addr.inl 80826 2008-03-04 14:51:23Z wotte $
-
 
 #include "ace/SString.h"
 
@@ -26,7 +23,7 @@ ACE_FILE_Addr::operator != (const ACE_FILE_Addr &sap) const
 // Return the path name used for the rendezvous point.
 
 ACE_INLINE const ACE_TCHAR *
-ACE_FILE_Addr::get_path_name (void) const
+ACE_FILE_Addr::get_path_name () const
 {
   return this->filename_;
 }

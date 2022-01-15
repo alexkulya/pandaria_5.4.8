@@ -4,8 +4,6 @@
 /**
  *  @file    DEV.h
  *
- *  $Id: DEV.h 91685 2010-09-09 09:35:14Z johnnyw $
- *
  *  @author Gerhard Lenzer
  */
 //=============================================================================
@@ -38,7 +36,7 @@ public:
   int close (void);
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

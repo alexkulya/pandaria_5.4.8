@@ -45,7 +45,9 @@ void WardenWin::Init(WorldSession* session, BigNumber* k)
 {
     _session = session;
     // Generate Warden Key
-    SHA1Randx WK(k->AsByteArray().get(), k->GetNumBytes());
+    SHA1Randx WK(k->AsByteArray(), k->GetNumBytes());
+    WK.Generate(_inputKey, 16);
+    WK.Generate(_outputKey, 16);
 
     // Initial encryption is done with session key
     uint8 inputKey[MD5_DIGEST_LENGTH];
@@ -287,8 +289,7 @@ void WardenWin::RequestData(WardenRequestContext* context)
             case PAGE_CHECK_A:
             case PAGE_CHECK_B:
             {
-                buff << uint8(type ^ xorByte);
-                buff.append(wd->Data.AsByteArray(0, false).get(), wd->Data.GetNumBytes());
+                buff.append(wd->Data.AsByteArray(0, false), wd->Data.GetNumBytes());
                 buff << uint32(wd->Address);
                 buff << uint8(wd->Length);
                 break;
@@ -301,7 +302,7 @@ void WardenWin::RequestData(WardenRequestContext* context)
             }
             case DRIVER_CHECK:
             {
-                buff.append(wd->Data.AsByteArray(0, false).get(), wd->Data.GetNumBytes());
+                buff.append(wd->Data.AsByteArray(0, false), wd->Data.GetNumBytes());
                 buff << uint8(index++);
                 break;
             }*/
@@ -461,21 +462,7 @@ void WardenWin::HandleData(ByteBuffer &buff)
                     continue;
                 }
 
-                if (_state != State::Normal)
-                {
-                    HandleEndSceneResult(buff, rd);
-                    continue;
-                }
-
-                if (buff.wpos() - buff.rpos() < rd->Length)
-                {
-                    TC_LOG_INFO("warden", "%u - RESULT MEM_CHECK truncated packet CheckId %u", _session->GetAccountId(), rd->CheckId);
-                    checkFailed = rd->CheckId;
-                    checksFailed.push_back(std::make_tuple(rd, true, ""));
-                    continue;
-                }
-
-                if (memcmp(buff.contents() + buff.rpos(), rs->Result.AsByteArray(0, false).get(), rd->Length) != 0)
+                if (memcmp(buff.contents() + buff.rpos(), rs->Result.AsByteArray(0, false), rd->Length) != 0)
                 {
                     TC_LOG_DEBUG("warden", "RESULT MEM_CHECK fail CheckId %u account Id %u", rd->CheckId, _session->GetAccountId());
                     checkFailed = rd->CheckId;
@@ -570,7 +557,7 @@ void WardenWin::HandleData(ByteBuffer &buff)
                     continue;
                 }
 
-                if ((memcmp(buff.contents() + buff.rpos(), rs->Result.AsByteArray(0, false).get(), 20) != 0) ^ rd->Negative) // SHA1
+                if (memcmp(buff.contents() + buff.rpos(), rs->Result.AsByteArray(0, false), 20) != 0) // SHA1
                 {
                     TC_LOG_DEBUG("warden", "RESULT MPQ_CHECK fail, CheckId %u account Id %u", rd->CheckId, _session->GetAccountId());
                     checkFailed = rd->CheckId; // _session->kick for solo kicker Model edits maps.

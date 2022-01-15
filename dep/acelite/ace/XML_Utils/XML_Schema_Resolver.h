@@ -2,8 +2,6 @@
  * @file XML_Schema_Resolver.h
  * @author Will Otte <wotte@dre.vanderbilt.edu>
  *
- * $Id: XML_Schema_Resolver.h 95801 2012-05-31 09:14:36Z johnnyw $
- *
  * Resolves schema locations.
  */
 
@@ -41,14 +39,14 @@ namespace XML
     : public virtual EntityResolver
   {
   public:
-    XML_Schema_Resolver (void);
+    XML_Schema_Resolver ();
 
     XML_Schema_Resolver (Resolver &resolver);
 
     /// This function is called by the Xerces infrastructure to
     /// actually resolve the location of a schema.
     virtual InputSource * resolveEntity (const XMLCh *const publicId,
-                                          const XMLCh *const systemId);
+                                         const XMLCh *const systemId);
 
     Resolver &get_resolver (void);
 
@@ -88,7 +86,7 @@ namespace XML
     */
   struct XML_Utils_Export Environment_Resolver
   {
-    Environment_Resolver (void);
+    Environment_Resolver () = default;
 
     Environment_Resolver (const ACE_TCHAR *variable,
                           const ACE_TCHAR *path);

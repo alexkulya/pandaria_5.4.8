@@ -4,8 +4,6 @@
 /**
  *  @file    Dump_T.h
  *
- *  $Id: Dump_T.h 91626 2010-09-07 10:59:20Z johnnyw $
- *
  *  @author Doug Schmidt
  */
 //=============================================================================
@@ -40,13 +38,12 @@ template <class Concrete>
 class ACE_Dumpable_Adapter : public ACE_Dumpable
 {
 public:
-  // = Initialization and termination methods.
   ACE_Dumpable_Adapter (const Concrete *t);
   ~ACE_Dumpable_Adapter (void);
 
   /// Concrete dump method (simply delegates to the dump() method of
   /// <class Concrete>).
-  virtual void dump (void) const;
+  virtual void dump () const;
 
   /// Delegate to methods in the Concrete class.
   Concrete *operator->() const;

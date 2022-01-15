@@ -4,10 +4,8 @@
 /**
  *  @file    Local_Tokens.h
  *
- *  $Id: Local_Tokens.h 93792 2011-04-07 11:48:50Z mcorino $
- *
  *  @author Karl-Heinz Dorn <kdorn@erlh.siemens.de>
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  *  @author Tim Harrison <harrison@cs.wustl.edu>
  *
  * This file contains definitions for the following classes:
@@ -36,8 +34,6 @@
  *  ACE_Thread_Semaphore, etc., that are defined in
  *  $ACE_ROOT/ace/Synch.h or the
  *  ACE_Token that's defined in $ACE_ROOT/ace/Token.h.
- *
- *
  */
 //=============================================================================
 
@@ -59,7 +55,7 @@
 #include "ace/Containers.h"
 #include "ace/Synch_Options.h"
 #include "ace/Map_Manager.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/OS_NS_string.h"
 #include "ace/os_include/os_netdb.h"
 
@@ -162,7 +158,7 @@ public:
   void call_sleep_hook (void);
 
   /// Dump the state of the class.
-  void dump (void) const;
+  void dump () const;
 
   // = Used to block the thread if an acquire fails with EWOULDBLOCK.
   ACE_TOKEN_CONST::COND_VAR cond_var_;
@@ -229,7 +225,7 @@ public:
   operator ACE_TPQ_Entry *(void);
 
   /// Dump the state of the class.
-  void dump (void) const;
+  void dump () const;
 
 #if defined (ACE_NO_TSS_TOKENS)
   ACE_TPQ_Entry *operator-> (void)
@@ -282,7 +278,7 @@ public:
   void advance (void);
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
 private:
   ACE_TPQ_Entry *current_;
@@ -338,7 +334,7 @@ public:
   int size (void);
 
   /// Dump the state of the class.
-  void dump (void) const;
+  void dump () const;
 
 protected:
   /// Head.
@@ -436,7 +432,7 @@ public:
   int dec_reference (void);
 
   /// Dump the state of the class.
-  void dump (void) const;
+  void dump () const;
 
   /**
    * These are the Token types supported by the library at ship time.
@@ -556,7 +552,7 @@ public:
   virtual int release (ACE_TPQ_Entry *caller);
 
   /// Dump the state of the class.
-  void dump (void) const;
+  void dump () const;
 
   /// Returns ACE_Tokens::MUTEX.
   virtual int type (void) const;
@@ -651,7 +647,7 @@ public:
   virtual int release (ACE_TPQ_Entry *caller);
 
   /// Dump the state of the class.
-  void dump (void) const;
+  void dump () const;
 
   /// These are the types that proxies can be.
   enum PROXY_TYPE { READER, WRITER };
@@ -717,7 +713,7 @@ public:
   void name (const ACE_TCHAR *new_name);
 
   /// Dump the state of the class.
-  void dump (void) const;
+  void dump () const;
 
 private:
   /// Name of the token.
@@ -866,7 +862,7 @@ public:
   virtual ACE_Token_Proxy *clone (void) const = 0;
 
   /// Dump the state of the class.
-  void dump (void) const;
+  void dump () const;
 
   /**
    * This method can be used be Tokens (e.g. Readers/Writer Tokens) to
@@ -946,7 +942,7 @@ public:
   virtual ACE_Token_Proxy *clone (void) const { return new ACE_Null_Token; }
 
   /// Dump the state of the class.
-  void dump (void) const;
+  void dump () const;
 
   /// Do not allow the Token Manager to create us.
   virtual ACE_Tokens *create_token (const ACE_TCHAR *) { return 0; }
@@ -988,7 +984,7 @@ public:
   ~ACE_Local_Mutex (void);
 
   /// Dump the state of the class.
-  void dump (void) const;
+  void dump () const;
 
   /// Return deep copy.
   virtual ACE_Token_Proxy *clone (void) const;
@@ -1026,8 +1022,6 @@ protected:
 class ACE_Export ACE_Local_RLock : public ACE_Token_Proxy
 {
 public:
-  // = Initialization and termination.
-
   /**
    * Constructor.
    * @param token_name Uniquely id's the token.
@@ -1042,7 +1036,7 @@ public:
   ~ACE_Local_RLock (void);
 
   /// Dump the state of the class.
-  void dump (void) const;
+  void dump () const;
 
   /// Returns ACE_RW_Token::RLOCK.
   virtual int type (void) const;
@@ -1083,8 +1077,6 @@ protected:
 class ACE_Export ACE_Local_WLock : public ACE_Token_Proxy
 {
 public:
-  // = Initialization and termination.
-
   /**
    * Constructor.
    * @param token_name Uniquely id's the token.
@@ -1099,7 +1091,7 @@ public:
   ~ACE_Local_WLock (void);
 
   /// Dump the state of the class.
-  void dump (void) const;
+  void dump () const;
 
   /// Returns ACE_RW_Token::WLOCK.
   virtual int type (void) const;

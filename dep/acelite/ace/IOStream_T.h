@@ -4,8 +4,6 @@
 /**
  *  @file    IOStream_T.h
  *
- *  $Id: IOStream_T.h 93359 2011-02-11 11:33:12Z mcorino $
- *
  *  @author James CE Johnson <jcej@lads.com>
  *  @author Jim Crossley <jim@lads.com>
  *
@@ -111,7 +109,6 @@ template <class STREAM>
 class ACE_IOStream : public iostream, public STREAM
 {
 public:
-  // = Initialization and termination methods.
   ACE_IOStream (STREAM &stream,
                   u_int streambuf_size = ACE_STREAMBUF_SIZE);
 
@@ -227,17 +224,15 @@ protected:
   ACE_Streambuf_T<STREAM> *streambuf_;
 
 private:
-  // = Private methods.
-
   // We move these into the private section so that they cannot be
   // used by the application programmer.  This is necessary because
   // streambuf_ will be buffering IO on the STREAM object.  If these
   // functions were used in your program, there is a danger of getting
   // the datastream out of sync.
-  ACE_UNIMPLEMENTED_FUNC (ssize_t send (...))
-  ACE_UNIMPLEMENTED_FUNC (ssize_t recv (...))
-  ACE_UNIMPLEMENTED_FUNC (ssize_t send_n (...))
-  ACE_UNIMPLEMENTED_FUNC (ssize_t recv_n (...))
+  ssize_t send (...) = delete;
+  ssize_t recv (...) = delete;
+  ssize_t send_n (...) = delete;
+  ssize_t recv_n (...) = delete;
 };
 
 /**

@@ -1,5 +1,3 @@
-// $Id: Process.cpp 95567 2012-02-28 14:36:02Z johnnyw $
-
 #include "ace/Process.h"
 
 #if !defined (__ACE_INLINE__)
@@ -10,7 +8,7 @@
 #include "ace/Auto_Ptr.h"
 #include "ace/Signal.h"
 #include "ace/SString.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/OS_NS_stdio.h"
 #include "ace/OS_NS_stdlib.h"
 #include "ace/OS_NS_sys_socket.h"
@@ -43,7 +41,7 @@ sigchld_nop (int, siginfo_t *, ucontext_t *)
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
-ACE_Process::ACE_Process (void)
+ACE_Process::ACE_Process ()
   :
 #if !defined (ACE_WIN32)
   child_id_ (ACE_INVALID_PID),
@@ -57,7 +55,7 @@ ACE_Process::ACE_Process (void)
 #endif /* ACE_WIN32 */
 }
 
-ACE_Process::~ACE_Process (void)
+ACE_Process::~ACE_Process ()
 {
 #if defined (ACE_WIN32)
   // Free resources allocated in kernel.
@@ -102,9 +100,8 @@ ACE_Process::spawn (ACE_Process_Options &options)
   if (set_p && !ACE_BIT_ENABLED (options.creation_flags (),
                                  ACE_Process_Options::NO_EXEC))
     {
-      int maxlen = 0;
-      ACE_TCHAR *cmd_line_buf = options.command_line_buf (&maxlen);
-      size_t max_len = static_cast<size_t> (maxlen);
+      size_t max_len = 0;
+      ACE_TCHAR *cmd_line_buf = options.command_line_buf (&max_len);
       size_t curr_len = ACE_OS::strlen (cmd_line_buf);
       ACE_Handle_Set_Iterator h_iter (*set_p);
       // Because the length of the to-be-formatted +H option is not
@@ -116,9 +113,18 @@ ACE_Process::spawn (ACE_Process_Options &options)
         {
 #if defined (ACE_WIN32)
 # if defined (ACE_WIN64)
+// silence warnings coming from MinGW64 compilers
+#  if defined (__GNUC__)
+#   pragma GCC diagnostic push
+#   pragma GCC diagnostic ignored "-Wformat"
+#   pragma GCC diagnostic ignored "-Wformat-extra-args"
+#  endif /* __GNUC__ */
           curr_len += ACE_OS::sprintf (&cmd_line_buf[curr_len],
                                        ACE_TEXT (" +H %I64p"),
                                        h);
+#  if defined (__GNUC__)
+#   pragma GCC diagnostic pop
+#  endif /* __GNUC__ */
 # else
           curr_len += ACE_OS::sprintf (&cmd_line_buf[curr_len],
                                        ACE_TEXT (" +H %p"),
@@ -169,17 +175,34 @@ ACE_Process::spawn (ACE_Process_Options &options)
     }
 # endif
 
-  BOOL fork_result =
-    ACE_TEXT_CreateProcess (0,
-                            options.command_line_buf (),
-                            options.get_process_attributes (),
-                            options.get_thread_attributes (),
-                            options.handle_inheritance (),
-                            flags,
-                            env_buf, // environment variables
-                            options.working_directory (),
-                            options.startup_info (),
-                            &this->process_info_);
+  BOOL fork_result;
+  if (options.get_user_token () == ACE_INVALID_HANDLE)
+    {
+      fork_result = ACE_TEXT_CreateProcess (0,
+                                            options.command_line_buf (),
+                                            options.get_process_attributes (),
+                                            options.get_thread_attributes (),
+                                            options.handle_inheritance (),
+                                            flags,
+                                            env_buf, // environment variables
+                                            options.working_directory (),
+                                            options.startup_info (),
+                                            &this->process_info_);
+    }
+  else
+    {
+      fork_result = ACE_TEXT_CreateProcessAsUser (options.get_user_token (),
+                                                  0,
+                                                  options.command_line_buf (),
+                                                  options.get_process_attributes (),
+                                                  options.get_thread_attributes (),
+                                                  options.handle_inheritance (),
+                                                  flags,
+                                                  env_buf, // environment variables
+                                                  options.working_directory (),
+                                                  options.startup_info (),
+                                                  &this->process_info_);
+    }
 
 # if defined (ACE_HAS_WCHAR) && !defined (ACE_USES_WCHAR)
   if (options.use_unicode_environment ())
@@ -327,7 +350,7 @@ ACE_Process::spawn (ACE_Process_Options &options)
 
 # if defined (ACE_USES_WCHAR)
   if (procenv)
-    delete procenv;
+    delete [] procenv;
 # endif /* ACE_USES_WCHAR */
 
   // restore STD file descriptors (if necessary)
@@ -373,10 +396,10 @@ ACE_Process::spawn (ACE_Process_Options &options)
                               options.getgroup ()) < 0)
         {
 #if !defined (ACE_HAS_THREADS)
-          // We can't emit this log message because ACE_ERROR(), etc.
+          // We can't emit this log message because ACELIB_ERROR(), etc.
           // will invoke async signal unsafe functions, which results
           // in undefined behavior in threaded programs.
-          ACE_ERROR ((LM_ERROR,
+          ACELIB_ERROR ((LM_ERROR,
                       ACE_TEXT ("%p.\n"),
                       ACE_TEXT ("ACE_Process::spawn: setpgid failed.")));
 #endif
@@ -390,10 +413,10 @@ ACE_Process::spawn (ACE_Process_Options &options)
                               options.getegid ()) == -1)
           {
 #if !defined (ACE_HAS_THREADS)
-            // We can't emit this log message because ACE_ERROR(), etc.
+            // We can't emit this log message because ACELIB_ERROR(), etc.
             // will invoke async signal unsafe functions, which results
             // in undefined behavior in threaded programs.
-            ACE_ERROR ((LM_ERROR,
+            ACELIB_ERROR ((LM_ERROR,
                         ACE_TEXT ("%p.\n"),
                         ACE_TEXT ("ACE_Process::spawn: setregid failed.")));
 #endif
@@ -408,10 +431,10 @@ ACE_Process::spawn (ACE_Process_Options &options)
                               options.geteuid ()) == -1)
           {
 #if !defined (ACE_HAS_THREADS)
-            // We can't emit this log message because ACE_ERROR(), etc.
+            // We can't emit this log message because ACELIB_ERROR(), etc.
             // will invoke async signal unsafe functions, which results
             // in undefined behavior in threaded programs.
-            ACE_ERROR ((LM_ERROR,
+            ACELIB_ERROR ((LM_ERROR,
                         ACE_TEXT ("%p.\n"),
                         ACE_TEXT ("ACE_Process::spawn: setreuid failed.")));
 #endif
@@ -430,7 +453,7 @@ ACE_Process::spawn (ACE_Process_Options &options)
 
   switch (this->child_id_)
     {
-    case -1:
+    case static_cast<pid_t>(-1):
       // Error.
       return ACE_INVALID_PID;
     case 0:
@@ -513,7 +536,11 @@ ACE_Process::spawn (ACE_Process_Options &options)
 
             // Now the forked process has both inherited variables and
             // the user's supplied variables.
+# ifdef ACE_LACKS_EXECVP
+            result = ACE_OS::execv (procname, procargv);
+# else
             result = ACE_OS::execvp (procname, procargv);
+# endif
           }
         else
           {
@@ -550,13 +577,13 @@ ACE_Process::child (pid_t)
 }
 
 void
-ACE_Process::unmanage (void)
+ACE_Process::unmanage ()
 {
   // nothing to do
 }
 
 int
-ACE_Process::running (void) const
+ACE_Process::running () const
 {
 #if defined (ACE_WIN32)
     DWORD code;
@@ -616,7 +643,7 @@ ACE_Process::wait (const ACE_Time_Value &tv,
 # if defined (ACE_VXWORKS)
     {
       pid_t retv;
-      while ((retv = this->wait (status)) == ACE_INVALID_PID && errno == EINTR);
+      while ((retv = this->wait (status)) == ACE_INVALID_PID && errno == EINTR) ;
       return retv;
     }
 # else
@@ -704,7 +731,7 @@ ACE_Process::wait (const ACE_Time_Value &tv,
 }
 
 void
-ACE_Process::close_dup_handles (void)
+ACE_Process::close_dup_handles ()
 {
   if (this->dup_handles_.num_set () > 0)
     {
@@ -719,7 +746,7 @@ ACE_Process::close_dup_handles (void)
 }
 
 void
-ACE_Process::close_passed_handles (void)
+ACE_Process::close_passed_handles ()
 {
   if (this->handles_passed_.num_set () > 0)
     {
@@ -801,6 +828,8 @@ ACE_Process_Options::ACE_Process_Options (bool inherit_environment,
     environment_inherited_ (0),
     process_attributes_ (0),
     thread_attributes_ (0),
+    user_token_ (ACE_INVALID_HANDLE),
+    close_user_token_ (false),
 #else /* ACE_WIN32 */
     stdin_ (ACE_INVALID_HANDLE),
     stdout_ (ACE_INVALID_HANDLE),
@@ -828,8 +857,13 @@ ACE_Process_Options::ACE_Process_Options (bool inherit_environment,
     process_group_ (ACE_INVALID_PID),
     use_unicode_environment_ (false)
 {
+#if defined (ACE_HAS_ALLOC_HOOKS)
+  ACE_ALLOCATOR (command_line_buf_,
+                 static_cast<ACE_TCHAR*>(ACE_Allocator::instance()->malloc(sizeof(ACE_TCHAR) * command_line_buf_len)));
+#else
   ACE_NEW (command_line_buf_,
            ACE_TCHAR[command_line_buf_len]);
+#endif /* ACE_HAS_ALLOC_HOOKS */
   command_line_buf_[0] = '\0';
   process_name_[0] = '\0';
 
@@ -841,10 +875,20 @@ ACE_Process_Options::ACE_Process_Options (bool inherit_environment,
 
 #if !defined (ACE_HAS_WINCE)
   working_directory_[0] = '\0';
+#if defined (ACE_HAS_ALLOC_HOOKS)
+  ACE_ALLOCATOR (environment_buf_,
+                 static_cast<ACE_TCHAR*>(ACE_Allocator::instance()->malloc(sizeof(ACE_TCHAR) * env_buf_len)));
+#else
   ACE_NEW (environment_buf_,
            ACE_TCHAR[env_buf_len]);
+#endif /* ACE_HAS_ALLOC_HOOKS */
+#if defined (ACE_HAS_ALLOC_HOOKS)
+  ACE_ALLOCATOR (environment_argv_,
+                 static_cast<ACE_TCHAR**>(ACE_Allocator::instance()->malloc(sizeof(ACE_TCHAR*) * max_env_args)));
+#else
   ACE_NEW (environment_argv_,
            ACE_TCHAR *[max_env_args]);
+#endif /* ACE_HAS_ALLOC_HOOKS */
   environment_buf_[0] = '\0';
   environment_argv_[0] = 0;
 #if defined (ACE_WIN32)
@@ -854,8 +898,13 @@ ACE_Process_Options::ACE_Process_Options (bool inherit_environment,
   this->startup_info_.cb = sizeof this->startup_info_;
 #endif /* ACE_WIN32 */
 #endif /* !ACE_HAS_WINCE */
+#if defined (ACE_HAS_ALLOC_HOOKS)
+  ACE_ALLOCATOR (command_line_argv_,
+                 static_cast<ACE_TCHAR**>(ACE_Allocator::instance()->malloc(sizeof(ACE_TCHAR*) * max_cmdline_args)));
+#else
   ACE_NEW (command_line_argv_,
            ACE_TCHAR *[max_cmdline_args]);
+#endif /* ACE_HAS_ALLOC_HOOKS */
 }
 
 #if !defined (ACE_HAS_WINCE)
@@ -901,7 +950,7 @@ ACE_Process_Options::inherit_environment (void)
       // Add the string to our env buffer.
       if (this->setenv_i (existing_environment + slot, len) == -1)
         {
-          ACE_ERROR ((LM_ERROR,
+          ACELIB_ERROR ((LM_ERROR,
                       ACE_TEXT ("%p.\n"),
                       ACE_TEXT ("ACE_Process_Options::ACE_Process_Options")));
           break;
@@ -922,7 +971,7 @@ ACE_Process_Options::inherit_environment (void)
 #else /* defined ACE_WIN32 */
 
 ACE_TCHAR * const *
-ACE_Process_Options::env_argv (void)
+ACE_Process_Options::env_argv ()
 {
   return environment_argv_;
 }
@@ -949,6 +998,7 @@ ACE_Process_Options::setenv (ACE_TCHAR *envp[])
   return 0;
 }
 
+#ifndef ACE_LACKS_VA_FUNCTIONS
 int
 ACE_Process_Options::setenv (const ACE_TCHAR *format, ...)
 {
@@ -959,11 +1009,13 @@ ACE_Process_Options::setenv (const ACE_TCHAR *format, ...)
   va_start (argp, format);
 
   // Add the rest of the varargs.
-  ACE_OS::vsprintf (stack_buf,
-                    format,
-                    argp);
+  int status = ACE_OS::vsnprintf (stack_buf, DEFAULT_COMMAND_LINE_BUF_LEN,
+                                  format, argp);
   // End varargs.
   va_end (argp);
+
+  if (status == -1)
+    return -1;
 
   // Append the string to are environment buffer.
   if (this->setenv_i (stack_buf,
@@ -989,15 +1041,15 @@ ACE_Process_Options::setenv (const ACE_TCHAR *variable_name,
   ACE_NEW_RETURN (newformat, ACE_TCHAR[buflen], -1);
   ACE_Auto_Basic_Array_Ptr<ACE_TCHAR> safe_newformat (newformat);
 
-  // Add in the variable name.
-  ACE_OS::sprintf (safe_newformat.get (),
-                   ACE_TEXT ("%s=%s"),
-                   variable_name,
-                   format);
+# if !defined (ACE_WIN32) && defined (ACE_USES_WCHAR)
+  const ACE_TCHAR *fmt = ACE_TEXT ("%ls=%ls");
+# else
+  const ACE_TCHAR *fmt = ACE_TEXT ("%s=%s");
+# endif
 
-  // Start varargs.
-  va_list argp;
-  va_start (argp, format);
+  // Add in the variable name.
+  ACE_OS::snprintf (safe_newformat.get (), buflen, fmt,
+                    variable_name, format);
 
   // Add the rest of the varargs.
   size_t tmp_buflen = buflen;
@@ -1013,7 +1065,15 @@ ACE_Process_Options::setenv (const ACE_TCHAR *variable_name,
 
   do
     {
+      // Must restart varargs on each time through this loop,
+      va_list argp;
+      va_start (argp, format);
+
       retval = ACE_OS::vsnprintf (safe_stack_buf.get (), tmp_buflen, safe_newformat.get (), argp);
+
+      // End varargs.
+      va_end (argp);
+
       if (retval > ACE_Utils::truncate_cast<int> (tmp_buflen))
         {
           tmp_buflen *= 2;
@@ -1035,7 +1095,10 @@ ACE_Process_Options::setenv (const ACE_TCHAR *variable_name,
           // ALERT: Since we have to use vsprintf here, there is still a chance that
           // the stack_buf overflows, i.e., the length of the resulting string
           // can still possibly go beyond the allocated stack_buf.
+          va_list argp;
+          va_start (argp, format);
           retval = ACE_OS::vsprintf (safe_stack_buf.get (), safe_newformat.get (), argp);
+          va_end (argp);
           if (retval == -1)
             // vsprintf is failed.
             return -1;
@@ -1044,9 +1107,6 @@ ACE_Process_Options::setenv (const ACE_TCHAR *variable_name,
         // vsnprintf is failed.
         return -1;
     }
-
-  // End varargs.
-  va_end (argp);
 
   // Append the string to our environment buffer.
   if (this->setenv_i (safe_stack_buf.get (),
@@ -1060,6 +1120,7 @@ ACE_Process_Options::setenv (const ACE_TCHAR *variable_name,
 
   return 0;
 }
+#endif // ACE_LACKS_VA_FUNCTIONS
 
 int
 ACE_Process_Options::setenv_i (ACE_TCHAR *assignment,
@@ -1110,32 +1171,47 @@ ACE_Process_Options::set_handles (ACE_HANDLE std_in,
   if (std_err == ACE_INVALID_HANDLE)
     std_err = ACE_STDERR;
 
-  if (!::DuplicateHandle (::GetCurrentProcess (),
-                          std_in,
-                          ::GetCurrentProcess (),
-                          &this->startup_info_.hStdInput,
-                          0,
-                          TRUE,
-                          DUPLICATE_SAME_ACCESS))
-    return -1;
+  // STD handles may have value 0 (not ACE_INVALID_HANDLE) if there is no such
+  // handle in the process.  This was observed to occur for stdin in console
+  // processes that were launched from services.  In this case we need to make
+  // sure not to return -1 from setting std_in so that we can process std_out
+  // and std_err.
 
-  if (!::DuplicateHandle (::GetCurrentProcess (),
-                          std_out,
-                          ::GetCurrentProcess (),
-                          &this->startup_info_.hStdOutput,
-                          0,
-                          TRUE,
-                          DUPLICATE_SAME_ACCESS))
-    return -1;
+  if (std_in)
+    {
+      if (!::DuplicateHandle (::GetCurrentProcess (),
+                              std_in,
+                              ::GetCurrentProcess (),
+                              &this->startup_info_.hStdInput,
+                              0,
+                              TRUE,
+                              DUPLICATE_SAME_ACCESS))
+        return -1;
+    }
 
-  if (!::DuplicateHandle (::GetCurrentProcess (),
-                          std_err,
-                          ::GetCurrentProcess (),
-                          &this->startup_info_.hStdError,
-                          0,
-                          TRUE,
-                          DUPLICATE_SAME_ACCESS))
-    return -1;
+  if (std_out)
+    {
+      if (!::DuplicateHandle (::GetCurrentProcess (),
+                              std_out,
+                              ::GetCurrentProcess (),
+                              &this->startup_info_.hStdOutput,
+                              0,
+                              TRUE,
+                              DUPLICATE_SAME_ACCESS))
+        return -1;
+    }
+
+  if (std_err)
+    {
+      if (!::DuplicateHandle (::GetCurrentProcess (),
+                              std_err,
+                              ::GetCurrentProcess (),
+                              &this->startup_info_.hStdError,
+                              0,
+                              TRUE,
+                              DUPLICATE_SAME_ACCESS))
+        return -1;
+    }
 #else /* ACE_WIN32 */
   this->stdin_ = ACE_OS::dup (std_in);
   this->stdout_ = ACE_OS::dup (std_out);
@@ -1166,16 +1242,36 @@ ACE_Process_Options::release_handles ()
 #endif /* !ACE_HAS_WINCE */
 
 
-ACE_Process_Options::~ACE_Process_Options (void)
+ACE_Process_Options::~ACE_Process_Options ()
 {
 #if !defined (ACE_HAS_WINCE)
   release_handles();
+#if defined (ACE_HAS_ALLOC_HOOKS)
+  ACE_Allocator::instance()->free(environment_buf_);
+  ACE_Allocator::instance()->free(environment_argv_);
+#else
   delete [] environment_buf_;
   delete [] environment_argv_;
+#endif /* ACE_HAS_ALLOC_HOOKS */
 #endif /* !ACE_HAS_WINCE */
+#if defined (ACE_HAS_ALLOC_HOOKS)
+  ACE_Allocator::instance()->free(command_line_buf_);
+#else
   delete [] command_line_buf_;
+#endif /* ACE_HAS_ALLOC_HOOKS */
   ACE::strdelete (command_line_copy_);
+#if defined (ACE_HAS_ALLOC_HOOKS)
+  ACE_Allocator::instance()->free(command_line_argv_);
+#else
   delete [] command_line_argv_;
+#endif /* ACE_HAS_ALLOC_HOOKS */
+
+#if defined (ACE_WIN32)
+  if (user_token_ != ACE_INVALID_HANDLE && close_user_token_)
+    {
+      ::CloseHandle(user_token_);
+    }
+#endif /* ACE_WIN32 */
 }
 
 int
@@ -1198,7 +1294,7 @@ ACE_Process_Options::command_line (const ACE_TCHAR *const argv[])
 
           if (cur_len > command_line_buf_len_)
             {
-              ACE_ERROR_RETURN ((LM_ERROR,
+              ACELIB_ERROR_RETURN ((LM_ERROR,
                                  ACE_TEXT ("ACE_Process:command_line: ")
                                  ACE_TEXT ("command line is ")
                                  ACE_TEXT ("longer than %d\n"),
@@ -1215,6 +1311,7 @@ ACE_Process_Options::command_line (const ACE_TCHAR *const argv[])
   return 0; // Success.
 }
 
+#ifndef ACE_LACKS_VA_FUNCTIONS
 int
 ACE_Process_Options::command_line (const ACE_TCHAR *format, ...)
 {
@@ -1228,19 +1325,10 @@ ACE_Process_Options::command_line (const ACE_TCHAR *format, ...)
       return -1;
     }
 
-#if !defined (ACE_LACKS_VSNPRINTF) || defined (ACE_HAS_TRIO)
-  // vsnprintf the format and args into command_line_buf__.
   ACE_OS::vsnprintf (command_line_buf_,
                      command_line_buf_len_,
                      format,
                      argp);
-#else
-  // sprintf the format and args into command_line_buf__.
-  ACE_OS::vsprintf (command_line_buf_,
-                    format,
-                    argp);
-#endif
-
   // Useless macro.
   va_end (argp);
 
@@ -1266,9 +1354,7 @@ ACE_Process_Options::command_line (const ACE_ANTI_TCHAR *format, ...)
   va_start (argp, format);
 
   // sprintf the format and args into command_line_buf_.
-  ACE_OS::vsprintf (anti_clb,
-                    format,
-                    argp);
+  ACE_OS::vsnprintf (anti_clb, this->command_line_buf_len_, format, argp);
 
   // Useless macro.
   va_end (argp);
@@ -1282,9 +1368,10 @@ ACE_Process_Options::command_line (const ACE_ANTI_TCHAR *format, ...)
   return 0;
 }
 #endif /* ACE_HAS_WCHAR && !ACE_HAS_WINCE */
+#endif // ACE_LACKS_VA_FUNCTIONS
 
 ACE_TCHAR *
-ACE_Process_Options::env_buf (void)
+ACE_Process_Options::env_buf ()
 {
 #if !defined (ACE_HAS_WINCE)
   if (environment_buf_[0] == '\0')
@@ -1297,7 +1384,7 @@ ACE_Process_Options::env_buf (void)
 }
 
 ACE_TCHAR * const *
-ACE_Process_Options::command_line_argv (void)
+ACE_Process_Options::command_line_argv ()
 {
   if (!command_line_argv_calculated_)
     {
@@ -1334,42 +1421,12 @@ ACE_Process_Options::command_line_argv (void)
 int
 ACE_Process_Options::pass_handle (ACE_HANDLE h)
 {
-# if defined (ACE_WIN32)
-#  if defined (ACE_HAS_WINCE)
+#if defined (ACE_HAS_WINCE)
   ACE_NOTSUP_RETURN (-1);
-#  else
-
-  // This is oriented towards socket handles... may need some adjustment
-  // for non-sockets.
-  // This is all based on an MSDN article:
-  // http://support.microsoft.com/support/kb/articles/Q150/5/23.asp
-  // If on Win95/98, the handle needs to be duplicated for the to-be-spawned
-  // process. On WinNT, they get inherited by the child process automatically.
-  // If the handle is duplicated, remember the duplicate so it can be
-  // closed later. Can't be closed now, or the child won't get it.
-  ACE_TEXT_OSVERSIONINFO osvi;
-  ZeroMemory (&osvi, sizeof (osvi));
-  osvi.dwOSVersionInfoSize = sizeof (ACE_TEXT_OSVERSIONINFO);
-  // If this is Win95/98 or we can't tell, duplicate the handle.
-  if (!ACE_TEXT_GetVersionEx (&osvi) || osvi.dwPlatformId != VER_PLATFORM_WIN32_NT)
-    {
-      HANDLE dup_handle;
-      if (!DuplicateHandle (GetCurrentProcess (),
-                            static_cast<HANDLE> (h),
-                            GetCurrentProcess (),
-                            &dup_handle,
-                            0,
-                            TRUE,   // Inheritable
-                            DUPLICATE_SAME_ACCESS))
-        return -1;
-      dup_handles_.set_bit (static_cast<ACE_HANDLE> (dup_handle));
-    }
-#  endif /* ACE_HAS_WINCE */
-#endif /* ACE_WIN32 */
-
+#else
   this->handles_passed_.set_bit (h);
-
   return 0;
+#endif /* ACE_HAS_WINCE */
 }
 
 // Get a copy of the handles the ACE_Process_Options duplicated
@@ -1396,14 +1453,30 @@ ACE_Process_Options::passed_handles (ACE_Handle_Set &set) const
   return 1;
 }
 
-ACE_Managed_Process::~ACE_Managed_Process (void)
+ACE_Managed_Process::~ACE_Managed_Process ()
 {
 }
 
+ACE_ALLOC_HOOK_DEFINE(ACE_Managed_Process)
+
 void
-ACE_Managed_Process::unmanage (void)
+ACE_Managed_Process::unmanage ()
 {
   delete this;
 }
+
+#if defined (ACE_WIN32)
+void
+ACE_Process_Options::set_user_token (HANDLE token, bool close_token)
+{
+  if (user_token_ != ACE_INVALID_HANDLE && close_user_token_)
+    {
+      ::CloseHandle(user_token_);
+    }
+
+  user_token_ = token;
+  close_user_token_ = close_token;
+}
+#endif /* ACE_WIN32 */
 
 ACE_END_VERSIONED_NAMESPACE_DECL

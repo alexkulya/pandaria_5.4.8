@@ -1,5 +1,3 @@
-// $Id: Priority_Reactor.cpp 91286 2010-08-05 09:04:31Z johnnyw $
-
 #include "ace/Priority_Reactor.h"
 #include "ace/Malloc_T.h"
 
@@ -7,10 +5,10 @@
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
-typedef ACE_Unbounded_Queue_Iterator<ACE_Event_Tuple> QUEUE_ITERATOR;
+using QUEUE_ITERATOR = ACE_Unbounded_Queue_Iterator<ACE_Event_Tuple>;
 // Its iterator.
 
-typedef ACE_Cached_Allocator<ACE_Node<ACE_Event_Tuple>, ACE_SYNCH_NULL_MUTEX> TUPLE_ALLOCATOR;
+using TUPLE_ALLOCATOR = ACE_Cached_Allocator<ACE_Node<ACE_Event_Tuple>, ACE_MT_SYNCH::NULL_MUTEX>;
 // Defines the memory allocator used, no need for locking because it
 // is only used in one thread of control.
 
@@ -22,7 +20,7 @@ ACE_ALLOC_HOOK_DEFINE(ACE_Priority_Reactor)
         ACE_Event_Handler::HI_PRIORITY-ACE_Event_Handler::LO_PRIORITY+1
 
 void
-ACE_Priority_Reactor::init_bucket (void)
+ACE_Priority_Reactor::init_bucket ()
 {
   // Allocate enough space for all the handles.
   // TODO: This can be wrong, maybe we should use other kind of
@@ -31,8 +29,13 @@ ACE_Priority_Reactor::init_bucket (void)
            TUPLE_ALLOCATOR (ACE_Select_Reactor::DEFAULT_SIZE));
 
   // The event handlers are assigned to a new As the Event
+#if defined (ACE_HAS_ALLOC_HOOKS)
+  ACE_ALLOCATOR (this->bucket_,
+                 static_cast<QUEUE **>(ACE_Allocator::instance()->malloc(sizeof(QUEUE *) * (npriorities))));
+#else
   ACE_NEW (this->bucket_,
            QUEUE *[npriorities]);
+#endif /* ACE_HAS_ALLOC_HOOKS */
 
   // This loops "ensures" exception safety.
   for (int i = 0; i < npriorities; ++i)
@@ -62,14 +65,18 @@ ACE_Priority_Reactor::ACE_Priority_Reactor (size_t size,
   this->init_bucket ();
 }
 
-ACE_Priority_Reactor::~ACE_Priority_Reactor (void)
+ACE_Priority_Reactor::~ACE_Priority_Reactor ()
 {
   ACE_TRACE ("ACE_Priority_Reactor::~ACE_Priority_Reactor");
 
   for (int i = 0; i < npriorities; ++i)
     delete this->bucket_[i];
 
+#if defined (ACE_HAS_ALLOC_HOOKS)
+  ACE_Allocator::instance()->free(this->bucket_);
+#else
   delete[] this->bucket_;
+#endif /* ACE_HAS_ALLOC_HOOKS */
   delete tuple_allocator_;
 }
 
@@ -151,11 +158,11 @@ ACE_Priority_Reactor::dispatch_io_set (int number_of_active_handles,
                                ready_mask,
                                et.event_handler_,
                                callback);
-          number_dispatched++;
+          ++number_dispatched;
 
           // clear the bit from that dispatch mask,
           // so when we need to restart the iteration (rebuilding the iterator...)
-          // we will not dispatch the already dipatched handlers
+          // we will not dispatch the already dispatched handlers
           this->clear_dispatch_mask (et.handle_,
                                      mask);
 
@@ -172,16 +179,16 @@ ACE_Priority_Reactor::dispatch_io_set (int number_of_active_handles,
 }
 
 void
-ACE_Priority_Reactor::dump (void) const
+ACE_Priority_Reactor::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   ACE_TRACE ("ACE_Priority_Reactor::dump");
 
-  ACE_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
 
   ACE_Select_Reactor::dump ();
 
-  ACE_DEBUG ((LM_DEBUG, ACE_END_DUMP));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_END_DUMP));
 #endif /* ACE_HAS_DUMP */
 }
 

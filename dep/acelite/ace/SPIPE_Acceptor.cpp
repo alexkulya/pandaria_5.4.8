@@ -1,9 +1,10 @@
-// $Id: SPIPE_Acceptor.cpp 91286 2010-08-05 09:04:31Z johnnyw $
-
 #include "ace/SPIPE_Acceptor.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/OS_NS_sys_stat.h"
 #include "ace/OS_NS_sys_time.h"
+#if defined (ACE_HAS_ALLOC_HOOKS)
+# include "ace/Malloc_Base.h"
+#endif /* ACE_HAS_ALLOC_HOOKS */
 
 #if defined (ACE_HAS_STREAM_PIPES)
 #  include "ace/OS_NS_unistd.h"
@@ -13,7 +14,7 @@
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
-ACE_SPIPE_Acceptor::ACE_SPIPE_Acceptor (void)
+ACE_SPIPE_Acceptor::ACE_SPIPE_Acceptor ()
 #if defined (ACE_HAS_WIN32_NAMED_PIPES)
   : sa_ (0), pipe_handle_ (ACE_INVALID_HANDLE)
 #endif /* ACE_HAS_WIN32_NAMED_PIPES */
@@ -22,7 +23,7 @@ ACE_SPIPE_Acceptor::ACE_SPIPE_Acceptor (void)
 }
 
 int
-ACE_SPIPE_Acceptor::remove (void)
+ACE_SPIPE_Acceptor::remove ()
 {
   ACE_TRACE ("ACE_SPIPE_Acceptor::remove");
 #if defined (ACE_HAS_STREAM_PIPES)
@@ -40,7 +41,7 @@ ACE_SPIPE_Acceptor::remove (void)
 ACE_ALLOC_HOOK_DEFINE (ACE_SPIPE_Acceptor)
 
 void
-ACE_SPIPE_Acceptor::dump (void) const
+ACE_SPIPE_Acceptor::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   ACE_TRACE ("ACE_SPIPE_Acceptor::dump");
@@ -179,7 +180,7 @@ ACE_SPIPE_Acceptor::create_new_instance (int perms)
 }
 
 int
-ACE_SPIPE_Acceptor::close (void)
+ACE_SPIPE_Acceptor::close ()
 {
   ACE_TRACE ("ACE_SPIPE_Acceptor::close");
 
@@ -237,7 +238,7 @@ ACE_SPIPE_Acceptor::ACE_SPIPE_Acceptor (const ACE_SPIPE_Addr &local_sap,
   ACE_TRACE ("ACE_SPIPE_Acceptor::ACE_SPIPE_Acceptor");
 
   if (this->open (local_sap, reuse_addr, perms, sa, pipe_mode) == -1)
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT ("%p\n"),
                 ACE_TEXT ("ACE_SPIPE_Acceptor")));
 }

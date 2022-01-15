@@ -4,10 +4,8 @@
 /**
  *  @file    Reactor.h
  *
- *  $Id: Reactor.h 95774 2012-05-17 15:45:58Z shuston $
- *
  *  @author Irfan Pyarali <irfan@cs.wustl.edu>
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  */
 //=============================================================================
 
@@ -32,6 +30,7 @@
 
 // Get ACE_Time_Value in
 #include "ace/Time_Value.h"
+#include "ace/Synch_Traits.h"
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -40,13 +39,6 @@ class ACE_Handle_Set;
 class ACE_Sig_Action;
 class ACE_Sig_Handler;
 class ACE_Sig_Set;
-
-/*
- * Hook to specialize the Reactor implementation with the concrete
- * Reactor type, for example, select, thread pool reactor known
- * at compile time.
- */
-//@@ REACTOR_SPL_INCLUDE_FORWARD_DECL_ADD_HOOK
 
 /**
  * @class ACE_Reactor
@@ -86,7 +78,7 @@ public:
   typedef int (*REACTOR_EVENT_HOOK)(ACE_Reactor *);
 
   /// Get pointer to a process-wide ACE_Reactor.
-  static ACE_Reactor *instance (void);
+  static ACE_Reactor *instance ();
 
   /**
    * Set pointer to a process-wide ACE_Reactor and return existing
@@ -96,13 +88,13 @@ public:
   static ACE_Reactor *instance (ACE_Reactor *, bool delete_reactor = false);
 
   /// Delete the dynamically allocated Singleton
-  static void close_singleton (void);
+  static void close_singleton ();
 
   /// Name of the dll in which the dll lives.
-  static const ACE_TCHAR *dll_name (void);
+  static const ACE_TCHAR *dll_name ();
 
   /// Name of the component--ACE_Reactor in this case.
-  static const ACE_TCHAR *name (void);
+  static const ACE_TCHAR *name ();
 
   // = Singleton reactor event loop management methods.
 
@@ -118,8 +110,8 @@ public:
    *
    * @deprecated Use ACE_Reactor::instance()->run_reactor_event_loop() instead
    */
-  static int run_event_loop (void);
-  static int run_alertable_event_loop (void);
+  static int run_event_loop ();
+  static int run_alertable_event_loop ();
 
   /**
    * Run the event loop until the ACE_Reactor::handle_events() or
@@ -144,7 +136,7 @@ public:
    *
    * @deprecated Use ACE_Reactor::instance()->end_reactor_event_loop() instead
    */
-  static int end_event_loop (void);
+  static int end_event_loop ();
 
   /**
    * Report if the ACE_Reactor::instance()'s event loop is finished.
@@ -154,7 +146,7 @@ public:
    *
    * @deprecated Use ACE_Reactor::instance()->reactor_event_loop_done() instead
    */
-  static int event_loop_done (void);
+  static int event_loop_done ();
 
   /**
    * Resets the ACE_Reactor::end_event_loop_  static so that the
@@ -165,7 +157,7 @@ public:
    * @deprecated Use ACE_Reactor::instance()->reset_reactor_event_loop()
    * instead
    */
-  static void reset_event_loop (void);
+  static void reset_event_loop ();
 
   /**
    * The singleton reactor is used by the ACE_Service_Config.
@@ -212,14 +204,14 @@ public:
    * will be dispatched then. If the reactor is closed or deleted without
    * further dispatching, the notifications will be lost.
    */
-  int end_reactor_event_loop (void);
+  int end_reactor_event_loop ();
 
   /// Indicate if the Reactor's event loop has been ended.
-  int reactor_event_loop_done (void);
+  int reactor_event_loop_done ();
 
   /// Resets the ACE_Reactor::end_event_loop_ static so that the
   /// run_event_loop() method can be restarted.
-  void reset_reactor_event_loop (void);
+  void reset_reactor_event_loop ();
 
   /**
    * Create the Reactor using @a implementation.  The flag
@@ -234,7 +226,7 @@ public:
    * Any notifications that remain queued on this reactor instance are
    * lost.
    */
-  virtual ~ACE_Reactor (void);
+  virtual ~ACE_Reactor ();
 
   /**
    * Initialize the ACE_Reactor to manage @a max_number_of_handles.
@@ -255,10 +247,10 @@ public:
   int timer_queue (ACE_Timer_Queue *tq);
 
   /// Return the current ACE_Timer_Queue.
-  ACE_Timer_Queue *timer_queue (void) const;
+  ACE_Timer_Queue *timer_queue () const;
 
   /// Close down and release all resources.
-  int close (void);
+  int close ();
 
   // = Event loop drivers.
 
@@ -343,7 +335,6 @@ public:
                         ACE_Reactor_Mask mask);
 
 #if defined (ACE_WIN32)
-
   /**
    * Register handler for OS events.
    *
@@ -362,7 +353,6 @@ public:
    */
   int register_handler (ACE_Event_Handler *event_handler,
                         ACE_HANDLE event_handle = ACE_INVALID_HANDLE);
-
 #endif /* ACE_WIN32 */
 
   /**
@@ -462,15 +452,12 @@ public:
    * Install the new disposition (if given) and return the previous
    * disposition (if desired by the caller).
    *
-   * Note that, unlike removing handler for I/O events,
-   * ACE_Event_Handler::handle_close() will not be called when the
-   * handler is removed. Neither will any reference-counting activity be
-   * involved.
-   *
-   * @note There's an existing enhancement request in Bugzilla,
-   * #2368, to change this behavior so that ACE_Event_Handler::handle_close()
-   * is called when the signal handler is removed. Thus, there's some chance
-   * this behavior will change in a future version of ACE.
+   * Note that the registered handler's ACE_Event_Handler::handle_close ()
+   * callback will be called to indicate the signal handler has been removed.
+   * Unlike with I/O handles, there is no way to prevent this callback. The
+   * handle_close() callback can check the passed mask for the value
+   * ACE_Event_Handler::SIGNAL_MASK to tell when the callback is the result
+   * of a signal handler removal.
    */
   int remove_handler (int signum,
                       ACE_Sig_Action *new_disp,
@@ -511,7 +498,7 @@ public:
   /**
    * Suspend all registered handles temporarily.
    */
-  int suspend_handlers (void);
+  int suspend_handlers ();
 
   /**
    * Resume @a handle.
@@ -536,13 +523,13 @@ public:
   /**
    * Resume all registered handles.
    */
-  int resume_handlers (void);
+  int resume_handlers ();
 
   /// Does the reactor allow the application to resume the handle on
   /// its own ie. can it pass on the control of handle resumption to
   /// the application. A positive value indicates that the handlers
   /// are application resumable. A value of 0 indicates otherwise.
-  int resumable_handler (void);
+  int resumable_handler ();
 
   // = Timer management.
 
@@ -584,6 +571,18 @@ public:
                                const ACE_Time_Value &interval =
                                 ACE_Time_Value::zero);
 
+  template<class Rep1, class Period1, class Rep2 = int, class Period2 = std::ratio<1>>
+  long schedule_timer (ACE_Event_Handler *event_handler,
+                       const void *arg,
+                       const std::chrono::duration<Rep1, Period1>& delay,
+                       const std::chrono::duration<Rep2, Period2>& interval =
+                        std::chrono::duration<Rep2, Period2>::zero ())
+  {
+    ACE_Time_Value const tv_delay (delay);
+    ACE_Time_Value const tv_interval (interval);
+    return this->schedule_timer (event_handler, arg, tv_delay, tv_interval);
+  }
+
   /**
    * Reset recurring timer interval.
    *
@@ -597,6 +596,14 @@ public:
    */
   virtual int reset_timer_interval (long timer_id,
                                     const ACE_Time_Value &interval);
+
+  template<class Rep, class Period>
+  int reset_timer_interval (long timer_id,
+                            const std::chrono::duration<Rep, Period>& interval)
+  {
+    ACE_Time_Value const tv_interval (interval);
+    return this->reset_timer_interval (timer_id, tv_interval);
+  }
 
   /**
    * Cancel timer.
@@ -627,6 +634,9 @@ public:
    * number of timers associated with the event handler.
    * ACE_Event_Handler::remove_reference() will also be called once
    * for every timer associated with the event handler.
+   *
+   * In case this operation is called with a nil event_handler
+   * it returns with 0 as the number of handlers cancelled.
    *
    * Returns number of handlers cancelled.
    */
@@ -728,7 +738,7 @@ public:
    * via the notify queue before breaking out of its
    * ACE_Message_Queue::dequeue() loop.
    */
-  int max_notify_iterations (void);
+  int max_notify_iterations ();
 
   /**
    * Purge any notifications pending in this reactor for the specified
@@ -778,17 +788,17 @@ public:
 
   /// Returns true if Reactor has been successfully initialized, else
   /// false.
-  int initialized (void);
+  int initialized ();
 
   /// Returns the current size of the Reactor's internal descriptor
   /// table.
-  size_t size (void) const;
+  size_t size () const;
 
   /// Returns a reference to the Reactor's internal lock.
-  ACE_Lock &lock (void);
+  ACE_Lock &lock ();
 
   /// Wake up all threads in waiting in the event loop
-  void wakeup_all_threads (void);
+  void wakeup_all_threads ();
 
   /// Transfers ownership of Reactor to the @a new_owner.
   int owner (ACE_thread_t new_owner,
@@ -801,10 +811,10 @@ public:
   void requeue_position (int position);
 
   /// Get position of the owner thread.
-  int requeue_position (void);
+  int requeue_position ();
 
   /// Get the existing restart value.
-  bool restart (void);
+  bool restart ();
 
   /// Set a new value for restart and return the original value.
   bool restart (bool r);
@@ -836,7 +846,7 @@ public:
                  int ops);
 
   /// Get the implementation class
-  ACE_Reactor_Impl *implementation (void) const;
+  ACE_Reactor_Impl *implementation () const;
 
   /**
    * Returns 0, if the size of the current message has been put in
@@ -848,13 +858,13 @@ public:
 
   /// Return true if we any event associations were made by the reactor
   /// for the handles that it waits on, false otherwise.
-  bool uses_event_associations (void);
+  bool uses_event_associations ();
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;
 
   /// Dump the state of the object.
-  void dump (void) const;
+  void dump () const;
 
 protected:
   /// Set the implementation class.

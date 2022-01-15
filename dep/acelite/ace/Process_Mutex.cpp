@@ -1,7 +1,5 @@
-// $Id: Process_Mutex.cpp 91286 2010-08-05 09:04:31Z johnnyw $
-
 #include "ace/Process_Mutex.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/ACE.h"
 #include "ace/Guard_T.h"
 #include "ace/Process_Mutex.h"
@@ -18,24 +16,35 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 ACE_ALLOC_HOOK_DEFINE(ACE_Process_Mutex)
 
 void
-ACE_Process_Mutex::dump (void) const
+ACE_Process_Mutex::dump () const
 {
 #if defined (ACE_HAS_DUMP)
 // ACE_TRACE ("ACE_Process_Mutex::dump");
-  ACE_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
   this->lock_.dump ();
-  ACE_DEBUG ((LM_DEBUG, ACE_END_DUMP));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_END_DUMP));
 #endif /* ACE_HAS_DUMP */
 }
 
 const ACE_TCHAR *
-ACE_Process_Mutex::unique_name (void)
+ACE_Process_Mutex::unique_name ()
 {
   // For all platforms other than Win32, we are going to create a
   // machine-wide unique name if one is not provided by the user.  On
   // Win32, unnamed synchronization objects are acceptable.
   ACE::unique_name (this, this->name_, ACE_UNIQUE_NAME_LEN);
   return this->name_;
+}
+
+int
+ACE_Process_Mutex::unlink (const ACE_TCHAR *name)
+{
+#if defined (_ACE_USE_SV_SEM)
+  ACE_UNUSED_ARG (name);
+  return 0;
+#else
+  return ACE_Mutex::unlink (name);
+#endif
 }
 
 ACE_Process_Mutex::ACE_Process_Mutex (const char *name, void *arg, mode_t mode)
@@ -83,7 +92,7 @@ ACE_Process_Mutex::ACE_Process_Mutex (const wchar_t *name,
 #endif /* _ACE_USE_SV_SEM */
 }
 #endif /* ACE_HAS_WCHAR */
-ACE_Process_Mutex::~ACE_Process_Mutex (void)
+ACE_Process_Mutex::~ACE_Process_Mutex ()
 {
 }
 

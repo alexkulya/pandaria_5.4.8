@@ -1,10 +1,12 @@
-// $Id: Free_List.cpp 81107 2008-03-27 11:12:42Z johnnyw $
-
 #ifndef ACE_FREE_LIST_CPP
 #define ACE_FREE_LIST_CPP
 
 #include "ace/Free_List.h"
 #include "ace/Guard_T.h"
+
+#if defined (ACE_HAS_ALLOC_HOOKS)
+# include "ace/Malloc_Base.h"
+#endif /* ACE_HAS_ALLOC_HOOKS */
 
 #if !defined (ACE_LACKS_PRAGMA_ONCE)
 # pragma once
@@ -13,7 +15,7 @@
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 template <class T>
-ACE_Free_List<T>::~ACE_Free_List (void)
+ACE_Free_List<T>::~ACE_Free_List ()
 {
 }
 
@@ -40,7 +42,7 @@ ACE_Locked_Free_List<T, ACE_LOCK>::ACE_Locked_Free_List (int mode,
 // Destructor - removes all the elements from the free_list
 
 template <class T, class ACE_LOCK>
-ACE_Locked_Free_List<T, ACE_LOCK>::~ACE_Locked_Free_List (void)
+ACE_Locked_Free_List<T, ACE_LOCK>::~ACE_Locked_Free_List ()
 {
   if (this->mode_ != ACE_PURE_FREE_LIST)
     while (this->free_list_ != 0)
@@ -77,7 +79,7 @@ ACE_Locked_Free_List<T, ACE_LOCK>::add (T *element)
 // water mark.
 
 template <class T, class ACE_LOCK> T *
-ACE_Locked_Free_List<T, ACE_LOCK>::remove (void)
+ACE_Locked_Free_List<T, ACE_LOCK>::remove ()
 {
   ACE_MT (ACE_GUARD_RETURN (ACE_LOCK, ace_mon, this->mutex_, 0));
 
@@ -101,7 +103,7 @@ ACE_Locked_Free_List<T, ACE_LOCK>::remove (void)
 // Returns the current size of the free list
 
 template <class T, class ACE_LOCK> size_t
-ACE_Locked_Free_List<T, ACE_LOCK>::size (void)
+ACE_Locked_Free_List<T, ACE_LOCK>::size ()
 {
   return this->size_;
 }
@@ -157,6 +159,8 @@ ACE_Locked_Free_List<T, ACE_LOCK>::dealloc (size_t n)
       this->size_--;
     }
 }
+
+ACE_ALLOC_HOOK_DEFINE_Tcc(ACE_Locked_Free_List)
 
 ACE_END_VERSIONED_NAMESPACE_DECL
 

@@ -4,8 +4,6 @@
 /**
  *  @file    IO_Cntl_Msg.h
  *
- *  $Id: IO_Cntl_Msg.h 80826 2008-03-04 14:51:23Z wotte $
- *
  *  @author Doug Schmidt
  */
 //==========================================================================
@@ -51,38 +49,37 @@ public:
 
   typedef unsigned short ACE_IO_Cntl_Cmds;
 
-  // = Initialization method.
   /// Initialize the control message.
   ACE_IO_Cntl_Msg (ACE_IO_Cntl_Cmds c);
 
   // = Get/set methods
 
   /// Get command.
-  ACE_IO_Cntl_Cmds cmd (void);
+  ACE_IO_Cntl_Cmds cmd ();
 
   /// Set command.
   void cmd (ACE_IO_Cntl_Cmds c);
 
   /// Get count.
-  size_t count (void);
+  size_t count ();
 
   /// Set count.
   void count (size_t c);
 
   /// Get error.
-  int error (void);
+  int error ();
 
   /// Set error.
   void error (int e);
 
   /// Get return value.
-  int rval (void);
+  int rval ();
 
   /// Set return value.
   void rval (int r);
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

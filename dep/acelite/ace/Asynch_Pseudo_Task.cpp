@@ -1,5 +1,3 @@
-// $Id: Asynch_Pseudo_Task.cpp 91286 2010-08-05 09:04:31Z johnnyw $
-
 #include "ace/Asynch_Pseudo_Task.h"
 
 #include "ace/OS_NS_errno.h"
@@ -19,10 +17,10 @@ ACE_Asynch_Pseudo_Task::~ACE_Asynch_Pseudo_Task ()
 }
 
 int
-ACE_Asynch_Pseudo_Task::start (void)
+ACE_Asynch_Pseudo_Task::start ()
 {
   if (this->reactor_.initialized () == 0)
-    ACE_ERROR_RETURN ((LM_ERROR,
+    ACELIB_ERROR_RETURN ((LM_ERROR,
                        ACE_TEXT ("%N:%l:%p\n"),
                        ACE_TEXT ("start reactor is not initialized")),
                        -1);
@@ -31,7 +29,7 @@ ACE_Asynch_Pseudo_Task::start (void)
 }
 
 int
-ACE_Asynch_Pseudo_Task::stop (void)
+ACE_Asynch_Pseudo_Task::stop ()
 {
   if (this->thr_count () == 0)  // already stopped
     return 0;
@@ -45,7 +43,7 @@ ACE_Asynch_Pseudo_Task::stop (void)
 }
 
 int
-ACE_Asynch_Pseudo_Task::svc (void)
+ACE_Asynch_Pseudo_Task::svc ()
 {
 #if !defined (ACE_WIN32)
 
@@ -56,7 +54,7 @@ ACE_Asynch_Pseudo_Task::svc (void)
     sigaddset (&RT_signals, si);
 
   if (ACE_OS::pthread_sigmask (SIG_BLOCK, &RT_signals, 0) != 0)
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT ("Error:(%P | %t):%p\n"),
                 ACE_TEXT ("pthread_sigmask")));
 #endif
@@ -86,7 +84,7 @@ ACE_Asynch_Pseudo_Task::register_io_handler (ACE_HANDLE handle,
   // by the application.
   if (this->reactor_.suspend_handler (handle) == -1)
     {
-      ACE_ERROR
+      ACELIB_ERROR
         ((LM_ERROR,
           ACE_TEXT ("%N:%l:%p\n"),
           ACE_TEXT ("register_io_handler (suspended)")));

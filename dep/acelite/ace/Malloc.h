@@ -4,8 +4,6 @@
 /**
  *  @file    Malloc.h
  *
- *  $Id: Malloc.h 81796 2008-05-28 13:46:21Z sma $
- *
  *  @author Doug Schmidt and Irfan Pyarali
  */
 //==========================================================================
@@ -21,7 +19,7 @@
 # pragma once
 #endif /* ACE_LACKS_PRAGMA_ONCE */
 
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 
 #if defined (ACE_HAS_MALLOC_STATS)
 #  include "ace/Atomic_Op.h"
@@ -190,7 +188,7 @@ typedef ACE_Atomic_Op<ACE_PROCESS_MUTEX, int> ACE_INT;
 struct ACE_Export ACE_Malloc_Stats
 {
   ACE_Malloc_Stats (void);
-  void dump (void) const;
+  void dump () const;
 
   /// Coarse-grained unit of allocation.
   ACE_INT nchunks_;
@@ -267,7 +265,7 @@ public:
   class ACE_Export ACE_Malloc_Header
   {
   public:
-    ACE_Malloc_Header (void);
+    ACE_Malloc_Header ();
 
     /// Points to next block if on free list.
     ACE_Malloc_Header *next_block_;
@@ -286,7 +284,7 @@ public:
     char padding_[(ACE_MALLOC_PADDING_SIZE) ? ACE_MALLOC_PADDING_SIZE : ACE_MALLOC_ALIGN];
 
     /// Dump the state of the object.
-    void dump (void) const;
+    void dump () const;
   };
 
   /**
@@ -302,7 +300,6 @@ public:
   class ACE_Export ACE_Name_Node
   {
   public:
-    // = Initialization methods.
     /// Constructor.
     ACE_Name_Node (const char *name,
                    char *name_ptr,
@@ -310,10 +307,10 @@ public:
                    ACE_Name_Node *head);
 
     /// Constructor.
-    ACE_Name_Node (void);
+    ACE_Name_Node ();
 
     /// Constructor.
-    ~ACE_Name_Node (void);
+    ~ACE_Name_Node ();
 
     /// Initialize a name node pointer.
     static void init_ptr (ACE_Name_Node **ptr,
@@ -321,7 +318,7 @@ public:
                           void *base_addr);
 
     /// Return a pointer to the name of this node.
-    const char *name (void) const;
+    const char *name () const;
 
     /// Name of the Node.
     char *name_;
@@ -336,14 +333,14 @@ public:
     ACE_Name_Node *prev_;
 
     /// Dump the state of the object.
-    void dump (void) const;
+    void dump () const;
   private:
     /// Copy constructor.
     ACE_Name_Node (const ACE_Name_Node &);
   };
 
   /// Print out a bunch of size info for debugging.
-  static void print_alignment_info (void);
+  static void print_alignment_info ();
 
   /// Reference counter.
   int ref_counter_;
@@ -382,7 +379,7 @@ public:
   ACE_Malloc_Header base_;
 
   /// Dump the state of the object.
-  void dump (void) const;
+  void dump () const;
 };
 
 ACE_END_VERSIONED_NAMESPACE_DECL

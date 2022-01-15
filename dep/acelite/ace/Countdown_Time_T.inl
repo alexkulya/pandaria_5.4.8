@@ -1,17 +1,14 @@
 // -*- C++ -*-
-//
-// $Id: Countdown_Time_T.inl 95332 2011-12-15 11:09:41Z mcorino $
-
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 template <typename TIME_POLICY> ACE_INLINE bool
-ACE_Countdown_Time_T<TIME_POLICY>::stopped (void) const
+ACE_Countdown_Time_T<TIME_POLICY>::stopped () const
 {
   return stopped_;
 }
 
 template <typename TIME_POLICY> ACE_INLINE void
-ACE_Countdown_Time_T<TIME_POLICY>::update (void)
+ACE_Countdown_Time_T<TIME_POLICY>::update ()
 {
   this->stop ();
   this->start ();

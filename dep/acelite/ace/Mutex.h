@@ -4,9 +4,7 @@
 /**
  *  @file    Mutex.h
  *
- *  $Id: Mutex.h 91626 2010-09-07 10:59:20Z johnnyw $
- *
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  */
 //==========================================================================
 
@@ -25,15 +23,15 @@
 #include "ace/OS_NS_unistd.h"
 #include "ace/os_include/os_fcntl.h"
 
-# if !defined (ACE_DEFAULT_MUTEX_A)
-#   define ACE_DEFAULT_MUTEX_A "ACE_MUTEX"
-# endif /* ACE_DEFAULT_MUTEX_A */
+#if !defined (ACE_DEFAULT_MUTEX_A)
+# define ACE_DEFAULT_MUTEX_A "ACE_MUTEX"
+#endif /* ACE_DEFAULT_MUTEX_A */
 
-# if defined (ACE_HAS_WCHAR)
-#   define ACE_DEFAULT_MUTEX_W ACE_TEXT_WIDE(ACE_DEFAULT_MUTEX_A)
-# endif /* ACE_HAS_WCHAR */
+#if defined (ACE_HAS_WCHAR)
+# define ACE_DEFAULT_MUTEX_W ACE_TEXT_WIDE (ACE_DEFAULT_MUTEX_A)
+#endif /* ACE_HAS_WCHAR */
 
-# define ACE_DEFAULT_MUTEX ACE_TEXT (ACE_DEFAULT_MUTEX_A)
+#define ACE_DEFAULT_MUTEX ACE_TEXT (ACE_DEFAULT_MUTEX_A)
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -57,17 +55,17 @@ public:
              mode_t mode = ACE_DEFAULT_FILE_PERMS);
 
   /// Implicitly destroy the mutex.
-  ~ACE_Mutex (void);
+  ~ACE_Mutex ();
 
   /// Explicitly destroy the mutex.
   /**
    * @note Only one thread should call this method since it doesn't
    *        protect against race conditions.
    */
-  int remove (void);
+  int remove ();
 
   /// Acquire lock ownership (wait on queue if necessary).
-  int acquire (void);
+  int acquire ();
 
   /// Block the thread until the mutex is acquired or @a tv times out,
   /// in which case -1 is returned and @c errno == @c ETIME.
@@ -96,24 +94,24 @@ public:
    * @return -1 on failure.  If we "failed" because someone
    *         else already had the lock, @c errno is set to @c EBUSY.
    */
-  int tryacquire (void);
+  int tryacquire ();
 
   /// Release lock and unblock a thread at head of queue.
-  int release (void);
+  int release ();
 
   /// Acquire mutex ownership.
   /**
    * This calls @c acquire and is only here to make the @c ACE_Mutex
    * interface consistent with the other synchronization APIs.
    */
-  int acquire_read (void);
+  int acquire_read ();
 
   /// Acquire mutex ownership.
   /**
    * This calls @c acquire and is only here to make the @c ACE_Mutex
    * interface consistent with the other synchronization APIs.
    */
-  int acquire_write (void);
+  int acquire_write ();
 
   /// Conditionally acquire mutex (i.e., won't block).
   /**
@@ -123,7 +121,7 @@ public:
    * @return -1 on failure.  If we "failed" because someone else
    *         already had the lock, @c errno is set to @c EBUSY.
    */
-  int tryacquire_read (void);
+  int tryacquire_read ();
 
   /// Conditionally acquire mutex (i.e., won't block).
   /**
@@ -133,30 +131,45 @@ public:
    * @return -1 on failure.  If we "failed" because someone else
    *         already had the lock, @c errno is set to @c EBUSY.
    */
-  int tryacquire_write (void);
+  int tryacquire_write ();
 
   /**
    * This is only here for consistency with the other synchronization
    * APIs and usability with Lock adapters. Assumes the caller already has
    * acquired the mutex and returns 0 in all cases.
    */
-  int tryacquire_write_upgrade (void);
+  int tryacquire_write_upgrade ();
 
   /// Return the underlying mutex.
-  const ACE_mutex_t &lock (void) const;
-  ACE_mutex_t &lock (void);
+  const ACE_mutex_t &lock () const;
+  ACE_mutex_t &lock ();
+
+  /// If a file was created as the underlying storage for the mutex,
+  /// remove it from the filesystem (for process-shared mutexes).
+  static int unlink (const ACE_TCHAR *name);
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;
 
   // = This should be protected but some C++ compilers complain...
 public:
-#if defined (ACE_HAS_PTHREADS) || defined(ACE_HAS_STHREADS)
+#if defined ACE_HAS_PTHREADS && defined ACE_LACKS_MUTEXATTR_PSHARED
+# define ACE_MUTEX_USE_PROCESS_LOCK
+# define ACE_MUTEX_PROCESS_LOCK_IS_SEMA
+  ACE_sema_t process_sema_;
+  typedef ACE_sema_t Process_Lock;
+#elif defined ACE_HAS_PTHREADS || defined ACE_HAS_STHREADS
+# define ACE_MUTEX_USE_PROCESS_LOCK
+# define ACE_MUTEX_PROCESS_LOCK_IS_MUTEX
+  typedef ACE_mutex_t Process_Lock;
+#endif
+
+#ifdef ACE_MUTEX_USE_PROCESS_LOCK
   /// This lock resides in shared memory.
-  ACE_mutex_t *process_lock_;
+  Process_Lock *process_lock_;
 
   /**
    * Remember the name of the mutex if we created it so we can unlink
@@ -164,7 +177,7 @@ public:
    * can destroy it).
    */
   const ACE_TCHAR *lockname_;
-#endif /* ACE_HAS_PTHREADS */
+#endif /* ACE_MUTEX_USE_PROCESS_LOCK */
 
   /// Mutex type supported by the OS.
   ACE_mutex_t lock_;
@@ -178,7 +191,7 @@ public:
 
 private:
   // Prevent assignment and initialization.
-  void operator= (const ACE_Mutex &);
+  ACE_Mutex &operator= (const ACE_Mutex &);
   ACE_Mutex (const ACE_Mutex &);
 };
 

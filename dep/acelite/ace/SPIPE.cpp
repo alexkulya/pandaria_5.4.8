@@ -1,8 +1,10 @@
-// $Id: SPIPE.cpp 91286 2010-08-05 09:04:31Z johnnyw $
-
 #include "ace/SPIPE.h"
 
 #include "ace/OS_NS_unistd.h"
+
+#if defined (ACE_HAS_ALLOC_HOOKS)
+# include "ace/Malloc_Base.h"
+#endif /* ACE_HAS_ALLOC_HOOKS */
 
 #if !defined (__ACE_INLINE__)
 #include "ace/SPIPE.inl"
@@ -16,13 +18,13 @@ ACE_ALLOC_HOOK_DEFINE(ACE_SPIPE)
 
 // This is the do-nothing constructor.
 
-ACE_SPIPE::ACE_SPIPE (void)
+ACE_SPIPE::ACE_SPIPE ()
 {
   // ACE_TRACE ("ACE_SPIPE::ACE_SPIPE");
 }
 
 void
-ACE_SPIPE::dump (void) const
+ACE_SPIPE::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   ACE_TRACE ("ACE_SPIPE::dump");
@@ -42,7 +44,7 @@ ACE_SPIPE::get_local_addr (ACE_SPIPE_Addr &local_sap) const
 // Close down the STREAM pipe without removing the rendezvous point.
 
 int
-ACE_SPIPE::close (void)
+ACE_SPIPE::close ()
 {
   ACE_TRACE ("ACE_SPIPE::close");
   int result = 0;
@@ -62,7 +64,7 @@ ACE_SPIPE::close (void)
 // file system.
 
 int
-ACE_SPIPE::remove (void)
+ACE_SPIPE::remove ()
 {
   ACE_TRACE ("ACE_SPIPE::remove");
   int result = this->close ();

@@ -4,9 +4,7 @@
 /**
  *  @file   OS_NS_Thread.h
  *
- *  $Id: OS_NS_Thread.h 96061 2012-08-16 09:36:07Z mcorino $
- *
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  *  @author Jesper S. M|ller<stophph@diku.dk>
  *  @author and a cast of thousands...
  *
@@ -37,6 +35,12 @@
 # include "ace/OS_NS_signal.h"
 # include "ace/ACE_export.h"
 # include "ace/Object_Manager_Base.h"
+
+#if defined (ACE_HAS_TSS_EMULATION) && !defined (ACE_HAS_THREAD_SPECIFIC_STORAGE)
+# if defined (ACE_HAS_VXTHREADS) && !defined (_WRS_CONFIG_SMP) && !defined (INCLUDE_AMP_CPU)
+#  include "taskVarLib.h" /* used by VxWorks < 6.9 */
+# endif /* VxWorks and ! SMP */
+#endif
 
 # if defined (ACE_EXPORT_MACRO)
 #   undef ACE_EXPORT_MACRO
@@ -156,6 +160,7 @@ ACE_END_VERSIONED_NAMESPACE_DECL
 
 #   elif defined (ACE_VXWORKS)
 #     include /**/ <sysLib.h> // for sysClkRateGet()
+#     include /**/ <types/vxTypes.h>
 #     if !defined (__RTP__)
 #       include /**/ <taskLib.h>
 #       include /**/ <taskHookLib.h>
@@ -224,8 +229,8 @@ typedef struct
   char *name_;
 } ACE_sema_t;
 #     endif /* !ACE_HAS_POSIX_SEM */
-typedef int ACE_thread_t;
-typedef int ACE_hthread_t;
+typedef ACE_VX_TASK_ID ACE_thread_t;
+typedef ACE_VX_TASK_ID ACE_hthread_t;
 // Key type: the ACE TSS emulation requires the key type be unsigned,
 // for efficiency.  (Current POSIX and Solaris TSS implementations also
 // use u_int, so the ACE TSS emulation is compatible with them.)
@@ -351,7 +356,7 @@ public:
   /// Queue up threads waiting for the condition to become signaled.
   ACE_sema_t sema_;
 
-#     if defined (ACE_VXWORKS)
+#     if defined (ACE_VXWORKS) || defined (ACE_MQX)
   /**
    * A semaphore used by the broadcast/signal thread to wait for all
    * the waiting thread(s) to wake up and be released from the
@@ -386,16 +391,18 @@ struct ACE_Export ACE_condattr_t
   int type;
 };
 
+#if !defined (ACE_MQX)
 struct ACE_Export ACE_mutexattr_t
 {
   int type;
 };
+#endif
 
 ACE_END_VERSIONED_NAMESPACE_DECL
 
 #   endif /* ACE_HAS_WTHREADS_CONDITION_VARIABLE || ACE_LACKS_COND_T */
 
-#   if defined (ACE_LACKS_RWLOCK_T) && !defined (ACE_HAS_PTHREADS_UNIX98_EXT)
+#   if defined (ACE_LACKS_RWLOCK_T)
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -694,28 +701,35 @@ public:
                  ACE_hthread_t thr_handle);
 
   /// Initialize the object using calls to ACE_OS::thr_self().
-  ACE_Thread_ID (void);
+  ACE_Thread_ID ();
 
   /// Copy constructor.
   ACE_Thread_ID (const ACE_Thread_ID &id);
 
   /// Assignment operator
-  ACE_Thread_ID& operator= (const ACE_Thread_ID&id);
+  ACE_Thread_ID& operator= (const ACE_Thread_ID &id);
 
   /// Get the thread id.
-  ACE_thread_t id (void) const;
+  ACE_thread_t id () const;
 
   /// Set the thread id.
   void id (ACE_thread_t);
 
   /// Get the thread handle.
-  ACE_hthread_t handle (void) const;
+  ACE_hthread_t handle () const;
 
   /// Set the thread handle.
   void handle (ACE_hthread_t);
 
   // Create a string representation of the thread id.
-  void to_string (char *thr_string) const;
+  void to_string (char *thr_string, size_t thr_string_len) const;
+
+  // Create a string representation of the thread id.
+  template <size_t N>
+  void to_string (char (&thr_string)[N]) const
+  {
+    this->to_string (thr_string, N);
+  }
 
   /// Equality operator.
   bool operator== (const ACE_Thread_ID &) const;
@@ -798,7 +812,7 @@ class ACE_TSS_Keys;
 class ACE_Export ACE_TSS_Emulation
 {
 public:
-  typedef void (*ACE_TSS_DESTRUCTOR)(void *value) /* throw () */;
+  typedef void (*ACE_TSS_DESTRUCTOR)(void *value);
 
   /// Maximum number of TSS keys allowed over the life of the program.
   enum { ACE_TSS_THREAD_KEYS_MAX = ACE_DEFAULT_THREAD_KEYS };
@@ -875,6 +889,15 @@ private:
 #   else  /* ! ACE_HAS_THREAD_SPECIFIC_STORAGE */
   /// Location of current thread's TSS array.
   static void **&tss_base ();
+
+#     if defined (ACE_HAS_VXTHREADS)
+#       if (defined (_WRS_CONFIG_SMP) || defined (INCLUDE_AMP_CPU))
+  static __thread void* ace_tss_keys;
+#       else  /* ! VxWorks SMP */
+  static void* ace_tss_keys;
+#       endif /* ! VxWorks SMP */
+#     endif /* ACE_HAS_VXTHREADS */
+
 #   endif /* ! ACE_HAS_THREAD_SPECIFIC_STORAGE */
 
 #   if defined (ACE_HAS_THREAD_SPECIFIC_STORAGE)
@@ -985,6 +1008,8 @@ private:
 class ACE_TSS_Keys
 {
 public:
+  ACE_ALLOC_HOOK_DECLARE;
+
   /// Default constructor, to initialize all bits to zero (unused).
   ACE_TSS_Keys (void);
 
@@ -1086,6 +1111,9 @@ namespace ACE_OS {
                      int type = ACE_DEFAULT_SYNCH_TYPE);
 
   ACE_NAMESPACE_INLINE_FUNCTION
+  int condattr_synctype (ACE_condattr_t &attributes, int& type);
+
+  ACE_NAMESPACE_INLINE_FUNCTION
   int condattr_destroy (ACE_condattr_t &attributes);
 
   ACE_NAMESPACE_INLINE_FUNCTION
@@ -1184,11 +1212,21 @@ namespace ACE_OS {
   extern ACE_Export
   int event_destroy (ACE_event_t *event);
 
-  extern ACE_Export
+  ACE_NAMESPACE_INLINE_FUNCTION
   int event_init (ACE_event_t *event,
                   int manual_reset = 0,
                   int initial_state = 0,
                   int type = ACE_DEFAULT_SYNCH_TYPE,
+                  const char *name = 0,
+                  void *arg = 0,
+                  LPSECURITY_ATTRIBUTES sa = 0);
+
+  extern ACE_Export
+  int event_init (ACE_event_t *event,
+                  int type,
+                  ACE_condattr_t *attributes,
+                  int manual_reset = 0,
+                  int initial_state = 0,
                   const char *name = 0,
                   void *arg = 0,
                   LPSECURITY_ATTRIBUTES sa = 0);
@@ -1199,6 +1237,16 @@ namespace ACE_OS {
                   int manual_reset,
                   int initial_state,
                   int type,
+                  const wchar_t *name,
+                  void *arg = 0,
+                  LPSECURITY_ATTRIBUTES sa = 0);
+
+  ACE_NAMESPACE_INLINE_FUNCTION
+  int event_init (ACE_event_t *event,
+                  int type,
+                  ACE_condattr_t *attributes,
+                  int manual_reset,
+                  int initial_state,
                   const wchar_t *name,
                   void *arg = 0,
                   LPSECURITY_ATTRIBUTES sa = 0);
@@ -1218,7 +1266,7 @@ namespace ACE_OS {
                        ACE_Time_Value *timeout,
                        int use_absolute_time = 1);
 
-  extern ACE_Export
+  ACE_NAMESPACE_INLINE_FUNCTION
   int event_wait (ACE_event_t *event);
 
   //@}
@@ -1421,6 +1469,16 @@ namespace ACE_OS {
                  int max = 0x7fffffff,
                  LPSECURITY_ATTRIBUTES sa = 0);
 
+  ACE_NAMESPACE_INLINE_FUNCTION
+  int sema_init (ACE_sema_t *s,
+                 u_int count,
+                 int type,
+                 ACE_condattr_t *attributes,
+                 const char *name = 0,
+                 void *arg = 0,
+                 int max = 0x7fffffff,
+                 LPSECURITY_ATTRIBUTES sa = 0);
+
 # if defined (ACE_HAS_WCHAR)
   ACE_NAMESPACE_INLINE_FUNCTION
   int sema_init (ACE_sema_t *s,
@@ -1430,7 +1488,23 @@ namespace ACE_OS {
                  void *arg = 0,
                  int max = 0x7fffffff,
                  LPSECURITY_ATTRIBUTES sa = 0);
+
+  ACE_NAMESPACE_INLINE_FUNCTION
+  int sema_init (ACE_sema_t *s,
+                 u_int count,
+                 int type,
+                 ACE_condattr_t *attributes,
+                 const wchar_t *name,
+                 void *arg = 0,
+                 int max = 0x7fffffff,
+                 LPSECURITY_ATTRIBUTES sa = 0);
 # endif /* ACE_HAS_WCHAR */
+
+  ACE_NAMESPACE_INLINE_FUNCTION
+  void sema_avoid_unlink (ACE_sema_t *s, bool avoid_unlink);
+
+  ACE_NAMESPACE_INLINE_FUNCTION
+  int sema_unlink (const char *name);
 
   ACE_NAMESPACE_INLINE_FUNCTION
   int sema_post (ACE_sema_t *s);
@@ -1555,7 +1629,7 @@ namespace ACE_OS {
   void thr_exit (ACE_THR_FUNC_RETURN status = 0);
 
   ACE_NAMESPACE_INLINE_FUNCTION
-  int thr_getconcurrency (void);
+  int thr_getconcurrency ();
 
   ACE_NAMESPACE_INLINE_FUNCTION
   int thr_getprio (ACE_hthread_t id,
@@ -1666,16 +1740,42 @@ namespace ACE_OS {
   int thr_kill (ACE_thread_t thr_id, int signum);
 
   ACE_NAMESPACE_INLINE_FUNCTION
-  size_t thr_min_stack (void);
+  size_t thr_min_stack ();
 
   ACE_NAMESPACE_INLINE_FUNCTION
-  ACE_thread_t thr_self (void);
+  ACE_thread_t thr_self ();
 
   ACE_NAMESPACE_INLINE_FUNCTION
   void thr_self (ACE_hthread_t &);
 
   ACE_NAMESPACE_INLINE_FUNCTION
-  const char* thr_name (void);
+  const char* thr_name ();
+
+  /// Stores a string version of the current thread id into buffer and
+  /// returns the size of this thread id in bytes.
+  ACE_NAMESPACE_INLINE_FUNCTION
+  ssize_t thr_id (char buffer[], size_t buffer_length);
+
+  /**
+   * For systems that support it (Only Linux as of writing), this is a wrapper
+   * for pid_t gettid().
+   *
+   * It returns the system-wide thread id (TID) for the current thread. These
+   * are similar to PIDs and, for x86 Linux at least, are much shorter than
+   * what is returned from thr_self(), which is an address.
+   *
+   * For older Linux (pre 2.4.11) and other systems that don't have gettid(),
+   * this uses ACE_NOTSUP_RETURN (-1).
+   */
+  ACE_NAMESPACE_INLINE_FUNCTION
+  pid_t thr_gettid ();
+
+  /**
+   * Puts the string representation of pid_t thr_gettid() into the buffer and
+   * returns number of bytes added.
+   */
+  ACE_NAMESPACE_INLINE_FUNCTION
+  ssize_t thr_gettid (char buffer[], size_t buffer_length);
 
   /// State is THR_CANCEL_ENABLE or THR_CANCEL_DISABLE
   ACE_NAMESPACE_INLINE_FUNCTION
@@ -1710,10 +1810,10 @@ namespace ACE_OS {
   int thr_suspend (ACE_hthread_t target_thread);
 
   ACE_NAMESPACE_INLINE_FUNCTION
-  void thr_testcancel (void);
+  void thr_testcancel ();
 
   ACE_NAMESPACE_INLINE_FUNCTION
-  void thr_yield (void);
+  void thr_yield ();
 
   //@{ @name A set of wrappers for mutex locks that only work within a single process.
 
@@ -1773,57 +1873,65 @@ namespace ACE_OS {
 #endif /* ACE_USES_WCHAR */
 } /* namespace ACE_OS */
 
-ACE_END_VERSIONED_NAMESPACE_DECL
-
 #if !defined (ACE_WIN32)
 
-extern "C"
+/// Implementation details of Event emulation on Unix, may be in shared memory
+struct ACE_eventdata_t
 {
-  typedef struct
-  {
-#if (defined (ACE_HAS_PTHREADS) && defined (_POSIX_THREAD_PROCESS_SHARED) && !defined (ACE_LACKS_CONDATTR_PSHARED)) || \
-    (!defined (ACE_USES_FIFO_SEM) && \
-      (!defined (ACE_HAS_POSIX_SEM) || !defined (ACE_HAS_POSIX_SEM_TIMEOUT) || defined (ACE_LACKS_NAMED_POSIX_SEM)))
-    /// Protect critical section.
-    ACE_mutex_t lock_;
-    /// Keeps track of waiters.
-    ACE_cond_t condition_;
-#else
-# if (defined (ACE_HAS_PTHREADS) && defined (_POSIX_THREAD_PROCESS_SHARED) && !defined (ACE_LACKS_MUTEXATTR_PSHARED)) || \
-     (!defined (ACE_USES_FIFO_SEM) && (!defined (ACE_HAS_POSIX_SEM) || defined (ACE_LACKS_NAMED_POSIX_SEM)))
-    /// Protect critical section.
-    ACE_mutex_t lock_;
+  /// Protect critical section.
+  ACE_mutex_t lock_;
+
+  /// Keeps track of waiters.
+  ACE_cond_t condition_;
+
+  /// Object type.
+  int type_;
+
+  /// Specifies if this is an auto- or manual-reset event.
+  int manual_reset_;
+
+  /// "True" if signaled.
+  int is_signaled_;
+
+  /// Special bool for auto_events alone
+  /**
+   * The semantics of auto events forces us to introduce this extra
+   * variable to ensure that the thread is not woken up
+   * spuriously. Please see event_timedwait () to see
+   * how this is used for auto_events.
+   * @todo This is a hack that needs revisiting after x.4
+   */
+  bool auto_event_signaled_;
+
+  /// Number of waiting threads.
+  unsigned long waiting_threads_;
+
+  /// Signal count
+  unsigned long signal_count_;
+
+  ACE_ALLOC_HOOK_DECLARE;
+};
+
+# if !defined ACE_USES_FIFO_SEM                                          \
+    && !(defined ACE_HAS_POSIX_SEM && defined ACE_HAS_POSIX_SEM_TIMEOUT  \
+         && !defined ACE_LACKS_NAMED_POSIX_SEM)
+#  define ACE_EVENT_NO_FIFO_SEM
 # endif
-#endif
 
-    /// Object type.
-    int type_;
+# if (defined ACE_HAS_PTHREADS && defined _POSIX_THREAD_PROCESS_SHARED  \
+      && !defined ACE_LACKS_MUTEXATTR_PSHARED) || defined ACE_EVENT_NO_FIFO_SEM
+#  define ACE_EVENT_USE_MUTEX_PSHARED 1
+# else
+#  define ACE_EVENT_USE_MUTEX_PSHARED 0
+# endif
 
-    /// Specifies if this is an auto- or manual-reset event.
-    int manual_reset_;
-
-    /// "True" if signaled.
-    int is_signaled_;
-
-    /// Special bool for auto_events alone
-    /**
-     * The semantics of auto events forces us to introduce this extra
-     * variable to ensure that the thread is not woken up
-     * spuriously. Please see event_wait and event_timedwait () to see
-     * how this is used for auto_events.
-     * @todo This is a hack that needs revisiting after x.4
-     */
-    bool auto_event_signaled_;
-
-    /// Number of waiting threads.
-    unsigned long waiting_threads_;
-
-    /// Signal count
-    unsigned long signal_count_;
-  } ACE_eventdata_t;
-}
-
-ACE_BEGIN_VERSIONED_NAMESPACE_DECL
+# if (defined ACE_HAS_PTHREADS && defined _POSIX_THREAD_PROCESS_SHARED  \
+      && !defined ACE_LACKS_CONDATTR_PSHARED                            \
+      && !defined ACE_LACKS_MUTEXATTR_PSHARED) || defined ACE_EVENT_NO_FIFO_SEM
+#  define ACE_EVENT_USE_COND_PSHARED 1
+# else
+#  define ACE_EVENT_USE_COND_PSHARED 0
+# endif
 
 /**
  * @class ACE_event_t
@@ -1832,38 +1940,51 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
  */
 class ACE_Export ACE_event_t
 {
-  friend int ACE_OS::event_init(ACE_event_t*, int, int, int, const char*, void*,int);
-  friend int ACE_OS::event_destroy(ACE_event_t*);
-  friend int ACE_OS::event_wait(ACE_event_t*);
-  friend int ACE_OS::event_timedwait(ACE_event_t*, ACE_Time_Value*, int);
-  friend int ACE_OS::event_signal(ACE_event_t*);
-  friend int ACE_OS::event_pulse(ACE_event_t*);
-  friend int ACE_OS::event_reset(ACE_event_t*);
-protected:
+  friend int ACE_OS::event_init (ACE_event_t *, int, int, int, const char *,
+                                 void *, int);
+  friend int ACE_OS::event_init (ACE_event_t *, int, ACE_condattr_t *, int,
+                                 int, const char *, void *, int);
+  friend int ACE_OS::event_destroy (ACE_event_t *);
+  friend int ACE_OS::event_wait (ACE_event_t *);
+  friend int ACE_OS::event_timedwait (ACE_event_t *, ACE_Time_Value *, int);
+  friend int ACE_OS::event_signal (ACE_event_t *);
+  friend int ACE_OS::event_pulse (ACE_event_t *);
+  friend int ACE_OS::event_reset (ACE_event_t *);
+
+public:
+  /// Constructor initializing all pointer fields to null
+  ACE_event_t ();
+
+private:
+  /// Lock the internal mutex/semaphore
+  int lock ();
+
+  /// Unlock the internal mutex/semaphore
+  int unlock ();
+
+  /// Use the internal semaphore or condition variable to unblock one thread
+  int wake_one ();
 
   /// Event name if process shared.
-  char* name_;
+  char *name_;
 
   /// Event data
-  ACE_eventdata_t* eventdata_;
+  ACE_eventdata_t *eventdata_;
 
-#if (!defined (ACE_HAS_PTHREADS) || !defined (_POSIX_THREAD_PROCESS_SHARED) || defined (ACE_LACKS_CONDATTR_PSHARED)) && \
-  (defined (ACE_USES_FIFO_SEM) || \
-    (defined (ACE_HAS_POSIX_SEM) && defined (ACE_HAS_POSIX_SEM_TIMEOUT) && !defined (ACE_LACKS_NAMED_POSIX_SEM)))
+# if !ACE_EVENT_USE_COND_PSHARED
   /// Keeps track of waiters.
   ACE_sema_t semaphore_;
+# endif
 
-# if (!defined (ACE_HAS_PTHREADS) || !defined (_POSIX_THREAD_PROCESS_SHARED) || defined (ACE_LACKS_MUTEXATTR_PSHARED)) && \
-     (defined (ACE_USES_FIFO_SEM) || (defined (ACE_HAS_POSIX_SEM) && !defined (ACE_LACKS_NAMED_POSIX_SEM)))
-    /// Protect critical section.
+# if !ACE_EVENT_USE_MUTEX_PSHARED
+  /// Protect critical section.
   ACE_sema_t lock_;
 # endif
-#endif
 };
 
-ACE_END_VERSIONED_NAMESPACE_DECL
-
 #endif /* ACE_WIN32 */
+
+ACE_END_VERSIONED_NAMESPACE_DECL
 
 #if defined (ACE_MT_SAFE) && (ACE_MT_SAFE != 0)
 
@@ -1894,13 +2015,13 @@ public:
   ACE_OS_Thread_Mutex_Guard (ACE_thread_mutex_t &m);
 
   /// Implicitly release the lock.
-  ~ACE_OS_Thread_Mutex_Guard (void);
+  ~ACE_OS_Thread_Mutex_Guard ();
 
   /// Explicitly acquire the lock.
-  int acquire (void);
+  int acquire ();
 
   /// Explicitly release the lock.
-  int release (void);
+  int release ();
 
 protected:
   /// Reference to the mutex.
@@ -1939,13 +2060,13 @@ public:
   ACE_OS_Recursive_Thread_Mutex_Guard (ACE_recursive_thread_mutex_t &m);
 
   /// Implicitly release the lock.
-  ~ACE_OS_Recursive_Thread_Mutex_Guard (void);
+  ~ACE_OS_Recursive_Thread_Mutex_Guard ();
 
   /// Explicitly acquire the lock.
-  int acquire (void);
+  int acquire ();
 
   /// Explicitly release the lock.
-  int release (void);
+  int release ();
 
 protected:
   /// Reference to the mutex.

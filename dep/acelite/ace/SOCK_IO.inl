@@ -1,7 +1,4 @@
 // -*- C++ -*-
-//
-// $Id: SOCK_IO.inl 80826 2008-03-04 14:51:23Z wotte $
-
 #include "ace/OS_NS_unistd.h"
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
@@ -9,13 +6,13 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 // Send an n byte message to the connected socket.
 
 ACE_INLINE
-ACE_SOCK_IO::ACE_SOCK_IO (void)
+ACE_SOCK_IO::ACE_SOCK_IO ()
 {
   // ACE_TRACE ("ACE_SOCK_IO::ACE_SOCK_IO");
 }
 
 ACE_INLINE
-ACE_SOCK_IO::~ACE_SOCK_IO (void)
+ACE_SOCK_IO::~ACE_SOCK_IO ()
 {
   // ACE_TRACE ("ACE_SOCK_IO::~ACE_SOCK_IO");
 }

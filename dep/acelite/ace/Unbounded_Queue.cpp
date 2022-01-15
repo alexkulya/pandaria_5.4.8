@@ -1,5 +1,3 @@
-// $Id: Unbounded_Queue.cpp 82723 2008-09-16 09:35:44Z johnnyw $
-
 #ifndef ACE_UNBOUNDED_QUEUE_CPP
 #define ACE_UNBOUNDED_QUEUE_CPP
 
@@ -14,12 +12,12 @@
 #endif /* __ACE_INLINE__ */
 
 #include "ace/Malloc_Base.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/os_include/os_errno.h"
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
-ACE_ALLOC_HOOK_DEFINE(ACE_Unbounded_Queue)
+ACE_ALLOC_HOOK_DEFINE_Tc(ACE_Unbounded_Queue)
 
 template <class T>
 ACE_Unbounded_Queue<T>::ACE_Unbounded_Queue (ACE_Allocator *alloc)
@@ -70,29 +68,29 @@ ACE_Unbounded_Queue<T>::operator= (const ACE_Unbounded_Queue<T> &us)
 }
 
 template <class T> ACE_Unbounded_Queue_Iterator<T>
-ACE_Unbounded_Queue<T>::begin (void)
+ACE_Unbounded_Queue<T>::begin ()
 {
   // ACE_TRACE ("ACE_Unbounded_Queue<T>::begin");
   return ACE_Unbounded_Queue_Iterator<T> (*this);
 }
 
 template <class T> ACE_Unbounded_Queue_Iterator<T>
-ACE_Unbounded_Queue<T>::end (void)
+ACE_Unbounded_Queue<T>::end ()
 {
   // ACE_TRACE ("ACE_Unbounded_Queue<T>::end");
   return ACE_Unbounded_Queue_Iterator<T> (*this, 1);
 }
 
 template <class T> void
-ACE_Unbounded_Queue<T>::dump (void) const
+ACE_Unbounded_Queue<T>::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   //   ACE_TRACE ("ACE_Unbounded_Queue<T>::dump");
 
-  ACE_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
-  ACE_DEBUG ((LM_DEBUG,  ACE_TEXT ("\nhead_ = %u"), this->head_));
-  ACE_DEBUG ((LM_DEBUG,  ACE_TEXT ("\nhead_->next_ = %u"), this->head_->next_));
-  ACE_DEBUG ((LM_DEBUG,  ACE_TEXT ("\ncur_size_ = %d\n"), this->cur_size_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
+  ACELIB_DEBUG ((LM_DEBUG,  ACE_TEXT ("\nhead_ = %u"), this->head_));
+  ACELIB_DEBUG ((LM_DEBUG,  ACE_TEXT ("\nhead_->next_ = %u"), this->head_->next_));
+  ACELIB_DEBUG ((LM_DEBUG,  ACE_TEXT ("\ncur_size_ = %d\n"), this->cur_size_));
 
   T *item = 0;
 #if !defined (ACE_NLOGGING)
@@ -102,9 +100,9 @@ ACE_Unbounded_Queue<T>::dump (void) const
   for (ACE_Unbounded_Queue_Iterator<T> iter (*(ACE_Unbounded_Queue<T> *) this);
        iter.next (item) != 0;
        iter.advance ())
-    ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("count = %d\n"), count++));
+    ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("count = %d\n"), count++));
 
-  ACE_DEBUG ((LM_DEBUG, ACE_END_DUMP));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_END_DUMP));
 #endif /* ACE_HAS_DUMP */
 }
 
@@ -120,7 +118,7 @@ ACE_Unbounded_Queue<T>::copy_nodes (const ACE_Unbounded_Queue<T> &us)
 }
 
 template <class T> void
-ACE_Unbounded_Queue<T>::delete_nodes (void)
+ACE_Unbounded_Queue<T>::delete_nodes ()
 {
   for (ACE_Node<T> *curr = this->head_->next_;
        // Keep looking until we've hit the dummy node.
@@ -145,7 +143,7 @@ ACE_Unbounded_Queue<T>::delete_nodes (void)
 }
 
 template <class T>
-ACE_Unbounded_Queue<T>::~ACE_Unbounded_Queue (void)
+ACE_Unbounded_Queue<T>::~ACE_Unbounded_Queue ()
 {
   //   ACE_TRACE ("ACE_Unbounded_Queue<T>::~ACE_Unbounded_Queue (void)");
 
@@ -226,7 +224,7 @@ ACE_Unbounded_Queue<T>::dequeue_head (T &item)
 }
 
 template <class T> void
-ACE_Unbounded_Queue<T>::reset (void)
+ACE_Unbounded_Queue<T>::reset ()
 {
   ACE_TRACE ("reset");
 
@@ -321,7 +319,7 @@ ACE_Unbounded_Queue<T>::set (const T &item,
 // ****************************************************************
 
 template <class T> void
-ACE_Unbounded_Queue_Const_Iterator<T>::dump (void) const
+ACE_Unbounded_Queue_Const_Iterator<T>::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   // ACE_TRACE ("ACE_Unbounded_Queue_Const_Iterator<T>::dump");
@@ -337,7 +335,7 @@ ACE_Unbounded_Queue_Const_Iterator<T>::ACE_Unbounded_Queue_Const_Iterator (const
 }
 
 template <class T> int
-ACE_Unbounded_Queue_Const_Iterator<T>::advance (void)
+ACE_Unbounded_Queue_Const_Iterator<T>::advance ()
 {
   // ACE_TRACE ("ACE_Unbounded_Queue_Const_Iterator<T>::advance");
   this->current_ = this->current_->next_;
@@ -345,7 +343,7 @@ ACE_Unbounded_Queue_Const_Iterator<T>::advance (void)
 }
 
 template <class T> int
-ACE_Unbounded_Queue_Const_Iterator<T>::first (void)
+ACE_Unbounded_Queue_Const_Iterator<T>::first ()
 {
   // ACE_TRACE ("ACE_Unbounded_Queue_Const_Iterator<T>::first");
   this->current_ = this->queue_.head_->next_;
@@ -353,7 +351,7 @@ ACE_Unbounded_Queue_Const_Iterator<T>::first (void)
 }
 
 template <class T> int
-ACE_Unbounded_Queue_Const_Iterator<T>::done (void) const
+ACE_Unbounded_Queue_Const_Iterator<T>::done () const
 {
   ACE_TRACE ("ACE_Unbounded_Queue_Const_Iterator<T>::done");
 
@@ -376,7 +374,7 @@ ACE_Unbounded_Queue_Const_Iterator<T>::next (T *&item)
 // ****************************************************************
 
 template <class T> void
-ACE_Unbounded_Queue_Iterator<T>::dump (void) const
+ACE_Unbounded_Queue_Iterator<T>::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   // ACE_TRACE ("ACE_Unbounded_Queue_Iterator<T>::dump");
@@ -392,7 +390,7 @@ ACE_Unbounded_Queue_Iterator<T>::ACE_Unbounded_Queue_Iterator (ACE_Unbounded_Que
 }
 
 template <class T> int
-ACE_Unbounded_Queue_Iterator<T>::advance (void)
+ACE_Unbounded_Queue_Iterator<T>::advance ()
 {
   // ACE_TRACE ("ACE_Unbounded_Queue_Iterator<T>::advance");
   this->current_ = this->current_->next_;
@@ -400,7 +398,7 @@ ACE_Unbounded_Queue_Iterator<T>::advance (void)
 }
 
 template <class T> int
-ACE_Unbounded_Queue_Iterator<T>::first (void)
+ACE_Unbounded_Queue_Iterator<T>::first ()
 {
   // ACE_TRACE ("ACE_Unbounded_Queue_Iterator<T>::first");
   this->current_ = this->queue_.head_->next_;
@@ -408,7 +406,7 @@ ACE_Unbounded_Queue_Iterator<T>::first (void)
 }
 
 template <class T> int
-ACE_Unbounded_Queue_Iterator<T>::done (void) const
+ACE_Unbounded_Queue_Iterator<T>::done () const
 {
   ACE_TRACE ("ACE_Unbounded_Queue_Iterator<T>::done");
 

@@ -1,5 +1,3 @@
-// $Id: Message_Queue_T.cpp 96070 2012-08-17 09:07:16Z mcorino $
-
 #ifndef ACE_MESSAGE_QUEUE_T_CPP
 #define ACE_MESSAGE_QUEUE_T_CPP
 
@@ -7,7 +5,7 @@
 // circular include problems.
 #include "ace/Message_Queue.h"
 #include "ace/Message_Queue_Vx.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/OS_NS_sys_time.h"
 
 #if defined (ACE_HAS_WIN32_OVERLAPPED_IO)
@@ -30,13 +28,13 @@
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
-ACE_ALLOC_HOOK_DEFINE(ACE_Message_Queue)
-ACE_ALLOC_HOOK_DEFINE(ACE_Dynamic_Message_Queue)
-ACE_ALLOC_HOOK_DEFINE(ACE_Message_Queue_Ex)
-ACE_ALLOC_HOOK_DEFINE(ACE_Message_Queue_Ex_N)
+ACE_ALLOC_HOOK_DEFINE_Tyc(ACE_Message_Queue)
+ACE_ALLOC_HOOK_DEFINE_Tyc(ACE_Dynamic_Message_Queue)
+ACE_ALLOC_HOOK_DEFINE_Tcyc(ACE_Message_Queue_Ex)
+ACE_ALLOC_HOOK_DEFINE_Tcyc(ACE_Message_Queue_Ex_N)
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> void
-ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::dump (void) const
+ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   ACE_TRACE ("ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::dump");
@@ -69,12 +67,12 @@ ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::ACE_Message_
   ACE_TRACE ("ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::ACE_Message_Queue_Ex");
 
   if (this->queue_.open (high_water_mark, low_water_mark, ns) == -1)
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT ("ACE_Message_Queue_Ex")));
 }
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY>
-ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::~ACE_Message_Queue_Ex (void)
+ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::~ACE_Message_Queue_Ex ()
 {
   ACE_TRACE ("ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::~ACE_Message_Queue_Ex");
 }
@@ -92,7 +90,7 @@ ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::open (size_t
 // Clean up the queue if we have not already done so!
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::close (void)
+ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::close ()
 {
   ACE_TRACE ("ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::close");
 
@@ -100,7 +98,7 @@ ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::close (void)
 }
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::flush (void)
+ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::flush ()
 {
   ACE_TRACE ("ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::flush");
 
@@ -108,7 +106,7 @@ ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::flush (void)
 }
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::flush_i (void)
+ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::flush_i ()
 {
   ACE_TRACE ("ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::flush_i");
 
@@ -337,7 +335,7 @@ ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::dequeue_dead
 }
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::notify (void)
+ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::notify ()
 {
   ACE_TRACE ("ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::notify");
 
@@ -366,24 +364,24 @@ next (ACE_MESSAGE_TYPE *&entry)
 }
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue_Ex_Iterator<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::done (void) const
+ACE_Message_Queue_Ex_Iterator<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::done () const
 {
   return this->iter_.done ();
 }
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue_Ex_Iterator<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::advance (void)
+ACE_Message_Queue_Ex_Iterator<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::advance ()
 {
   return this->iter_.advance ();
 }
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> void
-ACE_Message_Queue_Ex_Iterator<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::dump (void) const
+ACE_Message_Queue_Ex_Iterator<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::dump () const
 {
   this->iter_.dump ();
 }
 
-ACE_ALLOC_HOOK_DEFINE(ACE_Message_Queue_Ex_Iterator)
+ACE_ALLOC_HOOK_DEFINE_Tcyc(ACE_Message_Queue_Ex_Iterator)
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY>
 ACE_Message_Queue_Ex_Reverse_Iterator<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::
@@ -407,24 +405,24 @@ next (ACE_MESSAGE_TYPE *&entry)
 }
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue_Ex_Reverse_Iterator<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::done (void) const
+ACE_Message_Queue_Ex_Reverse_Iterator<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::done () const
 {
   return this->iter_.done ();
 }
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue_Ex_Reverse_Iterator<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::advance (void)
+ACE_Message_Queue_Ex_Reverse_Iterator<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::advance ()
 {
   return this->iter_.advance ();
 }
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> void
-ACE_Message_Queue_Ex_Reverse_Iterator<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::dump (void) const
+ACE_Message_Queue_Ex_Reverse_Iterator<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::dump () const
 {
   this->iter_.dump ();
 }
 
-ACE_ALLOC_HOOK_DEFINE(ACE_Message_Queue_Ex_Reverse_Iterator)
+ACE_ALLOC_HOOK_DEFINE_Tcyc(ACE_Message_Queue_Ex_Reverse_Iterator)
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY>
 ACE_Message_Queue_Ex_N<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::ACE_Message_Queue_Ex_N
@@ -439,7 +437,7 @@ ACE_Message_Queue_Ex_N<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::ACE_Messag
 }
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY>
-ACE_Message_Queue_Ex_N<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::~ACE_Message_Queue_Ex_N (void)
+ACE_Message_Queue_Ex_N<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::~ACE_Message_Queue_Ex_N ()
 {
   ACE_TRACE ("ACE_Message_Queue_Ex_N<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::~ACE_Message_Queue_Ex_N");
 }
@@ -532,7 +530,7 @@ ACE_Message_Queue_Ex_N<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::wrap_with_
   return mb_head;
 }
 
-ACE_ALLOC_HOOK_DEFINE(ACE_Message_Queue_Reverse_Iterator)
+ACE_ALLOC_HOOK_DEFINE_Tyc(ACE_Message_Queue_Reverse_Iterator)
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> int
 ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::dequeue (ACE_MESSAGE_TYPE *&first_item,
@@ -544,7 +542,7 @@ ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::dequeue (ACE
 }
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> ACE_Notification_Strategy *
-ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::notification_strategy (void)
+ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::notification_strategy ()
 {
   ACE_TRACE ("ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::notification_strategy");
 
@@ -562,7 +560,7 @@ ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::notification
 // Check if queue is empty (holds locks).
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> bool
-ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::is_empty (void)
+ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::is_empty ()
 {
   ACE_TRACE ("ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::is_empty");
 
@@ -572,7 +570,7 @@ ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::is_empty (vo
 // Check if queue is full (holds locks).
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> bool
-ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::is_full (void)
+ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::is_full ()
 {
   ACE_TRACE ("ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::is_full");
 
@@ -580,7 +578,7 @@ ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::is_full (voi
 }
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> size_t
-ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::high_water_mark (void)
+ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::high_water_mark ()
 {
   ACE_TRACE ("ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::high_water_mark");
 
@@ -596,7 +594,7 @@ ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::high_water_m
 }
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> size_t
-ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::low_water_mark (void)
+ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::low_water_mark ()
 {
   ACE_TRACE ("ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::low_water_mark");
 
@@ -612,7 +610,7 @@ ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::low_water_ma
 }
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> size_t
-ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::message_bytes (void)
+ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::message_bytes ()
 {
   ACE_TRACE ("ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::message_bytes");
 
@@ -620,7 +618,7 @@ ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::message_byte
 }
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> size_t
-ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::message_length (void)
+ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::message_length ()
 {
   ACE_TRACE ("ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::message_length");
 
@@ -628,7 +626,7 @@ ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::message_leng
 }
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> size_t
-ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::message_count (void)
+ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::message_count ()
 {
   ACE_TRACE ("ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::message_count");
 
@@ -636,7 +634,7 @@ ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::message_coun
 }
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::deactivate (void)
+ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::deactivate ()
 {
   ACE_TRACE ("ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::deactivate");
 
@@ -644,7 +642,7 @@ ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::deactivate (
 }
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::activate (void)
+ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::activate ()
 {
   ACE_TRACE ("ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::activate");
 
@@ -652,7 +650,7 @@ ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::activate (vo
 }
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::pulse (void)
+ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::pulse ()
 {
   ACE_TRACE ("ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::pulse");
 
@@ -660,7 +658,7 @@ ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::pulse (void)
 }
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::deactivated (void)
+ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::deactivated ()
 {
   ACE_TRACE ("ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::deactivated");
 
@@ -668,7 +666,7 @@ ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::deactivated 
 }
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::state (void)
+ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::state ()
 {
   ACE_TRACE ("ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::state");
 
@@ -676,7 +674,7 @@ ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::state (void)
 }
 
 template <class ACE_MESSAGE_TYPE, ACE_SYNCH_DECL, class TIME_POLICY> ACE_SYNCH_MUTEX_T &
-ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::lock (void)
+ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::lock ()
 {
   return this->queue_.lock ();
 }
@@ -697,8 +695,8 @@ ACE_Message_Queue_Ex<ACE_MESSAGE_TYPE, ACE_SYNCH_USE, TIME_POLICY>::set_time_pol
 
 template <ACE_SYNCH_DECL, class TIME_POLICY>
 ACE_Message_Queue_Iterator<ACE_SYNCH_USE, TIME_POLICY>::ACE_Message_Queue_Iterator (ACE_Message_Queue <ACE_SYNCH_USE, TIME_POLICY> &q)
-  : queue_ (q),
-    curr_ (q.head_)
+  : queue_ (q)
+  , curr_ (q.head_)
 {
 }
 
@@ -717,7 +715,7 @@ ACE_Message_Queue_Iterator<ACE_SYNCH_USE, TIME_POLICY>::next (ACE_Message_Block 
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue_Iterator<ACE_SYNCH_USE, TIME_POLICY>::done (void) const
+ACE_Message_Queue_Iterator<ACE_SYNCH_USE, TIME_POLICY>::done () const
 {
   ACE_READ_GUARD_RETURN (ACE_SYNCH_MUTEX_T, m, this->queue_.lock_, -1)
 
@@ -725,7 +723,7 @@ ACE_Message_Queue_Iterator<ACE_SYNCH_USE, TIME_POLICY>::done (void) const
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue_Iterator<ACE_SYNCH_USE, TIME_POLICY>::advance (void)
+ACE_Message_Queue_Iterator<ACE_SYNCH_USE, TIME_POLICY>::advance ()
 {
   ACE_READ_GUARD_RETURN (ACE_SYNCH_MUTEX_T, m, this->queue_.lock_, -1)
 
@@ -735,18 +733,18 @@ ACE_Message_Queue_Iterator<ACE_SYNCH_USE, TIME_POLICY>::advance (void)
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> void
-ACE_Message_Queue_Iterator<ACE_SYNCH_USE, TIME_POLICY>::dump (void) const
+ACE_Message_Queue_Iterator<ACE_SYNCH_USE, TIME_POLICY>::dump () const
 {
 #if defined (ACE_HAS_DUMP)
 #endif /* ACE_HAS_DUMP */
 }
 
-ACE_ALLOC_HOOK_DEFINE(ACE_Message_Queue_Iterator)
+ACE_ALLOC_HOOK_DEFINE_Tyc(ACE_Message_Queue_Iterator)
 
 template <ACE_SYNCH_DECL, class TIME_POLICY>
 ACE_Message_Queue_Reverse_Iterator<ACE_SYNCH_USE, TIME_POLICY>::ACE_Message_Queue_Reverse_Iterator (ACE_Message_Queue <ACE_SYNCH_USE, TIME_POLICY> &q)
-  : queue_ (q),
-    curr_ (queue_.tail_)
+  : queue_ (q)
+  , curr_ (queue_.tail_)
 {
 }
 
@@ -765,7 +763,7 @@ ACE_Message_Queue_Reverse_Iterator<ACE_SYNCH_USE, TIME_POLICY>::next (ACE_Messag
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue_Reverse_Iterator<ACE_SYNCH_USE, TIME_POLICY>::done (void) const
+ACE_Message_Queue_Reverse_Iterator<ACE_SYNCH_USE, TIME_POLICY>::done () const
 {
   ACE_READ_GUARD_RETURN (ACE_SYNCH_MUTEX_T, m, this->queue_.lock_, -1)
 
@@ -773,7 +771,7 @@ ACE_Message_Queue_Reverse_Iterator<ACE_SYNCH_USE, TIME_POLICY>::done (void) cons
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue_Reverse_Iterator<ACE_SYNCH_USE, TIME_POLICY>::advance (void)
+ACE_Message_Queue_Reverse_Iterator<ACE_SYNCH_USE, TIME_POLICY>::advance ()
 {
   ACE_READ_GUARD_RETURN (ACE_SYNCH_MUTEX_T, m, this->queue_.lock_, -1)
 
@@ -783,7 +781,7 @@ ACE_Message_Queue_Reverse_Iterator<ACE_SYNCH_USE, TIME_POLICY>::advance (void)
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> void
-ACE_Message_Queue_Reverse_Iterator<ACE_SYNCH_USE, TIME_POLICY>::dump (void) const
+ACE_Message_Queue_Reverse_Iterator<ACE_SYNCH_USE, TIME_POLICY>::dump () const
 {
 #if defined (ACE_HAS_DUMP)
 #endif /* ACE_HAS_DUMP */
@@ -798,7 +796,7 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::dequeue (ACE_Message_Block *&firs
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> ACE_Notification_Strategy *
-ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::notification_strategy (void)
+ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::notification_strategy ()
 {
   ACE_TRACE ("ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::notification_strategy");
 
@@ -816,7 +814,7 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::notification_strategy (ACE_Notifi
 // Check if queue is empty (does not hold locks).
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> bool
-ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::is_empty_i (void)
+ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::is_empty_i ()
 {
   ACE_TRACE ("ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::is_empty_i");
   return this->tail_ == 0;
@@ -825,7 +823,7 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::is_empty_i (void)
 // Check if queue is full (does not hold locks).
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> bool
-ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::is_full_i (void)
+ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::is_full_i ()
 {
   ACE_TRACE ("ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::is_full_i");
   return this->cur_bytes_ >= this->high_water_mark_;
@@ -834,7 +832,7 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::is_full_i (void)
 // Check if queue is empty (holds locks).
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> bool
-ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::is_empty (void)
+ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::is_empty ()
 {
   ACE_TRACE ("ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::is_empty");
   ACE_GUARD_RETURN (ACE_SYNCH_MUTEX_T, ace_mon, this->lock_, false);
@@ -845,7 +843,7 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::is_empty (void)
 // Check if queue is full (holds locks).
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> bool
-ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::is_full (void)
+ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::is_full ()
 {
   ACE_TRACE ("ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::is_full");
   ACE_GUARD_RETURN (ACE_SYNCH_MUTEX_T, ace_mon, this->lock_, false);
@@ -854,7 +852,7 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::is_full (void)
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> size_t
-ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::high_water_mark (void)
+ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::high_water_mark ()
 {
   ACE_TRACE ("ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::high_water_mark");
   ACE_GUARD_RETURN (ACE_SYNCH_MUTEX_T, ace_mon, this->lock_, 0);
@@ -872,7 +870,7 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::high_water_mark (size_t hwm)
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> size_t
-ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::low_water_mark (void)
+ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::low_water_mark ()
 {
   ACE_TRACE ("ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::low_water_mark");
   ACE_GUARD_RETURN (ACE_SYNCH_MUTEX_T, ace_mon, this->lock_, 0);
@@ -890,7 +888,7 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::low_water_mark (size_t lwm)
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> size_t
-ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::message_bytes (void)
+ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::message_bytes ()
 {
   ACE_TRACE ("ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::message_bytes");
   ACE_GUARD_RETURN (ACE_SYNCH_MUTEX_T, ace_mon, this->lock_, 0);
@@ -899,7 +897,7 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::message_bytes (void)
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> size_t
-ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::message_length (void)
+ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::message_length ()
 {
   ACE_TRACE ("ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::message_length");
   ACE_GUARD_RETURN (ACE_SYNCH_MUTEX_T, ace_mon, this->lock_, 0);
@@ -908,7 +906,7 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::message_length (void)
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> size_t
-ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::message_count (void)
+ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::message_count ()
 {
   ACE_TRACE ("ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::message_count");
   ACE_GUARD_RETURN (ACE_SYNCH_MUTEX_T, ace_mon, this->lock_, 0);
@@ -926,7 +924,7 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::deactivate ()
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::activate (void)
+ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::activate ()
 {
   ACE_TRACE ("ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::activate");
   ACE_GUARD_RETURN (ACE_SYNCH_MUTEX_T, ace_mon, this->lock_, -1);
@@ -944,7 +942,7 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::pulse ()
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::deactivated (void)
+ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::deactivated ()
 {
   ACE_TRACE ("ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::deactivated");
 
@@ -952,7 +950,7 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::deactivated (void)
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::state (void)
+ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::state ()
 {
   ACE_TRACE ("ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::state");
 
@@ -960,14 +958,14 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::state (void)
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> ACE_SYNCH_MUTEX_T &
-ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::lock (void)
+ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::lock ()
 {
   return this->lock_;
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY>
 ACE_Time_Value_T<TIME_POLICY>
-ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::gettimeofday (void) const
+ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::gettimeofday () const
 {
   return this->time_policy_ ();
 }
@@ -980,27 +978,27 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::set_time_policy (TIME_POLICY cons
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> void
-ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::dump (void) const
+ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   ACE_TRACE ("ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::dump");
-  ACE_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
   switch (this->state_)
     {
     case ACE_Message_Queue_Base::ACTIVATED:
-      ACE_DEBUG ((LM_DEBUG,
+      ACELIB_DEBUG ((LM_DEBUG,
                   ACE_TEXT ("state = ACTIVATED\n")));
       break;
     case ACE_Message_Queue_Base::DEACTIVATED:
-      ACE_DEBUG ((LM_DEBUG,
+      ACELIB_DEBUG ((LM_DEBUG,
                   ACE_TEXT ("state = DEACTIVATED\n")));
       break;
     case ACE_Message_Queue_Base::PULSED:
-      ACE_DEBUG ((LM_DEBUG,
+      ACELIB_DEBUG ((LM_DEBUG,
                   ACE_TEXT ("state = PULSED\n")));
       break;
     }
-  ACE_DEBUG ((LM_DEBUG,
+  ACELIB_DEBUG ((LM_DEBUG,
               ACE_TEXT ("low_water_mark = %d\n")
               ACE_TEXT ("high_water_mark = %d\n")
               ACE_TEXT ("cur_bytes = %d\n")
@@ -1015,11 +1013,11 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::dump (void) const
               this->cur_count_,
               this->head_,
               this->tail_));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("not_full_cond:\n")));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("not_full_cond:\n")));
   not_full_cond_.dump ();
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("not_empty_cond:\n")));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("not_empty_cond:\n")));
   not_empty_cond_.dump ();
-  ACE_DEBUG ((LM_DEBUG, ACE_END_DUMP));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_END_DUMP));
 #endif /* ACE_HAS_DUMP */
 }
 
@@ -1056,7 +1054,7 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::ACE_Message_Queue (size_t hwm,
   ACE_TRACE ("ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::ACE_Message_Queue");
 
   if (this->open (hwm, lwm, ns) == -1)
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT ("open")));
 
 #if defined (ACE_HAS_MONITOR_POINTS) && (ACE_HAS_MONITOR_POINTS == 1)
@@ -1083,11 +1081,11 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::ACE_Message_Queue (size_t hwm,
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY>
-ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::~ACE_Message_Queue (void)
+ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::~ACE_Message_Queue ()
 {
   ACE_TRACE ("ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::~ACE_Message_Queue");
   if (this->head_ != 0 && this->close () == -1)
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT ("close")));
 
 #if defined (ACE_HAS_MONITOR_POINTS) && (ACE_HAS_MONITOR_POINTS == 1)
@@ -1097,7 +1095,7 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::~ACE_Message_Queue (void)
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::flush_i (void)
+ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::flush_i ()
 {
   int number_flushed = 0;
 
@@ -1182,7 +1180,7 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::deactivate_i (int pulse)
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::activate_i (void)
+ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::activate_i ()
 {
   ACE_TRACE ("ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::activate_i");
   int const previous_state = this->state_;
@@ -1191,7 +1189,7 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::activate_i (void)
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::flush (void)
+ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::flush ()
 {
   ACE_TRACE ("ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::flush");
   ACE_GUARD_RETURN (ACE_SYNCH_MUTEX_T, ace_mon, this->lock_, -1);
@@ -1203,7 +1201,7 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::flush (void)
 // Clean up the queue if we have not already done so!
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::close (void)
+ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::close ()
 {
   ACE_TRACE ("ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::close");
   ACE_GUARD_RETURN (ACE_SYNCH_MUTEX_T, ace_mon, this->lock_, -1);
@@ -1217,7 +1215,7 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::close (void)
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::signal_enqueue_waiters (void)
+ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::signal_enqueue_waiters ()
 {
   if (this->not_full_cond_.signal () != 0)
     return -1;
@@ -1225,7 +1223,7 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::signal_enqueue_waiters (void)
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::signal_dequeue_waiters (void)
+ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::signal_dequeue_waiters ()
 {
   // Tell any blocked threads that the queue has a new item!
   if (this->not_empty_cond_.signal () != 0)
@@ -1478,7 +1476,7 @@ template <ACE_SYNCH_DECL, class TIME_POLICY> int
 ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::dequeue_head_i (ACE_Message_Block *&first_item)
 {
   if (this->head_ ==0)
-    ACE_ERROR_RETURN ((LM_ERROR,
+    ACELIB_ERROR_RETURN ((LM_ERROR,
                        ACE_TEXT ("Attempting to dequeue from empty queue")),
                       -1);
   ACE_TRACE ("ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::dequeue_head_i");
@@ -1604,7 +1602,7 @@ template <ACE_SYNCH_DECL, class TIME_POLICY> int
 ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::dequeue_tail_i (ACE_Message_Block *&dequeued)
 {
   if (this->head_ == 0)
-    ACE_ERROR_RETURN ((LM_ERROR,
+    ACELIB_ERROR_RETURN ((LM_ERROR,
                        ACE_TEXT ("Attempting to dequeue from empty queue")),
                       -1);
   ACE_TRACE ("ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::dequeue_tail_i");
@@ -1654,7 +1652,7 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::dequeue_deadline_i (ACE_Message_B
 {
 #if defined (ACE_HAS_TIMED_MESSAGE_BLOCKS)
   if (this->head_ == 0)
-    ACE_ERROR_RETURN ((LM_ERROR,
+    ACELIB_ERROR_RETURN ((LM_ERROR,
                        ACE_TEXT ("Attempting to dequeue from empty queue")),
                       -1);
   ACE_TRACE ("ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::dequeue_deadline_i");
@@ -2043,7 +2041,7 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::dequeue_deadline (ACE_Message_Blo
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> int
-ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::notify (void)
+ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::notify ()
 {
   ACE_TRACE ("ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::notify");
 
@@ -2054,7 +2052,6 @@ ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::notify (void)
     return this->notification_strategy_->notify ();
 }
 
-// = Initialization and termination methods.
 template <ACE_SYNCH_DECL, class TIME_POLICY>
 ACE_Dynamic_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::ACE_Dynamic_Message_Queue (ACE_Dynamic_Message_Strategy & message_strategy,
                                                                      size_t hwm,
@@ -2077,7 +2074,7 @@ ACE_Dynamic_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::ACE_Dynamic_Message_Queue
 // dtor: free message strategy and let base class dtor do the rest.
 
 template <ACE_SYNCH_DECL, class TIME_POLICY>
-ACE_Dynamic_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::~ACE_Dynamic_Message_Queue (void)
+ACE_Dynamic_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::~ACE_Dynamic_Message_Queue ()
 {
   delete &this->message_strategy_;
 }
@@ -2263,16 +2260,16 @@ ACE_Dynamic_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::dequeue_head (ACE_Message
 // of the queue.
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> void
-ACE_Dynamic_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::dump (void) const
+ACE_Dynamic_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   ACE_TRACE ("ACE_Dynamic_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::dump");
-  ACE_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
 
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY> (base class):\n")));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY> (base class):\n")));
   this->ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::dump ();
 
-  ACE_DEBUG ((LM_DEBUG,
+  ACELIB_DEBUG ((LM_DEBUG,
               ACE_TEXT ("pending_head_ = %u\n")
               ACE_TEXT ("pending_tail_ = %u\n")
               ACE_TEXT ("late_head_ = %u\n")
@@ -2286,10 +2283,10 @@ ACE_Dynamic_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::dump (void) const
               this->beyond_late_head_,
               this->beyond_late_tail_));
 
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("message_strategy_ :\n")));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("message_strategy_ :\n")));
   message_strategy_.dump ();
 
-  ACE_DEBUG ((LM_DEBUG, ACE_END_DUMP));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_END_DUMP));
 #endif /* ACE_HAS_DUMP */
 }
   // dump the state of the queue
@@ -2712,12 +2709,12 @@ ACE_Dynamic_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::refresh_pending_queue (co
               else if (current_status != ACE_Dynamic_Message_Strategy::LATE)
                 {
                   // if we got here, something is *seriously* wrong with the queue
-                  ACE_ERROR_RETURN ((LM_ERROR,
+                  ACELIB_ERROR_RETURN ((LM_ERROR,
                                      ACE_TEXT ("Unexpected message priority status [%d] (expected LATE)"),
                                      (int) current_status),
                                     -1);
                 }
-              /* FALLTHRU */
+              /* FALLTHROUGH */
             }
           else
             {
@@ -2754,7 +2751,7 @@ ACE_Dynamic_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::refresh_pending_queue (co
             {
               if (current_status != ACE_Dynamic_Message_Strategy::PENDING)
                 // if we got here, something is *seriously* wrong with the queue
-                ACE_ERROR_RETURN((LM_ERROR,
+                ACELIB_ERROR_RETURN((LM_ERROR,
                                   ACE_TEXT ("Unexpected message priority status [%d] (expected PENDING)"),
                                   (int) current_status),
                                  -1);
@@ -2776,7 +2773,7 @@ ACE_Dynamic_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::refresh_pending_queue (co
           break; // switch
         default:
           // if we got here, something is *seriously* wrong with the queue
-          ACE_ERROR_RETURN((LM_ERROR,
+          ACELIB_ERROR_RETURN((LM_ERROR,
                             ACE_TEXT ("Unknown message priority status [%d]"),
                             (int) current_status),
                            -1);
@@ -2832,7 +2829,7 @@ ACE_Dynamic_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::refresh_late_queue (const
                 }
               else if (current_status != ACE_Dynamic_Message_Strategy::LATE)
                 // if we got here, something is *seriously* wrong with the queue
-                ACE_ERROR_RETURN ((LM_ERROR,
+                ACELIB_ERROR_RETURN ((LM_ERROR,
                                    ACE_TEXT ("Unexpected message priority status [%d] (expected LATE)"),
                                    (int) current_status),
                                   -1);
@@ -2853,14 +2850,14 @@ ACE_Dynamic_Message_Queue<ACE_SYNCH_USE, TIME_POLICY>::refresh_late_queue (const
 
         case ACE_Dynamic_Message_Strategy::PENDING:
           // if we got here, something is *seriously* wrong with the queue
-          ACE_ERROR_RETURN ((LM_ERROR,
+          ACELIB_ERROR_RETURN ((LM_ERROR,
                              ACE_TEXT ("Unexpected message priority status ")
                              ACE_TEXT ("[%d] (expected LATE or BEYOND_LATE)"),
                              (int) current_status),
                             -1);
         default:
           // if we got here, something is *seriously* wrong with the queue
-          ACE_ERROR_RETURN ((LM_ERROR,
+          ACELIB_ERROR_RETURN ((LM_ERROR,
                              ACE_TEXT ("Unknown message priority status [%d]"),
                              (int) current_status),
                             -1);

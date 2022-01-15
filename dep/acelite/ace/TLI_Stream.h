@@ -4,8 +4,6 @@
 /**
  *  @file    TLI_Stream.h
  *
- *  $Id: TLI_Stream.h 80826 2008-03-04 14:51:23Z wotte $
- *
  *  @author Doug Schmidt
  */
 //=============================================================================
@@ -15,7 +13,7 @@
 #define ACE_TLI_STREAM_H
 #include /**/ "ace/pre.h"
 
-#include "ace/config-lite.h"
+#include /**/ "ace/config-lite.h"
 
 #if !defined (ACE_LACKS_PRAGMA_ONCE)
 # pragma once
@@ -42,20 +40,19 @@ public:
   friend class ACE_TLI_Acceptor;
   friend class ACE_TLI_Connector;
 
-  // = Initialization and termination methods.
   /// Default constructor.
-  ACE_TLI_Stream (void);
+  ACE_TLI_Stream ();
 
   // = TLI-specific shutdown operations.
   /// Close down and release resources.
-  int close (void);
+  int close ();
 
   /// Send a release and then await the release from the other side.
-  int active_close (void);
+  int active_close ();
 
   /// Acknowledge the release from the other side and then send the
   /// release to the other side.
-  int passive_close (void);
+  int passive_close ();
 
   /// Return address of remotely connected peer.
   int get_remote_addr (ACE_Addr &) const;
@@ -114,7 +111,7 @@ public:
   typedef ACE_INET_Addr PEER_ADDR;
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

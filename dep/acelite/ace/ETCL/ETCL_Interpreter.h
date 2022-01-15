@@ -4,8 +4,6 @@
 /**
  *  @file    ETCL_Interpreter.h
  *
- *  $Id: ETCL_Interpreter.h 82434 2008-07-28 11:40:36Z johnnyw $
- *
  *  @author Jeff Parsons <parsons@cs.wustl.edu> based on previous work by
  *  @author Seth Widoff <sbw1@cs.wustl.edu>
  */
@@ -45,12 +43,11 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 class ETCL_Parser_Export ETCL_Interpreter
 {
 protected:
-  // = Initialization and termination methods.
   /// Constructor.
-  ETCL_Interpreter (void);
+  ETCL_Interpreter ();
 
   /// Destructor.
-  virtual ~ETCL_Interpreter (void);
+  virtual ~ETCL_Interpreter ();
 
   /// Using the Yacc generated parser, construct an expression tree
   /// representing @a constraints from the tokens returned by it.
@@ -68,9 +65,9 @@ private:
 
 
 // Functions we need for parsing.
-extern int yyparse (void);
+extern int yyparse ();
 extern void yyrestart (FILE*);
-extern int yylex (void);
+extern int yylex ();
 
 // Have yylex read from the constraint string, not from stdin.
 #undef YY_INPUT

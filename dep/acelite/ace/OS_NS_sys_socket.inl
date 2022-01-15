@@ -1,7 +1,4 @@
 // -*- C++ -*-
-//
-// $Id: OS_NS_sys_socket.inl 95533 2012-02-14 22:59:17Z wotte $
-
 #include "ace/OS_NS_errno.h"
 #include "ace/OS_NS_macros.h"
 #include "ace/OS_NS_sys_uio.h"
@@ -57,7 +54,11 @@ ACE_OS::accept (ACE_HANDLE handle,
   // Apparently some platforms like VxWorks can't correctly deal with
   // a NULL addr.
 
+#    if defined (ACE_HAS_IPV6)
+   sockaddr_in6 fake_addr;
+#    else
    sockaddr_in fake_addr;
+#    endif /* ACE_HAS_IPV6 */
    int fake_addrlen;
 
    if (addrlen == 0)
@@ -127,7 +128,7 @@ ACE_INLINE int
 ACE_OS::closesocket (ACE_HANDLE handle)
 {
   ACE_OS_TRACE ("ACE_OS::closesocket");
-#if defined (ACE_WIN32)
+#if defined (ACE_WIN32) || defined (ACE_MQX)
   // @note Do not shutdown the write end here.  Doing so will break
   //       applications that duplicate a handle on fork(), for
   //       example, and expect to continue writing in the fork()ed
@@ -273,6 +274,10 @@ ACE_OS::getsockname (ACE_HANDLE handle,
 #endif /* ACE_GETNAME_RETURNS_RANDOM_SIN_ZERO */
 }
 
+#if !defined(ACE_SOCKOPT_LEN)
+#define ACE_SOCKOPT_LEN ACE_SOCKET_LEN
+#endif
+
 ACE_INLINE int
 ACE_OS::getsockopt (ACE_HANDLE handle,
                     int level,
@@ -293,7 +298,7 @@ ACE_OS::getsockopt (ACE_HANDLE handle,
                                      level,
                                      optname,
                                      optval,
-                                     (ACE_SOCKET_LEN *) optlen),
+                                     (ACE_SOCKOPT_LEN *) optlen),
                        int,
                        -1);
 #endif /* ACE_LACKS_GETSOCKOPT */
@@ -467,16 +472,17 @@ ACE_OS::recvmsg (ACE_HANDLE handle, struct msghdr *msg, int flags)
 #if !defined (ACE_LACKS_RECVMSG)
 # if (defined (ACE_HAS_WINSOCK2) && (ACE_HAS_WINSOCK2 != 0))
   DWORD bytes_received = 0;
-
-  int result = ::WSARecvFrom ((SOCKET) handle,
-                              (WSABUF *) msg->msg_iov,
-                              msg->msg_iovlen,
-                              &bytes_received,
-                              (DWORD *) &flags,
-                              msg->msg_name,
-                              &msg->msg_namelen,
-                              0,
-                              0);
+  int const result = msg->msg_control
+    ? recvmsg_win32_i (handle, msg, flags, bytes_received)
+    : ::WSARecvFrom ((SOCKET) handle,
+                     (WSABUF *) msg->msg_iov,
+                     msg->msg_iovlen,
+                     &bytes_received,
+                     (DWORD *) &flags,
+                     msg->msg_name,
+                     &msg->msg_namelen,
+                     0,
+                     0);
 
   if (result != 0)
     {
@@ -588,7 +594,11 @@ ACE_OS::send (ACE_HANDLE handle, const char *buf, size_t len, int flags)
     return result;
 
 #else
+# if defined (ACE_MQX)
+  ssize_t const ace_result_ = ::send ((ACE_SOCKET) handle, (void*)buf, len, flags);
+#else
   ssize_t const ace_result_ = ::send ((ACE_SOCKET) handle, buf, len, flags);
+#endif
 
 # if !(defined (EAGAIN) && defined (EWOULDBLOCK) && EAGAIN == EWOULDBLOCK)
   // Optimize this code out if we can detect that EAGAIN ==
@@ -619,15 +629,17 @@ ACE_OS::sendmsg (ACE_HANDLE handle,
 #if !defined (ACE_LACKS_SENDMSG)
 # if (defined (ACE_HAS_WINSOCK2) && (ACE_HAS_WINSOCK2 != 0))
   DWORD bytes_sent = 0;
-  int result = ::WSASendTo ((SOCKET) handle,
-                            (WSABUF *) msg->msg_iov,
-                            msg->msg_iovlen,
-                            &bytes_sent,
-                            flags,
-                            msg->msg_name,
-                            msg->msg_namelen,
-                            0,
-                            0);
+  int const result = msg->msg_control
+    ? sendmsg_win32_i (handle, msg, flags, bytes_sent)
+    : ::WSASendTo ((SOCKET) handle,
+                   (WSABUF *) msg->msg_iov,
+                   msg->msg_iovlen,
+                   &bytes_sent,
+                   flags,
+                   msg->msg_name,
+                   msg->msg_namelen,
+                   0,
+                   0);
 
   if (result != 0)
     {
@@ -681,6 +693,14 @@ ACE_OS::sendto (ACE_HANDLE handle,
   ACE_SOCKCALL_RETURN (::sendto ((ACE_SOCKET) handle,
                                  buf,
                                  static_cast<int> (len),
+                                 flags,
+                                 const_cast<struct sockaddr *> (addr),
+                                 addrlen),
+                       ssize_t, -1);
+#elif defined (ACE_MQX)
+  ACE_SOCKCALL_RETURN (::sendto ((ACE_SOCKET) handle,
+                                 (void*)buf,
+                                 len,
                                  flags,
                                  const_cast<struct sockaddr *> (addr),
                                  addrlen),
@@ -822,6 +842,40 @@ ACE_OS::sendv (ACE_HANDLE handle,
 
   return (ssize_t) bytes_sent;
 
+#elif defined (ACE_MQX)
+  ssize_t bytes_sent = 0;
+  for (int i = 0; i < n; ++i)
+    {
+      ssize_t result = ACE_OS::send (handle, buffers[i].iov_base,
+                                     buffers[i].iov_len, 0);
+
+      if (result == -1)
+        {
+          // There is a subtle difference in behaviour depending on
+          // whether or not any data was sent.  If no data was sent,
+          // then always return -1.  Otherwise return bytes_sent.
+          // This gives the caller an opportunity to keep track of
+          // bytes that have already been sent.
+          if (bytes_sent > 0)
+            break;
+          else
+            {
+              // errno should already be set from the ACE_OS::send call.
+              return -1;
+            }
+        }
+      else
+        {
+          // Gets ignored on error anyway
+          bytes_sent += result;
+
+          // If the transfer isn't complete just drop out of the loop.
+          if (result < buffers[i].iov_len)
+            break;
+        }
+    }
+
+  return bytes_sent;
 #elif defined (ACE_HAS_SOCK_BUF_SIZE_MAX)
 
   // Platform limits the maximum socket message size.  Pare down the
@@ -866,27 +920,6 @@ ACE_OS::setsockopt (ACE_HANDLE handle,
   ACE_UNUSED_ARG (optlen);
   ACE_NOTSUP_RETURN (-1);
 #else
-#if defined (ACE_HAS_WINSOCK2) && (ACE_HAS_WINSOCK2 != 0) && defined(SO_REUSEPORT)
-  // To work around an inconsistency with Microsofts implementation of
-  // sockets, we will check for SO_REUSEADDR, and ignore it. Winsock
-  // always behaves as if SO_REUSEADDR=1. Some implementations have
-  // the same behaviour as Winsock, but use a new name for
-  // it. SO_REUSEPORT.  If you want the normal behaviour for
-  // SO_REUSEADDR=0, then NT 4 sp4 and later supports
-  // SO_EXCLUSIVEADDRUSE. This also requires using an updated Platform
-  // SDK so it was decided to ignore the option for now. (Especially
-  // since Windows always sets SO_REUSEADDR=1, which we can mimic by doing
-  // nothing.)
-  if (level == SOL_SOCKET) {
-    if (optname == SO_REUSEADDR) {
-      return 0; // Not supported by Winsock
-    }
-    if (optname == SO_REUSEPORT) {
-      optname = SO_REUSEADDR;
-    }
-  }
-#endif /*ACE_HAS_WINSOCK2*/
-
   int result;
   ACE_SOCKCALL (::setsockopt ((ACE_SOCKET) handle,
                               level,
@@ -986,36 +1019,54 @@ ACE_OS::socketpair (int domain, int type,
                      int, -1);
 #endif /* ACE_LACKS_SOCKETPAIR */
 }
-
-#if defined (ACE_LINUX) && defined (ACE_HAS_IPV6)
+#if defined (ACE_HAS_IPV6)
 ACE_INLINE unsigned int
 ACE_OS::if_nametoindex (const char *ifname)
 {
   ACE_OS_TRACE ("ACE_OS::if_nametoindex");
+#ifdef ACE_LACKS_IF_NAMETOINDEX
+  ACE_UNUSED_ARG (ifname);
+  ACE_NOTSUP_RETURN (0);
+#else
   ACE_OSCALL_RETURN (::if_nametoindex (ifname), int, 0);
+#endif /* ACE_LACKS_IF_NAMETOINDEX */
 }
 
 ACE_INLINE char *
 ACE_OS::if_indextoname (unsigned int ifindex, char *ifname)
 {
   ACE_OS_TRACE ("ACE_OS::if_indextoname");
+#ifdef ACE_LACKS_IF_NAMETOINDEX
+  ACE_UNUSED_ARG (ifindex);
+  ACE_UNUSED_ARG (ifname);
+  ACE_NOTSUP_RETURN (0);
+#else
   ACE_OSCALL_RETURN (::if_indextoname (ifindex, ifname), char *, 0);
+#endif /* ACE_LACKS_IF_NAMETOINDEX */
 }
+#endif (ACE_HAS_IPV6)
 
 ACE_INLINE struct if_nameindex *
-ACE_OS::if_nameindex (void)
+ACE_OS::if_nameindex ()
 {
   ACE_OS_TRACE ("ACE_OS::if_nameindex");
+#ifdef ACE_LACKS_IF_NAMEINDEX
+  ACE_NOTSUP_RETURN (0);
+#else
   ACE_OSCALL_RETURN (::if_nameindex (), struct if_nameindex *, 0);
+#endif /* ACE_LACKS_IF_NAMEINDEX */
 }
 
 ACE_INLINE void
 ACE_OS::if_freenameindex (struct if_nameindex *ptr)
 {
   ACE_OS_TRACE ("ACE_OS::if_freenameindex");
+#ifdef ACE_LACKS_IF_NAMEINDEX
+  ACE_UNUSED_ARG (ptr);
+#else
   if (ptr != 0)
     ::if_freenameindex (ptr);
+#endif /* ACE_LACKS_IF_NAMEINDEX */
 }
-#endif /* ACE_LINUX && ACE_HAS_IPV6 */
 
 ACE_END_VERSIONED_NAMESPACE_DECL

@@ -4,8 +4,6 @@
 /**
  *  @file    TkReactor.h
  *
- *  $Id: TkReactor.h 82723 2008-09-16 09:35:44Z johnnyw $
- *
  *  @author Nagarajan Surendran <naga@cs.wustl.edu>
  */
 //=============================================================================
@@ -61,7 +59,6 @@ public:
 class ACE_TkReactor_Export ACE_TkReactor : public ACE_Select_Reactor
 {
 public:
-  // = Initialization and termination methods.
   ACE_TkReactor (size_t size = DEFAULT_SIZE,
                  bool restart = false,
                  ACE_Sig_Handler * = 0);

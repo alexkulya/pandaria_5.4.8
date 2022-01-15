@@ -4,11 +4,9 @@
 /**
  *  @file    TSS_Adapter.h
  *
- *  $Id: TSS_Adapter.h 93792 2011-04-07 11:48:50Z mcorino $
- *
  *   Originally in Synch.h
  *
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  */
 //==========================================================================
 
@@ -43,7 +41,9 @@ public:
   ACE_TSS_Adapter (void *object, ACE_THR_DEST f);
 
   /// Perform the cleanup operation.
-  void cleanup (void);
+  void cleanup ();
+
+  ACE_ALLOC_HOOK_DECLARE;
 
 //private:
 

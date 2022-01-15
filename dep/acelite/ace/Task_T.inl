@@ -1,7 +1,4 @@
 // -*- C++ -*-
-//
-// $Id: Task_T.inl 96066 2012-08-16 12:45:46Z mcorino $
-
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> ACE_INLINE void
@@ -37,10 +34,10 @@ ACE_Task<ACE_SYNCH_USE, TIME_POLICY>::ungetq (ACE_Message_Block *mb, ACE_Time_Va
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> ACE_INLINE int
-ACE_Task<ACE_SYNCH_USE, TIME_POLICY>::flush (u_long flag)
+ACE_Task<ACE_SYNCH_USE, TIME_POLICY>::flush (u_long f)
 {
   ACE_TRACE ("ACE_Task<ACE_SYNCH_USE, TIME_POLICY>::flush");
-  if (ACE_BIT_ENABLED (flag, ACE_Task_Flags::ACE_FLUSHALL))
+  if (ACE_BIT_ENABLED (f, ACE_Task_Flags::ACE_FLUSHALL))
     return this->msg_queue_ != 0 && this->msg_queue_->close ();
   else
     return -1;   // Note, need to be more careful about what we free...
@@ -59,7 +56,7 @@ ACE_Task<ACE_SYNCH_USE, TIME_POLICY>::msg_queue (ACE_Message_Queue<ACE_SYNCH_USE
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> ACE_Message_Queue<ACE_SYNCH_USE, TIME_POLICY> *
-ACE_Task<ACE_SYNCH_USE, TIME_POLICY>::msg_queue (void)
+ACE_Task<ACE_SYNCH_USE, TIME_POLICY>::msg_queue ()
 {
   ACE_TRACE ("ACE_Task<ACE_SYNCH_USE, TIME_POLICY>::msg_queue");
   return this->msg_queue_;
@@ -67,7 +64,7 @@ ACE_Task<ACE_SYNCH_USE, TIME_POLICY>::msg_queue (void)
 
 template <ACE_SYNCH_DECL, class TIME_POLICY>
 ACE_Time_Value_T<TIME_POLICY>
-ACE_Task<ACE_SYNCH_USE, TIME_POLICY>::gettimeofday (void) const
+ACE_Task<ACE_SYNCH_USE, TIME_POLICY>::gettimeofday () const
 {
   if (this->msg_queue_ != 0)
     return this->msg_queue_->gettimeofday ();
@@ -91,7 +88,7 @@ ACE_Task<ACE_SYNCH_USE, TIME_POLICY>::reply (ACE_Message_Block *mb, ACE_Time_Val
 }
 
 template <ACE_SYNCH_DECL, class TIME_POLICY> ACE_INLINE ACE_Task<ACE_SYNCH_USE, TIME_POLICY> *
-ACE_Task<ACE_SYNCH_USE, TIME_POLICY>::next (void)
+ACE_Task<ACE_SYNCH_USE, TIME_POLICY>::next ()
 {
   ACE_TRACE ("ACE_Task<ACE_SYNCH_USE, TIME_POLICY>::next");
   return this->next_;

@@ -4,8 +4,6 @@
 /**
  *  @file    Auto_IncDec_T.h
  *
- *  $Id: Auto_IncDec_T.h 92353 2010-10-25 06:34:35Z johnnyw $
- *
  *  @author Edan Ayal <EdanA@cti2.com>
  */
 //=============================================================================
@@ -38,7 +36,7 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
  * must provide at least operators ++ and --.
  */
 template <class ACE_SAFELY_INCREMENTABLE_DECREMENTABLE>
-class ACE_Auto_IncDec : private ACE_Copy_Disabled
+class ACE_Auto_IncDec
 {
 public:
   /// Implicitly increment the counter.
@@ -48,12 +46,18 @@ public:
   ~ACE_Auto_IncDec (void);
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
+
+  /// Declare the dynamic allocation hooks.
+  ACE_ALLOC_HOOK_DECLARE;
 
 protected:
   /// Reference to the @c ACE_SAFELY_INCREMENTABLE_DECREMENTABLE counter
   /// we're incrementing/decrementing.
   ACE_SAFELY_INCREMENTABLE_DECREMENTABLE &counter_;
+private:
+  void operator= (const ACE_Auto_IncDec<ACE_SAFELY_INCREMENTABLE_DECREMENTABLE> &) = delete;
+  ACE_Auto_IncDec (const ACE_Auto_IncDec<ACE_SAFELY_INCREMENTABLE_DECREMENTABLE> &) = delete;
 };
 
 ACE_END_VERSIONED_NAMESPACE_DECL
