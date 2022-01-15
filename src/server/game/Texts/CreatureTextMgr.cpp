@@ -169,7 +169,7 @@ void CreatureTextMgr::LoadCreatureTextLocales()
 
     mLocaleTextMap.clear(); // for reload case
 
-    QueryResult result = WorldDatabase.Query("SELECT entry, groupid, id, text_loc1, text_loc2, text_loc3, text_loc4, text_loc5, text_loc6, text_loc7, text_loc8, text_loc9, text_loc10, text_loc11, text_female_loc1, text_female_loc2, text_female_loc3, text_female_loc4, text_female_loc5, text_female_loc6, text_female_loc7, text_female_loc8, text_female_loc9, text_female_loc10, text_female_loc11  FROM locales_creature_text");
+    QueryResult result = WorldDatabase.Query("SELECT entry, text_group, id, text_loc1, text_loc2, text_loc3, text_loc4, text_loc5, text_loc6, text_loc7, text_loc8, text_loc9, text_loc10, text_loc11, text_female_loc1, text_female_loc2, text_female_loc3, text_female_loc4, text_female_loc5, text_female_loc6, text_female_loc7, text_female_loc8, text_female_loc9, text_female_loc10, text_female_loc11  FROM locales_creature_text");
 
     if (!result)
         return;

@@ -23,7 +23,7 @@ DELETE FROM `locales_creature_text` WHERE `entry` IN
 50374,
 50414);
 
-INSERT INTO `locales_creature_text` (`entry`, `groupid`, `id`, `text_loc8`, `text_female_loc8`) VALUES
+INSERT INTO `locales_creature_text` (`entry`, `text_group`, `id`, `text_loc8`, `text_female_loc8`) VALUES
 -- 951
 (951, 0, 0, "ДА ИСЦЕЛИТ ТЕБЯ СВЕТ!", ""),
 (951, 0, 1, "НЫНЕ ВОЗЛАГАЮ НА ТЕБЯ РУКИ!", ""),

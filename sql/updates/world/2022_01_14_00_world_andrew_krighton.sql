@@ -1,5 +1,5 @@
 UPDATE `creature_addon` SET `path_id` = 180224, `emote` = 0 WHERE `guid` = 180224;
-UPDATE `creature` SET `position_x` = -9462.29, `position_y` = 87.8151, `position_z` = 58.4211, `orientation` = 0.733038, `spawndist` = 0, `MovementType` = 2 WHERE `guid` = 180224;
+UPDATE `creature` SET `position_x` = -9462.29, `position_y` = 87.8151, `position_z` = 58.4211, `orientation` = 0.733038, `wander_distance` = 0, `movement_type` = 2 WHERE `guid` = 180224;
 
 UPDATE `creature_template` SET `AIName` = "SmartAI" WHERE `entry` = 2046;
 DELETE FROM `smart_scripts` WHERE `entryorguid` = 2046 AND `source_type` = 0;

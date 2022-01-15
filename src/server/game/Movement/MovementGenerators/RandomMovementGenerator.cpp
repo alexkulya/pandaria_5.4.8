@@ -128,7 +128,7 @@ void RandomMovementGenerator<Creature>::DoInitialize(Creature* creature)
         return;
 
     if (!wander_distance)
-        wander_distance = creature->GetRespawnRadius();
+        wander_distance = creature->GetWanderDistance();
 
     creature->AddUnitState(UNIT_STATE_ROAMING | UNIT_STATE_ROAMING_MOVE);
     _setRandomLocation(creature);
@@ -143,7 +143,7 @@ void RandomMovementGenerator<Creature>::DoReset(Creature* creature)
 template<>
 void RandomMovementGenerator<Creature>::DoFinalize(Creature* creature)
 {
-    creature->ClearUnitState(UNIT_STATE_ROAMING|UNIT_STATE_ROAMING_MOVE);
+    creature->ClearUnitState(UNIT_STATE_ROAMING | UNIT_STATE_ROAMING_MOVE);
     creature->SetWalk(false);
 }
 

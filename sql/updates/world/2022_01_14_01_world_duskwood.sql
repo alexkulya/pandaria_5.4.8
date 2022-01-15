@@ -22,7 +22,7 @@ INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `positio
 (170802, 18, -10455.65, -1178.642, 27.41125, 0, 0, 840);
 
 UPDATE `creature_template_addon` SET `path_id` = 170802 WHERE (`entry` = 840);
-UPDATE `creature` SET `position_x`= -10483.37, `position_y`= -1182.986, `position_z`= 27.85222, `orientation`= 0, `spawndist`= 0, `MovementType`= 2 WHERE `guid`= 170802;
+UPDATE `creature` SET `position_x`= -10483.37, `position_y`= -1182.986, `position_z`= 27.85222, `orientation`= 0, `wander_distance`= 0, `movement_type`= 2 WHERE `guid`= 170802;
 
 -- Watcher Ladimore
 DELETE FROM `waypoint_data` WHERE `id`= 170417;
@@ -68,5 +68,5 @@ INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `positio
 (170417, 38, -10565.88, -1154.214, 27.82649, 0, -1398, 576),
 (170417, 39, -10577.47, -1165.161, 28.12534, 0, 0, 576);
 
-UPDATE `creature` SET `position_x`= -10584.02, `position_y`= -1180.533, `position_z`= 27.99362, `orientation`= 0, `spawndist`= 0, `MovementType`= 2 WHERE `guid`= 170417;
+UPDATE `creature` SET `position_x`= -10584.02, `position_y`= -1180.533, `position_z`= 27.99362, `orientation`= 0, `wander_distance`= 0, `movement_type`= 2 WHERE `guid`= 170417;
 UPDATE `creature_template_addon` SET `path_id` = 170417 WHERE (`entry` = 576);

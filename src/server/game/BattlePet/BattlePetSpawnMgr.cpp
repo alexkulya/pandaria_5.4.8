@@ -340,7 +340,7 @@ void BattlePetSpawnZoneMgr::SpawnCreature(uint64 guid, BattlePetSpawnTemplate* s
     }
 
     // apply random movement to replacement creature
-    replacementCreature->SetRespawnRadius(20.0f);
+    replacementCreature->SetWanderDistance(20.0f);
     replacementCreature->SetDefaultMovementType(RANDOM_MOTION_TYPE);
     replacementCreature->Respawn(true);
 
