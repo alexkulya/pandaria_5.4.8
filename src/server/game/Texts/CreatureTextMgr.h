@@ -71,7 +71,7 @@ struct CreatureTextId
 };
 
 typedef std::vector<CreatureTextEntry> CreatureTextGroup;                   // texts in a group
-typedef std::unordered_map<uint8, CreatureTextGroup> CreatureTextHolder;    // groups for a creature by groupid
+typedef std::unordered_map<uint8, CreatureTextGroup> CreatureTextHolder;    // groups for a creature by text_group
 typedef std::unordered_map<uint32, CreatureTextHolder> CreatureTextMap;     // all creatures by entry
 
 typedef std::map<CreatureTextId, CreatureTextLocale> LocaleCreatureTextMap;

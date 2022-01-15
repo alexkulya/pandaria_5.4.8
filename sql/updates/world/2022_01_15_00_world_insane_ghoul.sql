@@ -1,4 +1,4 @@
-UPDATE `creature` SET `spawndist` = 0, `MovementType` = 2, `position_x` = -11012.04, `position_y` = -1350.911, `position_z` = 53.65797 WHERE `guid` = 171081;
+UPDATE `creature` SET `wander_distance` = 0, `movement_type` = 2, `position_x` = -11012.04, `position_y` = -1350.911, `position_z` = 53.65797 WHERE `guid` = 171081;
 
 UPDATE `creature_template_addon` SET `path_id` = 171081 WHERE `entry` = 511;
 

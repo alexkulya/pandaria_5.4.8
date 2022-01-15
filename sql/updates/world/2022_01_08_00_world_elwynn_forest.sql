@@ -1,7 +1,7 @@
-UPDATE `creature` SET `position_x` = -9009.53, `position_y` = -63.4485, `position_z` = 87.0312, `orientation` = 1.70431, `spawndist` = 0, `MovementType` = 2 WHERE `guid` = 177929;
-UPDATE `creature` SET `position_x` = -9010.16, `position_y` = -58.7008, `position_z` = 87.1778, `orientation` = 1.61399, `spawndist` = 0, `MovementType` = 0 WHERE `guid` = 177930;
-UPDATE `creature` SET `position_x` = -9009.79, `position_y` = -67.2748, `position_z` = 86.9223, `orientation` = 1.61399, `spawndist` = 0, `MovementType` = 0 WHERE `guid` = 177931;
-UPDATE `creature` SET `position_x` = -9009.96, `position_y` = -63.2326, `position_z` = 87.066, `orientation` = 1.61399, `spawndist` = 0, `MovementType` = 0 WHERE `guid` = 177932;
+UPDATE `creature` SET `position_x` = -9009.53, `position_y` = -63.4485, `position_z` = 87.0312, `orientation` = 1.70431, `wander_distance` = 0, `movement_type` = 2 WHERE `guid` = 177929;
+UPDATE `creature` SET `position_x` = -9010.16, `position_y` = -58.7008, `position_z` = 87.1778, `orientation` = 1.61399, `wander_distance` = 0, `movement_type` = 0 WHERE `guid` = 177930;
+UPDATE `creature` SET `position_x` = -9009.79, `position_y` = -67.2748, `position_z` = 86.9223, `orientation` = 1.61399, `wander_distance` = 0, `movement_type` = 0 WHERE `guid` = 177931;
+UPDATE `creature` SET `position_x` = -9009.96, `position_y` = -63.2326, `position_z` = 87.066, `orientation` = 1.61399, `wander_distance` = 0, `movement_type` = 0 WHERE `guid` = 177932;
 
 DELETE FROM `creature_template_addon` WHERE `entry` = 42218;
 DELETE FROM `creature_addon` WHERE `guid` IN (177929, 177930, 177931, 177932, 177933, 177934);
@@ -83,11 +83,11 @@ DELETE FROM `creature` WHERE `guid` IN (179870, 179872, 179875, 178447) AND `id`
 DELETE FROM `creature_addon` WHERE `guid` IN (179870, 179872, 179875, 178447);
 DELETE FROM `waypoint_data` WHERE `id` IN (179870, 179872, 179875, 178447);
 
-UPDATE `creature` SET `spawndist` = 0, `MovementType` = 2, `position_x` = -9599.69, `position_y` = -850.821, `position_z` = 43.5444 WHERE `guid` = 178787 AND `id` = 42218;
-UPDATE `creature` SET `spawndist` = 0, `MovementType` = 2, `position_x` = -9383.01, `position_y` = 104.414, `position_z` = 59.8336 WHERE `guid` = 178448 AND `id` = 42218;
+UPDATE `creature` SET `wander_distance` = 0, `movement_type` = 2, `position_x` = -9599.69, `position_y` = -850.821, `position_z` = 43.5444 WHERE `guid` = 178787 AND `id` = 42218;
+UPDATE `creature` SET `wander_distance` = 0, `movement_type` = 2, `position_x` = -9383.01, `position_y` = 104.414, `position_z` = 59.8336 WHERE `guid` = 178448 AND `id` = 42218;
 
-UPDATE `creature` SET `spawndist` = 0, `MovementType` = 0, `position_x` = -9599.69, `position_y` = -850.821, `position_z` = 43.5444 WHERE `guid` IN (178789, 178792, 178795, 178791, 178794, 178788, 178790, 178793) AND `id` = 42218;
-UPDATE `creature` SET `spawndist` = 0, `MovementType` = 0, `position_x` = -9383.01, `position_y` = 104.414, `position_z` = 59.8336 WHERE `guid` IN (178445, 179869, 178449, 179871, 179874, 179873, 179877, 179876) AND `id` = 42218;
+UPDATE `creature` SET `wander_distance` = 0, `movement_type` = 0, `position_x` = -9599.69, `position_y` = -850.821, `position_z` = 43.5444 WHERE `guid` IN (178789, 178792, 178795, 178791, 178794, 178788, 178790, 178793) AND `id` = 42218;
+UPDATE `creature` SET `wander_distance` = 0, `movement_type` = 0, `position_x` = -9383.01, `position_y` = 104.414, `position_z` = 59.8336 WHERE `guid` IN (178445, 179869, 178449, 179871, 179874, 179873, 179877, 179876) AND `id` = 42218;
 
 DELETE FROM `creature_addon` WHERE `guid` IN (178787, 178789, 178792, 178795, 178791, 178794, 178788, 178790, 178793,
                                               178448, 178445, 179869, 178449, 179871, 179874, 179873, 179877, 179876);
@@ -271,7 +271,7 @@ INSERT INTO `creature_formations` (`leaderGUID`, `memberGUID`, `dist`, `angle`, 
 (178448, 179876, 8, 340, 2);
 
 UPDATE `creature_template` SET `ScriptName` = "npc_brother_paxton" WHERE `entry` = 951;
-UPDATE `creature` SET `spawndist` = 0, `MovementType` = 2 WHERE `guid` = 177921 AND `id` = 951;
+UPDATE `creature` SET `wander_distance` = 0, `movement_type` = 2 WHERE `guid` = 177921 AND `id` = 951;
 DELETE FROM `creature_template_addon` WHERE `entry` = 951;
 DELETE FROM `creature_addon` WHERE `guid` = 177921;
 INSERT INTO `creature_addon` (`guid`, `path_id`, `bytes2`) VALUES
@@ -347,7 +347,7 @@ INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `positio
 (177921, 66, -8823.21, -151.63, 80.539, 0, 951);
 
 DELETE FROM `creature_text` WHERE `entry` IN (951, 49869);
-INSERT INTO `creature_text` (`entry`, `groupid`, `id`, `text`, `text_female`, `type`, `language`, `probability`, `emote`, `duration`, `sound`, `comment`) VALUES
+INSERT INTO `creature_text` (`entry`, `text_group`, `id`, `text`, `text_female`, `type`, `language`, `probability`, `emote`, `duration`, `sound`, `comment`) VALUES
 (951, 0, 0, "BY THE LIGHT BE RENEWED!", "", 12, 0, 100, 0, 0, 0, "Brother Paxton"),
 (951, 0, 1, "AND I LAY MY HANDS UPON YOU!", "", 12, 0, 100, 0, 0, 0, "Brother Paxton"),
 (951, 0, 2, "Let the Holy Light embrace you!", "", 12, 0, 100, 0, 0, 0, "Brother Paxton"),
@@ -365,7 +365,7 @@ INSERT INTO `creature_text` (`entry`, `groupid`, `id`, `text`, `text_female`, `t
 (49869, 1, 4, "Your worgs are no match for the might of Stormwind!", "", 14, 0, 15, 22, 0, 0, "Stormwind Infantry");
 
 DELETE FROM `creature_text` WHERE `entry` = 49874;
-INSERT INTO `creature_text` (`entry`, `groupid`, `id`, `text`, `text_female`, `type`, `language`, `probability`, `emote`, `duration`, `sound`, `comment`) VALUES
+INSERT INTO `creature_text` (`entry`, `text_group`, `id`, `text`, `text_female`, `type`, `language`, `probability`, `emote`, `duration`, `sound`, `comment`) VALUES
 (49874, 0, 0, "Orc KILL $r!", "Orc KILL $r!", 12, 0, 50, 0, 0, 0, "Blackrock Spy"),
 (49874, 0, 1, "Blackrock take forest!", "Blackrock take forest!", 12, 0, 50, 0, 0, 0, "Blackrock Spy"),
 (49874, 0, 2, "The grapes were VERY TASTY!", "The grapes were VERY TASTY!", 12, 0, 50, 0, 0, 0, "Blackrock Spy"),
@@ -374,7 +374,7 @@ INSERT INTO `creature_text` (`entry`, `groupid`, `id`, `text`, `text_female`, `t
 
 UPDATE `creature_template` SET `ScriptName` = "npc_blackrock_invader" WHERE `entry` = 42937;
 DELETE FROM `creature_text` WHERE `entry` = 42937;
-INSERT INTO `creature_text` (`entry`, `groupid`, `id`, `text`, `text_female`, `type`, `language`, `probability`, `emote`, `duration`, `sound`, `comment`) VALUES
+INSERT INTO `creature_text` (`entry`, `text_group`, `id`, `text`, `text_female`, `type`, `language`, `probability`, `emote`, `duration`, `sound`, `comment`) VALUES
 (42937, 0, 0, "Orc KILL $r!", "Orc KILL $r!", 12, 0, 50, 0, 0, 0, "Blackrock Invader"),
 (42937, 0, 1, "Blackrock take forest!", "Blackrock take forest!", 12, 0, 50, 0, 0, 0, "Blackrock Invader"),
 (42937, 0, 2, "The grapes were VERY TASTY!", "The grapes were VERY TASTY!", 12, 0, 50, 0, 0, 0, "Blackrock Invader"),
@@ -383,7 +383,7 @@ INSERT INTO `creature_text` (`entry`, `groupid`, `id`, `text`, `text_female`, `t
 
 UPDATE `creature_template` SET `ScriptName` = "npc_goblin_assassin" WHERE `entry` = 50039;
 DELETE FROM `creature_text` WHERE `entry` = 50039;
-INSERT INTO `creature_text` (`entry`, `groupid`, `id`, `text`, `text_female`, `type`, `language`, `probability`, `emote`, `duration`, `sound`, `comment`) VALUES
+INSERT INTO `creature_text` (`entry`, `text_group`, `id`, `text`, `text_female`, `type`, `language`, `probability`, `emote`, `duration`, `sound`, `comment`) VALUES
 (50039, 0, 0, "We'll kill anybody for the right price!", "We'll kill anybody for the right price!", 12, 0, 50, 0, 0, 0, "Goblin Assassin"),
 (50039, 0, 1, "Time to join your friends, kissin' the dirt!", "Time to join your friends, kissin' the dirt!", 12, 0, 50, 0, 0, 0, "Goblin Assassin"),
 (50039, 0, 2, "DIE!!!", "DIE!!!", 12, 0, 50, 0, 0, 0, "Goblin Assassin"),

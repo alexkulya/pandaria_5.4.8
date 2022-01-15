@@ -188,12 +188,12 @@ void MotionMaster::MoveIdle()
         Mutate(&si_idleMovement, MOTION_SLOT_IDLE);
 }
 
-void MotionMaster::MoveRandom(float spawndist)
+void MotionMaster::MoveRandom(float wanderDistance)
 {
     if (_owner->GetTypeId() == TYPEID_UNIT)
     {
         TC_LOG_DEBUG("misc", "Creature (GUID: %u) start moving random", _owner->GetGUIDLow());
-        Mutate(new RandomMovementGenerator<Creature>(spawndist), MOTION_SLOT_IDLE);
+        Mutate(new RandomMovementGenerator<Creature>(wanderDistance), MOTION_SLOT_IDLE);
     }
 }
 
