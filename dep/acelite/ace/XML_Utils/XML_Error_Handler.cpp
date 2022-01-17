@@ -1,7 +1,5 @@
-// $Id: XML_Error_Handler.cpp 95885 2012-06-14 14:05:44Z johnnyw $
-
 #include "XML_Error_Handler.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/Auto_Ptr.h"
 #include "ace/ACE.h"
 #include <xercesc/util/XMLString.hpp>
@@ -14,15 +12,6 @@ using xercesc::SAXParseException;
 
 namespace XML
 {
-  XML_Error_Handler::XML_Error_Handler (void)
-    : errors_ (false)
-  {
-  }
-
-  XML_Error_Handler::~XML_Error_Handler()
-  {
-  }
-
   void XML_Error_Handler::warning(const SAXParseException& toCatch)
   {
     if (ACE::debug ())
@@ -70,7 +59,7 @@ namespace XML
   }
 
   bool
-  XML_Error_Handler::getErrors (void) const
+  XML_Error_Handler::getErrors () const
   {
     return this->errors_;
   }

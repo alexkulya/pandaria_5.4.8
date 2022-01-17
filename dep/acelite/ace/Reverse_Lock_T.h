@@ -4,11 +4,9 @@
 /**
  *  @file    Reverse_Lock_T.h
  *
- *  $Id: Reverse_Lock_T.h 84481 2009-02-17 10:58:31Z johnnyw $
- *
  *   Moved from Synch.h.
  *
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  */
 //==========================================================================
 
@@ -83,35 +81,35 @@ public:
 
   /// Destructor. If <lock_> was not passed in by the user, it will be
   /// deleted.
-  virtual ~ACE_Reverse_Lock (void);
+  virtual ~ACE_Reverse_Lock ();
 
   // = Lock accessors.
   /// Release the lock.
-  virtual int acquire (void);
+  virtual int acquire ();
 
   /// Release the lock.
-  virtual int tryacquire (void);
+  virtual int tryacquire ();
 
   /// Acquire the lock.
-  virtual int release (void);
+  virtual int release ();
 
   /// Release the lock.
-  virtual int acquire_read (void);
+  virtual int acquire_read ();
 
   /// Release the lock.
-  virtual int acquire_write (void);
+  virtual int acquire_write ();
 
   /// Release the lock.
-  virtual int tryacquire_read (void);
+  virtual int tryacquire_read ();
 
   /// Release the lock.
-  virtual int tryacquire_write (void);
+  virtual int tryacquire_write ();
 
   /// Release the lock.
-  virtual int tryacquire_write_upgrade (void);
+  virtual int tryacquire_write_upgrade ();
 
   /// Explicitly destroy the lock.
-  virtual int remove (void);
+  virtual int remove ();
 
 private:
   /// The concrete locking mechanism that all the methods delegate to.

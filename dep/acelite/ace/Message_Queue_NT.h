@@ -4,9 +4,7 @@
 /**
  *  @file    Message_Queue_NT.h
  *
- *  $Id: Message_Queue_NT.h 82723 2008-09-16 09:35:44Z johnnyw $
- *
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  */
 //=============================================================================
 
@@ -48,7 +46,6 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 class ACE_Export ACE_Message_Queue_NT : public ACE_Message_Queue_Base
 {
 public:
-  // = Initialization and termination methods.
   ACE_Message_Queue_NT (DWORD max_threads = ACE_Message_Queue_Base::DEFAULT_HWM);
 
   /**
@@ -176,7 +173,7 @@ public:
   // = Notification hook.
 
   /// Dump the state of an object.
-  virtual void dump (void) const;
+  virtual void dump () const;
 
   /// Get the handle to the underlying completion port.
   virtual ACE_HANDLE completion_port (void);
@@ -185,10 +182,10 @@ public:
   ACE_ALLOC_HOOK_DECLARE;
 
 private:
-
-  // Disallow copying and assignment.
-  ACE_Message_Queue_NT (const ACE_Message_Queue_NT &);
-  void operator= (const ACE_Message_Queue_NT &);
+  ACE_Message_Queue_NT (const ACE_Message_Queue_NT &) = delete;
+  void operator= (const ACE_Message_Queue_NT &) = delete;
+  ACE_Message_Queue_NT (ACE_Message_Queue_NT &&) = delete;
+  void operator= (ACE_Message_Queue_NT &&) = delete;
 
 private:
   // = Internal states.

@@ -1,4 +1,3 @@
-// $Id: Svc_Conf_Lexer.cpp 92178 2010-10-08 07:44:20Z olli $
 #include "ace/Svc_Conf_Lexer.h"
 
 #if (ACE_USES_CLASSIC_SVC_CONF == 1)
@@ -49,7 +48,7 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 #define ACE_NO_STATE -1
 #define ACE_COMMENT 0
 
-#if defined (_MSC_VER) && (_MSC_VER >= 1400)
+#if defined (_MSC_VER)
 // Visual Studio .NET 2005 (VC8) issues warning C4351 for input_ in the
 // constructor initializer list below. Since we like the warned-of new
 // behavior (input_ elements will be default-initialized), squash the
@@ -60,7 +59,7 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 struct ace_yy_buffer_state
 {
-  ace_yy_buffer_state (void)
+  ace_yy_buffer_state ()
    : input_ (),
      index_ (0),
      size_ (0),
@@ -74,16 +73,18 @@ struct ace_yy_buffer_state
 #endif /* ACE_USES_WCHAR */
   {
   }
-#if defined (_MSC_VER) && (_MSC_VER >= 1400)
+#if defined (_MSC_VER)
 #  pragma warning (pop)
 #endif /* VC8 */
 
-  ~ace_yy_buffer_state (void)
+  ~ace_yy_buffer_state ()
   {
 #if defined (ACE_USES_WCHAR)
     delete converter_;
 #endif /* ACE_USES_WCHAR */
   }
+
+  ACE_ALLOC_HOOK_DECLARE;
 
   // Input related
   char input_[ACE_YY_CONVERSION_SPACE];
@@ -102,6 +103,8 @@ struct ace_yy_buffer_state
   ACE_Encoding_Converter* converter_;
 #endif /* ACE_USES_WCHAR */
 };
+
+ACE_ALLOC_HOOK_DEFINE(ace_yy_buffer_state)
 
 // ******************************************************************
 // Global functions
@@ -243,7 +246,9 @@ ACE_Svc_Conf_Lexer::input (ACE_Svc_Conf_Param* param,
             }
           else
             {
+#ifndef ACE_LACKS_STDERR
               ACE_OS::fprintf (stderr, "ERROR: input in scanner failed\n");
+#endif
               ACE_OS::exit (2);
             }
         }

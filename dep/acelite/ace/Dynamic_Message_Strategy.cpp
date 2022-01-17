@@ -1,5 +1,3 @@
-// $Id: Dynamic_Message_Strategy.cpp 91287 2010-08-05 10:30:49Z johnnyw $
-
 #include "ace/Dynamic_Message_Strategy.h"
 
 #if !defined (__ACE_INLINE__)
@@ -7,7 +5,7 @@
 #endif /* __ACE_INLINE__ */
 
 #include "ace/Guard_T.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/Malloc_Base.h"
 #include "ace/OS_NS_string.h"
 
@@ -31,7 +29,7 @@ ACE_Dynamic_Message_Strategy::ACE_Dynamic_Message_Strategy (unsigned long static
 
 // dtor
 
-ACE_Dynamic_Message_Strategy::~ACE_Dynamic_Message_Strategy (void)
+ACE_Dynamic_Message_Strategy::~ACE_Dynamic_Message_Strategy ()
 {
 }
 
@@ -84,14 +82,14 @@ ACE_Dynamic_Message_Strategy::priority_status (ACE_Message_Block & mb,
 // Dump the state of the strategy.
 
 void
-ACE_Dynamic_Message_Strategy::dump (void) const
+ACE_Dynamic_Message_Strategy::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   ACE_TRACE ("ACE_Dynamic_Message_Strategy::dump");
 
-  ACE_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
 
-  ACE_DEBUG ((LM_DEBUG,
+  ACELIB_DEBUG ((LM_DEBUG,
               ACE_TEXT ("static_bit_field_mask_ = %u\n")
               ACE_TEXT ("static_bit_field_shift_ = %u\n")
               ACE_TEXT ("dynamic_priority_max_ = %u\n")
@@ -110,7 +108,7 @@ ACE_Dynamic_Message_Strategy::dump (void) const
               this->pending_shift_.sec (),
               this->pending_shift_.usec ()));
 
-  ACE_DEBUG ((LM_DEBUG, ACE_END_DUMP));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_END_DUMP));
 #endif /* ACE_HAS_DUMP */
 }
 
@@ -125,7 +123,7 @@ ACE_Deadline_Message_Strategy::ACE_Deadline_Message_Strategy (unsigned long stat
 {
 }
 
-ACE_Deadline_Message_Strategy::~ACE_Deadline_Message_Strategy (void)
+ACE_Deadline_Message_Strategy::~ACE_Deadline_Message_Strategy ()
 {
 }
 
@@ -140,19 +138,19 @@ ACE_Deadline_Message_Strategy::convert_priority (ACE_Time_Value & priority,
   // dynamic priority conversion function based on time to deadline
 
 void
-ACE_Deadline_Message_Strategy::dump (void) const
+ACE_Deadline_Message_Strategy::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   ACE_TRACE ("ACE_Deadline_Message_Strategy::dump");
 
-  ACE_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
 
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("ACE_Dynamic_Message_Strategy base class:\n")));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("ACE_Dynamic_Message_Strategy base class:\n")));
   this->ACE_Dynamic_Message_Strategy::dump ();
 
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\nderived class: ACE_Deadline_Message_Strategy\n")));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\nderived class: ACE_Deadline_Message_Strategy\n")));
 
-  ACE_DEBUG ((LM_DEBUG, ACE_END_DUMP));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_END_DUMP));
 #endif /* ACE_HAS_DUMP */
 }
 
@@ -167,7 +165,7 @@ ACE_Laxity_Message_Strategy::ACE_Laxity_Message_Strategy (unsigned long static_b
 {
 }
 
-ACE_Laxity_Message_Strategy::~ACE_Laxity_Message_Strategy (void)
+ACE_Laxity_Message_Strategy::~ACE_Laxity_Message_Strategy ()
 {
 }
 
@@ -183,19 +181,19 @@ ACE_Laxity_Message_Strategy::convert_priority (ACE_Time_Value & priority,
   // dynamic priority conversion function based on laxity
 
 void
-ACE_Laxity_Message_Strategy::dump (void) const
+ACE_Laxity_Message_Strategy::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   ACE_TRACE ("ACE_Laxity_Message_Strategy::dump");
 
-  ACE_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
 
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("ACE_Dynamic_Message_Strategy base class:\n")));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("ACE_Dynamic_Message_Strategy base class:\n")));
   this->ACE_Dynamic_Message_Strategy::dump ();
 
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\nderived class: ACE_Laxity_Message_Strategy\n")));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\nderived class: ACE_Laxity_Message_Strategy\n")));
 
-  ACE_DEBUG ((LM_DEBUG, ACE_END_DUMP));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_END_DUMP));
 #endif /* ACE_HAS_DUMP */
 }
   // Dump the state of the strategy.

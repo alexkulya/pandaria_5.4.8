@@ -4,8 +4,6 @@
 /**
  *  @file    Timeprobe.h
  *
- *  $Id: Timeprobe.h 80826 2008-03-04 14:51:23Z wotte $
- *
  *  @author Irfan Pyarali
  *
  * If users want to use time probes, the ACE_COMPILE_TIMEPROBES
@@ -39,7 +37,7 @@
 #define ACE_TIMEPROBE_H
 #include /**/ "ace/pre.h"
 
-#include "ace/config-lite.h"
+#include /**/ "ace/config-lite.h"
 #include /**/ "ace/ACE_export.h"
 #include "ace/Malloc_Allocator.h"
 
@@ -145,7 +143,6 @@ typedef ACE_Timeprobe_Ex<ACE_TIMEPROBE_MUTEX, ACE_TIMEPROBE_ALLOCATOR>
 // in thread specific storage.  This allows multiple threads to use
 // their own instance of ACE_Timerprobe, without interfering with each
 // other.
-
 #  if defined (ACE_TSS_TIMEPROBES)
 #    define ACE_TIMEPROBE_SINGLETON_TYPE ACE_TSS_Singleton
 #    define ACE_TIMEPROBE_SINGLETON_LOCK_TYPE ACE_SYNCH_NULL_MUTEX

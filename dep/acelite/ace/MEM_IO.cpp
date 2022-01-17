@@ -1,6 +1,4 @@
 // MEM_IO.cpp
-// $Id: MEM_IO.cpp 92069 2010-09-28 11:38:59Z johnnyw $
-
 #include "ace/MEM_IO.h"
 #include "ace/Handle_Set.h"
 
@@ -16,7 +14,7 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 ACE_ALLOC_HOOK_DEFINE(ACE_MEM_IO)
 
-ACE_Reactive_MEM_IO::~ACE_Reactive_MEM_IO (void)
+ACE_Reactive_MEM_IO::~ACE_Reactive_MEM_IO ()
 {
 }
 
@@ -50,7 +48,7 @@ ACE_Reactive_MEM_IO::recv_buf (ACE_MEM_SAP_Node *&buf,
 
   if (retv == 0)
     {
-      //      ACE_DEBUG ((LM_INFO, "MEM_Stream closed\n"));
+      //      ACELIB_DEBUG ((LM_INFO, "MEM_Stream closed\n"));
       buf = 0;
       return 0;
     }
@@ -253,6 +251,15 @@ ACE_MT_MEM_IO::init (ACE_HANDLE handle,
   return 0;
 }
 
+int
+ACE_MT_MEM_IO::fini ()
+{
+  const int ret = ACE_MEM_SAP::fini ();
+  ACE_Process_Mutex::unlink (this->recv_channel_.lock_->name ());
+  ACE_Process_Mutex::unlink (this->send_channel_.lock_->name ());
+  return ret;
+}
+
 ssize_t
 ACE_MT_MEM_IO::recv_buf (ACE_MEM_SAP_Node *&buf,
                          int flags,
@@ -327,7 +334,7 @@ ACE_MT_MEM_IO::send_buf (ACE_MEM_SAP_Node *buf,
 #endif /* ACE_WIN32 || !_ACE_USE_SV_SEM */
 
 void
-ACE_MEM_IO::dump (void) const
+ACE_MEM_IO::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   ACE_TRACE ("ACE_MEM_IO::dump");
@@ -367,7 +374,7 @@ ACE_MEM_IO::init (const ACE_TCHAR *name,
 }
 
 int
-ACE_MEM_IO::fini (void)
+ACE_MEM_IO::fini ()
 {
   if (this->deliver_strategy_ != 0)
     {

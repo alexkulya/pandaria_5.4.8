@@ -4,9 +4,7 @@
 /**
  *  @file   OS_Errno.h
  *
- *  $Id: OS_Errno.h 83891 2008-11-28 11:01:50Z johnnyw $
- *
- *  @author (Originally in OS.h)Doug Schmidt <schmidt@cs.wustl.edu>
+ *  @author (Originally in OS.h)Doug Schmidt <d.schmidt@vanderbilt.edu>
  */
 //=============================================================================
 
@@ -55,7 +53,7 @@ public:
   ACE_Errno_Guard (ACE_ERRNO_TYPE &errno_ref);
 
   /// Reset the value of @c errno to <error>.
-  ~ACE_Errno_Guard (void);
+  ~ACE_Errno_Guard ();
 
 #if defined (ACE_HAS_WINCE_BROKEN_ERRNO)
   /// Assign @a errno_ref to <error_>.

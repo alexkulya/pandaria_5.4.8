@@ -4,9 +4,7 @@
 /**
  *  @file     Sbrk_Memory_Pool.h
  *
- *  $Id: Sbrk_Memory_Pool.h 80826 2008-03-04 14:51:23Z wotte $
- *
- *  @author Dougls C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Dougls C. Schmidt <d.schmidt@vanderbilt.edu>
  *  @author Prashant Jain <pjain@cs.wustl.edu>
  */
 //=============================================================================
@@ -95,7 +93,7 @@ public:
   virtual int protect (void *addr, size_t len, int prot = PROT_RDWR);
 
   /// Dump the state of an object.
-  virtual void dump (void) const;
+  virtual void dump () const;
 
   /// Return the base address of this memory pool, 0 if base_addr
   /// never changes.

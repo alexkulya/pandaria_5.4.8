@@ -1,6 +1,4 @@
 /* -*- C++ -*- */
-// $Id: config-sunos5.4-sunc++-4.x.h 93573 2011-03-17 07:53:03Z olli $
-
 // The following configuration file is designed to work for SunOS 5.4
 // platforms using the SunC++ 4.0.x compiler.
 
@@ -47,9 +45,6 @@
 
 // Platform supports POSIX O_NONBLOCK semantics.
 #define ACE_HAS_POSIX_NONBLOCK
-
-// Compiler/platform has correctly prototyped header files.
-#define ACE_HAS_CPLUSPLUS_HEADERS
 
 // Compiler/platform supports SunOS high resolution timers.
 #define ACE_HAS_HI_RES_TIMER

@@ -4,9 +4,7 @@
 /**
  *  @file   OS_NS_dirent.h
  *
- *  $Id: OS_NS_dirent.h 85435 2009-05-25 18:52:50Z coryan $
- *
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  *  @author Jesper S. M|ller<stophph@diku.dk>
  *  @author and a cast of thousands...
  *
@@ -59,7 +57,6 @@ extern "C" {
  * as macros on some platforms. This way macro definitions will
  * be usable later as there is no way to save the macro definition
  * using the pre-processor.
- *
  */
 
 #if !defined (ACE_LACKS_REWINDDIR)
@@ -88,11 +85,6 @@ namespace ACE_OS {
 
   ACE_NAMESPACE_INLINE_FUNCTION
   struct ACE_DIRENT *readdir (ACE_DIR *);
-
-  ACE_NAMESPACE_INLINE_FUNCTION
-  int readdir_r (ACE_DIR *dirp,
-                 struct ACE_DIRENT *entry,
-                 struct ACE_DIRENT **result);
 
   ACE_NAMESPACE_INLINE_FUNCTION
   void rewinddir (ACE_DIR *);

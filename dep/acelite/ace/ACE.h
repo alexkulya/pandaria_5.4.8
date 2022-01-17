@@ -4,8 +4,6 @@
 /**
  * @file    ACE.h
  *
- * $Id: ACE.h 93276 2011-02-04 20:03:53Z olli $
- *
  * This file contains value added ACE functions that extend the
  * behavior of the UNIX and Win32 OS calls.
  *
@@ -13,7 +11,7 @@
  * in order to manage the namespace better.  These functions are put
  * here rather than in @c ACE_OS in order to separate concerns.
  *
- * @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ * @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  */
 //=============================================================================
 
@@ -22,18 +20,13 @@
 
 #include /**/ "ace/pre.h"
 
-#include "ace/config-lite.h"
+#include /**/ "ace/config-lite.h"
 
 #if !defined (ACE_LACKS_PRAGMA_ONCE)
 # pragma once
 #endif /* ACE_LACKS_PRAGMA_ONCE */
 
-#include "ace/OS_NS_math.h"
-#include "ace/Flag_Manip.h"
-#include "ace/Handle_Ops.h"
-#include "ace/Lib_Find.h"
-#include "ace/Init_ACE.h"
-#include "ace/Sock_Connect.h"
+#include "ace/Basic_Types.h"
 #include "ace/Default_Constants.h"
 
 #if defined (ACE_EXPORT_MACRO)
@@ -61,28 +54,32 @@ class ACE_Handle_Set;
 namespace ACE
 {
   // = ACE version information.
-  /// e.g., the "5" in ACE 5.1.12.
-  extern ACE_Export u_int major_version (void);
+  /// e.g., the "6" in ACE 6.3.4
+  extern ACE_Export u_int major_version ();
 
-  /// e.g., the "1" in ACE 5.1.12.
-  extern ACE_Export u_int minor_version (void);
+  /// e.g., the "3" in ACE 6.3.4
+  extern ACE_Export u_int minor_version ();
 
-  /// e.g., the "12" in ACE 5.1.12.
-  /// Returns 0 for "stable" (non-beta) releases.
-  extern ACE_Export u_int beta_version (void);
+  /// e.g., the "4" in ACE 6.3.4
+  /// Returns 0 for "stable" (non-micro) releases.
+  extern ACE_Export u_int micro_version ();
+
+  /// e.g., the "4" in ACE 6.3.4
+  /// Returns 0 for "stable" (non-micro) releases.
+  extern ACE_Export u_int beta_version ();
 
   // = C++ compiler version information.
   /// E.g., the "SunPro C++" in SunPro C++ 4.32.0
-  extern ACE_Export const ACE_TCHAR * compiler_name (void);
+  extern ACE_Export const ACE_TCHAR * compiler_name ();
 
   /// E.g., the "4" in SunPro C++ 4.32.0
-  extern ACE_Export u_int compiler_major_version (void);
+  extern ACE_Export u_int compiler_major_version ();
 
   /// E.g., the "32" in SunPro C++ 4.32.0
-  extern ACE_Export u_int compiler_minor_version (void);
+  extern ACE_Export u_int compiler_minor_version ();
 
   /// E.g., the "0" in SunPro C++ 4.32.0
-  extern ACE_Export u_int compiler_beta_version (void);
+  extern ACE_Export u_int compiler_beta_version ();
 
   /// Check if error indicates the process being out of handles (file
   /// descriptors).
@@ -218,7 +215,9 @@ namespace ACE
    *
    * @return -1 on error, else total number of bytes received.
    */
+#if !defined (ACE_LACKS_VA_FUNCTIONS)
   extern ACE_Export ssize_t recv (ACE_HANDLE handle, size_t n, ...);
+#endif /* ACE_LACKS_VA_FUNCTIONS */
 
   extern ACE_Export ssize_t recvv (ACE_HANDLE handle,
                                    iovec *iov,
@@ -299,7 +298,9 @@ namespace ACE
                   size_t *bytes_transferred = 0);
 
   /// Varargs variant.
+#if !defined (ACE_LACKS_VA_FUNCTIONS)
   extern ACE_Export ssize_t send (ACE_HANDLE handle, size_t n, ...);
+#endif /* ACE_LACKS_VA_FUNCTIONS */
 
   extern ACE_Export ssize_t sendv (ACE_HANDLE handle,
                                    const iovec *iov,
@@ -387,7 +388,7 @@ namespace ACE
    * this process.  This maximum may be extended using
    * @c ACE::set_handle_limit.
    */
-  extern ACE_Export int max_handles (void);
+  extern ACE_Export int max_handles ();
 
   // = String functions
   /**
@@ -679,7 +680,7 @@ namespace ACE
   ACE_NAMESPACE_INLINE_FUNCTION u_char hex2byte (ACE_TCHAR c);
 
   // = Set/get the debug level.
-  extern ACE_Export bool debug (void);
+  extern ACE_Export bool debug ();
   extern ACE_Export void debug (bool onoff);
 
   /// Wrapper facade for @c select that uses @c ACE_Handle_Sets.
@@ -725,9 +726,9 @@ namespace ACE
   /// @retval 1 the handle is ready
   extern ACE_Export int handle_ready (ACE_HANDLE handle,
                                       const ACE_Time_Value *timeout,
-                                      int read_ready,
-                                      int write_ready,
-                                      int exception_ready);
+                                      bool read_ready,
+                                      bool write_ready,
+                                      bool exception_ready);
 
   /// Wait for @a timeout before proceeding to a @c recv operation.
   /// @a val keeps track of whether we're in non-blocking mode or
@@ -876,7 +877,6 @@ namespace ACE
                                        int iovcnt,
                                        const ACE_Time_Value *timeout,
                                        size_t *bytes_transferred);
-
 }
 
 // Close versioned namespace, if enabled by the user.

@@ -4,12 +4,9 @@
 /**
  *  @file    Obchunk.h
  *
- *  $Id: Obchunk.h 80826 2008-03-04 14:51:23Z wotte $
- *
  *  @author Doug Schmidt
  */
 //=============================================================================
-
 
 #ifndef ACE_OBCHUNK_H
 #define ACE_OBCHUNK_H
@@ -39,10 +36,10 @@ public:
   ACE_Obchunk (size_t size);
 
   /// Dtor.
-  ~ACE_Obchunk (void);
+  ~ACE_Obchunk ();
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

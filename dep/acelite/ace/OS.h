@@ -4,9 +4,7 @@
 /**
  *  @file  OS.h
  *
- *  $Id: OS.h 95319 2011-12-13 14:54:44Z mhengstmengel $
- *
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  *  @author Jesper S. M|ller<stophph@diku.dk>
  *  @author and a cast of thousands...
  */
@@ -37,10 +35,9 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
  * platforms.  When porting ACE to a new platform, this class is
  * the place to focus on.  Once this file is ported to a new
  * platform, pretty much everything else comes for "free."  See
- * <www.cs.wustl.edu/~schmidt/ACE_wrappers/etc/ACE-porting.html>
- * for instructions on porting ACE.  Please see the README file
- * in this directory for complete information on the meaning of
- * the various macros.
+ * docs/ACE-porting.html for instructions on porting ACE.
+ * Please see the README file in this directory for complete
+ * information on the meaning of the various macros.
  */
 namespace ACE_OS
 {

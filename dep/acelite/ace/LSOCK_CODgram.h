@@ -4,9 +4,7 @@
 /**
  *  @file    LSOCK_CODgram.h
  *
- *  $Id: LSOCK_CODgram.h 84419 2009-02-11 22:28:11Z shuston $
- *
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  */
 //=============================================================================
 
@@ -92,7 +90,7 @@ public:
   void set_handle (ACE_HANDLE);
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

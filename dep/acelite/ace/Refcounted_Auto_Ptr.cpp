@@ -1,5 +1,3 @@
-// $Id: Refcounted_Auto_Ptr.cpp 81179 2008-03-31 19:00:29Z iliyan $
-
 #ifndef ACE_REFCOUNTED_AUTO_PTR_CPP
 #define ACE_REFCOUNTED_AUTO_PTR_CPP
 
@@ -7,8 +5,11 @@
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
+ACE_ALLOC_HOOK_DEFINE_Tcc(ACE_Refcounted_Auto_Ptr)
+ACE_ALLOC_HOOK_DEFINE_Tcc(ACE_Refcounted_Auto_Ptr_Rep)
+
 template <class X, class ACE_LOCK>
-ACE_Refcounted_Auto_Ptr<X, ACE_LOCK>::~ACE_Refcounted_Auto_Ptr (void)
+ACE_Refcounted_Auto_Ptr<X, ACE_LOCK>::~ACE_Refcounted_Auto_Ptr ()
 {
   AUTO_REFCOUNTED_PTR_REP::detach (rep_);
 }

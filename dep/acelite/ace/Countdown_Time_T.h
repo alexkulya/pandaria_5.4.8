@@ -4,9 +4,7 @@
 /**
  *  @file    Countdown_Time_T.h
  *
- *  $Id: Countdown_Time_T.h 95345 2011-12-15 19:46:06Z johnnyw $
- *
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  */
 //=============================================================================
 
@@ -46,21 +44,21 @@ public:
 
   /// Destructor, makes sure the max_wait_time that got passed as pointer
   /// to the constructor is updated with the time elapsed.
-  ~ACE_Countdown_Time_T (void);
+  ~ACE_Countdown_Time_T ();
 
   /// Cache the current time and enter a start state.
-  void start (void);
+  void start ();
 
   /// Subtract the elapsed time from max_wait_time_ and enter a stopped
   /// state.
-  void stop (void);
+  void stop ();
 
   /// Calls stop and then start.  max_wait_time_ is modified by the
   /// call to stop.
-  void update (void);
+  void update ();
 
   /// Returns true if we've already been stopped, else false.
-  bool stopped (void) const;
+  bool stopped () const;
 
   /// Allows applications to control how the timer queue gets the time
   /// of day.
@@ -70,8 +68,11 @@ private:
   /// The policy to return the current time of day
   TIME_POLICY time_policy_;
 
-  /// Maximum time we were willing to wait.
+  /// Maximum time we are monitoring
   ACE_Time_Value *max_wait_time_;
+
+  /// Copy of the maximum time value, used to avoid nested decrements
+  ACE_Time_Value max_wait_value_;
 
   /// Beginning of the start time.
   ACE_Time_Value start_time_;

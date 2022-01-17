@@ -1,7 +1,9 @@
-// $Id: Signal.cpp 91286 2010-08-05 09:04:31Z johnnyw $
-
 #include "ace/Signal.h"
-// #include "ace/Log_Msg.h"
+// #include "ace/Log_Category.h"
+
+#if defined (ACE_HAS_ALLOC_HOOKS)
+# include "ace/Malloc_Base.h"
+#endif /* ACE_HAS_ALLOC_HOOKS */
 
 #if !defined (__ACE_INLINE__)
 #include "ace/Signal.inl"
@@ -15,7 +17,7 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 ACE_ALLOC_HOOK_DEFINE(ACE_Sig_Action)
 
 void
-ACE_Sig_Action::dump (void) const
+ACE_Sig_Action::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   ACE_TRACE ("ACE_Sig_Action::dump");
@@ -24,20 +26,20 @@ ACE_Sig_Action::dump (void) const
 
 ACE_ALLOC_HOOK_DEFINE(ACE_Sig_Set)
 
-ACE_Sig_Set::~ACE_Sig_Set (void)
+ACE_Sig_Set::~ACE_Sig_Set ()
 {
   ACE_TRACE ("ACE_Sig_Set::~ACE_Sig_Set");
   ACE_OS::sigemptyset (&this->sigset_);
 }
 
-ACE_Sig_Action::~ACE_Sig_Action (void)
+ACE_Sig_Action::~ACE_Sig_Action ()
 {
   ACE_TRACE ("ACE_Sig_Action::~ACE_Sig_Action");
 }
 
 // Restore the signal mask.
 
-ACE_Sig_Guard::~ACE_Sig_Guard (void)
+ACE_Sig_Guard::~ACE_Sig_Guard ()
 {
   //ACE_TRACE ("ACE_Sig_Guard::~ACE_Sig_Guard");
   if (!this->condition_)
@@ -57,7 +59,7 @@ ACE_Sig_Guard::~ACE_Sig_Guard (void)
 }
 
 void
-ACE_Sig_Set::dump (void) const
+ACE_Sig_Set::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   ACE_TRACE ("ACE_Sig_Set::dump");
@@ -67,14 +69,14 @@ ACE_Sig_Set::dump (void) const
 ACE_ALLOC_HOOK_DEFINE(ACE_Sig_Guard)
 
 void
-ACE_Sig_Guard::dump (void) const
+ACE_Sig_Guard::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   ACE_TRACE ("ACE_Sig_Guard::dump");
 #endif /* ACE_HAS_DUMP */
 }
 
-ACE_Sig_Action::ACE_Sig_Action (void)
+ACE_Sig_Action::ACE_Sig_Action ()
 {
   // ACE_TRACE ("ACE_Sig_Action::ACE_Sig_Action");
   this->sa_.sa_flags = 0;

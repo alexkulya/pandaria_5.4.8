@@ -1,5 +1,3 @@
-// $Id: Notification_Strategy.cpp 91287 2010-08-05 10:30:49Z johnnyw $
-
 #include "ace/Notification_Strategy.h"
 
 #if !defined (__ACE_INLINE__)
@@ -15,7 +13,7 @@ ACE_Notification_Strategy::ACE_Notification_Strategy (ACE_Event_Handler *eh,
 {
 }
 
-ACE_Notification_Strategy::~ACE_Notification_Strategy (void)
+ACE_Notification_Strategy::~ACE_Notification_Strategy ()
 {
 }
 

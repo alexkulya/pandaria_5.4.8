@@ -4,12 +4,10 @@
 /**
  *  @file    Process_Semaphore.h
  *
- *  $Id: Process_Semaphore.h 93359 2011-02-11 11:33:12Z mcorino $
- *
  *   Wrapper for Dijkstra style general semaphores that work
  *   across processes.
  *
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  */
 //=============================================================================
 
@@ -116,7 +114,7 @@ public:
 #endif /* ACE_WIN32 || ACE_HAS_POSIX_SEM */
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

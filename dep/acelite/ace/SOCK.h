@@ -4,9 +4,7 @@
 /**
  *  @file    SOCK.h
  *
- *  $Id: SOCK.h 91626 2010-09-07 10:59:20Z johnnyw $
- *
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  */
 //=============================================================================
 
@@ -61,7 +59,7 @@ public:
    * @return The result of closing the socket; 0 if the handle value
    *         was already ACE_INVALID_HANDLE.
    */
-  int close (void);
+  int close ();
 
   /// Return the local endpoint address in the referenced ACE_Addr.
   /// Returns 0 if successful, else -1.
@@ -75,7 +73,7 @@ public:
   int get_remote_addr (ACE_Addr &) const;
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;
@@ -116,7 +114,7 @@ protected:
 
   /// Default constructor is protected to prevent instances of this class
   /// from being defined.
-  ACE_SOCK (void);
+  ACE_SOCK ();
 
   /// Protected destructor.
   /**
@@ -124,7 +122,7 @@ protected:
    * operator delete() from being called through a base class ACE_SOCK
    * pointer/reference.
    */
-  ~ACE_SOCK (void);
+  ~ACE_SOCK ();
 };
 
 ACE_END_VERSIONED_NAMESPACE_DECL

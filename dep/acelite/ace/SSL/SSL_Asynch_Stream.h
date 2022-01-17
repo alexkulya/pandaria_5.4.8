@@ -4,8 +4,6 @@
 /**
  *  @file   SSL_Asynch_Stream.h
  *
- *  $Id: SSL_Asynch_Stream.h 91743 2010-09-13 18:24:51Z johnnyw $
- *
  *  @author Alexander Libman <alibman@baltimore.com>
  */
 //=============================================================================
@@ -375,7 +373,6 @@ private:
   ACE_SSL_Asynch_Stream & operator= (ACE_SSL_Asynch_Stream const &);
 
 protected:
-
   /// Stream Type ST_CLIENT/ST_SERVER
   Stream_Type type_;
 
@@ -449,7 +446,6 @@ protected:
 
   /// Mutex to protect work
   ACE_SYNCH_MUTEX mutex_;
-
 };
 
 ACE_END_VERSIONED_NAMESPACE_DECL

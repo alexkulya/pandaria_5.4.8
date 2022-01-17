@@ -1,5 +1,3 @@
-// $Id: Token.cpp 96024 2012-08-09 19:42:19Z schmidt $
-
 #include "ace/Token.h"
 
 #if !defined (__ACE_INLINE__)
@@ -11,7 +9,7 @@
 #if defined (ACE_HAS_THREADS)
 
 #include "ace/Thread.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 
 #if defined (ACE_TOKEN_DEBUGGING)
 // FUZZ: disable check_for_streams_include
@@ -23,21 +21,21 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 ACE_ALLOC_HOOK_DEFINE(ACE_Token)
 
 void
-ACE_Token::dump (void) const
+ACE_Token::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   ACE_TRACE ("ACE_Token::dump");
 
-  ACE_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
 
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\nthread = %d"), ACE_Thread::self ()));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\nthread = %d"), ACE_Thread::self ()));
   // @@ Is there a portable way to do this?
-  // ACE_DEBUG ((LM_DEBUG, "\nowner_ = %d", (long) this->owner_));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\nowner_ addr = %x"), &this->owner_));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\nwaiters_ = %d"), this->waiters_));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\nin_use_ = %d"), this->in_use_));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\nnesting level = %d"), this->nesting_level_));
-  ACE_DEBUG ((LM_DEBUG, ACE_END_DUMP));
+  // ACELIB_DEBUG ((LM_DEBUG, "\nowner_ = %d", (long) this->owner_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\nowner_ addr = %x"), &this->owner_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\nwaiters_ = %d"), this->waiters_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\nin_use_ = %d"), this->in_use_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\nnesting level = %d"), this->nesting_level_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_END_DUMP));
 #endif /* ACE_HAS_DUMP */
 }
 
@@ -79,7 +77,7 @@ ACE_Token::ACE_Token_Queue_Entry::ACE_Token_Queue_Entry (ACE_Thread_Mutex &m,
   ACE_TRACE ("ACE_Token::ACE_Token_Queue_Entry::ACE_Token_Queue_Entry");
 }
 
-ACE_Token::ACE_Token_Queue::ACE_Token_Queue (void)
+ACE_Token::ACE_Token_Queue::ACE_Token_Queue ()
   : head_ (0),
     tail_ (0)
 {
@@ -175,7 +173,7 @@ ACE_Token::ACE_Token (const ACE_TCHAR *name, void *any)
 //  ACE_TRACE ("ACE_Token::ACE_Token");
 }
 
-ACE_Token::~ACE_Token (void)
+ACE_Token::~ACE_Token ()
 {
   ACE_TRACE ("ACE_Token::~ACE_Token");
 }
@@ -293,10 +291,10 @@ ACE_Token::shared_acquire (void (*sleep_hook_func)(void *),
   queue->remove_entry (&my_entry);
 
 #if defined (ACE_TOKEN_DEBUGGING)
-  ACE_DEBUG ((LM_DEBUG, "(%t) ACE_Token::shared_acquire (UNBLOCKED)\n"));
+  ACELIB_DEBUG ((LM_DEBUG, "(%t) ACE_Token::shared_acquire (UNBLOCKED)\n"));
 #endif /* ACE_TOKEN_DEBUGGING */
 
-  // If timeout occured
+  // If timeout occurred
   if (timed_out)
     {
       // This thread was still selected to own the token.
@@ -325,7 +323,7 @@ ACE_Token::shared_acquire (void (*sleep_hook_func)(void *),
 
 /* virtual */
 void
-ACE_Token::sleep_hook (void)
+ACE_Token::sleep_hook ()
 {
   ACE_TRACE ("ACE_Token::sleep_hook");
 }
@@ -439,10 +437,10 @@ ACE_Token::renew (int requeue_position,
   this_threads_queue->remove_entry (&my_entry);
 
 #if defined (ACE_TOKEN_DEBUGGING)
-  ACE_DEBUG ((LM_DEBUG, "(%t) ACE_Token::renew (UNBLOCKED)\n"));
+  ACELIB_DEBUG ((LM_DEBUG, "(%t) ACE_Token::renew (UNBLOCKED)\n"));
 #endif /* ACE_TOKEN_DEBUGGING */
 
-  // If timeout occured
+  // If timeout occurred
   if (timed_out)
     {
       // This thread was still selected to own the token.
@@ -474,7 +472,7 @@ ACE_Token::renew (int requeue_position,
 // better be the caller's thread!).
 
 int
-ACE_Token::release (void)
+ACE_Token::release ()
 {
   ACE_TRACE ("ACE_Token::release");
   ACE_GUARD_RETURN (ACE_Thread_Mutex, ace_mon, this->lock_, -1);
@@ -500,7 +498,7 @@ ACE_Token::release (void)
 }
 
 void
-ACE_Token::wakeup_next_waiter (void)
+ACE_Token::wakeup_next_waiter ()
 {
   ACE_TRACE ("ACE_Token::wakeup_next_waiter");
 

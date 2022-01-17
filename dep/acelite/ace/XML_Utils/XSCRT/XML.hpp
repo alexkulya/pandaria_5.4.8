@@ -1,7 +1,5 @@
 // file      : XSCRT/XML.hpp
 // author    : Boris Kolpackov <boris@dre.vanderbilt.edu>
-// cvs-id    : $Id: XML.hpp 95832 2012-06-06 13:09:50Z johnnyw $
-
 
 #ifndef XSCRT_XML_HPP
 #define XSCRT_XML_HPP
@@ -462,15 +460,11 @@ namespace XSCRT
     {
       string xns (ns);
 
-#if defined(XERCES_VERSION_MAJOR) && XERCES_VERSION_MAJOR > 2
       XMLCh const* p (e.dom_element ()->lookupPrefix (xns.c_str ()));
-#else
-      XMLCh const* p (e.dom_element ()->lookupNamespacePrefix (xns.c_str (), false));
-#endif
 
       if (p == 0)
       {
-        bool r (e.dom_element ()->isDefaultNamespace (xns.c_str ()));
+        bool const r (e.dom_element ()->isDefaultNamespace (xns.c_str ()));
 
         if (r)
         {

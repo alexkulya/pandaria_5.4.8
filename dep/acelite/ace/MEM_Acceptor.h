@@ -4,8 +4,6 @@
 /**
  *  @file    MEM_Acceptor.h
  *
- *  $Id: MEM_Acceptor.h 91688 2010-09-09 11:21:50Z johnnyw $
- *
  *  @author Nanbor Wang <nanbor@cs.wustl.edu>
  */
 //=============================================================================
@@ -54,7 +52,6 @@ class ACE_Reactor;
 class ACE_Export ACE_MEM_Acceptor : public ACE_SOCK_Acceptor
 {
 public:
-  // = Initialization methods.
   /// Default constructor.
   ACE_MEM_Acceptor (void);
 
@@ -125,7 +122,7 @@ public:
   typedef ACE_MEM_Stream PEER_STREAM;
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

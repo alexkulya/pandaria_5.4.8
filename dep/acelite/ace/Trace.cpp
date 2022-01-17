@@ -1,5 +1,3 @@
-// $Id: Trace.cpp 91286 2010-08-05 09:04:31Z johnnyw $
-
 #include "ace/Trace.h"
 
 // Turn off tracing for the duration of this file.
@@ -8,8 +6,11 @@
 #endif /* ACE_NTRACE */
 #define ACE_NTRACE 1
 
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/Object_Manager_Base.h"
+#if defined (ACE_HAS_ALLOC_HOOKS)
+# include "ace/Malloc_Base.h"
+#endif /* ACE_HAS_ALLOC_HOOKS */
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -24,7 +25,7 @@ bool ACE_Trace::enable_tracing_ = ACE_Trace::DEFAULT_TRACING;
 ACE_ALLOC_HOOK_DEFINE(ACE_Trace)
 
 void
-ACE_Trace::dump (void) const
+ACE_Trace::dump () const
 {
 #if defined (ACE_HAS_DUMP)
 #endif /* ACE_HAS_DUMP */
@@ -33,7 +34,7 @@ ACE_Trace::dump (void) const
 // Determine whether or not tracing is enabled
 
 bool
-ACE_Trace::is_tracing (void)
+ACE_Trace::is_tracing ()
 {
   return ACE_Trace::enable_tracing_;
 }
@@ -41,7 +42,7 @@ ACE_Trace::is_tracing (void)
 // Enable the tracing facility.
 
 void
-ACE_Trace::start_tracing (void)
+ACE_Trace::start_tracing ()
 {
   ACE_Trace::enable_tracing_ = true;
 }
@@ -49,7 +50,7 @@ ACE_Trace::start_tracing (void)
 // Disable the tracing facility.
 
 void
-ACE_Trace::stop_tracing (void)
+ACE_Trace::stop_tracing ()
 {
   ACE_Trace::enable_tracing_ = false;
 }
@@ -65,7 +66,7 @@ ACE_Trace::set_nesting_indent (int indent)
 // Get the nesting indentation level.
 
 int
-ACE_Trace::get_nesting_indent (void)
+ACE_Trace::get_nesting_indent ()
 {
   return ACE_Trace::nesting_indent_;
 }
@@ -93,7 +94,7 @@ ACE_Trace::ACE_Trace (const ACE_TCHAR *n,
           && lm->trace_active () == 0)
         {
           lm->trace_active (1);
-          ACE_DEBUG ((LM_TRACE,
+          ACELIB_DEBUG ((LM_TRACE,
                       ACE_TEXT ("%*s(%t) calling %s in file `%s' on line %d\n"),
                       ACE_Trace::nesting_indent_ * lm->inc (),
                       ACE_TEXT (""),
@@ -108,7 +109,7 @@ ACE_Trace::ACE_Trace (const ACE_TCHAR *n,
 // Perform the second part of the trace, which prints out the NAME as
 // the function is exited.
 
-ACE_Trace::~ACE_Trace (void)
+ACE_Trace::~ACE_Trace ()
 {
   // If ACE has not yet been initialized, don't try to trace... there's
   // too much stuff not yet initialized.
@@ -119,7 +120,7 @@ ACE_Trace::~ACE_Trace (void)
           && lm->trace_active () == 0)
         {
           lm->trace_active (1);
-          ACE_DEBUG ((LM_TRACE,
+          ACELIB_DEBUG ((LM_TRACE,
                       ACE_TEXT ("%*s(%t) leaving %s\n"),
                       ACE_Trace::nesting_indent_ * lm->dec (),
                       ACE_TEXT (""),

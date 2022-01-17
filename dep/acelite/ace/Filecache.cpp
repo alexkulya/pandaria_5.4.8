@@ -1,8 +1,6 @@
-// $Id: Filecache.cpp 94034 2011-05-09 19:11:03Z johnnyw $
-
 #include "ace/Filecache.h"
 #include "ace/Object_Manager.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/ACE.h"
 #include "ace/Guard_T.h"
 #include "ace/OS_NS_string.h"
@@ -45,21 +43,21 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 ACE_Filecache *ACE_Filecache::cvf_ = 0;
 
 void
-ACE_Filecache_Handle::init (void)
+ACE_Filecache_Handle::init ()
 {
   this->file_ = 0;
   this->handle_ = ACE_INVALID_HANDLE;
 }
 
-ACE_Filecache_Handle::ACE_Filecache_Handle (void)
-  : file_ (0), handle_ (0), mapit_ (0)
+ACE_Filecache_Handle::ACE_Filecache_Handle ()
+  : file_ (0), handle_ (0)
 {
   this->init ();
 }
 
 ACE_Filecache_Handle::ACE_Filecache_Handle (const ACE_TCHAR *filename,
                                             ACE_Filecache_Flag mapit)
-  : file_ (0), handle_ (0), mapit_ (mapit)
+  : file_ (0), handle_ (0)
 {
   this->init ();
   // Fetch the file from the Virtual_Filesystem let the
@@ -72,8 +70,8 @@ ACE_Filecache_Handle::ACE_Filecache_Handle (const ACE_TCHAR *filename,
 
 ACE_Filecache_Handle::ACE_Filecache_Handle (const ACE_TCHAR *filename,
                                             int size,
-                                            ACE_Filecache_Flag mapit)
-  : file_ (0), handle_ (0), mapit_ (mapit)
+                                            ACE_Filecache_Flag )
+  : file_ (0), handle_ (0)
 {
   this->init ();
 
@@ -91,7 +89,7 @@ ACE_Filecache_Handle::ACE_Filecache_Handle (const ACE_TCHAR *filename,
     }
 }
 
-ACE_Filecache_Handle::~ACE_Filecache_Handle (void)
+ACE_Filecache_Handle::~ACE_Filecache_Handle ()
 {
   if (this->handle_ != ACE_INVALID_HANDLE)
     // this was dup ()'d
@@ -101,13 +99,13 @@ ACE_Filecache_Handle::~ACE_Filecache_Handle (void)
 }
 
 void *
-ACE_Filecache_Handle::address (void) const
+ACE_Filecache_Handle::address () const
 {
   return this->file_ == 0 ? 0 : this->file_->address ();
 }
 
 ACE_HANDLE
-ACE_Filecache_Handle::handle (void) const
+ACE_Filecache_Handle::handle () const
 {
   if (this->handle_ == ACE_INVALID_HANDLE && this->file_ != 0)
     {
@@ -119,7 +117,7 @@ ACE_Filecache_Handle::handle (void) const
 }
 
 int
-ACE_Filecache_Handle::error (void) const
+ACE_Filecache_Handle::error () const
 {
   if (this->file_ == 0)
     return -1;
@@ -128,7 +126,7 @@ ACE_Filecache_Handle::error (void) const
 }
 
 ACE_OFF_T
-ACE_Filecache_Handle::size (void) const
+ACE_Filecache_Handle::size () const
 {
   if (this->file_ == 0)
     return -1;
@@ -171,9 +169,13 @@ ACE_Filecache_Hash_Entry::ACE_Hash_Map_Entry (ACE_Filecache_Hash_Entry *next,
 }
 
 template <>
-ACE_Filecache_Hash_Entry::~ACE_Hash_Map_Entry (void)
+ACE_Filecache_Hash_Entry::~ACE_Hash_Map_Entry ()
 {
+#if defined (ACE_HAS_ALLOC_HOOKS)
+  ACE_Allocator::instance()->free ((void *) ext_id_);
+#else
   ACE_OS::free ((void *) ext_id_);
+#endif /* ACE_HAS_ALLOC_HOOKS */
 }
 
 // We need these template specializations since KEY is defined as a
@@ -203,7 +205,7 @@ ACE_Filecache_Hash::equal (const ACE_TCHAR *const &id1,
 // -------------
 
 ACE_Filecache *
-ACE_Filecache::instance (void)
+ACE_Filecache::instance ()
 {
   // Double check locking pattern.
   if (ACE_Filecache::cvf_ == 0)
@@ -224,15 +226,17 @@ ACE_Filecache::instance (void)
   return ACE_Filecache::cvf_;
 }
 
-ACE_Filecache::ACE_Filecache (void)
+ACE_Filecache::ACE_Filecache ()
   : size_ (ACE_DEFAULT_VIRTUAL_FILESYSTEM_TABLE_SIZE),
     hash_ (size_)
 {
 }
 
-ACE_Filecache::~ACE_Filecache (void)
+ACE_Filecache::~ACE_Filecache ()
 {
 }
+
+ACE_ALLOC_HOOK_DEFINE(ACE_Filecache)
 
 ACE_Filecache_Object *
 ACE_Filecache::insert_i (const ACE_TCHAR *filename,
@@ -247,7 +251,7 @@ ACE_Filecache::insert_i (const ACE_TCHAR *filename,
                       ACE_Filecache_Object (filename, filelock, 0, mapit),
                       0);
 
-      //      ACE_DEBUG ((LM_DEBUG,  ACE_TEXT ("   (%t) CVF: creating %s\n"), filename));
+      //      ACELIB_DEBUG ((LM_DEBUG,  ACE_TEXT ("   (%t) CVF: creating %s\n"), filename));
 
       if (this->hash_.bind (filename, handle) == -1)
         {
@@ -370,7 +374,7 @@ ACE_Filecache::fetch (const ACE_TCHAR *filename, int mapit)
               filelock.release ();
           }
         }
-      //      ACE_DEBUG ((LM_DEBUG,  ACE_TEXT ("   (%t) CVF: found %s\n"), filename));
+      //      ACELIB_DEBUG ((LM_DEBUG,  ACE_TEXT ("   (%t) CVF: found %s\n"), filename));
     }
 
   return handle;
@@ -457,7 +461,7 @@ ACE_Filecache::finish (ACE_Filecache_Object *&file)
 }
 
 void
-ACE_Filecache_Object::init (void)
+ACE_Filecache_Object::init ()
 {
   this->filename_[0] = '\0';
   this->handle_ = ACE_INVALID_HANDLE;
@@ -468,7 +472,7 @@ ACE_Filecache_Object::init (void)
   ACE_OS::memset (&(this->stat_), 0, sizeof (this->stat_));
 }
 
-ACE_Filecache_Object::ACE_Filecache_Object (void)
+ACE_Filecache_Object::ACE_Filecache_Object ()
   : tempname_ (0),
     mmap_ (),
     handle_ (0),
@@ -608,7 +612,7 @@ ACE_Filecache_Object::ACE_Filecache_Object (const ACE_TCHAR *filename,
   // Ok, done!
 }
 
-ACE_Filecache_Object::~ACE_Filecache_Object (void)
+ACE_Filecache_Object::~ACE_Filecache_Object ()
 {
   if (this->error_ == ACE_SUCCESS)
     {
@@ -620,14 +624,16 @@ ACE_Filecache_Object::~ACE_Filecache_Object (void)
   this->lock_.release ();
 }
 
+ACE_ALLOC_HOOK_DEFINE(ACE_Filecache_Object)
+
 int
-ACE_Filecache_Object::acquire (void)
+ACE_Filecache_Object::acquire ()
 {
   return this->lock_.tryacquire_read ();
 }
 
 int
-ACE_Filecache_Object::release (void)
+ACE_Filecache_Object::release ()
 {
   if (this->action_ == ACE_WRITING)
     {
@@ -682,7 +688,7 @@ ACE_Filecache_Object::release (void)
 }
 
 int
-ACE_Filecache_Object::error (void) const
+ACE_Filecache_Object::error () const
 {
   // The existence of the object means a read lock is being held.
   return this->error_;
@@ -691,42 +697,42 @@ ACE_Filecache_Object::error (void) const
 int
 ACE_Filecache_Object::error_i (int error_value, const ACE_TCHAR *s)
 {
-  s = s;
-  ACE_ERROR ((LM_ERROR, ACE_TEXT ("%p.\n"), s));
+  ACE_UNUSED_ARG (s);
+  ACELIB_ERROR ((LM_ERROR, ACE_TEXT ("%p.\n"), s));
   this->error_ = error_value;
   return error_value;
 }
 
 const ACE_TCHAR *
-ACE_Filecache_Object::filename (void) const
+ACE_Filecache_Object::filename () const
 {
   // The existence of the object means a read lock is being held.
   return this->filename_;
 }
 
 ACE_OFF_T
-ACE_Filecache_Object::size (void) const
+ACE_Filecache_Object::size () const
 {
   // The existence of the object means a read lock is being held.
   return this->size_;
 }
 
 ACE_HANDLE
-ACE_Filecache_Object::handle (void) const
+ACE_Filecache_Object::handle () const
 {
   // The existence of the object means a read lock is being held.
   return this->handle_;
 }
 
 void *
-ACE_Filecache_Object::address (void) const
+ACE_Filecache_Object::address () const
 {
   // The existence of the object means a read lock is being held.
   return this->mmap_.addr ();
 }
 
 int
-ACE_Filecache_Object::update (void) const
+ACE_Filecache_Object::update () const
 {
   // The existence of the object means a read lock is being held.
   int result;

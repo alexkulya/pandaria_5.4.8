@@ -1,11 +1,8 @@
 // -*- C++ -*-
-//
-// $Id: Malloc.inl 80826 2008-03-04 14:51:23Z wotte $
-
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 ACE_INLINE
-ACE_Control_Block::ACE_Name_Node::~ACE_Name_Node (void)
+ACE_Control_Block::ACE_Name_Node::~ACE_Name_Node ()
 {
 }
 

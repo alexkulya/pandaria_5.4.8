@@ -4,8 +4,6 @@
 /**
  *  @file    SSL_SOCK_Acceptor.h
  *
- *  $Id: SSL_SOCK_Acceptor.h 82723 2008-09-16 09:35:44Z johnnyw $
- *
  *  @author John Heitmann
  *  @author Chris Zimman
  *  @author Ossama Othman <ossama@uci.edu>
@@ -51,12 +49,11 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 class ACE_SSL_Export ACE_SSL_SOCK_Acceptor : public ACE_SSL_SOCK
 {
 public:
-
   /// Default constructor.
-  ACE_SSL_SOCK_Acceptor (void);
+  ACE_SSL_SOCK_Acceptor ();
 
   /// Default destructor.
-  ~ACE_SSL_SOCK_Acceptor (void);
+  ~ACE_SSL_SOCK_Acceptor ();
 
   /**
    * Initiate a passive mode SSL/BSD-style acceptor socket.
@@ -72,7 +69,8 @@ public:
                          int reuse_addr = 0,
                          int protocol_family = PF_UNSPEC,
                          int backlog = ACE_DEFAULT_BACKLOG,
-                         int protocol = 0);
+                         int protocol = 0,
+                         int ipv6_only = 0);
 
   /**
    * Initiate a passive-mode QoS-enabled acceptor socket.
@@ -91,7 +89,8 @@ public:
                          int reuse_addr,
                          int protocol_family = PF_UNSPEC,
                          int backlog = ACE_DEFAULT_BACKLOG,
-                         int protocol = 0);
+                         int protocol = 0,
+                         int ipv6_only = 0);
 
   /**
    * Initiate a passive mode SSL/BSD-style acceptor socket.
@@ -109,10 +108,11 @@ public:
             int reuse_addr = 0,
             int protocol_family = PF_UNSPEC,
             int backlog = ACE_DEFAULT_BACKLOG,
-            int protocol = 0);
+            int protocol = 0,
+            int ipv6_only = 0);
 
   /// Close the listening socket.
-  int close (void);
+  int close ();
 
   /**
    * @name Passive Connection "accept" Methods
@@ -174,16 +174,13 @@ public:
   ACE_ALLOC_HOOK_DECLARE;
 
 protected:
-
   /// Complete SSL passive connection establishment.
   int ssl_accept (ACE_SSL_SOCK_Stream &new_stream,
                   ACE_Time_Value *timeout) const;
 
 private:
-
   /// The BSD-socket workhorse
   ACE_SOCK_Acceptor acceptor_;
-
 };
 
 ACE_END_VERSIONED_NAMESPACE_DECL

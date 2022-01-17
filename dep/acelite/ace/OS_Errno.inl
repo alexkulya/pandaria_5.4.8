@@ -1,7 +1,4 @@
 // -*- C++ -*-
-//
-// $Id: OS_Errno.inl 80826 2008-03-04 14:51:23Z wotte $
-
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 ACE_INLINE
@@ -29,7 +26,7 @@ ACE_Errno_Guard::ACE_Errno_Guard (ACE_ERRNO_TYPE &errno_ref)
 }
 
 ACE_INLINE
-ACE_Errno_Guard::~ACE_Errno_Guard (void)
+ACE_Errno_Guard::~ACE_Errno_Guard ()
 {
 #if defined (ACE_MT_SAFE)
   *errno_ptr_ = this->error_;

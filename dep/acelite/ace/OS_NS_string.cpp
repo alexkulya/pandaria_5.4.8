@@ -1,6 +1,5 @@
-// $Id: OS_NS_string.cpp 93549 2011-03-15 19:50:24Z olli $
-
 #include "ace/ACE.h"
+#include "ace/Global_Macros.h"
 #include "ace/OS_NS_string.h"
 #include "ace/OS_NS_stdio.h"
 #include "ace/OS_NS_stdlib.h"
@@ -9,31 +8,23 @@
 # include "ace/OS_NS_string.inl"
 #endif /* ACE_HAS_INLINED_OSCALLS */
 
+#if defined (ACE_HAS_ALLOC_HOOKS)
+# include "ace/Malloc_Base.h"
+#endif /* ACE_HAS_ALLOC_HOOKS */
+
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
-
-#if defined (ACE_LACKS_MEMCHR)
-const void *
-ACE_OS::memchr_emulation (const void *s, int c, size_t len)
-{
-  const unsigned char *t = (const unsigned char *) s;
-  const unsigned char *e = (const unsigned char *) s + len;
-
-  while (t < e)
-    if (((int) *t) == c)
-      return t;
-    else
-      ++t;
-
-  return 0;
-}
-#endif /* ACE_LACKS_MEMCHR */
 
 #if (defined (ACE_LACKS_STRDUP) && !defined (ACE_STRDUP_EQUIVALENT)) \
   || defined (ACE_HAS_STRDUP_EMULATION)
 char *
 ACE_OS::strdup_emulation (const char *s)
 {
+#if defined (ACE_HAS_ALLOC_HOOKS)
+  char *t = (char *) ACE_Allocator::instance()->malloc (ACE_OS::strlen (s) + 1);
+#else
   char *t = (char *) ACE_OS::malloc (ACE_OS::strlen (s) + 1);
+#endif /* ACE_HAS_ALLOC_HOOKS */
+
   if (t == 0)
     return 0;
 
@@ -61,8 +52,8 @@ ACE_OS::strdup_emulation (const wchar_t *s)
 char *
 ACE_OS::strecpy (char *s, const char *t)
 {
-  register char *dscan = s;
-  register const char *sscan = t;
+  char *dscan = s;
+  const char *sscan = t;
 
   while ((*dscan++ = *sscan++) != '\0')
     continue;
@@ -74,8 +65,8 @@ ACE_OS::strecpy (char *s, const char *t)
 wchar_t *
 ACE_OS::strecpy (wchar_t *s, const wchar_t *t)
 {
-  register wchar_t *dscan = s;
-  register const wchar_t *sscan = t;
+  wchar_t *dscan = s;
+  const wchar_t *sscan = t;
 
   while ((*dscan++ = *sscan++) != ACE_TEXT_WIDE ('\0'))
     continue;
@@ -126,7 +117,7 @@ ACE_OS::strerror (int errnum)
 
   if (errno == EINVAL || errmsg == 0 || errmsg[0] == 0)
     {
-      ACE_OS::sprintf (ret_errortext, "Unknown error %d", errnum);
+      ACE_OS::snprintf (ret_errortext, 128, "Unknown error %d", errnum);
       errmsg = ret_errortext;
       g = EINVAL;
     }
@@ -145,7 +136,6 @@ ACE_OS::strerror_emulation (int)
 }
 #endif /* ACE_LACKS_STRERROR */
 
-
 char *
 ACE_OS::strsignal (int signum)
 {
@@ -162,23 +152,39 @@ ACE_OS::strsignal (int signum)
 
   if (ret_val <= reinterpret_cast<char *> (0))
     {
-      ACE_OS::sprintf (signal_text, "Unknown signal: %d", signum);
+      ACE_OS::snprintf (signal_text, 128, "Unknown signal: %d", signum);
       ret_val = signal_text;
     }
   return ret_val;
 #else
   if (signum < 0 || signum >= ACE_NSIG)
     {
-      ACE_OS::sprintf (signal_text, "Unknown signal: %d", signum);
+      ACE_OS::snprintf (signal_text, 128, "Unknown signal: %d", signum);
       return signal_text;
     }
 # if defined (ACE_SYS_SIGLIST)
   return ACE_SYS_SIGLIST[signum];
 # else
-  ACE_OS::sprintf (signal_text, "Signal: %d", signum);
+  ACE_OS::snprintf (signal_text, 128, "Signal: %d", signum);
   return signal_text;
 # endif /* ACE_SYS_SIGLIST */
 #endif /* ACE_HAS_STRSIGNAL */
+}
+
+char *
+ACE_OS::strerror_r (int errnum, char *buf, size_t buflen)
+{
+#ifdef ACE_HAS_STRERROR_R
+# ifdef ACE_HAS_STRERROR_R_XSI
+  if (::strerror_r (errnum, buf, buflen) == 0)
+    return buf;
+  return const_cast <char*> ("Unknown Error");
+# else
+  return ::strerror_r (errnum, buf, buflen);
+# endif
+#else
+  return ACE_OS::strncpy (buf, strerror (errnum), buflen);
+#endif
 }
 
 const char *
@@ -255,73 +261,12 @@ ACE_OS::strnstr (const ACE_WCHAR_T *s1, const ACE_WCHAR_T *s2, size_t len2)
   return 0;
 }
 
-#if defined (ACE_HAS_MEMCPY_LOOP_UNROLL)
-void *
-ACE_OS::fast_memcpy (void *t, const void *s, size_t len)
-{
-  unsigned char* to = static_cast<unsigned char*> (t) ;
-  const unsigned char* from = static_cast<const unsigned char*> (s) ;
-  // Unroll the loop...
-  switch (len)
-    {
-    case 16: to[15] = from[15];
-    case 15: to[14] = from[14];
-    case 14: to[13] = from[13];
-    case 13: to[12] = from[12];
-    case 12: to[11] = from[11];
-    case 11: to[10] = from[10];
-    case 10: to[9] = from[9];
-    case  9: to[8] = from[8];
-    case  8: to[7] = from[7];
-    case  7: to[6] = from[6];
-    case  6: to[5] = from[5];
-    case  5: to[4] = from[4];
-    case  4: to[3] = from[3];
-    case  3: to[2] = from[2];
-    case  2: to[1] = from[1];
-    case  1: to[0] = from[0];
-    case  0: return t;
-    default: return ::memcpy (t, s, len);
-    }
-}
-#endif /* ACE_HAS_MEMCPY_LOOP_UNROLL */
-
-#if defined (ACE_LACKS_STRRCHR)
-char *
-ACE_OS::strrchr_emulation (char *s, int c)
-{
-  char *p = s + ACE_OS::strlen (s);
-
-  while (*p != c)
-    if (p == s)
-      return 0;
-    else
-      --p;
-
-  return p;
-}
-
-const char *
-ACE_OS::strrchr_emulation (const char *s, int c)
-{
-  const char *p = s + ACE_OS::strlen (s);
-
-  while (*p != c)
-    if (p == s)
-      return 0;
-    else
-      --p;
-
-  return p;
-}
-#endif /* ACE_LACKS_STRRCHR */
-
 char *
 ACE_OS::strsncpy (char *dst, const char *src, size_t maxlen)
 {
-  register char *rdst = dst;
-  register const char *rsrc = src;
-  register size_t rmaxlen = maxlen;
+  char *rdst = dst;
+  const char *rsrc = src;
+  size_t rmaxlen = maxlen;
 
   if (rmaxlen > 0)
     {
@@ -345,9 +290,9 @@ ACE_OS::strsncpy (char *dst, const char *src, size_t maxlen)
 ACE_WCHAR_T *
 ACE_OS::strsncpy (ACE_WCHAR_T *dst, const ACE_WCHAR_T *src, size_t maxlen)
 {
-  register ACE_WCHAR_T *rdst = dst;
-  register const ACE_WCHAR_T *rsrc = src;
-  register size_t rmaxlen = maxlen;
+  ACE_WCHAR_T *rdst = dst;
+  const ACE_WCHAR_T *rsrc = src;
+  size_t rmaxlen = maxlen;
 
   if (rmaxlen > 0)
     {

@@ -1,5 +1,3 @@
-// $Id: Monitor_Admin.cpp 81753 2008-05-21 19:02:47Z parsons $
-
 #include "ace/Monitor_Admin.h"
 
 #if defined (ACE_HAS_MONITOR_FRAMEWORK) && (ACE_HAS_MONITOR_FRAMEWORK == 1)
@@ -27,12 +25,12 @@ namespace ACE
 
     //====================================================================
 
-    Monitor_Admin::Monitor_Admin (void)
+    Monitor_Admin::Monitor_Admin ()
       : reactor_ (ACE_Reactor::instance ()),
         default_reactor_ (true)
     {}
 
-    Monitor_Admin::~Monitor_Admin (void)
+    Monitor_Admin::~Monitor_Admin ()
     {
       if (this->default_reactor_)
         {
@@ -58,7 +56,7 @@ namespace ACE
 
       if (!good_reg_add)
         {
-          ACE_ERROR_RETURN ((LM_ERROR,
+          ACELIB_ERROR_RETURN ((LM_ERROR,
                              "registration of %s failed\n",
                              monitor_point->name ()),
                              good_reg_add);
@@ -100,7 +98,7 @@ namespace ACE
     }
 
     ACE_Reactor*
-    Monitor_Admin::reactor (void) const
+    Monitor_Admin::reactor () const
     {
       return this->reactor_;
     }

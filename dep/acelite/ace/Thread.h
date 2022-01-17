@@ -4,9 +4,7 @@
 /**
  *  @file    Thread.h
  *
- *  $Id: Thread.h 92060 2010-09-27 18:08:48Z johnnyw $
- *
- *  @author Douglas Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas Schmidt <d.schmidt@vanderbilt.edu>
  */
 //==========================================================================
 
@@ -191,7 +189,7 @@ public:
   static int kill (ACE_thread_t, int signum);
 
   /// Yield the thread to another.
-  static void yield (void);
+  static void yield ();
 
   /**
    * Return the unique kernel handle of the thread.  Note that on
@@ -202,14 +200,14 @@ public:
   static void self (ACE_hthread_t &t_handle);
 
   /// Return the unique ID of the thread.
-  static ACE_thread_t self (void);
+  static ACE_thread_t self ();
 
   /// Exit the current thread and return "status".
   /// Should _not_ be called by main thread.
   static void exit (ACE_THR_FUNC_RETURN status = 0);
 
   /// Get the LWP concurrency level of the process.
-  static int getconcurrency (void);
+  static int getconcurrency ();
 
   /// Set the LWP concurrency level of the process.
   static int setconcurrency (int new_level);
@@ -264,11 +262,11 @@ public:
   static int cancel (ACE_thread_t t_id);
 
   /// Test the cancel.
-  static void testcancel (void);
+  static void testcancel ();
 
 private:
   /// Ensure that we don't get instantiated.
-  ACE_Thread (void);
+  ACE_Thread ();
 };
 
 ACE_END_VERSIONED_NAMESPACE_DECL

@@ -1,7 +1,4 @@
 // -*- C++ -*-
-//
-// $Id: Process.inl 83405 2008-10-23 06:30:06Z johnnyw $
-
 #include "ace/ACE.h"
 #include "ace/OS_NS_sys_wait.h"
 #include "ace/OS_NS_signal.h"
@@ -11,19 +8,19 @@
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 ACE_INLINE void
-ACE_Process_Options::enable_unicode_environment (void)
+ACE_Process_Options::enable_unicode_environment ()
 {
   this->use_unicode_environment_ = true;
 }
 
 ACE_INLINE void
-ACE_Process_Options::disable_unicode_environment (void)
+ACE_Process_Options::disable_unicode_environment ()
 {
   this->use_unicode_environment_ = false;
 }
 
 ACE_INLINE bool
-ACE_Process_Options::use_unicode_environment (void) const
+ACE_Process_Options::use_unicode_environment () const
 {
   return this->use_unicode_environment_;
 }
@@ -38,7 +35,7 @@ ACE_Process::process_info (void)
 #endif /* ACE_WIN32 */
 
 ACE_INLINE ACE_HANDLE
-ACE_Process::gethandle (void) const
+ACE_Process::gethandle () const
 {
 #if defined (ACE_WIN32)
   return process_info_.hProcess;
@@ -48,8 +45,7 @@ ACE_Process::gethandle (void) const
 }
 
 ACE_INLINE pid_t
-ACE_Process::getpid (void)
-    const
+ACE_Process::getpid () const
 {
 #if defined (ACE_WIN32)
   return process_info_.dwProcessId;
@@ -86,7 +82,7 @@ ACE_Process::kill (int signum)
 }
 
 ACE_INLINE int
-ACE_Process::terminate (void)
+ACE_Process::terminate ()
 {
   if (this->getpid () != -1)
     return ACE::terminate_process (this->getpid ());
@@ -95,7 +91,7 @@ ACE_Process::terminate (void)
 }
 
 ACE_INLINE int
-ACE_Process::return_value (void) const
+ACE_Process::return_value () const
 {
 #if defined (ACE_WIN32)
   return this->exit_code_;
@@ -105,7 +101,7 @@ ACE_Process::return_value (void) const
 }
 
 ACE_INLINE ACE_exitcode
-ACE_Process::exit_code (void) const
+ACE_Process::exit_code () const
 {
   return this->exit_code_;
 }
@@ -117,7 +113,7 @@ ACE_Process::exit_code (ACE_exitcode code)
 }
 
 ACE_INLINE u_long
-ACE_Process_Options::creation_flags (void) const
+ACE_Process_Options::creation_flags () const
 {
 #if defined (ACE_USES_WCHAR) && defined (ACE_WIN32) && !defined (ACE_HAS_WINCE)
   return creation_flags_ | CREATE_UNICODE_ENVIRONMENT;
@@ -133,7 +129,7 @@ ACE_Process_Options::creation_flags (u_long cf)
 }
 
 ACE_INLINE pid_t
-ACE_Process_Options::getgroup (void) const
+ACE_Process_Options::getgroup () const
 {
   return process_group_;
 }
@@ -147,7 +143,7 @@ ACE_Process_Options::setgroup (pid_t pgrp)
 }
 
 ACE_INLINE int
-ACE_Process_Options::handle_inheritance (void)
+ACE_Process_Options::handle_inheritance ()
 {
   return handle_inheritance_;
 }
@@ -159,7 +155,7 @@ ACE_Process_Options::handle_inheritance (int hi)
 }
 
 ACE_INLINE int
-ACE_Process_Options::avoid_zombies (void)
+ACE_Process_Options::avoid_zombies ()
 {
   return avoid_zombies_;
 }
@@ -223,28 +219,33 @@ ACE_Process_Options::set_thread_attributes (void)
 #endif /* !ACE_HAS_WINCE */
 }
 
+ACE_INLINE HANDLE ACE_Process_Options::get_user_token (void) const
+{
+  return user_token_;
+}
+
 #else /* !defined (ACE_WIN32) */
 
 ACE_INLINE ACE_HANDLE
-ACE_Process_Options::get_stdin (void) const
+ACE_Process_Options::get_stdin () const
 {
   return stdin_;
 }
 
 ACE_INLINE ACE_HANDLE
-ACE_Process_Options::get_stdout (void) const
+ACE_Process_Options::get_stdout () const
 {
   return stdout_;
 }
 
 ACE_INLINE ACE_HANDLE
-ACE_Process_Options::get_stderr (void) const
+ACE_Process_Options::get_stderr () const
 {
   return stderr_;
 }
 
 ACE_INLINE bool
-ACE_Process_Options::inherit_environment (void) const
+ACE_Process_Options::inherit_environment () const
 {
   return inherit_environment_;
 }
@@ -302,32 +303,32 @@ ACE_Process_Options::setegid (uid_t id)
 }
 
 ACE_INLINE uid_t
-ACE_Process_Options::getruid (void) const
+ACE_Process_Options::getruid () const
 {
   return this->ruid_;
 }
 
 ACE_INLINE uid_t
-ACE_Process_Options::geteuid (void) const
+ACE_Process_Options::geteuid () const
 {
   return this->euid_;
 }
 
 ACE_INLINE uid_t
-ACE_Process_Options::getrgid (void) const
+ACE_Process_Options::getrgid () const
 {
   return this->rgid_;
 }
 
 ACE_INLINE uid_t
-ACE_Process_Options::getegid (void) const
+ACE_Process_Options::getegid () const
 {
   return this->egid_;
 }
 #endif /* ACE_WIN32 */
 
 ACE_INLINE ACE_TCHAR *
-ACE_Process_Options::command_line_buf (int *max_lenp)
+ACE_Process_Options::command_line_buf (size_t *max_lenp)
 {
   if (max_lenp != 0)
     *max_lenp = this->command_line_buf_len_;
@@ -335,7 +336,7 @@ ACE_Process_Options::command_line_buf (int *max_lenp)
 }
 
 ACE_INLINE ACE_TCHAR *
-ACE_Process_Options::working_directory (void)
+ACE_Process_Options::working_directory ()
 {
 #if !defined (ACE_HAS_WINCE)
   if (working_directory_[0] == '\0')
@@ -376,7 +377,7 @@ ACE_Process_Options::process_name (const ACE_TCHAR *p)
 }
 
 ACE_INLINE const ACE_TCHAR *
-ACE_Process_Options::process_name (void)
+ACE_Process_Options::process_name ()
 {
   if (process_name_[0] == '\0')
     this->process_name (this->command_line_argv ()[0]);

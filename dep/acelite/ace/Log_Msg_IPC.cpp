@@ -1,5 +1,3 @@
-// $Id: Log_Msg_IPC.cpp 91286 2010-08-05 09:04:31Z johnnyw $
-
 #include "ace/Log_Msg_IPC.h"
 #include "ace/Log_Record.h"
 #include "ace/CDR_Stream.h"
@@ -9,14 +7,16 @@
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
-ACE_Log_Msg_IPC::ACE_Log_Msg_IPC (void)
+ACE_Log_Msg_IPC::ACE_Log_Msg_IPC ()
 {
 }
 
-ACE_Log_Msg_IPC::~ACE_Log_Msg_IPC (void)
+ACE_Log_Msg_IPC::~ACE_Log_Msg_IPC ()
 {
   (void) this->close ();
 }
+
+ACE_ALLOC_HOOK_DEFINE(ACE_Log_Msg_IPC)
 
 int
 ACE_Log_Msg_IPC::open (const ACE_TCHAR *logger_key)
@@ -27,7 +27,7 @@ ACE_Log_Msg_IPC::open (const ACE_TCHAR *logger_key)
 }
 
 int
-ACE_Log_Msg_IPC::reset (void)
+ACE_Log_Msg_IPC::reset ()
 {
   if (this->message_queue_.get_handle () != ACE_INVALID_HANDLE)
     {
@@ -39,7 +39,7 @@ ACE_Log_Msg_IPC::reset (void)
 }
 
 int
-ACE_Log_Msg_IPC::close (void)
+ACE_Log_Msg_IPC::close ()
 {
   return this->message_queue_.close ();
 }

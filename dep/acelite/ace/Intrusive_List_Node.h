@@ -4,8 +4,6 @@
 /**
  *  @file Intrusive_List_Node.h
  *
- *  $Id: Intrusive_List_Node.h 83968 2008-12-04 08:11:41Z johnnyw $
- *
  *  @author Carlos O'Ryan <coryan@uci.edu>
  */
 //=============================================================================
@@ -46,9 +44,9 @@ public:
    *
    */
   //@{
-  T *prev (void) const;
+  T *prev () const;
   void prev (T *);
-  T *next (void) const;
+  T *next () const;
   void next (T *);
   //@}
 
@@ -58,7 +56,7 @@ protected:
    * The constructor is protected, because only derived classes should
    * be instantiated.
    */
-  ACE_Intrusive_List_Node (void);
+  ACE_Intrusive_List_Node ();
 
 private:
   /// Head and tail of the list

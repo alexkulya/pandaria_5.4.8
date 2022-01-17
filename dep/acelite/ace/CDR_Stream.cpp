@@ -1,5 +1,3 @@
-// $Id: CDR_Stream.cpp 95896 2012-06-18 20:42:07Z hillj $
-
 #include "ace/CDR_Stream.h"
 #include "ace/SString.h"
 #include "ace/Auto_Ptr.h"
@@ -531,22 +529,10 @@ ACE_OutputCDR::write_8 (const ACE_CDR::ULongLong *x)
 
   if (this->adjust (ACE_CDR::LONGLONG_SIZE, buf) == 0)
     {
-#if defined (__arm__) && !defined (ACE_HAS_IPHONE)
-      // Convert to Intel format (12345678 => 56781234)
-      const char *orig = reinterpret_cast<const char *> (x);
-      char *target = buf;
-      register ACE_UINT32 x =
-        *reinterpret_cast<const ACE_UINT32 *> (orig);
-      register ACE_UINT32 y =
-        *reinterpret_cast<const ACE_UINT32 *> (orig + 4);
-      *reinterpret_cast<ACE_UINT32 *> (target) = y;
-      *reinterpret_cast<ACE_UINT32 *> (target + 4) = x;
-      return true;
-#else
-#  if !defined (ACE_ENABLE_SWAP_ON_WRITE)
+#if !defined (ACE_ENABLE_SWAP_ON_WRITE)
       *reinterpret_cast<ACE_CDR::ULongLong *> (buf) = *x;
       return true;
-#  else
+#else
       if (!this->do_byte_swap_)
         {
           *reinterpret_cast<ACE_CDR::ULongLong *> (buf) = *x;
@@ -557,8 +543,7 @@ ACE_OutputCDR::write_8 (const ACE_CDR::ULongLong *x)
           ACE_CDR::swap_8 (reinterpret_cast<const char*> (x), buf);
           return true;
         }
-#  endif /* ACE_ENABLE_SWAP_ON_WRITE */
-#endif /* !__arm__ */
+#endif /* ACE_ENABLE_SWAP_ON_WRITE */
      }
 
   return false;
@@ -702,7 +687,7 @@ ACE_OutputCDR::write_boolean_array (const ACE_CDR::Boolean* x,
 }
 
 char *
-ACE_OutputCDR::write_long_placeholder (void)
+ACE_OutputCDR::write_long_placeholder ()
 {
   char *buf = 0;
   if (this->adjust (ACE_CDR::LONG_SIZE, buf) == 0)
@@ -713,7 +698,7 @@ ACE_OutputCDR::write_long_placeholder (void)
 }
 
 char *
-ACE_OutputCDR::write_short_placeholder (void)
+ACE_OutputCDR::write_short_placeholder ()
 {
   char *buf = 0;
   if (this->adjust (ACE_CDR::SHORT_SIZE, buf) == 0)
@@ -724,7 +709,7 @@ ACE_OutputCDR::write_short_placeholder (void)
 }
 
 char *
-ACE_OutputCDR::write_boolean_placeholder (void)
+ACE_OutputCDR::write_boolean_placeholder ()
 {
   char *buf = 0;
   if (this->adjust (ACE_CDR::OCTET_SIZE, buf) == 0)
@@ -735,7 +720,7 @@ ACE_OutputCDR::write_boolean_placeholder (void)
 }
 
 char *
-ACE_OutputCDR::write_char_placeholder (void)
+ACE_OutputCDR::write_char_placeholder ()
 {
   char *buf = 0;
   if (this->adjust (ACE_CDR::OCTET_SIZE, buf) == 0)
@@ -746,7 +731,7 @@ ACE_OutputCDR::write_char_placeholder (void)
 }
 
 char *
-ACE_OutputCDR::write_octet_placeholder (void)
+ACE_OutputCDR::write_octet_placeholder ()
 {
   char *buf = 0;
   if (this->adjust (ACE_CDR::OCTET_SIZE, buf) == 0)
@@ -757,7 +742,7 @@ ACE_OutputCDR::write_octet_placeholder (void)
 }
 
 char *
-ACE_OutputCDR::write_longlong_placeholder (void)
+ACE_OutputCDR::write_longlong_placeholder ()
 {
   char *buf = 0;
   if (this->adjust (ACE_CDR::LONGLONG_SIZE, buf) == 0)
@@ -768,7 +753,7 @@ ACE_OutputCDR::write_longlong_placeholder (void)
 }
 
 char *
-ACE_OutputCDR::write_float_placeholder (void)
+ACE_OutputCDR::write_float_placeholder ()
 {
   char *buf = 0;
   if (this->adjust (ACE_CDR::LONG_SIZE, buf) == 0)
@@ -779,7 +764,7 @@ ACE_OutputCDR::write_float_placeholder (void)
 }
 
 char *
-ACE_OutputCDR::write_double_placeholder (void)
+ACE_OutputCDR::write_double_placeholder ()
 {
   char *buf = 0;
   if (this->adjust (ACE_CDR::LONGLONG_SIZE, buf) == 0)
@@ -999,7 +984,7 @@ ACE_OutputCDR::replace (ACE_CDR::Double x, char* loc)
 }
 
 int
-ACE_OutputCDR::consolidate (void)
+ACE_OutputCDR::consolidate ()
 {
   // Optimize by only doing something if we need to
   if (this->current_ != &this->start_)
@@ -1392,7 +1377,7 @@ ACE_InputCDR::ACE_InputCDR (const ACE_OutputCDR& rhs,
 }
 
 ACE_CDR::Boolean
-ACE_InputCDR::skip_wchar (void)
+ACE_InputCDR::skip_wchar ()
 {
   if (static_cast<ACE_CDR::Short> (major_version_) == 1
       && static_cast<ACE_CDR::Short> (minor_version_) == 2)
@@ -1535,9 +1520,15 @@ ACE_InputCDR::read_string (ACE_CDR::Char *&x)
   // the memory is allocated.
   if (len > 0 && len <= this->length())
     {
+#if defined (ACE_HAS_ALLOC_HOOKS)
+      ACE_ALLOCATOR_RETURN (x,
+                            static_cast<ACE_CDR::Char*> (ACE_Allocator::instance()->malloc(sizeof (ACE_CDR::Char) * (len))),
+                            0);
+#else
       ACE_NEW_RETURN (x,
                       ACE_CDR::Char[len],
                       0);
+#endif /* ACE_HAS_ALLOC_HOOKS */
 
       ACE_Auto_Basic_Array_Ptr<ACE_CDR::Char> safe_data (x);
 
@@ -1551,9 +1542,16 @@ ACE_InputCDR::read_string (ACE_CDR::Char *&x)
     {
       // Convert any null strings to empty strings since empty
       // strings can cause crashes. (See bug 58.)
+#if defined (ACE_HAS_ALLOC_HOOKS)
+      ACE_ALLOCATOR_RETURN (x,
+                            static_cast<ACE_CDR::Char*> (ACE_Allocator::instance()->malloc(sizeof (ACE_CDR::Char) * (1))),
+                            0);
+#else
       ACE_NEW_RETURN (x,
                       ACE_CDR::Char[1],
                       0);
+#endif /* ACE_HAS_ALLOC_HOOKS */
+
       ACE_OS::strcpy (const_cast<char *&> (x), "");
       return true;
     }
@@ -1616,9 +1614,15 @@ ACE_InputCDR::read_wstring (ACE_CDR::WChar*& x)
               ACE_OutputCDR::wchar_maxbytes_);
 
           //allocating one extra for the null character needed by applications
+#if defined (ACE_HAS_ALLOC_HOOKS)
+          ACE_ALLOCATOR_RETURN (x,
+                                static_cast<ACE_CDR::WChar*> (ACE_Allocator::instance()->malloc(sizeof (ACE_CDR::WChar) * (len + 1))),
+                                0);
+#else
           ACE_NEW_RETURN (x,
                           ACE_CDR::WChar [len + 1],
                           false);
+#endif /* ACE_HAS_ALLOC_HOOKS */
 
           ACE_auto_ptr_reset (safe_data, x);
 
@@ -1637,9 +1641,15 @@ ACE_InputCDR::read_wstring (ACE_CDR::WChar*& x)
         }
       else
         {
+#if defined (ACE_HAS_ALLOC_HOOKS)
+          ACE_ALLOCATOR_RETURN (x,
+                                static_cast<ACE_CDR::WChar*> (ACE_Allocator::instance()->malloc(sizeof (ACE_CDR::WChar) * (len))),
+                                0);
+#else
           ACE_NEW_RETURN (x,
                           ACE_CDR::WChar [len],
                           false);
+#endif /* ACE_HAS_ALLOC_HOOKS */
 
           ACE_auto_ptr_reset (safe_data, x);
 
@@ -1655,9 +1665,16 @@ ACE_InputCDR::read_wstring (ACE_CDR::WChar*& x)
     {
       // Convert any null strings to empty strings since empty
       // strings can cause crashes. (See bug 58.)
-      ACE_NEW_RETURN (x,
-                      ACE_CDR::WChar[1],
-                      false);
+#if defined (ACE_HAS_ALLOC_HOOKS)
+          ACE_ALLOCATOR_RETURN (x,
+                                static_cast<ACE_CDR::WChar*> (ACE_Allocator::instance()->malloc(sizeof (ACE_CDR::WChar) * (1))),
+                                0);
+#else
+          ACE_NEW_RETURN (x,
+                          ACE_CDR::WChar [1],
+                          false);
+#endif /* ACE_HAS_ALLOC_HOOKS */
+
       x[0] = '\x00';
       return true;
     }
@@ -1666,6 +1683,130 @@ ACE_InputCDR::read_wstring (ACE_CDR::WChar*& x)
   x = 0;
   return false;
 }
+
+// As of C++11 std::string guarantees contiguous memory storage.
+// That provides the opportunity to optimize CDR streaming.
+ACE_CDR::Boolean
+ACE_InputCDR::read_string (std::string& x)
+{
+  // @@ This is a slight violation of "Optimize for the common case",
+  // i.e. normally the translator will be 0, but OTOH the code is
+  // smaller and should be better for the cache ;-) ;-)
+  if (this->char_translator_ != 0)
+    {
+      this->good_bit_ = this->char_translator_->read_string (*this, x);
+      return this->good_bit_;
+    }
+
+  ACE_CDR::ULong len = 0;
+
+  if (!this->read_ulong (len))
+    return false;
+
+  // A check for the length being too great is done later in the
+  // call to read_char_array but we want to have it done before
+  // the memory is allocated.
+  if (len > 0 && len <= this->length())
+    {
+      try
+        {
+          x.resize (len-1); // no need to include the terminating '\0' here
+        }
+      catch (const std::bad_alloc&)
+        {
+          return false;
+        }
+
+      if (len == 0 || this->read_char_array (&x[0], len-1))
+      {
+        return this->skip_char (); // skip the terminating '\0'
+      }
+    }
+
+  this->good_bit_ = false;
+  x.clear ();
+  return false;
+}
+
+#if !defined(ACE_LACKS_STD_WSTRING)
+ACE_CDR::Boolean
+ACE_InputCDR::read_wstring (std::wstring& x)
+{
+  // @@ This is a slight violation of "Optimize for the common case",
+  // i.e. normally the translator will be 0, but OTOH the code is
+  // smaller and should be better for the cache ;-) ;-)
+  if (this->wchar_translator_ != 0)
+    {
+      this->good_bit_ = this->wchar_translator_->read_wstring (*this, x);
+      return this->good_bit_;
+    }
+  if (ACE_OutputCDR::wchar_maxbytes_ == 0)
+    {
+      errno = EACCES;
+      return (this->good_bit_ = false);
+    }
+
+  ACE_CDR::ULong len = 0;
+
+  if (!this->read_ulong (len))
+    {
+      return false;
+    }
+
+  // A check for the length being too great is done later in the
+  // call to read_char_array but we want to have it done before
+  // the memory is allocated.
+  if (len > 0 && len <= this->length ())
+    {
+      if (static_cast<ACE_CDR::Short> (this->major_version_) == 1
+          && static_cast<ACE_CDR::Short> (this->minor_version_) == 2)
+        {
+          len /=
+            ACE_Utils::truncate_cast<ACE_CDR::ULong> (
+              ACE_OutputCDR::wchar_maxbytes_);
+
+          try
+            {
+              x.resize (len);
+            }
+          catch (const std::bad_alloc&)
+            {
+              return false;
+            }
+
+          if (this->read_wchar_array (&x[0], len))
+            {
+              return true;
+            }
+        }
+      else
+        {
+          try
+            {
+              x.resize (len-1); // no need to include the terminating '\0' here
+            }
+          catch (const std::bad_alloc&)
+            {
+              return false;
+            }
+
+          if (len == 1 || this->read_wchar_array (&x[0], len-1))
+            {
+              return this->skip_wchar (); // skip the terminating '\0'
+            }
+        }
+    }
+  else if (len == 0)
+    {
+      x.clear ();
+      return true;
+    }
+
+  this->good_bit_ = false;
+  x.clear ();
+  return false;
+}
+#endif
 
 ACE_CDR::Boolean
 ACE_InputCDR::read_array (void* x,
@@ -1839,39 +1980,10 @@ ACE_InputCDR::read_8 (ACE_CDR::ULongLong *x)
   if (this->adjust (ACE_CDR::LONGLONG_SIZE, buf) == 0)
     {
 #if !defined (ACE_DISABLE_SWAP_ON_READ)
-#  if defined (__arm__) && !defined (ACE_HAS_IPHONE)
-      if (!this->do_byte_swap_)
-        {
-          // Convert from Intel format (12345678 => 56781234)
-          const char *orig = buf;
-          char *target = reinterpret_cast<char *> (x);
-          register ACE_UINT32 x =
-            *reinterpret_cast<const ACE_UINT32 *> (orig);
-          register ACE_UINT32 y =
-            *reinterpret_cast<const ACE_UINT32 *> (orig + 4);
-          *reinterpret_cast<ACE_UINT32 *> (target) = y;
-          *reinterpret_cast<ACE_UINT32 *> (target + 4) = x;
-        }
-      else
-        {
-          // Convert from Sparc format (12345678 => 43218765)
-          const char *orig = buf;
-          char *target = reinterpret_cast<char *> (x);
-          register ACE_UINT32 x =
-            *reinterpret_cast<const ACE_UINT32 *> (orig);
-          register ACE_UINT32 y =
-            *reinterpret_cast<const ACE_UINT32 *> (orig + 4);
-          x = (x << 24) | ((x & 0xff00) << 8) | ((x & 0xff0000) >> 8) | (x >> 24);
-          y = (y << 24) | ((y & 0xff00) << 8) | ((y & 0xff0000) >> 8) | (y >> 24);
-          *reinterpret_cast<ACE_UINT32 *> (target) = x;
-          *reinterpret_cast<ACE_UINT32 *> (target + 4) = y;
-        }
-#  else
       if (!this->do_byte_swap_)
         *x = *reinterpret_cast<ACE_CDR::ULongLong *> (buf);
       else
         ACE_CDR::swap_8 (buf, reinterpret_cast<char *> (x));
-#  endif /* !__arm__ */
 #else
       *x = *reinterpret_cast<ACE_CDR::ULongLong *> (buf);
 #endif /* ACE_DISABLE_SWAP_ON_READ */
@@ -1906,7 +2018,7 @@ ACE_InputCDR::read_16 (ACE_CDR::LongDouble *x)
 }
 
 ACE_CDR::Boolean
-ACE_InputCDR::skip_string (void)
+ACE_InputCDR::skip_string ()
 {
   ACE_CDR::ULong len = 0;
   if (this->read_ulong (len))
@@ -1932,7 +2044,7 @@ ACE_InputCDR::skip_string (void)
 }
 
 ACE_CDR::Boolean
-ACE_InputCDR::skip_wstring (void)
+ACE_InputCDR::skip_wstring ()
 {
   ACE_CDR::ULong len = 0;
   ACE_CDR::Boolean continue_skipping = read_ulong (len);
@@ -2185,7 +2297,7 @@ ACE_InputCDR::clone_from (ACE_InputCDR &cdr)
 }
 
 ACE_Message_Block*
-ACE_InputCDR::steal_contents (void)
+ACE_InputCDR::steal_contents ()
 {
   ACE_Message_Block* block = this->start_.clone ();
   this->start_.data_block (block->data_block ()->clone ());
@@ -2204,7 +2316,7 @@ ACE_InputCDR::steal_contents (void)
 }
 
 void
-ACE_InputCDR::reset_contents (void)
+ACE_InputCDR::reset_contents ()
 {
   this->start_.data_block (this->start_.data_block ()->clone_nocopy ());
 
@@ -2235,15 +2347,39 @@ ACE_InputCDR::unregister_monitor (void)
 
 // --------------------------------------------------------------
 
-ACE_Char_Codeset_Translator::~ACE_Char_Codeset_Translator (void)
+ACE_Char_Codeset_Translator::~ACE_Char_Codeset_Translator ()
 {
+}
+
+ACE_CDR::Boolean
+ACE_Char_Codeset_Translator::read_string (ACE_InputCDR &cdr,
+                                          std::string &x)
+{
+  ACE_CDR::Char *buf = 0;
+  ACE_CDR::Boolean const marshal_flag = this->read_string (cdr, buf);
+  x.assign (buf);
+  ACE::strdelete (buf);
+  return marshal_flag;
 }
 
 // --------------------------------------------------------------
 
-ACE_WChar_Codeset_Translator::~ACE_WChar_Codeset_Translator (void)
+ACE_WChar_Codeset_Translator::~ACE_WChar_Codeset_Translator ()
 {
 }
+
+#if !defined(ACE_LACKS_STD_WSTRING)
+ACE_CDR::Boolean
+ACE_WChar_Codeset_Translator::read_wstring (ACE_InputCDR &cdr,
+                                            std::wstring &x)
+{
+  ACE_CDR::WChar *buf = 0;
+  ACE_CDR::Boolean const marshal_flag = this->read_wstring (cdr, buf);
+  x.assign (buf);
+  ACE::strdelete (buf);
+  return marshal_flag;
+}
+#endif
 
 // --------------------------------------------------------------
 

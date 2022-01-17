@@ -4,9 +4,7 @@
 /**
  *  @file    Typed_SV_Message_Queue.h
  *
- *  $Id: Typed_SV_Message_Queue.h 80826 2008-03-04 14:51:23Z wotte $
- *
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  */
 //=============================================================================
 
@@ -40,7 +38,6 @@ public:
     ACE_NOWAIT = IPC_NOWAIT
   };
 
-  // = Initialization and termination operations.
   ACE_Typed_SV_Message_Queue (void);
   ACE_Typed_SV_Message_Queue (key_t external_id,
                               int create = ACE_OPEN,
@@ -65,7 +62,7 @@ public:
   int control (int option, void *arg = 0);
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

@@ -4,8 +4,6 @@
 /**
  *  @file    LSOCK_Acceptor.h
  *
- *  $Id: LSOCK_Acceptor.h 82723 2008-09-16 09:35:44Z johnnyw $
- *
  *  @author Doug Schmidt
  */
 //=============================================================================
@@ -41,7 +39,6 @@ class ACE_Reactor;
 class ACE_Export ACE_LSOCK_Acceptor : public ACE_SOCK_Acceptor
 {
 public:
-  // = Initialization methods.
   /// Default constructor.
   ACE_LSOCK_Acceptor (void);
 
@@ -78,7 +75,7 @@ public:
   typedef ACE_LSOCK_Stream PEER_STREAM;
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

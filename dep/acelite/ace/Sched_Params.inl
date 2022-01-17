@@ -4,8 +4,6 @@
 /**
  *  @file    Sched_Params.inl
  *
- *  $Id: Sched_Params.inl 80826 2008-03-04 14:51:23Z wotte $
- *
  *  @author David Levine
  */
 //=============================================================================
@@ -26,12 +24,12 @@ ACE_Sched_Params::ACE_Sched_Params (
 {
 }
 
-ACE_INLINE ACE_Sched_Params::~ACE_Sched_Params (void)
+ACE_INLINE ACE_Sched_Params::~ACE_Sched_Params ()
 {
 }
 
 ACE_INLINE ACE_Sched_Params::Policy
-ACE_Sched_Params::policy (void) const
+ACE_Sched_Params::policy () const
 {
   return this->policy_;
 }
@@ -43,7 +41,7 @@ ACE_Sched_Params::policy (const ACE_Sched_Params::Policy policy)
 }
 
 ACE_INLINE ACE_Sched_Priority
-ACE_Sched_Params::priority (void) const
+ACE_Sched_Params::priority () const
 {
   return this->priority_;
 }
@@ -55,7 +53,7 @@ ACE_Sched_Params::priority (const ACE_Sched_Priority priority)
 }
 
 ACE_INLINE int
-ACE_Sched_Params::scope (void) const
+ACE_Sched_Params::scope () const
 {
   return this->scope_;
 }
@@ -67,7 +65,7 @@ ACE_Sched_Params::scope (const int scope)
 }
 
 ACE_INLINE const ACE_Time_Value &
-ACE_Sched_Params::quantum (void) const
+ACE_Sched_Params::quantum () const
 {
   return this->quantum_;
 }
@@ -79,13 +77,13 @@ ACE_Sched_Params::quantum (const ACE_Time_Value &quant)
 }
 
 ACE_INLINE const ACE_Sched_Params::Policy &
-ACE_Sched_Priority_Iterator::policy (void) const
+ACE_Sched_Priority_Iterator::policy () const
 {
   return this->policy_;
 }
 
 ACE_INLINE int
-ACE_Sched_Priority_Iterator::scope (void) const
+ACE_Sched_Priority_Iterator::scope () const
 {
   return this->scope_;
 }
@@ -102,24 +100,24 @@ ACE_Sched_Priority_Iterator::ACE_Sched_Priority_Iterator (const ACE_Sched_Params
 }
 
 ACE_INLINE
-ACE_Sched_Priority_Iterator::~ACE_Sched_Priority_Iterator (void)
+ACE_Sched_Priority_Iterator::~ACE_Sched_Priority_Iterator ()
 {
 }
 
 ACE_INLINE int
-ACE_Sched_Priority_Iterator::more (void) const
+ACE_Sched_Priority_Iterator::more () const
 {
   return !this->done_;
 }
 
 ACE_INLINE int
-ACE_Sched_Priority_Iterator::priority (void) const
+ACE_Sched_Priority_Iterator::priority () const
 {
   return this->priority_;
 }
 
 ACE_INLINE void
-ACE_Sched_Priority_Iterator::next (void)
+ACE_Sched_Priority_Iterator::next ()
 {
   if (this->done_)
     return;

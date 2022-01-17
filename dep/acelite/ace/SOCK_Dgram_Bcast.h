@@ -4,8 +4,6 @@
 /**
  *  @file    SOCK_Dgram_Bcast.h
  *
- *  $Id: SOCK_Dgram_Bcast.h 80826 2008-03-04 14:51:23Z wotte $
- *
  *  @author Doug Schmidt
  */
 //=============================================================================
@@ -46,6 +44,8 @@ public:
 
   /// Pointer to the next interface in the chain.
   ACE_Bcast_Node *next_;
+
+  ACE_ALLOC_HOOK_DECLARE;
 };
 
 /**
@@ -57,7 +57,6 @@ public:
 class ACE_Export ACE_SOCK_Dgram_Bcast : public ACE_SOCK_Dgram
 {
 public:
-  // = Initialization and termination methods.
   /// Default constructor.
   ACE_SOCK_Dgram_Bcast (void);
 
@@ -114,7 +113,7 @@ public:
                 int flags = 0) const;
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

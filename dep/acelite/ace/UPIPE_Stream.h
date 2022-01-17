@@ -4,8 +4,6 @@
 /**
  *  @file    UPIPE_Stream.h
  *
- *  $Id: UPIPE_Stream.h 80826 2008-03-04 14:51:23Z wotte $
- *
  *  @author Gerhard Lenzer
  *  @author Douglas C. Schmidt
  */
@@ -42,8 +40,6 @@ public:
   friend class ACE_UPIPE_Connector;
 
   typedef ACE_Stream<ACE_SYNCH> MT_Stream;
-
-  // = Initialization and Termination.
 
   ACE_UPIPE_Stream (void);
 
@@ -98,7 +94,7 @@ public:
   int get_remote_addr (ACE_UPIPE_Addr &remote_sap) const;
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

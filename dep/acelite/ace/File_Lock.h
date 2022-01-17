@@ -4,9 +4,7 @@
 /**
  *  @file    File_Lock.h
  *
- *  $Id: File_Lock.h 91064 2010-07-12 10:11:24Z johnnyw $
- *
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  */
 //=============================================================================
 
@@ -134,7 +132,7 @@ public:
   void set_handle (ACE_HANDLE);
 
   /// Dump state of the object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

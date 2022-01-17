@@ -4,8 +4,6 @@
 /**
  *  @file    Process.h
  *
- *  $Id: Process.h 93506 2011-03-09 10:42:51Z vzykov $
- *
  *  @author Tim Harrison <harrison@cs.wustl.edu>
  */
 //=============================================================================
@@ -88,7 +86,7 @@ public:
                        size_t max_cmdline_args = MAX_COMMAND_LINE_OPTIONS);
 
   /// Destructor.
-  ~ACE_Process_Options (void);
+  ~ACE_Process_Options ();
 
   // = Methods to set process creation options portably.
 
@@ -114,12 +112,17 @@ public:
                    ACE_HANDLE std_err = ACE_INVALID_HANDLE);
 
   /// Release the standard handles previously set with set_handles;
-  void release_handles (void);
+  void release_handles ();
 
+#ifndef ACE_LACKS_VA_FUNCTIONS
   /// @param format must be of the form "VARIABLE=VALUE".  There can not be
   /// any spaces between VARIABLE and the equal sign.
   int setenv (const ACE_TCHAR *format,
-              ...);
+              ...)
+#if !defined (ACE_USES_WCHAR)
+    ACE_GCC_FORMAT_ATTRIBUTE (printf, 2, 3)
+#endif /* !ACE_USES_WCHAR */
+    ;
 
   /**
    * Set a single environment variable, @a variable_name.  Since
@@ -131,7 +134,12 @@ public:
    */
   int setenv (const ACE_TCHAR *variable_name,
               const ACE_TCHAR *format,
-              ...);
+              ...)
+#if !defined (ACE_USES_WCHAR)
+    ACE_GCC_FORMAT_ATTRIBUTE (printf, 3, 4)
+#endif /* !ACE_USES_WCHAR */
+    ;
+#endif // ACE_LACKS_VA_FUNCTIONS
 
   /// Same as above with argv format.  @a envp must be null terminated.
   int setenv (ACE_TCHAR *envp[]);
@@ -145,6 +153,7 @@ public:
   void working_directory (const wchar_t *wd);
 #endif /* ACE_HAS_WCHAR */
 
+#ifndef ACE_LACKS_VA_FUNCTIONS
   /**
    * Set the command-line arguments.  @a format can use any printf
    * formats.  The first token in @a format should be the path to the
@@ -154,12 +163,17 @@ public:
    * path to run a process, this method *must* be called!  Returns 0
    * on success, -1 on failure.
    */
-  int command_line (const ACE_TCHAR *format, ...);
+  int command_line (const ACE_TCHAR *format, ...)
+#if !defined (ACE_USES_WCHAR)
+    ACE_GCC_FORMAT_ATTRIBUTE (printf, 2, 3)
+#endif /* !ACE_USES_WCHAR */
+    ;
 
 #if defined (ACE_HAS_WCHAR) && !defined (ACE_HAS_WINCE)
   /// Anti-TChar version of command_line ()
   int command_line (const ACE_ANTI_TCHAR *format, ...);
 #endif /* ACE_HAS_WCHAR && !ACE_HAS_WINCE */
+#endif // ACE_LACKS_VA_FUNCTIONS
 
   /// Same as above in argv format.  @a argv must be null terminated.
   int command_line (const ACE_TCHAR * const argv[]);
@@ -175,10 +189,10 @@ public:
 
   /// Return the process_name.  If the <process_name(name)> set
   /// method is not called, this method will return argv[0].
-  const ACE_TCHAR *process_name (void);
+  const ACE_TCHAR *process_name ();
 
   /// Get the creation flags.
-  u_long creation_flags (void) const;
+  u_long creation_flags () const;
 
   /**
    * Set the creation flags to affect how a new process is spawned.
@@ -194,7 +208,7 @@ public:
   void creation_flags (u_long);
 
   /// Current working directory.  Returns "" if nothing has been set.
-  ACE_TCHAR *working_directory (void);
+  ACE_TCHAR *working_directory ();
 
   /// Buffer of command-line options.  Returns a pointer to a buffer that
   /// contains the list of command line options.  Prior to a call to
@@ -206,7 +220,7 @@ public:
   /// same as the single string in the prior case and can be obtained by
   /// providing max_len. @arg max_len, if non-zero, provides a location
   /// into which the total length of the command line buffer is returned.
-  ACE_TCHAR *command_line_buf (int *max_len = 0);
+  ACE_TCHAR *command_line_buf (size_t *max_len = 0);
 
   /**
    * argv-style command-line options.  Parses and modifies the string
@@ -215,18 +229,18 @@ public:
    * and returned with each entry pointing to the start of
    * null-terminated string.  Returns { 0 } if nothing has been set.
    */
-  ACE_TCHAR * const *command_line_argv (void);
+  ACE_TCHAR * const *command_line_argv ();
 
   /**
    * Null-terminated buffer of null terminated strings.  Each string
    * is an environment assignment "VARIABLE=value".  This buffer
    * should end with two null characters.
    */
-  ACE_TCHAR *env_buf (void);
+  ACE_TCHAR *env_buf ();
 
   /// Get the process group.  On UNIX, these methods are used by the
   /// ACE_Process_Manager to manage groups of processes.
-  pid_t getgroup (void) const;
+  pid_t getgroup () const;
 
   /// Set the process group.  On UNIX, these methods are used by the
   /// ACE_Process_Manager to manage groups of processes.
@@ -240,7 +254,7 @@ public:
   /// ACE_Process_Options::set_handles() you must not call
   /// handle_inheritance(false). Doing so will prevent the duplicated handles
   /// from surviving in the created process.
-  int handle_inheritance (void);
+  int handle_inheritance ();
   void handle_inheritance (int);
 
   /// Cause the specified handle to be passed to a child process
@@ -277,17 +291,17 @@ public:
   void avoid_zombies (int);
 
   /// Get current value for avoid_zombies.
-  int avoid_zombies (void);
+  int avoid_zombies ();
 
   /// Enable the use of a Unicode environment.  This only makes sense
   /// for Win32 when ACE_USES_WCHAR is not defined.
-  void enable_unicode_environment (void);
+  void enable_unicode_environment ();
 
   /// Disable the use of a Unicode environment.
-  void disable_unicode_environment (void);
+  void disable_unicode_environment ();
 
   /// Return the unicode environment status
-  bool use_unicode_environment (void) const;
+  bool use_unicode_environment () const;
 
 #if defined (ACE_WIN32)
   // = Non-portable accessors for when you "just have to use them."
@@ -311,15 +325,23 @@ public:
   /// CreateProcess.
   LPSECURITY_ATTRIBUTES set_thread_attributes (void);
 
+  /// Get user token. Return ACE_INVALID_HANDLE if it has not been set.
+  HANDLE get_user_token (void) const;
+
+  /// Set user token for creating process as user.
+  /// @param token the user token is passed to \c ::CreateProcessAsUser.
+  /// @param close_token whether to close the user token when destructing.
+  void set_user_token (HANDLE token, bool close_token = false);
+
 #else /* All things not WIN32 */
 
   /// argv-style array of environment settings.
-  ACE_TCHAR *const *env_argv (void);
+  ACE_TCHAR *const *env_argv ();
 
   // = Accessors for the standard handles.
-  ACE_HANDLE get_stdin (void) const;
-  ACE_HANDLE get_stdout (void) const;
-  ACE_HANDLE get_stderr (void) const;
+  ACE_HANDLE get_stdin () const;
+  ACE_HANDLE get_stdout () const;
+  ACE_HANDLE get_stderr () const;
 
   // = Set/get real & effective user & group id associated with user.
   int setreugid (const ACE_TCHAR* user);
@@ -327,15 +349,15 @@ public:
   void seteuid (uid_t id);
   void setrgid (uid_t id);
   void setegid (uid_t id);
-  uid_t getruid (void) const;
-  uid_t geteuid (void) const;
-  uid_t getrgid (void) const;
-  uid_t getegid (void) const;
+  uid_t getruid () const;
+  uid_t geteuid () const;
+  uid_t getrgid () const;
+  uid_t getegid () const;
 
   /**
    * Get the inherit_environment flag.
    */
-  bool inherit_environment (void) const;
+  bool inherit_environment () const;
 
   /**
    * Set the inherit_environment flag.
@@ -382,6 +404,11 @@ protected:
   /// Data for thread_attributes_.
   SECURITY_ATTRIBUTES security_buf2_;
 
+  /// User token for \a CreateProcessAsUser
+  HANDLE user_token_;
+
+  /// Keeps track of whether we need to close user token.
+  bool close_user_token_;
 #else /* !ACE_WIN32 */
   ACE_HANDLE stdin_;
   ACE_HANDLE stdout_;
@@ -469,137 +496,160 @@ protected:
 /**
  * @class ACE_Process
  *
- * @brief Process
+ * @brief A portable encapsulation for creating and managing new processes.
  *
- * A Portable encapsulation for creating new processes.
- * Notice that on UNIX platforms, if the <setenv> is used, the
- * <spawn> is using the <execve> system call. It means that the
- * <command_line> should include a full path to the program file
- * (<execve> does not search the PATH).  If <setenv> is not used
- * then, the <spawn> is using the <execvp> which searches for the
- * program file in the PATH variable.
+ * ACE_Process provides a convenient way to:
+ *  - Spawn child processes, with convenient hooks for pre- and post-spawn
+ *    actions
+ *  - Check if a spawned process is still running
+ *  - Kill a spawned child process
+ *  - Wait for a spawned child process to exit.
+ *
+ * @see ACE_Process_Options because it is used to
+ * pass options when spawning child processes.
+ *
+ * @see ACE_Process_Manager for additional ways to manage spawned
+ * processes.
  */
 class ACE_Export ACE_Process
 {
 public:
   friend class ACE_Process_Manager;
 
-  /// Default construction.  Must use <ACE_Process::spawn> to start.
-  ACE_Process (void);
+  /// Default construction.  Use ACE_Process::spawn() to start a process.
+  ACE_Process ();
 
   /// Destructor.
-  virtual ~ACE_Process (void);
+  virtual ~ACE_Process ();
 
   /**
-   * Called just before <ACE_OS::fork> in the <spawn>.  If this
-   * returns non-zero, the <spawn> is aborted (and returns
-   * ACE_INVALID_PID).  The default simply returns zero.
+   * Called back from spawn() just before spawning the child.  If this
+   * returns non-zero, the spawn is aborted (and returns ACE_INVALID_PID).
+   * The default returns zero.
    */
   virtual int prepare (ACE_Process_Options &options);
 
   /**
-   * Launch a new process as described by @a options. On success,
-   * returns 1 if the option avoid_zombies is set, else returns the
-   * process id of the newly spawned child. Returns -1 on
-   * failure. This will be fixed in the future versions of ACE when
-   * the process id of the child will be returned regardless of the option.
+   * Launch a new process as described by @a options.
+   *
+   * @retval -1 on failure; check @c errno for error code.
+   * @retval 1 on success if the option @c avoid_zombies is set.
+   * @retval other the process id of the newly spawned child.
+   *
+   * @note The return value 1 may be changed in future versions of ACE to be
+   * the process id of the child will be returned regardless of the
+   * @c avoid_zombies option.
+   *
+   * @note On UNIX platforms, spawn() uses the execvp() system call if
+   * ACE_Process_Options::inherit_environment() returns true (which is the
+   * default) and execve() if not. Since execve() does not search PATH, the
+   * ACE_Process_Options::command_line() should include a full path to the
+   * program file.
    */
   virtual pid_t spawn (ACE_Process_Options &options);
 
-  /// Called just after <ACE_OS::fork> in the parent's context, if the
-  /// <fork> succeeds.  The default is to do nothing.
+  /// Called back from spawn() in the parent's context just after forking,
+  /// if the fork succeeds.  The default simply returns.
   virtual void parent (pid_t child);
 
   /**
-   * Called just after <ACE_OS::fork> in the child's context.  The
-   * default does nothing.  This function is *not* called on Win32
+   * Called back from spawn() in the child's context just after forking.  The
+   * default does nothing.
+   *
+   * @note This function is *not* called on Windows
    * because the process-creation scheme does not allow it.
    */
   virtual void child (pid_t parent);
 
-  /// Called by a Process_Manager that is removing this Process from
-  /// its table of managed Processes.  Default is to do nothing.
-  virtual void unmanage (void);
+  /// Called by a ACE_Process_Manager that is removing this object from
+  /// its table of managed processes. Default is to do nothing.
+  virtual void unmanage ();
 
   /**
-   * Wait for the process we've created to exit.  If @a status != 0, it
-   * points to an integer where the function store the exit status of
-   * child process to.  If @a wait_options == @c WNOHANG then return 0
-   * and don't block if the child process hasn't exited yet.  A return
-   * value of -1 represents the <wait> operation failed, otherwise,
-   * the child process id is returned.
+   * Wait for a previously spawned process to exit.
+   *
+   * @arg status Points to a location to receive the exit status of the
+   *      spawned process. Ignored if the value is 0.
+   * @arg wait_options If @c WNOHANG then return 0 and don't block if the
+   *      child process hasn't exited yet.
+   *
+   * @retval -1 the wait operation failed; consult @c errno for details.
+   * @retval other the child process id is returned on success.
    */
   pid_t wait (ACE_exitcode *status = 0,
               int wait_options = 0);
 
   /**
-   * Timed wait for the process we've created to exit.  A return value
-   * of -1 indicates that the something failed; 0 indicates that a
-   * timeout occurred.  Otherwise, the child's process id is returned.
-   * If @a status != 0, it points to an integer where the function
-   * stores the child's exit status.
+   * Timed wait for a previously spawned process to exit.
    *
-   * @note On UNIX platforms this function uses <ualarm>, i.e., it
+   * @arg tv A relative amount of time to wait for the process to exit.
+   * @arg status Points to a location to receive the exit status of the
+   *      spawned process. Ignored if the value is 0.
+   *
+   * @retval 0 the specified time period elapsed before the process exited.
+   * @retval -1 the wait operation failed; consult @c errno for details.
+   * @retval other the child process id is returned on success.
+   *
+   * @note On UNIX platforms this function uses @c ualarm(), i.e., it
    * overwrites any existing alarm.  In addition, it steals all
-   * <SIGCHLD>s during the timeout period, which will break another
-   * <ACE_Process_Manager> in the same process that's expecting
-   * <SIGCHLD> to kick off process reaping.
+   * @c SIGCHLD signals during the timeout period, which will break another
+   * ACE_Process_Manager in the same process that's expecting
+   * @c SIGCHLD to kick off process reaping.
    */
   pid_t wait (const ACE_Time_Value &tv,
               ACE_exitcode *status = 0);
 
-  /// Send the process a signal.  This is only portable to operating
+  /// Send the process a signal.  This only has an effect on operating
   /// systems that support signals, such as UNIX/POSIX.
   int kill (int signum = SIGINT);
 
   /**
    * Terminate the process abruptly using ACE::terminate_process().
    * This call doesn't give the process a chance to cleanup, so use it
-   * with caution...
+   * with caution.
    */
-  int terminate (void);
+  int terminate ();
 
   /// Return the process id of the new child process.
-  pid_t getpid (void) const;
+  pid_t getpid () const;
 
   /// Return the handle of the process, if it has one.
-  ACE_HANDLE gethandle (void) const;
+  ACE_HANDLE gethandle () const;
 
   /// Return 1 if running; 0 otherwise.
-  int running (void) const;
+  int running () const;
 
-  /// Return the Process' exit code.  This method returns the raw
-  /// exit status returned from system APIs (such as <wait> or
-  /// <waitpid>).  This value is system dependent.
-  ACE_exitcode exit_code (void) const;
+  /// Return the process's exit code.  This method returns the raw
+  /// exit status returned from system APIs (such as @c wait() or
+  /// @c waitpid() ).  This value is system dependent.
+  ACE_exitcode exit_code () const;
 
-  /// Return the Process' return value.  This method returns the
-  /// actual return value that a child process returns or <exit>s.
-  int return_value (void) const;
-
-  /// Close all the handles in the set obtained from the
-  /// @arg ACE_Process_Options::dup_handles object used to spawn
-  /// the process.
-  void close_dup_handles (void);
+  /// Return the process's return value.  This method returns the
+  /// actual return value that a child process returns or exits with.
+  int return_value () const;
 
   /// Close all the handles in the set obtained from the
-  /// @arg ACE_Process_Options::passed_handles object used to spawn
+  /// @a ACE_Process_Options::dup_handles object used to spawn
   /// the process.
-  void close_passed_handles (void);
+  void close_dup_handles ();
+
+  /// Close all the passed handles in the set obtained from the
+  /// ACE_Process_Options object used to spawn the process.
+  void close_passed_handles ();
 
 #if defined (ACE_WIN32)
   PROCESS_INFORMATION process_info (void);
 #endif /* ACE_WIN32 */
 
 private:
-
-  // Disallow copying and assignment since we don't support this (yet).
-  ACE_Process (const ACE_Process &);
-  void operator= (const ACE_Process &);
+  ACE_Process (const ACE_Process &) = delete;
+  void operator= (const ACE_Process &) = delete;
+  ACE_Process (ACE_Process &&) = delete;
+  void operator= (ACE_Process &&) = delete;
 
 protected:
-  /// Set this process' <exit_code_>.  ACE_Process_Manager uses this
-  /// method to set the <exit_code_> after successfully waiting for
+  /// Set this process's exit code.  ACE_Process_Manager uses this
+  /// method to set the exit code after successfully waiting for
   /// this process to exit.
   void exit_code (ACE_exitcode code);
 
@@ -639,12 +689,14 @@ class ACE_Export ACE_Managed_Process : public ACE_Process
 public:
 
   /// Cleanup by deleting @c this.
-  virtual void unmanage (void);
+  virtual void unmanage ();
+
+  ACE_ALLOC_HOOK_DECLARE;
 
 protected:
 
   /// Make sure that we're allocated dynamically!
-  virtual ~ACE_Managed_Process (void);
+  virtual ~ACE_Managed_Process ();
 };
 
 ACE_END_VERSIONED_NAMESPACE_DECL

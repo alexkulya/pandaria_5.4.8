@@ -1,13 +1,10 @@
 // -*- C++ -*-
-//
-// $Id: SSL_SOCK_Connector.cpp 91813 2010-09-17 07:52:52Z johnnyw $
-
 #include "SSL_SOCK_Connector.h"
 
 #include "ace/OS_NS_errno.h"
 #include "ace/Handle_Set.h"
 #include "ace/INET_Addr.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/Countdown_Time.h"
 #include "ace/Truncate.h"
 
@@ -31,6 +28,8 @@ ACE_SSL_SOCK_Connector::ssl_connect (ACE_SSL_SOCK_Stream &new_stream,
                                      const ACE_Time_Value *timeout)
 {
   SSL *ssl = new_stream.ssl ();
+  if (ssl == 0)
+    return -1;
 
   if (SSL_is_init_finished (ssl))
     return 0;
