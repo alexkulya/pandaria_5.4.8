@@ -1,5 +1,5 @@
 
-**MoP 5.4.8 Build 18414**
+**Mists of Pandaria 5.4.8 Build 18414**
 
 ## Requirements
 + Platform: Linux, Windows or Mac
@@ -14,7 +14,7 @@
 + GCC = 4.7.2 (Linux only)
 
 ## Copyright
-License: GPL 3.0
+License: GPL 2.0
 
 Read file [COPYING](COPYING.md)
 
