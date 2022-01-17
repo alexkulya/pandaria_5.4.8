@@ -1,6 +1,4 @@
 /* -*- C++ -*- */
-// $Id: config-openvms.h 94294 2011-07-01 09:32:25Z johnnyw $
-
 // The following configuration file is designed to work for OpenVMS 7.3-2
 
 #ifndef ACE_CONFIG_H
@@ -51,8 +49,6 @@
 #define ACE_DEFAULT_BASE_ADDR ((char*)(0x30000000))
 
 #define ACE_MAX_UDP_PACKET_SIZE 65535
-
-#define ACE_HAS_STDCPP_STL_INCLUDES 1
 
 /* missing system headers */
 #define ACE_LACKS_STDINT_H  1
@@ -162,7 +158,6 @@
 #define ACE_LACKS_UNIX_SIGNALS 1
 
 #define ACE_HAS_CONSISTENT_SIGNAL_PROTOTYPES 1
-#define ACE_HAS_CPLUSPLUS_HEADERS 1
 #define ACE_LACKS_LINEBUFFERED_STREAMBUF 1
 
 #define ACE_HAS_GPERF 1

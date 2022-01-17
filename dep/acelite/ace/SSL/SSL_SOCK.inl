@@ -1,7 +1,4 @@
 // -*- C++ -*-
-//
-// $Id: SSL_SOCK.inl 80826 2008-03-04 14:51:23Z wotte $
-
 #include "ace/OS_NS_sys_socket.h"
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
@@ -13,7 +10,7 @@ ACE_SSL_SOCK::set_handle (ACE_HANDLE fd)
 }
 
 ACE_INLINE ACE_HANDLE
-ACE_SSL_SOCK::get_handle (void) const
+ACE_SSL_SOCK::get_handle () const
 {
   // return this->ssl_ ? (ACE_HANDLE) ::SSL_get_fd (this->ssl_) : ACE_INVALID_HANDLE;
   return this->ACE_SOCK::get_handle ();

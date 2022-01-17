@@ -4,8 +4,6 @@
 /**
  *  @file    Argv_Type_Converter.h
  *
- *  $Id: Argv_Type_Converter.h 93359 2011-02-11 11:33:12Z mcorino $
- *
  *  @author Si Mong Park <spark@ociweb.com>
  */
 //=============================================================================
@@ -39,26 +37,24 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 class ACE_Export ACE_Argv_Type_Converter
 {
 public:
-
   ACE_Argv_Type_Converter (int &argc, char** argv);
 
 #if defined (ACE_USES_WCHAR)
   ACE_Argv_Type_Converter (int &argc, wchar_t** argv);
 #endif  // ACE_USES_WCHAR
 
-  ~ACE_Argv_Type_Converter (void);
+  ~ACE_Argv_Type_Converter ();
 
   /// Returns the pointer of converted command line.
-  ACE_TCHAR** get_TCHAR_argv (void);
+  ACE_TCHAR** get_TCHAR_argv ();
 
   /// Returns the pointer of ASCII (char) command line.
-  char** get_ASCII_argv (void);
+  char** get_ASCII_argv ();
 
   /// Returns the number of sub parameters (argc).
-  int& get_argc (void);
+  int& get_argc ();
 
 private:
-
   /// Copy Constructor should not be used.
   ACE_Argv_Type_Converter (const ACE_Argv_Type_Converter&);
 

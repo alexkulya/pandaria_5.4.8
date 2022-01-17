@@ -1,6 +1,4 @@
 /* -*- C++ -*- */
-// $Id: config-sunos5.6.h 93117 2011-01-20 12:11:28Z mcorino $
-
 // The following configuration file is designed to work for SunOS 5.6
 // platforms using the SunC++ 4.x or g++ compilers.
 
@@ -51,18 +49,12 @@
 #ifndef ACE_HAS_SIG_C_FUNC
 #define ACE_HAS_SIG_C_FUNC                      1
 #endif /* ACE_HAS_SIG_C_FUNC */
-#ifndef ACE_HAS_STDCPP_STL_INCLUDES
-#define ACE_HAS_STDCPP_STL_INCLUDES             1
-#endif /* ACE_HAS_STDCPP_STL_INCLUDES */
 #ifndef ACE_HAS_STRING_CLASS
 #define ACE_HAS_STRING_CLASS                    1
 #endif /* ACE_HAS_STRING_CLASS */
 #ifndef ACE_HAS_STANDARD_CPP_LIBRARY
 #define ACE_HAS_STANDARD_CPP_LIBRARY            1
 #endif /* ACE_HAS_STANDARD_CPP_LIBRARY */
-#ifndef ACE_HAS_STDCPP_STL_INCLUDES
-#define ACE_HAS_STDCPP_STL_INCLUDES             1
-#endif /* ACE_HAS_STDCPP_STL_INCLUDES */
 #ifndef ACE_USES_STD_NAMESPACE_FOR_STDCPP_LIB
 #define ACE_USES_STD_NAMESPACE_FOR_STDCPP_LIB   1
 #endif /* ACE_USES_STD_NAMESPACE_FOR_STDCPP_LIB */

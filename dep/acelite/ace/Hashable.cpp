@@ -1,5 +1,3 @@
-//$Id: Hashable.cpp 93736 2011-04-05 12:38:35Z johnnyw $
-
 #include "ace/Hashable.h"
 
 #if !defined (__ACE_INLINE__)
@@ -8,12 +6,12 @@
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
-ACE_Hashable::~ACE_Hashable (void)
+ACE_Hashable::~ACE_Hashable ()
 {
 }
 
 unsigned long
-ACE_Hashable::hash (void) const
+ACE_Hashable::hash () const
 {
   // In doing the check below, we take chance of paying a performance
   // price when the hash value is zero.  But, that will (hopefully)

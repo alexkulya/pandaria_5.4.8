@@ -4,8 +4,6 @@
 /**
  *  @file    DEV_IO.h
  *
- *  $Id: DEV_IO.h 80826 2008-03-04 14:51:23Z wotte $
- *
  *  @author Gerhard Lenzer
  *  @author Douglas C. Schmidt
  */
@@ -153,7 +151,7 @@ public:
   ssize_t recv (void *buf, size_t n, ACE_OVERLAPPED *overlapped) const;
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   // = The following two methods are no-ops to keep the
   // ACE_Connector happy.

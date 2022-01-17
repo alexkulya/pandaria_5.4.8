@@ -2,8 +2,6 @@
 /**
  *  @file   config-win32-msvc.h
  *
- *  $Id: config-win32-msvc.h 95788 2012-05-24 07:59:51Z johnnyw $
- *
  *  @brief  Microsoft Visual C++ configuration file.
  *
  *  This file is the ACE configuration file for Microsoft Visual C++
@@ -40,20 +38,12 @@
 #endif /* _WIN32_WCE */
 
 //FUZZ: disable check_for_msc_ver
-#if (_MSC_VER >= 1900)
-#include "ace/config-win32-msvc-14.h"
-#elif (_MSC_VER >= 1800)
-#include "ace/config-win32-msvc-12.h"
-#elif (_MSC_VER >= 1700)
-# include "ace/config-win32-msvc-11.h"
-#elif (_MSC_VER >= 1600)
-# include "ace/config-win32-msvc-10.h"
-#elif (_MSC_VER >= 1500)
-# include "ace/config-win32-msvc-9.h"
-#elif (_MSC_VER >= 1400)
-# include "ace/config-win32-msvc-8.h"
-#elif (_MSC_VER >= 1310)
-# include "ace/config-win32-msvc-7.h"
+#if (_MSC_VER >= 1920)
+# include "ace/config-win32-msvc-142.h"
+#elif (_MSC_VER >= 1910)
+# include "ace/config-win32-msvc-141.h"
+#elif (_MSC_VER >= 1900)
+# include "ace/config-win32-msvc-14.h"
 #else
 # error This version of Microsoft Visual C++ is not supported.
 #endif
@@ -101,7 +91,6 @@
 #define ACE_LACKS_NETDB_H
 #define ACE_LACKS_NET_IF_H
 #define ACE_LACKS_NETINET_IN_H
-#define ACE_LACKS_STDINT_H
 #define ACE_LACKS_STROPTS_H
 #define ACE_LACKS_SYS_IOCTL_H
 #define ACE_LACKS_SYS_IPC_H
@@ -124,6 +113,10 @@
 #define ACE_LACKS_NETINET_TCP_H
 #define ACE_LACKS_TERMIOS_H
 #define ACE_LACKS_REGEX_H
+
+#define ACE_LACKS_LOCALTIME_R
+#define ACE_LACKS_GMTIME_R
+#define ACE_LACKS_ASCTIME_R
 
 #define ACE_INT64_FORMAT_SPECIFIER_ASCII "%I64d"
 #define ACE_UINT64_FORMAT_SPECIFIER_ASCII "%I64u"

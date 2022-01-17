@@ -4,9 +4,7 @@
 /**
  *  @file    Malloc_T.h
  *
- *  $Id: Malloc_T.h 92085 2010-09-29 12:23:13Z johnnyw $
- *
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu> and
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu> and
  *          Irfan Pyarali <irfan@cs.wustl.edu>
  */
 //==========================================================================
@@ -45,13 +43,15 @@ class ACE_Cached_Mem_Pool_Node
 {
 public:
   /// Return the address of free memory.
-  T *addr (void);
+  T *addr ();
 
   /// Get the next ACE_Cached_Mem_Pool_Node in a list.
-  ACE_Cached_Mem_Pool_Node<T> *get_next (void);
+  ACE_Cached_Mem_Pool_Node<T> *get_next ();
 
   /// Set the next ACE_Cached_Mem_Pool_Node.
   void set_next (ACE_Cached_Mem_Pool_Node<T> *ptr);
+
+  ACE_ALLOC_HOOK_DECLARE;
 
 private:
   /**
@@ -90,7 +90,7 @@ public:
   ACE_Cached_Allocator (size_t n_chunks);
 
   /// Clear things up.
-  ~ACE_Cached_Allocator (void);
+  ~ACE_Cached_Allocator ();
 
   /**
    * Get a chunk of memory from free list cache.  Note that @a nbytes is
@@ -119,7 +119,9 @@ public:
   void free (void *);
 
   /// Return the number of chunks available in the cache.
-  size_t pool_depth (void);
+  size_t pool_depth ();
+
+  ACE_ALLOC_HOOK_DECLARE;
 
 private:
   /// Remember how we allocate the memory in the first place so
@@ -155,7 +157,7 @@ public:
   ACE_Dynamic_Cached_Allocator (size_t n_chunks, size_t chunk_size);
 
   /// Clear things up.
-  ~ACE_Dynamic_Cached_Allocator (void);
+  ~ACE_Dynamic_Cached_Allocator ();
 
   /**
    * Get a chunk of memory from free list cache.  Note that @a nbytes is
@@ -184,7 +186,7 @@ public:
   void free (void *);
 
   /// Return the number of chunks available in the cache.
-  size_t pool_depth (void);
+  size_t pool_depth ();
 
 private:
   /// Remember how we allocate the memory in the first place so
@@ -249,7 +251,7 @@ public:
 #endif /* ACE_HAS_WCHAR */
 
   /// Destructor.
-  virtual ~ACE_Allocator_Adapter (void);
+  virtual ~ACE_Allocator_Adapter ();
 
   // = Memory Management
 
@@ -269,7 +271,7 @@ public:
   virtual void free (void *ptr);
 
   /// Remove any resources associated with this memory manager.
-  virtual int remove (void);
+  virtual int remove ();
 
   // = Map manager like functions
 
@@ -336,7 +338,7 @@ public:
   virtual int protect (void *addr, size_t len, int prot = PROT_RDWR);
 
   /// Returns the underlying allocator.
-  ALLOCATOR &alloc (void);
+  ALLOCATOR &alloc ();
 
 #if defined (ACE_HAS_MALLOC_STATS)
   /// Dump statistics of how malloc is behaving.
@@ -344,7 +346,9 @@ public:
 #endif /* ACE_HAS_MALLOC_STATS */
 
   /// Dump the state of the object.
-  virtual void dump (void) const;
+  virtual void dump () const;
+
+  ACE_ALLOC_HOOK_DECLARE;
 
 private:
   /// ALLOCATOR instance, which is owned by the adapter.
@@ -366,7 +370,7 @@ template <size_t POOL_SIZE>
 class ACE_Static_Allocator : public ACE_Static_Allocator_Base
 {
 public:
-  ACE_Static_Allocator (void)
+  ACE_Static_Allocator ()
     : ACE_Static_Allocator_Base (pool_, POOL_SIZE)
   {
     // This function <{must}> be inlined!!!
@@ -438,7 +442,6 @@ public:
   typedef typename ACE_CB::ACE_Name_Node NAME_NODE;
   typedef typename ACE_CB::ACE_Malloc_Header MALLOC_HEADER;
 
-  // = Initialization and termination methods.
   /**
    * Initialize ACE_Malloc.  This constructor passes @a pool_name to
    * initialize the memory pool, and uses ACE::basename() to
@@ -477,16 +480,16 @@ public:
                 ACE_LOCK *lock);
 
   /// Destructor
-  ~ACE_Malloc_T (void);
+  ~ACE_Malloc_T ();
 
   /// Get Reference counter.
-  int ref_counter (void);
+  int ref_counter ();
 
   /// Release ref counter.
   int release (int close = 0);
 
   /// Releases resources allocated by this object.
-  int remove (void);
+  int remove ();
 
   // = Memory management
 
@@ -507,7 +510,7 @@ public:
   void free (void *ptr);
 
   /// Returns a reference to the underlying memory pool.
-  MEMORY_POOL &memory_pool (void);
+  MEMORY_POOL &memory_pool ();
 
   // = Map manager like functions
 
@@ -599,16 +602,16 @@ public:
 
   /// Returns a pointer to the lock used to provide mutual exclusion to
   /// an ACE_Malloc allocator.
-  ACE_LOCK &mutex (void);
+  ACE_LOCK &mutex ();
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;
 
   /// Return cb_ptr value.
-  void *base_addr (void);
+  void *base_addr ();
 
   /**
    * Bad flag.  This operation should be called immediately after the
@@ -616,13 +619,13 @@ public:
    * constructed successfully.  If not, the user should invoke @c
    * remove and release the object (it is not usable.)
    * @retval 0 if all is fine.  non-zero if this malloc object is
-   *         unuable.
+   *         unusable.
    */
-  int bad (void);
+  int bad ();
 
 private:
   /// Initialize the Malloc pool.
-  int open (void);
+  int open ();
 
   /// Associate @a name with @a pointer.  Assumes that locks are held by
   /// callers.
@@ -673,7 +676,6 @@ private:
  * specialization to create a version that matches the lock strategy's ctor
  * signature.  See ACE_Process_Semaphore and ACE_Thread_Semaphore for
  * examples.
- *
  */
 /*****************************************************************************/
 
@@ -695,19 +697,18 @@ public:
   typedef typename ACE_CB::ACE_Name_Node NAME_NODE;
   typedef typename ACE_CB::ACE_Malloc_Header MALLOC_HEADER;
 
-  // = Initialization method.
   /// If @a name = 0 it will iterate through everything else only
   /// through those entries whose @a name match.
   ACE_Malloc_LIFO_Iterator_T (ACE_Malloc_T<ACE_MEM_POOL_2, ACE_LOCK, ACE_CB> &malloc,
                               const char *name = 0);
 
   /// Destructor.
-  ~ACE_Malloc_LIFO_Iterator_T (void);
+  ~ACE_Malloc_LIFO_Iterator_T ();
 
   // = Iteration methods.
 
   /// Returns 1 when all items have been seen, else 0.
-  int done (void) const;
+  int done () const;
 
   /// Pass back the next entry in the set that hasn't yet been
   /// visited.  Returns 0 when all items have been seen, else 1.
@@ -722,10 +723,10 @@ public:
 
   /// Move forward by one element in the set.  Returns 0 when all the
   /// items in the set have been seen, else 1.
-  int advance (void);
+  int advance ();
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;
@@ -770,12 +771,12 @@ public:
                               const char *name = 0);
 
   /// Destructor.
-  ~ACE_Malloc_FIFO_Iterator_T (void);
+  ~ACE_Malloc_FIFO_Iterator_T ();
 
   // = Iteration methods.
 
   /// Returns 1 when all items have been seen, else 0.
-  int done (void) const;
+  int done () const;
 
   /// Pass back the next entry in the set that hasn't yet been
   /// visited.  Returns 0 when all items have been seen, else 1.
@@ -790,14 +791,14 @@ public:
 
   /// Move forward by one element in the set.  Returns 0 when all the
   /// items in the set have been seen, else 1.
-  int advance (void);
+  int advance ();
 
   /// Go to the starting element that was inserted first. Returns 0
   /// when there is no item in the set, else 1.
-  int start (void);
+  int start ();
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;
@@ -822,7 +823,6 @@ template <ACE_MEM_POOL_1, class ACE_LOCK>
 class ACE_Malloc : public ACE_Malloc_T<ACE_MEM_POOL_2, ACE_LOCK, ACE_Control_Block>
 {
 public:
-  // = Initialization and termination methods.
   /**
    * Initialize ACE_Malloc.  This constructor passes @a pool_name to
    * initialize the memory pool, and uses ACE::basename() to

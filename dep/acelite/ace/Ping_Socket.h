@@ -4,8 +4,6 @@
 /**
  *  @file    Ping_Socket.h
  *
- *  $Id: Ping_Socket.h 93597 2011-03-21 12:54:52Z johnnyw $
- *
  *  @author Robert S. Iakobashvili <coroberti@gmail.com> <coroberti@walla.co.il>
  *  @author Gonzalo A. Diethelm <gonzalo.diethelm@aditiva.com>
  */
@@ -40,11 +38,7 @@ class ACE_INET_Addr;
 class ACE_Export ACE_Ping_Socket : public ACE_ICMP_Socket
 {
   typedef ACE_ICMP_Socket inherited;
-
 public:
-
-  // = Initialization and termination methods.
-
   /// Default constructor.
   ACE_Ping_Socket (void);
 
@@ -76,7 +70,7 @@ public:
   char * icmp_recv_buff (void);
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

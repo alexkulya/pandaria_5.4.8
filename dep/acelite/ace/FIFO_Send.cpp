@@ -1,7 +1,8 @@
-// $Id: FIFO_Send.cpp 91286 2010-08-05 09:04:31Z johnnyw $
-
 #include "ace/FIFO_Send.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
+#if defined (ACE_HAS_ALLOC_HOOKS)
+# include "ace/Malloc_Base.h"
+#endif /* ACE_HAS_ALLOC_HOOKS */
 
 #if !defined (__ACE_INLINE__)
 #include "ace/FIFO_Send.inl"
@@ -14,7 +15,7 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 ACE_ALLOC_HOOK_DEFINE(ACE_FIFO_Send)
 
 void
-ACE_FIFO_Send::dump (void) const
+ACE_FIFO_Send::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   ACE_TRACE ("ACE_FIFO_Send::dump");
@@ -22,7 +23,7 @@ ACE_FIFO_Send::dump (void) const
 #endif /* ACE_HAS_DUMP */
 }
 
-ACE_FIFO_Send::ACE_FIFO_Send (void)
+ACE_FIFO_Send::ACE_FIFO_Send ()
 {
 //  ACE_TRACE ("ACE_FIFO_Send::ACE_FIFO_Send");
 }
@@ -50,7 +51,7 @@ ACE_FIFO_Send::ACE_FIFO_Send (const ACE_TCHAR *fifo_name,
                                  flags,
                                  perms,
                                  sa) == -1)
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT ("%p\n"),
                 ACE_TEXT ("ACE_FIFO_Send::ACE_FIFO_Send")));
 }

@@ -1,9 +1,6 @@
 // -*- C++ -*-
-//
-// $Id: TSS_T.inl 91124 2010-07-19 11:54:35Z vzykov $
-
 #include "ace/Thread.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -56,7 +53,7 @@ ACE_TSS<TYPE>::ts_value (void) const
 }
 # else
 template <class TYPE> ACE_INLINE TYPE *
-ACE_TSS<TYPE>::ts_value (void) const
+ACE_TSS<TYPE>::ts_value () const
 {
   void *temp = 0;
   if (ACE_Thread::getspecific (this->key_, &temp) == -1)
@@ -74,9 +71,9 @@ ACE_TSS<TYPE>::ts_value (ACE_TSS_Adapter *new_tss_adapter) const
   if (ACE_Thread::setspecific (this->key_,
                                (void *) new_tss_adapter) != 0)
     {
-      ACE_ERROR ((LM_ERROR,
+      ACELIB_ERROR ((LM_ERROR,
                   ACE_TEXT ("%p\n"),
-                  ACE_TEXT ("ACE_Thread::setspecific() failed!")));
+                  ACE_TEXT ("Error: ACE_Thread::setspecific() failed!")));
       return -1;
     }
 
@@ -88,9 +85,9 @@ ACE_TSS<TYPE>::ts_value (TYPE *new_ts_obj) const
 {
   if (ACE_Thread::setspecific (this->key_, (void *) new_ts_obj) != 0)
     {
-      ACE_ERROR ((LM_ERROR,
+      ACELIB_ERROR ((LM_ERROR,
                   ACE_TEXT ("%p\n"),
-                  ACE_TEXT ("ACE_Thread::setspecific() failed!")));
+                  ACE_TEXT ("Error: ACE_Thread::setspecific() failed!")));
       return -1;
     }
 

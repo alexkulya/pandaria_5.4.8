@@ -1,7 +1,5 @@
 // -*- C++ -*-
 //
-//$Id: Refcountable_T.inl 81407 2008-04-24 05:59:30Z johnnyw $
-
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 template <class ACE_LOCK>
@@ -13,21 +11,21 @@ ACE_Refcountable_T<ACE_LOCK>::ACE_Refcountable_T (long refcount)
 
 template <class ACE_LOCK>
 ACE_INLINE long
-ACE_Refcountable_T<ACE_LOCK>::increment (void)
+ACE_Refcountable_T<ACE_LOCK>::increment ()
 {
   return ++this->refcount_;
 }
 
 template <class ACE_LOCK>
 ACE_INLINE long
-ACE_Refcountable_T<ACE_LOCK>::decrement (void)
+ACE_Refcountable_T<ACE_LOCK>::decrement ()
 {
   return --this->refcount_;
 }
 
 template <class ACE_LOCK>
 ACE_INLINE long
-ACE_Refcountable_T<ACE_LOCK>::refcount (void) const
+ACE_Refcountable_T<ACE_LOCK>::refcount () const
 {
   return this->refcount_.value ();
 }

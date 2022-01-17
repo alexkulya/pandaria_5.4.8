@@ -1,5 +1,3 @@
-// $Id: Reactor_Notification_Strategy.cpp 91287 2010-08-05 10:30:49Z johnnyw $
-
 #include "ace/Reactor_Notification_Strategy.h"
 #include "ace/Reactor.h"
 
@@ -18,12 +16,12 @@ ACE_Reactor_Notification_Strategy::ACE_Reactor_Notification_Strategy (
 {
 }
 
-ACE_Reactor_Notification_Strategy::~ACE_Reactor_Notification_Strategy (void)
+ACE_Reactor_Notification_Strategy::~ACE_Reactor_Notification_Strategy ()
 {
 }
 
 int
-ACE_Reactor_Notification_Strategy::notify (void)
+ACE_Reactor_Notification_Strategy::notify ()
 {
   return this->reactor_->notify (this->eh_, this->mask_);
 }

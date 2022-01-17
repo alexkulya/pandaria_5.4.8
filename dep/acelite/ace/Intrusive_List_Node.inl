@@ -1,11 +1,8 @@
 // -*- C++ -*-
-//
-// $Id: Intrusive_List_Node.inl 80826 2008-03-04 14:51:23Z wotte $
-
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 template<class T> ACE_INLINE T*
-ACE_Intrusive_List_Node<T>::prev (void) const
+ACE_Intrusive_List_Node<T>::prev () const
 {
   return this->prev_;
 }
@@ -17,7 +14,7 @@ ACE_Intrusive_List_Node<T>::prev (T *x)
 }
 
 template<class T> ACE_INLINE T*
-ACE_Intrusive_List_Node<T>::next (void) const
+ACE_Intrusive_List_Node<T>::next () const
 {
   return this->next_;
 }

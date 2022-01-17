@@ -1,6 +1,4 @@
 // -*- C++ -*- */
-// $Id: High_Res_Timer.inl 95798 2012-05-31 07:58:55Z johnnyw $
-
 #include "ace/Global_Macros.h"
 
 #if defined (ACE_WIN32)
@@ -71,7 +69,7 @@ ACE_High_Res_Timer::gettimeofday (const ACE_OS::ACE_HRTimer_Op op)
 /// function, which is deprecated. If it gets removed, please move the
 /// code down here, intact.
 ACE_INLINE ACE_Time_Value
-ACE_High_Res_Timer::gettimeofday_hr (void)
+ACE_High_Res_Timer::gettimeofday_hr ()
 {
   return ACE_High_Res_Timer::gettimeofday ();
 }
@@ -108,7 +106,7 @@ ACE_High_Res_Timer::elapsed_hrtime (const ACE_hrtime_t end,
 }
 
 ACE_INLINE
-ACE_High_Res_Timer::~ACE_High_Res_Timer (void)
+ACE_High_Res_Timer::~ACE_High_Res_Timer ()
 {
 }
 

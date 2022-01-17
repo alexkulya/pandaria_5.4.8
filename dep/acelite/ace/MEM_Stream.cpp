@@ -1,5 +1,3 @@
-// $Id: MEM_Stream.cpp 91286 2010-08-05 09:04:31Z johnnyw $
-
 #include "ace/MEM_Stream.h"
 
 #if (ACE_HAS_POSITION_INDEPENDENT_POINTERS == 1)
@@ -15,7 +13,7 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 ACE_ALLOC_HOOK_DEFINE(ACE_MEM_Stream)
 
 void
-ACE_MEM_Stream::dump (void) const
+ACE_MEM_Stream::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   ACE_TRACE ("ACE_MEM_Stream::dump");
@@ -23,7 +21,7 @@ ACE_MEM_Stream::dump (void) const
 }
 
 int
-ACE_MEM_Stream::close (void)
+ACE_MEM_Stream::close ()
 {
   this->send ((char *)0, 0);
 

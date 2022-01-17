@@ -1,5 +1,3 @@
-// $Id: UPIPE_Acceptor.cpp 91286 2010-08-05 09:04:31Z johnnyw $
-
 #include "ace/UPIPE_Acceptor.h"
 
 
@@ -17,7 +15,7 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 ACE_ALLOC_HOOK_DEFINE(ACE_UPIPE_Acceptor)
 
 void
-ACE_UPIPE_Acceptor::dump (void) const
+ACE_UPIPE_Acceptor::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   ACE_TRACE ("ACE_UPIPE_Acceptor::dump");
@@ -26,13 +24,13 @@ ACE_UPIPE_Acceptor::dump (void) const
 
 /* Do nothing routine for constructor. */
 
-ACE_UPIPE_Acceptor::ACE_UPIPE_Acceptor (void)
+ACE_UPIPE_Acceptor::ACE_UPIPE_Acceptor ()
   : mb_ (sizeof (ACE_UPIPE_Stream *))
 {
   ACE_TRACE ("ACE_UPIPE_Acceptor::ACE_UPIPE_Acceptor");
 }
 
-ACE_UPIPE_Acceptor::~ACE_UPIPE_Acceptor (void)
+ACE_UPIPE_Acceptor::~ACE_UPIPE_Acceptor ()
 {
   ACE_TRACE ("ACE_UPIPE_Acceptor::~ACE_UPIPE_Acceptor");
 }
@@ -48,7 +46,7 @@ ACE_UPIPE_Acceptor::open (const ACE_UPIPE_Addr &local_addr,
 }
 
 int
-ACE_UPIPE_Acceptor::close (void)
+ACE_UPIPE_Acceptor::close ()
 {
   ACE_TRACE ("ACE_UPIPE_Acceptor::close");
   return this->ACE_SPIPE_Acceptor::close ();
@@ -63,7 +61,7 @@ ACE_UPIPE_Acceptor::ACE_UPIPE_Acceptor (const ACE_UPIPE_Addr &local_addr,
   ACE_TRACE ("ACE_UPIPE_Acceptor::ACE_UPIPE_Acceptor");
 
   if (this->open (local_addr, reuse_addr) == -1)
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT ("%p\n"),
                 ACE_TEXT ("ACE_UPIPE_Acceptor")));
 }
@@ -103,16 +101,16 @@ ACE_UPIPE_Acceptor::accept (ACE_UPIPE_Stream &new_stream,
       if (ACE_OS::read (new_stream.get_handle (),
                         (char *) &remote_stream,
                         sizeof remote_stream) == -1)
-        ACE_ERROR ((LM_ERROR,
+        ACELIB_ERROR ((LM_ERROR,
                     ACE_TEXT ("ACE_UPIPE_Acceptor: %p\n"),
                     ACE_TEXT ("read stream address failed")));
       else if (new_stream.stream_.link (remote_stream->stream_) == -1)
-        ACE_ERROR ((LM_ERROR,
+        ACELIB_ERROR ((LM_ERROR,
                     ACE_TEXT ("ACE_UPIPE_Acceptor: %p\n"),
                     ACE_TEXT ("link streams failed")));
       // Send a message over the new streampipe to confirm acceptance.
       else if (new_stream.send (&mb_, 0) == -1)
-        ACE_ERROR ((LM_ERROR,
+        ACELIB_ERROR ((LM_ERROR,
                     ACE_TEXT ("ACE_UPIPE_Acceptor: %p\n"),
                     ACE_TEXT ("linked stream.put failed")));
 

@@ -1,5 +1,3 @@
-// $Id: Monitor_Size.cpp 82328 2008-07-15 17:20:17Z parsons $
-
 #include "ace/Monitor_Size.h"
 
 #if defined (ACE_HAS_MONITOR_FRAMEWORK) && (ACE_HAS_MONITOR_FRAMEWORK == 1)
@@ -12,7 +10,7 @@ namespace ACE
 {
   namespace Monitor_Control
   {
-    Size_Monitor::Size_Monitor (void)
+    Size_Monitor::Size_Monitor ()
       : Monitor_Base ("", Monitor_Control_Types::MC_NUMBER)
     {
     }
@@ -22,19 +20,19 @@ namespace ACE
     {
     }
 
-    Size_Monitor::~Size_Monitor (void)
+    Size_Monitor::~Size_Monitor ()
     {
     }
 
     void
-    Size_Monitor::update (void)
+    Size_Monitor::update ()
     {
       // No platform-specific or periodic code is needed, receive() can be
       // called directly whenever the size changes.
     }
 
     void
-    Size_Monitor::clear (void)
+    Size_Monitor::clear ()
     {
       this->Monitor_Base::clear ();
     }

@@ -4,8 +4,6 @@
 /**
  *  @file    UPIPE_Connector.h
  *
- *  $Id: UPIPE_Connector.h 82723 2008-09-16 09:35:44Z johnnyw $
- *
  *  @author Gerhard Lenzer and Douglas C. Schmidt
  */
 //=============================================================================
@@ -34,7 +32,6 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 class ACE_Export ACE_UPIPE_Connector
 {
 public:
-  // = Initialization methods.
   /// Default constructor.
   ACE_UPIPE_Connector (void);
 
@@ -96,7 +93,7 @@ public:
   typedef ACE_UPIPE_Stream PEER_STREAM;
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

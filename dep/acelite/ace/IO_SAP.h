@@ -4,8 +4,6 @@
 /**
  *  @file    IO_SAP.h
  *
- *  $Id: IO_SAP.h 80826 2008-03-04 14:51:23Z wotte $
- *
  *  @author Doug Schmidt
  */
 //=============================================================================
@@ -21,7 +19,6 @@
 #if !defined (ACE_LACKS_PRAGMA_ONCE)
 # pragma once
 #endif /* ACE_LACKS_PRAGMA_ONCE */
-
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -41,7 +38,7 @@ public:
   };
 
   /// Default dtor.
-  ~ACE_IO_SAP (void);
+  ~ACE_IO_SAP ();
 
   /// Interface for ioctl.
   int control (int cmd, void *) const;
@@ -63,27 +60,24 @@ public:
   int disable (int value) const;
 
   /// Get the underlying handle.
-  ACE_HANDLE get_handle (void) const;
+  ACE_HANDLE get_handle () const;
 
   /// Set the underlying handle.
   void set_handle (ACE_HANDLE handle);
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;
 
 protected:
   /// Ensure that ACE_IO_SAP is an abstract base class.
-  ACE_IO_SAP (void);
+  ACE_IO_SAP ();
 
 private:
   /// Underlying I/O handle.
   ACE_HANDLE handle_;
-
-  /// Cache the process ID.
-  static pid_t pid_;
 };
 
 ACE_END_VERSIONED_NAMESPACE_DECL

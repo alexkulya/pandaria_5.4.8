@@ -1,7 +1,4 @@
 // -*- C++ -*-
-//
-// $Id: Log_Msg.inl 82723 2008-09-16 09:35:44Z johnnyw $
-
 #include "ace/OS_NS_string.h"
 #include "ace/OS_NS_unistd.h"
 
@@ -34,7 +31,7 @@ ACE_Log_Msg::op_status (int status)
 
 ACE_INLINE
 int
-ACE_Log_Msg::op_status (void) const
+ACE_Log_Msg::op_status () const
 {
   return this->status_;
 }
@@ -48,14 +45,14 @@ ACE_Log_Msg::restart (bool r)
 
 ACE_INLINE
 bool
-ACE_Log_Msg::restart (void) const
+ACE_Log_Msg::restart () const
 {
   return this->restart_;
 }
 
 ACE_INLINE
 int
-ACE_Log_Msg::errnum (void) const
+ACE_Log_Msg::errnum () const
 {
   return this->errnum_;
 }
@@ -69,7 +66,7 @@ ACE_Log_Msg::errnum (int e)
 
 ACE_INLINE
 int
-ACE_Log_Msg::linenum (void) const
+ACE_Log_Msg::linenum () const
 {
   return this->linenum_;
 }
@@ -83,21 +80,21 @@ ACE_Log_Msg::linenum (int l)
 
 ACE_INLINE
 int
-ACE_Log_Msg::inc (void)
+ACE_Log_Msg::inc ()
 {
   return this->trace_depth_++;
 }
 
 ACE_INLINE
 int
-ACE_Log_Msg::dec (void)
+ACE_Log_Msg::dec ()
 {
   return this->trace_depth_ == 0 ? 0 : --this->trace_depth_;
 }
 
 ACE_INLINE
 int
-ACE_Log_Msg::trace_depth (void) const
+ACE_Log_Msg::trace_depth () const
 {
   return this->trace_depth_;
 }
@@ -111,7 +108,7 @@ ACE_Log_Msg::trace_depth (int depth)
 
 ACE_INLINE
 bool
-ACE_Log_Msg::trace_active (void) const
+ACE_Log_Msg::trace_active () const
 {
   return this->trace_active_;
 }
@@ -125,7 +122,7 @@ ACE_Log_Msg::trace_active (bool value)
 
 ACE_INLINE
 ACE_Thread_Descriptor *
-ACE_Log_Msg::thr_desc (void) const
+ACE_Log_Msg::thr_desc () const
 {
   return this->thr_desc_;
 }
@@ -133,7 +130,7 @@ ACE_Log_Msg::thr_desc (void) const
 /// Enable the tracing facility on a per-thread basis.
 ACE_INLINE
 void
-ACE_Log_Msg::start_tracing (void)
+ACE_Log_Msg::start_tracing ()
 {
   this->tracing_enabled_ = true;
 }
@@ -141,21 +138,21 @@ ACE_Log_Msg::start_tracing (void)
 /// Disable the tracing facility on a per-thread basis.
 ACE_INLINE
 void
-ACE_Log_Msg::stop_tracing (void)
+ACE_Log_Msg::stop_tracing ()
 {
   this->tracing_enabled_ = false;
 }
 
 ACE_INLINE
 bool
-ACE_Log_Msg::tracing_enabled (void) const
+ACE_Log_Msg::tracing_enabled () const
 {
   return this->tracing_enabled_;
 }
 
 ACE_INLINE
 const char *
-ACE_Log_Msg::file (void)
+ACE_Log_Msg::file ()
 {
   return this->file_;
 }
@@ -169,7 +166,7 @@ ACE_Log_Msg::file (const char *s)
 
 ACE_INLINE
 const ACE_TCHAR *
-ACE_Log_Msg::msg (void)
+ACE_Log_Msg::msg ()
 {
   return this->msg_ + ACE_Log_Msg::msg_off_;
 }
@@ -184,7 +181,7 @@ ACE_Log_Msg::msg (const ACE_TCHAR *m)
 
 ACE_INLINE
 ACE_Log_Msg_Callback *
-ACE_Log_Msg::msg_callback (void) const
+ACE_Log_Msg::msg_callback () const
 {
   return this->msg_callback_;
 }
@@ -200,7 +197,7 @@ ACE_Log_Msg::msg_callback (ACE_Log_Msg_Callback *c)
 
 ACE_INLINE
 ACE_OSTREAM_TYPE *
-ACE_Log_Msg::msg_ostream (void) const
+ACE_Log_Msg::msg_ostream () const
 {
   return this->ostream_;
 }
@@ -214,22 +211,16 @@ ACE_Log_Msg::msg_ostream (ACE_OSTREAM_TYPE *m)
 
 ACE_INLINE
 const ACE_TCHAR *
-ACE_Log_Msg::local_host (void) const
+ACE_Log_Msg::local_host () const
 {
   return ACE_Log_Msg::local_host_;
 }
 
 ACE_INLINE
 pid_t
-ACE_Log_Msg::getpid (void) const
+ACE_Log_Msg::getpid () const
 {
-  if (ACE_Log_Msg::pid_ == -2)
-    ACE_Log_Msg::pid_ = ACE_OS::getpid ();
-
-  return ACE_Log_Msg::pid_;
+  return ACE_OS::getpid ();
 }
 
-
-
 ACE_END_VERSIONED_NAMESPACE_DECL
-

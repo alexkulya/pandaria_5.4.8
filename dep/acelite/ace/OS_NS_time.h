@@ -4,9 +4,7 @@
 /**
  *  @file   OS_NS_time.h
  *
- *  $Id: OS_NS_time.h 95763 2012-05-16 06:43:51Z johnnyw $
- *
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  *  @author Jesper S. M|ller<stophph@diku.dk>
  *  @author and a cast of thousands...
  *
@@ -43,20 +41,6 @@ static const ACE_UINT32 ACE_U_ONE_SECOND_IN_MSECS = 1000U;
 static const ACE_UINT32 ACE_U_ONE_SECOND_IN_USECS = 1000000U;
 static const ACE_UINT32 ACE_U_ONE_SECOND_IN_NSECS = 1000000000U;
 
-#if defined (ACE_LACKS_STRUCT_TM)
-struct tm {
-  int tm_sec;
-  int tm_min;
-  int tm_hour;
-  int tm_mday;      // Day of the month
-  int tm_mon;
-  int tm_year;
-  int tm_wday;      // Day of the week
-  int tm_yday;      // Day in the year
-  int tm_isdst;     // >0 if dst in effet; 0 if not; <0 if unknown
-};
-#endif /* ACE_LACKS_STRUCT_TM */
-
 /// Helper for the ACE_OS::timezone() function
 /**
  * We put all the timezone stuff that used to be in ACE_OS::timezone()
@@ -92,6 +76,47 @@ inline long ace_timezone()
 #endif
 }
 
+/*
+ * We inline and undef some functions that may be implemented
+ * as macros on some platforms. This way macro definitions will
+ * be usable later as there is no way to save the macro definition
+ * using the pre-processor.
+ */
+#if !defined (ACE_LACKS_ASCTIME_R)
+inline char *ace_asctime_r_helper (const struct tm *t, char *buf)
+{
+#  if defined (asctime_r)
+  return asctime_r (t, buf);
+#  undef asctime_r
+#  else
+  return ACE_STD_NAMESPACE::asctime_r (t, buf);
+#  endif /* asctime_r */
+}
+#endif /* !ACE_LACKS_ASCTIME_R */
+
+#if !defined (ACE_LACKS_GMTIME_R)
+inline struct tm *ace_gmtime_r_helper (const time_t *clock, struct tm *res)
+{
+#  if defined (gmtime_r)
+  return gmtime_r (clock, res);
+#  undef gmtime_r
+#  else
+  return ACE_STD_NAMESPACE::gmtime_r (clock, res);
+#  endif /* gmtime_r */
+}
+#endif /* !ACE_LACKS_GMTIME_R */
+
+#if !defined (ACE_LACKS_LOCALTIME_R)
+inline struct tm *ace_localtime_r_helper (const time_t *clock, struct tm *res)
+{
+#  if defined (localtime_r)
+  return localtime_r (clock, res);
+#  undef localtime_r
+#  else
+  return ACE_STD_NAMESPACE::localtime_r (clock, res);
+#  endif /* localtime_r */
+}
+#endif /* !ACE_LACKS_LOCALTIME_R */
 
 #if !defined (ACE_LACKS_DIFFTIME)
 # if defined (_WIN32_WCE) && ((_WIN32_WCE >= 0x600) && (_WIN32_WCE <= 0x700)) && !defined (_USE_32BIT_TIME_T) \
@@ -268,11 +293,11 @@ namespace ACE_OS
   time_t time (time_t *tloc = 0);
 
   ACE_NAMESPACE_INLINE_FUNCTION
-  long timezone (void);
+  long timezone ();
 
   // wrapper for time zone information.
   ACE_NAMESPACE_INLINE_FUNCTION
-  void tzset (void);
+  void tzset ();
 
   //@}
 } /* namespace ACE_OS */

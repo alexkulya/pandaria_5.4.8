@@ -1,7 +1,4 @@
 // -*- C++ -*-
-//
-// $Id: Service_Gestalt.inl 91158 2010-07-21 15:54:12Z mesnier_p $
-
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -70,7 +67,7 @@ ACE_Service_Gestalt::find (const ACE_TCHAR name[],
 }
 
 ACE_INLINE ACE_Service_Repository*
-ACE_Service_Gestalt::current_service_repository (void)
+ACE_Service_Gestalt::current_service_repository ()
 {
   return this->repo_;
 }

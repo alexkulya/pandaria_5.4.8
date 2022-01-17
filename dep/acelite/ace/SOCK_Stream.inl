@@ -1,14 +1,11 @@
 // -*- C++ -*-
-//
-// $Id: SOCK_Stream.inl 80826 2008-03-04 14:51:23Z wotte $
-
 #include "ace/SOCK_Stream.h"
 #include "ace/OS_NS_sys_socket.h"
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 ACE_INLINE
-ACE_SOCK_Stream::ACE_SOCK_Stream (void)
+ACE_SOCK_Stream::ACE_SOCK_Stream ()
 {
   // ACE_TRACE ("ACE_SOCK_Stream::ACE_SOCK_Stream");
 }
@@ -21,13 +18,13 @@ ACE_SOCK_Stream::ACE_SOCK_Stream (ACE_HANDLE h)
 }
 
 ACE_INLINE
-ACE_SOCK_Stream::~ACE_SOCK_Stream (void)
+ACE_SOCK_Stream::~ACE_SOCK_Stream ()
 {
   // ACE_TRACE ("ACE_SOCK_Stream::~ACE_SOCK_Stream");
 }
 
 ACE_INLINE int
-ACE_SOCK_Stream::close_reader (void)
+ACE_SOCK_Stream::close_reader ()
 {
   ACE_TRACE ("ACE_SOCK_Stream::close_reader");
   if (this->get_handle () != ACE_INVALID_HANDLE)
@@ -39,7 +36,7 @@ ACE_SOCK_Stream::close_reader (void)
 // Shut down just the writing end of a ACE_SOCK.
 
 ACE_INLINE int
-ACE_SOCK_Stream::close_writer (void)
+ACE_SOCK_Stream::close_writer ()
 {
   ACE_TRACE ("ACE_SOCK_Stream::close_writer");
   if (this->get_handle () != ACE_INVALID_HANDLE)

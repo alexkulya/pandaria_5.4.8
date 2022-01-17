@@ -1,11 +1,8 @@
 // -*- C++ -*-
-//
-// $Id: Timer_Queue_T.inl 95332 2011-12-15 11:09:41Z mcorino $
-
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 template <class TYPE, class FUNCTOR> ACE_INLINE FUNCTOR &
-ACE_Timer_Queue_Upcall_Base<TYPE, FUNCTOR>::upcall_functor (void)
+ACE_Timer_Queue_Upcall_Base<TYPE, FUNCTOR>::upcall_functor ()
 {
   return *this->upcall_functor_;
 }
@@ -17,18 +14,9 @@ ACE_Timer_Queue_T<TYPE, FUNCTOR, ACE_LOCK, TIME_POLICY>::timer_skew (const ACE_T
 }
 
 template <class TYPE, class FUNCTOR, class ACE_LOCK, typename TIME_POLICY> ACE_INLINE const ACE_Time_Value &
-ACE_Timer_Queue_T<TYPE, FUNCTOR, ACE_LOCK, TIME_POLICY>::timer_skew (void) const
+ACE_Timer_Queue_T<TYPE, FUNCTOR, ACE_LOCK, TIME_POLICY>::timer_skew () const
 {
   return timer_skew_;
-}
-
-template <class TYPE, class FUNCTOR, class ACE_LOCK, typename TIME_POLICY> ACE_INLINE int
-ACE_Timer_Queue_T<TYPE, FUNCTOR, ACE_LOCK, TIME_POLICY>::expire (void)
-{
-  if (!this->is_empty ())
-    return this->expire (this->gettimeofday_static () + timer_skew_);
-  else
-    return 0;
 }
 
 template <class TYPE, class FUNCTOR, class ACE_LOCK, typename TIME_POLICY> int
@@ -79,7 +67,7 @@ ACE_Timer_Queue_T<TYPE, FUNCTOR, ACE_LOCK, TIME_POLICY>::postinvoke (ACE_Timer_N
 }
 
 template <class TYPE, class FUNCTOR, class ACE_LOCK, typename TIME_POLICY> ACE_INLINE ACE_Time_Value
-ACE_Timer_Queue_T<TYPE, FUNCTOR, ACE_LOCK, TIME_POLICY>::gettimeofday_static (void)
+ACE_Timer_Queue_T<TYPE, FUNCTOR, ACE_LOCK, TIME_POLICY>::gettimeofday_static ()
 {
   // Get the current time according to the time policy.
   return this->time_policy_ ();

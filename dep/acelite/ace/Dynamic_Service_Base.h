@@ -4,10 +4,8 @@
 /**
  *  @file Dynamic_Service_Base.h
  *
- *  $Id: Dynamic_Service_Base.h 89454 2010-03-11 09:35:25Z johnnyw $
- *
  *  @author Prashant Jain <pjain@cs.wustl.edu>
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  */
 //=============================================================================
 
@@ -39,7 +37,7 @@ class ACE_Export ACE_Dynamic_Service_Base
 {
 public:
   /// Dump the current static of the object
-  void dump (void) const;
+  void dump () const;
 
 protected:
   /// Perform the default repo search, but optionally skip searching the global
@@ -51,8 +49,8 @@ protected:
                          bool no_global = false);
 
   /// No need to create, or assign instances of this class
-  ACE_Dynamic_Service_Base (void);
-  ~ACE_Dynamic_Service_Base (void);
+  ACE_Dynamic_Service_Base ();
+  ~ACE_Dynamic_Service_Base ();
   const ACE_Dynamic_Service_Base& operator= (const ACE_Dynamic_Service_Base&);
 
 private:

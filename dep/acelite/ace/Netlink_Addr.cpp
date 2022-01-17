@@ -1,10 +1,6 @@
-// $Id: Netlink_Addr.cpp 80826 2008-03-04 14:51:23Z wotte $
-
 //=============================================================================
 /**
  *  @file    Netlink_Addr.cpp
- *
- *  $Id: Netlink_Addr.cpp 80826 2008-03-04 14:51:23Z wotte $
  *
  *  @author Robert Iakobashvilli <coroberti@gmail.com>
  *  @author Raz Ben Yehuda <raziebe@gmail.com>
@@ -14,6 +10,10 @@
 #include "ace/Netlink_Addr.h"
 
 #ifdef ACE_HAS_NETLINK
+
+#if defined (ACE_HAS_ALLOC_HOOKS)
+# include "ace/Malloc_Base.h"
+#endif /* ACE_HAS_ALLOC_HOOKS */
 
 #if !defined (__ACE_INLINE__)
 #include "ace/Netlink_Addr.inl"
@@ -51,13 +51,13 @@ ACE_Netlink_Addr::ACE_Netlink_Addr (const sockaddr_nl *un, int len)
 }
 
 int
-ACE_Netlink_Addr::get_pid (void) const
+ACE_Netlink_Addr::get_pid () const
 {
   return this->nl_.nl_pid;
 }
 
 int
-ACE_Netlink_Addr::get_gid (void) const
+ACE_Netlink_Addr::get_gid () const
 {
   return this->nl_.nl_groups;
 }
@@ -65,4 +65,3 @@ ACE_Netlink_Addr::get_gid (void) const
 ACE_END_VERSIONED_NAMESPACE_DECL
 
 #endif
-

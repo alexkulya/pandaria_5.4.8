@@ -2,8 +2,6 @@
 /**
  *  @file  XML_Error_Handler.h
  *
- *  $Id: XML_Error_Handler.h 95801 2012-05-31 09:14:36Z johnnyw $
- *
  *  @brief Error handler for Xerces
  *
  *  @author Bala Natarajan <bala@dre.vanderbilt.edu>
@@ -36,22 +34,21 @@ namespace XML
     : public xercesc::ErrorHandler
   {
   public:
+    XML_Error_Handler () = default;
+    ~XML_Error_Handler () = default;
 
-    XML_Error_Handler (void);
-
-    ~XML_Error_Handler (void);
-
-    void warning(const SAXParseException& toCatch);
-    void error(const SAXParseException& toCatch);
-    void fatalError(const SAXParseException& toCatch);
-    void resetErrors();
-    bool getErrors (void) const;
+    void warning(const SAXParseException& toCatch) override;
+    void error(const SAXParseException& toCatch) override;
+    void fatalError(const SAXParseException& toCatch) override;
+    void resetErrors() override;
+    bool getErrors () const;
   private :
-    // Disallow copying
-    XML_Error_Handler (const XML_Error_Handler&);
-    XML_Error_Handler& operator= (const XML_Error_Handler&);
+    XML_Error_Handler (const XML_Error_Handler&) = delete;
+    XML_Error_Handler& operator= (const XML_Error_Handler&) = delete;
+    XML_Error_Handler (XML_Error_Handler&&) = delete;
+    XML_Error_Handler& operator= (XML_Error_Handler&&) = delete;
 
-    bool errors_;
+    bool errors_ { false };
   };
 }
 

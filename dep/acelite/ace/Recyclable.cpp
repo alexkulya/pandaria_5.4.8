@@ -1,4 +1,3 @@
-//$Id: Recyclable.cpp 91286 2010-08-05 09:04:31Z johnnyw $
 #include "ace/Recyclable.h"
 
 
@@ -15,7 +14,7 @@ ACE_Recyclable::ACE_Recyclable (ACE_Recyclable_State initial_state)
 {
 }
 
-ACE_Recyclable::~ACE_Recyclable (void)
+ACE_Recyclable::~ACE_Recyclable ()
 {
 }
 

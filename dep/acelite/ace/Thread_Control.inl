@@ -1,6 +1,4 @@
 // -*- C++ -*-
-// $Id: Thread_Control.inl 91730 2010-09-13 09:31:11Z johnnyw $
-
 #include "ace/OS_NS_macros.h"
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
@@ -17,7 +15,7 @@ ACE_Thread_Control::status (ACE_THR_FUNC_RETURN s)
 // Get the exit status.
 
 ACE_INLINE ACE_THR_FUNC_RETURN
-ACE_Thread_Control::status (void)
+ACE_Thread_Control::status ()
 {
   ACE_OS_TRACE ("ACE_Thread_Control::status");
   return this->status_;
@@ -26,7 +24,7 @@ ACE_Thread_Control::status (void)
 // Returns the current <Thread_Manager>.
 
 ACE_INLINE ACE_Thread_Manager *
-ACE_Thread_Control::thr_mgr (void)
+ACE_Thread_Control::thr_mgr ()
 {
   ACE_OS_TRACE ("ACE_Thread_Control::thr_mgr");
   return this->tm_;

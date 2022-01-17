@@ -4,13 +4,11 @@
 /**
  *  @file   FoxReactor.h
  *
- *  $Id: FoxReactor.h 93117 2011-01-20 12:11:28Z mcorino $
- *
  *  @author Dmitriy Nikitinskiy <nick@bel.ru>
  *  @author Based in part in the ACE_XtReactor implementation by
  *  @author Eric C. Newton's <ecn@clark.net>
  *  @author Kirill Rybaltchenko <Kirill.Rybaltchenko@cern.ch>
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  */
 //=============================================================================
 
@@ -36,13 +34,11 @@
  * @brief A Reactor implementation that uses the FOX toolkit (www.fox-toolkit.org)
  * for event demultiplexing.  This will let us integrate the FOX
  * toolkit with ACE and/or TAO.
- *
  */
 class ACE_FoxReactor_Export ACE_FoxReactor : public FXObject, public ACE_Select_Reactor
 {
   FXDECLARE(ACE_FoxReactor)
 public:
-  // = Initialization and termination methods.
   ACE_FoxReactor (FXApp* a=0,
                  size_t size = DEFAULT_SIZE,
                  bool restart = false,

@@ -4,8 +4,6 @@
 /**
  *  @file    Time_Value_T.h
  *
- *  $Id: Time_Value_T.h 96061 2012-08-16 09:36:07Z mcorino $
- *
  *  @author Martin Corino <mcorino@remedy.nl>
  */
 //=============================================================================
@@ -39,10 +37,8 @@ class ACE_Time_Value_T : public ACE_Time_Value
 public:
   typedef TIME_POLICY time_policy_t;
 
-  // = Initialization methods.
-
   /// Default Constructor.
-  ACE_Time_Value_T (void) {}
+  ACE_Time_Value_T () {}
 
   /// Constructor.
   explicit ACE_Time_Value_T (time_t sec, suseconds_t usec = 0)
@@ -115,7 +111,7 @@ public:
    * @note The only reason this is here is to allow the use of ACE_Atomic_Op
    * with ACE_Time_Value.
    */
-  ACE_Time_Value_T<TIME_POLICY> &operator++ (void);
+  ACE_Time_Value_T<TIME_POLICY> &operator++ ();
 
   /// Decrement microseconds as postfix.
   /**
@@ -129,7 +125,7 @@ public:
    * @note The only reason this is here is to allow the use of ACE_Atomic_Op
    * with ACE_Time_Value.
    */
-  ACE_Time_Value_T<TIME_POLICY> &operator-- (void);
+  ACE_Time_Value_T<TIME_POLICY> &operator-- ();
 
   /// Get current time of day according to time policy.
   /**

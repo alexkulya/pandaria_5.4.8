@@ -6,8 +6,6 @@
  *
  *  dynamic linking
  *
- *  $Id: os_dlfcn.h 94379 2011-08-09 17:18:49Z johnnyw $
- *
  *  @author Don Hinton <dhinton@dresystems.com>
  *  @author This code was originally in various places including ace/OS.h.
  */
@@ -29,11 +27,7 @@
 #endif /* !ACE_LACKS_DLFCN_H */
 
 #if defined (__hpux)
-#  if defined(__GNUC__) || __cplusplus >= 199707L
-#    include /**/ <dl.h>
-#  else
-#    include /**/ <cxxdl.h>
-#  endif /* (g++ || HP aC++) vs. HP C++ */
+#  include /**/ <dl.h>
 #endif /* __hpux */
 
 #if defined (ACE_VXWORKS) && !defined (__RTP__)

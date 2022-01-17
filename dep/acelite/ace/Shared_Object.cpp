@@ -1,5 +1,3 @@
-// $Id: Shared_Object.cpp 91286 2010-08-05 09:04:31Z johnnyw $
-
 #include "ace/Shared_Object.h"
 #include "ace/Global_Macros.h"
 #include "ace/config-all.h"
@@ -25,7 +23,7 @@ ACE_Shared_Object::init (int, ACE_TCHAR *[])
 // Terminates object when dynamic unlinking occurs.
 
 int
-ACE_Shared_Object::fini (void)
+ACE_Shared_Object::fini ()
 {
   ACE_TRACE ("ACE_Shared_Object::fini");
   return 0;
@@ -42,7 +40,7 @@ ACE_Shared_Object::info (ACE_TCHAR **, size_t) const
 
 // Need to give a default implementation.
 
-ACE_Shared_Object::~ACE_Shared_Object (void)
+ACE_Shared_Object::~ACE_Shared_Object ()
 {
   ACE_TRACE ("ACE_Shared_Object::~ACE_Shared_Object");
 }

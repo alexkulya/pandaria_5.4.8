@@ -1,9 +1,7 @@
-// $Id: Sbrk_Memory_Pool.cpp 91286 2010-08-05 09:04:31Z johnnyw $
-
 #include "ace/OS_NS_unistd.h"
 #include "ace/Sbrk_Memory_Pool.h"
-#include "ace/Log_Msg.h"
-
+#include "ace/Log_Category.h"
+#include "ace/Malloc_Base.h"
 
 
 #if !defined (ACE_LACKS_SBRK)
@@ -20,16 +18,16 @@ ACE_Sbrk_Memory_Pool::acquire (size_t nbytes,
 {
   ACE_TRACE ("ACE_Sbrk_Memory_Pool::acquire");
   rounded_bytes = this->round_up (nbytes);
-  // ACE_DEBUG ((LM_DEBUG,  ACE_TEXT ("(%P|%t) acquiring more chunks, nbytes = %d, rounded_bytes = %d\n"), nbytes, rounded_bytes));
+  // ACELIB_DEBUG ((LM_DEBUG,  ACE_TEXT ("(%P|%t) acquiring more chunks, nbytes = %d, rounded_bytes = %d\n"), nbytes, rounded_bytes));
   void *cp = ACE_OS::sbrk (rounded_bytes);
 
   if (cp == MAP_FAILED)
-    ACE_ERROR_RETURN ((LM_ERROR,
+    ACELIB_ERROR_RETURN ((LM_ERROR,
                        "(%P|%t) cp = %u\n",
                        cp),
                       0);
   else
-    // ACE_DEBUG ((LM_DEBUG,  ACE_TEXT ("(%P|%t) acquired more chunks, nbytes = %d, rounded_bytes = %d, new break = %u\n"), nbytes, rounded_bytes, cp));
+    // ACELIB_DEBUG ((LM_DEBUG,  ACE_TEXT ("(%P|%t) acquired more chunks, nbytes = %d, rounded_bytes = %d, new break = %u\n"), nbytes, rounded_bytes, cp));
   return cp;
 }
 
@@ -87,7 +85,7 @@ ACE_Sbrk_Memory_Pool::init_acquire (size_t nbytes,
 }
 
 void
-ACE_Sbrk_Memory_Pool::dump (void) const
+ACE_Sbrk_Memory_Pool::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   ACE_TRACE ("ACE_Sbrk_Memory_Pool::dump");
@@ -100,12 +98,12 @@ ACE_Sbrk_Memory_Pool::ACE_Sbrk_Memory_Pool (const ACE_TCHAR *,
   ACE_TRACE ("ACE_Sbrk_Memory_Pool::ACE_Sbrk_Memory_Pool");
 }
 
-ACE_Sbrk_Memory_Pool::~ACE_Sbrk_Memory_Pool (void)
+ACE_Sbrk_Memory_Pool::~ACE_Sbrk_Memory_Pool ()
 {
 }
 
 void *
-ACE_Sbrk_Memory_Pool::base_addr (void) const
+ACE_Sbrk_Memory_Pool::base_addr () const
 {
   return 0;
 }

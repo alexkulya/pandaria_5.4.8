@@ -4,8 +4,6 @@
 /**
  *  @file    Functor_T.h
  *
- *  $Id: Functor_T.h 95332 2011-12-15 11:09:41Z mcorino $
- *
  *   Templatized classes for implementing function objects that are
  *   used in various places in ACE.  There are currently two major
  *   categories of function objects in ACE: GOF Command Pattern
@@ -14,11 +12,10 @@
  *   method, while the STL-style functors are invoked via an
  *   <operator()> method.
  *
- *
  *  @author Chris Gill <cdgill@cs.wustl.edu>
  *  @author Based on Command Pattern implementations originally done by
  *  @author Carlos O'Ryan <coryan@cs.wustl.edu>
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  *  @author Sergio Flores-Gaitan <sergio@cs.wustl.edu>
  *  @author and on STL-style functor implementations originally done by
  *  @author Irfan Pyarali  <irfan@cs.wustl.edu>
@@ -37,6 +34,7 @@
 #endif /* ACE_LACKS_PRAGMA_ONCE */
 
 #include "ace/Functor_String.h"
+#include "ace/Truncate.h"
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -66,10 +64,12 @@ public:
   ACE_Command_Callback (RECEIVER &recvr, ACTION action);
 
   /// Virtual destructor.
-  virtual ~ACE_Command_Callback (void);
+  virtual ~ACE_Command_Callback ();
 
   /// Invokes the method @c action_ from the object @c receiver_.
   virtual int execute (void *arg = 0);
+
+  ACE_ALLOC_HOOK_DECLARE;
 
 private:
   /// Object where the method resides.
@@ -84,20 +84,19 @@ private:
  *
  * @brief Defines a class template that allows us to invoke a member
  * function using the GoF command style callback.
- *
  */
 template <class RECEIVER>
 class ACE_Member_Function_Command : public ACE_Command_Base
 {
 public:
-  typedef void (RECEIVER::*PTMF)(void);
+  typedef void (RECEIVER::*PTMF)();
 
-  /// Con Constructor: sets the <receiver_> of the Command to recvr, and the
+  /// Con Constructor: sets the <receiver_> of the Command to @a recvr, and the
   /// <action_> of the Command to <action>.
   ACE_Member_Function_Command (RECEIVER &recvr, PTMF ptmf);
 
   /// Virtual destructor.
-  virtual ~ACE_Member_Function_Command (void);
+  virtual ~ACE_Member_Function_Command ();
 
   /// Invokes the method <action_> from the object <receiver_>.  The
   /// parameter is ignored

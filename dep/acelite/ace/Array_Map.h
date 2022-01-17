@@ -4,8 +4,6 @@
 /**
  * @file    Array_Map.h
  *
- * $Id: Array_Map.h 92386 2010-10-28 07:44:37Z johnnyw $
- *
  * Light weight array-based map with fast iteration but linear
  * (i.e. O(n)) search times.  STL-style interface is exposed.
  *
@@ -22,7 +20,7 @@
 
 #include /**/ "ace/pre.h"
 
-#include "ace/config-lite.h"
+#include /**/ "ace/config-lite.h"
 
 #if !defined (ACE_LACKS_PRAGMA_ONCE)
 # pragma once
@@ -31,8 +29,17 @@
 #include <utility>
 #include <iterator>
 #include <functional>
+#include <memory>
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
+
+#if defined __SUNPRO_CC && !defined _RWSTD_ALLOCATOR
+# define ACE_ARRAY_MAP_DEFAULT_ALLOCATOR(K, V) std::allocator_interface< \
+                                                 std::allocator<void>,   \
+                                                 std::pair<K, V> >
+#else
+# define ACE_ARRAY_MAP_DEFAULT_ALLOCATOR(K, V) std::allocator<std::pair<K, V> >
+#endif
 
 /**
  * @class ACE_Array_Map
@@ -84,24 +91,25 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
  *       -# Copy constructor
  *       -# operator=
  */
-template<typename Key, typename Value, class EqualTo = std::equal_to<Key> >
+template<typename Key, typename Value, class EqualTo = std::equal_to<Key>,
+         class Alloc = ACE_ARRAY_MAP_DEFAULT_ALLOCATOR (Key, Value) >
 class ACE_Array_Map
 {
 public:
-
   // STL-style typedefs/traits.
-  typedef Key                            key_type;
-  typedef Value                          data_type;
-  typedef std::pair<key_type, data_type> value_type;
-  typedef value_type *                   iterator;
-  typedef value_type const *             const_iterator;
-  typedef value_type &                   reference;
-  typedef value_type const &             const_reference;
-  typedef value_type *                   pointer;
-  typedef value_type const *             const_pointer;
-  typedef ptrdiff_t                      difference_type;
-  typedef size_t                         size_type;
-
+  typedef Key                                    key_type;
+  typedef Value                                  mapped_type;
+  typedef Value                                  data_type;
+  typedef std::pair<key_type, mapped_type>       value_type;
+  typedef Alloc                                  allocator_type;
+  typedef value_type &                           reference;
+  typedef value_type const &                     const_reference;
+  typedef value_type *                           pointer;
+  typedef value_type const *                     const_pointer;
+  typedef value_type *                           iterator;
+  typedef value_type const *                     const_iterator;
+  typedef ptrdiff_t                              difference_type;
+  typedef size_t                                 size_type;
   ACE_DECLARE_STL_REVERSE_ITERATORS
 
   /// Default Constructor.
@@ -117,7 +125,7 @@ public:
   ACE_Array_Map & operator= (ACE_Array_Map const & map);
 
   /// Destructor.
-  ~ACE_Array_Map (void);
+  ~ACE_Array_Map ();
 
   /**
    * @name Forward Iterator Accessors
@@ -125,10 +133,10 @@ public:
    * Forward iterator accessors.
    */
   //@{
-  iterator begin (void);
-  iterator end   (void);
-  const_iterator begin (void) const;
-  const_iterator end   (void) const;
+  iterator begin ();
+  iterator end   ();
+  const_iterator begin () const;
+  const_iterator end   () const;
   //@}
 
   /**
@@ -137,30 +145,30 @@ public:
    * Reverse iterator accessors.
    */
   //@{
-  reverse_iterator rbegin (void);
-  reverse_iterator rend   (void);
-  const_reverse_iterator rbegin (void) const;
-  const_reverse_iterator rend   (void) const;
+  reverse_iterator rbegin ();
+  reverse_iterator rend   ();
+  const_reverse_iterator rbegin () const;
+  const_reverse_iterator rend   () const;
   //@}
 
   /// Return current size of map.
   /**
    * @return The number of elements in the map.
    */
-  size_type size (void) const;
+  size_type size () const;
 
   /// Maximum number of elements the map can hold.
-  size_type max_size (void) const;
+  size_type max_size () const;
 
   /// Return @c true if the map is empty, else @c false.
-  bool is_empty (void) const;  // ACE style
+  bool is_empty () const;  // ACE style
 
   /**
    * Return @c true if the map is empty, else @c false.  We recommend
    * using @c is_empty() instead since it's more consistent with the
    * ACE container naming conventions.
    */
-  bool empty (void) const;  // STL style
+  bool empty () const;  // STL style
 
   /// Swap the contents of this map with the given @a map in an
   /// exception-safe manner.
@@ -200,7 +208,7 @@ public:
   /**
    * @note This a constant time (O(1)) operation.
    */
-  void clear (void);
+  void clear ();
 
   /**
    * @name Search Operations
@@ -235,14 +243,16 @@ public:
    * @par
    * map["Foo"] = 12;
    */
-  data_type & operator[] (key_type const & k);
+  mapped_type & operator[] (key_type const & k);
+
+  allocator_type get_allocator() const { return alloc_; }
 
 private:
-
   /// Increase size of underlying buffer by @a s.
   void grow (size_type s);
 
-private:
+  /// The allocator.
+  allocator_type alloc_;
 
   /// Number of elements in the map.
   size_type size_;
@@ -255,20 +265,19 @@ private:
 
   /// Underlying array containing keys and data.
   value_type * nodes_;
-
 };
 
 // --------------------------------------------------------------
 
 /// @c ACE_Array_Map equality operator.
-template <typename Key, typename Value, class EqualTo>
-bool operator== (ACE_Array_Map<Key, Value, EqualTo> const & lhs,
-                 ACE_Array_Map<Key, Value, EqualTo> const & rhs);
+template <typename Key, typename Value, class EqualTo, class Alloc>
+bool operator== (ACE_Array_Map<Key, Value, EqualTo, Alloc> const & lhs,
+                 ACE_Array_Map<Key, Value, EqualTo, Alloc> const & rhs);
 
 /// @c ACE_Array_Map lexicographical comparison operator.
-template <typename Key, typename Value, class EqualTo>
-bool operator<  (ACE_Array_Map<Key, Value, EqualTo> const & lhs,
-                 ACE_Array_Map<Key, Value, EqualTo> const & rhs);
+template <typename Key, typename Value, class EqualTo, class Alloc>
+bool operator<  (ACE_Array_Map<Key, Value, EqualTo, Alloc> const & lhs,
+                 ACE_Array_Map<Key, Value, EqualTo, Alloc> const & rhs);
 
 // --------------------------------------------------------------
 

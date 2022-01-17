@@ -1,7 +1,5 @@
-// $Id: RW_Process_Mutex.cpp 91286 2010-08-05 09:04:31Z johnnyw $
-
 #include "ace/RW_Process_Mutex.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/ACE.h"
 
 
@@ -21,7 +19,7 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 ACE_ALLOC_HOOK_DEFINE(ACE_RW_Process_Mutex)
 
 const ACE_TCHAR *
-ACE_RW_Process_Mutex::unique_name (void)
+ACE_RW_Process_Mutex::unique_name ()
 {
   ACE::unique_name (this, this->name_, ACE_UNIQUE_NAME_LEN);
   return this->name_;
@@ -35,19 +33,19 @@ ACE_RW_Process_Mutex::ACE_RW_Process_Mutex (const ACE_TCHAR *name,
 // ACE_TRACE ("ACE_RW_Process_Mutex::ACE_RW_Process_Mutex");
 }
 
-ACE_RW_Process_Mutex::~ACE_RW_Process_Mutex (void)
+ACE_RW_Process_Mutex::~ACE_RW_Process_Mutex ()
 {
 // ACE_TRACE ("ACE_RW_Process_Mutex::~ACE_RW_Process_Mutex");
 }
 
 void
-ACE_RW_Process_Mutex::dump (void) const
+ACE_RW_Process_Mutex::dump () const
 {
 #if defined (ACE_HAS_DUMP)
 // ACE_TRACE ("ACE_RW_Process_Mutex::dump");
-  ACE_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
   this->lock_.dump ();
-  ACE_DEBUG ((LM_DEBUG, ACE_END_DUMP));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_END_DUMP));
 #endif /* ACE_HAS_DUMP */
 }
 

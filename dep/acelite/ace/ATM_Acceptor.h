@@ -4,8 +4,6 @@
 /**
  *  @file    ATM_Acceptor.h
  *
- *  $Id: ATM_Acceptor.h 82723 2008-09-16 09:35:44Z johnnyw $
- *
  *  @author Joe Hoffert
  */
 //=============================================================================
@@ -59,9 +57,7 @@ class ACE_Time_Value;
  */
 class ACE_Export ACE_ATM_Acceptor
 {
-
 public:
-  // = Initialization and termination methods.
   /// Default constructor.
   ACE_ATM_Acceptor (void);
 
@@ -101,7 +97,7 @@ public:
   typedef ACE_ATM_Stream PEER_STREAM;
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

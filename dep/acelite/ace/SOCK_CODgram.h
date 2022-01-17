@@ -4,8 +4,6 @@
 /**
  *  @file    SOCK_CODgram.h
  *
- *  $Id: SOCK_CODgram.h 81509 2008-04-28 22:00:49Z shuston $
- *
  *  @author Doug Schmidt
  */
 //=============================================================================
@@ -127,7 +125,7 @@ public:
   typedef ACE_INET_Addr PEER_ADDR;
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

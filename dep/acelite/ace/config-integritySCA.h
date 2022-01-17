@@ -7,8 +7,6 @@
  * This config.h file is for version 4.0.x of the
  * Integrity RTOS with SCA from Green Hills Software
  * http://www.ghs.com/products/rtos/integrity.html
- *
- * $Id: config-integritySCA.h 92181 2010-10-08 07:52:54Z olli $
  */
 
 #define ghs
@@ -30,12 +28,8 @@
 #define ACE_HAS_STANDARD_CPP_LIBRARY 1
 #define ACE_TEMPLATES_REQUIRE_SOURCE 1
 #define TAO_USE_SEQUENCE_TEMPLATES
-#define ACE_NEEDS_FUNC_DEFINITIONS
 #define _REENTRANT
 #define ACE_MT_SAFE 1
-
-// Compiler/platform has correctly prototyped header files.
-#define ACE_HAS_CPLUSPLUS_HEADERS
 
 #define ACE_HAS_SHM_OPEN
 

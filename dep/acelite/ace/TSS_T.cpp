@@ -1,5 +1,3 @@
-// $Id: TSS_T.cpp 93792 2011-04-07 11:48:50Z mcorino $
-
 #ifndef ACE_TSS_T_CPP
 #define ACE_TSS_T_CPP
 
@@ -14,9 +12,12 @@
 #endif /* __ACE_INLINE__ */
 
 #include "ace/Thread.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/Guard_T.h"
 #include "ace/OS_NS_stdio.h"
+#if defined (ACE_HAS_ALLOC_HOOKS)
+# include "ace/Malloc_Base.h"
+#endif /* ACE_HAS_ALLOC_HOOKS */
 
 #if defined (ACE_HAS_THR_C_DEST)
 #  include "ace/TSS_Adapter.h"
@@ -24,7 +25,7 @@
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
-ACE_ALLOC_HOOK_DEFINE(ACE_TSS)
+ACE_ALLOC_HOOK_DEFINE_Tc(ACE_TSS)
 
 #if defined (ACE_HAS_THREADS) && (defined (ACE_HAS_THREAD_SPECIFIC_STORAGE) || defined (ACE_HAS_TSS_EMULATION))
 # if defined (ACE_HAS_THR_C_DEST)
@@ -33,7 +34,7 @@ extern "C" ACE_Export void ACE_TSS_C_cleanup (void *);
 #endif /* defined (ACE_HAS_THREADS) && (defined (ACE_HAS_THREAD_SPECIFIC_STORAGE) || defined (ACE_HAS_TSS_EMULATION)) */
 
 template <class TYPE>
-ACE_TSS<TYPE>::~ACE_TSS (void)
+ACE_TSS<TYPE>::~ACE_TSS ()
 {
 #if defined (ACE_HAS_THREADS) && (defined (ACE_HAS_THREAD_SPECIFIC_STORAGE) || defined (ACE_HAS_TSS_EMULATION))
   if (this->once_)
@@ -45,7 +46,13 @@ ACE_TSS<TYPE>::~ACE_TSS (void)
 # else
     TYPE *ts_obj = this->ts_value ();
     this->ts_value (0);
+#  if !defined ACE_HAS_LYNXOS_178 || defined ACE_HAS_TSS_EMULATION
+    // A bug in LynxOS-178 causes pthread_setspecific (called from ts_value(0)
+    // above) to call the cleanup function, so we need to avoid calling it here.
     ACE_TSS<TYPE>::cleanup (ts_obj);
+#  else
+    ACE_UNUSED_ARG (ts_obj);
+#  endif
 # endif /* ACE_HAS_THR_C_DEST */
 
     ACE_OS::thr_key_detach (this->key_);
@@ -64,13 +71,13 @@ ACE_TSS<TYPE>::operator-> () const
 }
 
 template <class TYPE>
-ACE_TSS<TYPE>::operator TYPE *(void) const
+ACE_TSS<TYPE>::operator TYPE *() const
 {
   return this->ts_get ();
 }
 
 template <class TYPE> TYPE *
-ACE_TSS<TYPE>::make_TSS_TYPE (void) const
+ACE_TSS<TYPE>::make_TSS_TYPE () const
 {
   TYPE *temp = 0;
   ACE_NEW_RETURN (temp,
@@ -80,15 +87,15 @@ ACE_TSS<TYPE>::make_TSS_TYPE (void) const
 }
 
 template <class TYPE> void
-ACE_TSS<TYPE>::dump (void) const
+ACE_TSS<TYPE>::dump () const
 {
 #if defined (ACE_HAS_DUMP)
 #if defined (ACE_HAS_THREADS) && (defined (ACE_HAS_THREAD_SPECIFIC_STORAGE) || defined (ACE_HAS_TSS_EMULATION))
-  ACE_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
   this->keylock_.dump ();
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("key_ = %d\n"), this->key_));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\nonce_ = %d\n"), this->once_));
-  ACE_DEBUG ((LM_DEBUG, ACE_END_DUMP));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("key_ = %d\n"), this->key_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\nonce_ = %d\n"), this->once_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_END_DUMP));
 #endif /* defined (ACE_HAS_THREADS) && (defined (ACE_HAS_THREAD_SPECIFIC_STORAGE) || defined (ACE_HAS_TSS_EMULATION)) */
 #endif /* ACE_HAS_DUMP */
 }
@@ -103,7 +110,7 @@ ACE_TSS<TYPE>::cleanup (void *ptr)
 }
 
 template <class TYPE> int
-ACE_TSS<TYPE>::ts_init (void)
+ACE_TSS<TYPE>::ts_init ()
 {
   // Ensure that we are serialized!
   ACE_GUARD_RETURN (ACE_Thread_Mutex, ace_mon, this->keylock_, 0);
@@ -154,7 +161,7 @@ ACE_TSS<TYPE>::ACE_TSS (TYPE *ts_obj)
                         ACE_TEXT ("ACE_Thread::keycreate() failed!"),
                         ACE_TEXT ("ACE_TSS::ACE_TSS"),
                         MB_OK);
-#else
+#elif !defined (ACE_LACKS_VA_FUNCTIONS)
           ACE_OS::fprintf (stderr,
                            "ACE_Thread::keycreate() failed!");
 #endif /* ACE_HAS_WINCE */
@@ -181,7 +188,7 @@ ACE_TSS<TYPE>::ACE_TSS (TYPE *ts_obj)
 }
 
 template <class TYPE> TYPE *
-ACE_TSS<TYPE>::ts_get (void) const
+ACE_TSS<TYPE>::ts_get () const
 {
   if (!this->once_)
     {
@@ -262,7 +269,7 @@ ACE_TSS<TYPE>::ts_get (void) const
 // otherwise returns a pointer to the ts_obj.
 
 template <class TYPE> TYPE *
-ACE_TSS<TYPE>::ts_object (void) const
+ACE_TSS<TYPE>::ts_object () const
 {
   if (!this->once_) // Return 0 if we've never been initialized.
     return 0;
@@ -332,39 +339,39 @@ ACE_TSS<TYPE>::ts_object (TYPE *new_ts_obj)
   return ts_obj;
 }
 
-ACE_ALLOC_HOOK_DEFINE(ACE_TSS_Guard)
+ACE_ALLOC_HOOK_DEFINE_Tc(ACE_TSS_Guard)
 
 template <class ACE_LOCK> void
-ACE_TSS_Guard<ACE_LOCK>::dump (void) const
+ACE_TSS_Guard<ACE_LOCK>::dump () const
 {
 #if defined (ACE_HAS_DUMP)
-  ACE_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("key_ = %d\n"), this->key_));
-  ACE_DEBUG ((LM_DEBUG, ACE_END_DUMP));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("key_ = %d\n"), this->key_));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_END_DUMP));
 #endif /* ACE_HAS_DUMP */
 }
 
 template <class ACE_LOCK> void
-ACE_TSS_Guard<ACE_LOCK>::init_key (void)
+ACE_TSS_Guard<ACE_LOCK>::init_key ()
 {
   this->key_ = ACE_OS::NULL_key;
   ACE_Thread::keycreate (&this->key_,
 #if defined (ACE_HAS_THR_C_DEST)
-                         &ACE_TSS_C_cleanup,
+                         &ACE_TSS_C_cleanup
 #else
-                         &ACE_TSS_Guard<ACE_LOCK>::cleanup,
+                         &ACE_TSS_Guard<ACE_LOCK>::cleanup
 #endif /* ACE_HAS_THR_C_DEST */
-                         (void *) this);
+                         );
 }
 
 template <class ACE_LOCK>
-ACE_TSS_Guard<ACE_LOCK>::ACE_TSS_Guard (void)
+ACE_TSS_Guard<ACE_LOCK>::ACE_TSS_Guard ()
 {
   this->init_key ();
 }
 
 template <class ACE_LOCK> int
-ACE_TSS_Guard<ACE_LOCK>::release (void)
+ACE_TSS_Guard<ACE_LOCK>::release ()
 {
   Guard_Type *guard = 0;
 
@@ -384,7 +391,7 @@ ACE_TSS_Guard<ACE_LOCK>::release (void)
 }
 
 template <class ACE_LOCK> int
-ACE_TSS_Guard<ACE_LOCK>::remove (void)
+ACE_TSS_Guard<ACE_LOCK>::remove ()
 {
   Guard_Type *guard = 0;
 
@@ -404,7 +411,7 @@ ACE_TSS_Guard<ACE_LOCK>::remove (void)
 }
 
 template <class ACE_LOCK>
-ACE_TSS_Guard<ACE_LOCK>::~ACE_TSS_Guard (void)
+ACE_TSS_Guard<ACE_LOCK>::~ACE_TSS_Guard ()
 {
   Guard_Type *guard = 0;
 
@@ -456,7 +463,7 @@ ACE_TSS_Guard<ACE_LOCK>::ACE_TSS_Guard (ACE_LOCK &lock, bool block)
 }
 
 template <class ACE_LOCK> int
-ACE_TSS_Guard<ACE_LOCK>::acquire (void)
+ACE_TSS_Guard<ACE_LOCK>::acquire ()
 {
   Guard_Type *guard = 0;
 
@@ -476,7 +483,7 @@ ACE_TSS_Guard<ACE_LOCK>::acquire (void)
 }
 
 template <class ACE_LOCK> int
-ACE_TSS_Guard<ACE_LOCK>::tryacquire (void)
+ACE_TSS_Guard<ACE_LOCK>::tryacquire ()
 {
   Guard_Type *guard = 0;
 
@@ -516,7 +523,7 @@ ACE_TSS_Write_Guard<ACE_LOCK>::ACE_TSS_Write_Guard (ACE_LOCK &lock,
 }
 
 template <class ACE_LOCK> int
-ACE_TSS_Write_Guard<ACE_LOCK>::acquire (void)
+ACE_TSS_Write_Guard<ACE_LOCK>::acquire ()
 {
   Write_Guard_Type *guard = 0;
 
@@ -536,7 +543,7 @@ ACE_TSS_Write_Guard<ACE_LOCK>::acquire (void)
 }
 
 template <class ACE_LOCK> int
-ACE_TSS_Write_Guard<ACE_LOCK>::tryacquire (void)
+ACE_TSS_Write_Guard<ACE_LOCK>::tryacquire ()
 {
   Write_Guard_Type *guard = 0;
 
@@ -556,19 +563,19 @@ ACE_TSS_Write_Guard<ACE_LOCK>::tryacquire (void)
 }
 
 template <class ACE_LOCK> int
-ACE_TSS_Write_Guard<ACE_LOCK>::acquire_write (void)
+ACE_TSS_Write_Guard<ACE_LOCK>::acquire_write ()
 {
   return this->acquire ();
 }
 
 template <class ACE_LOCK> int
-ACE_TSS_Write_Guard<ACE_LOCK>::tryacquire_write (void)
+ACE_TSS_Write_Guard<ACE_LOCK>::tryacquire_write ()
 {
   return this->tryacquire ();
 }
 
 template <class ACE_LOCK> void
-ACE_TSS_Write_Guard<ACE_LOCK>::dump (void) const
+ACE_TSS_Write_Guard<ACE_LOCK>::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   ACE_TSS_Guard<ACE_LOCK>::dump ();
@@ -596,7 +603,7 @@ ACE_TSS_Read_Guard<ACE_LOCK>::ACE_TSS_Read_Guard (ACE_LOCK &lock, bool block)
 }
 
 template <class ACE_LOCK> int
-ACE_TSS_Read_Guard<ACE_LOCK>::acquire (void)
+ACE_TSS_Read_Guard<ACE_LOCK>::acquire ()
 {
   Read_Guard_Type *guard = 0;
 
@@ -616,7 +623,7 @@ ACE_TSS_Read_Guard<ACE_LOCK>::acquire (void)
 }
 
 template <class ACE_LOCK> int
-ACE_TSS_Read_Guard<ACE_LOCK>::tryacquire (void)
+ACE_TSS_Read_Guard<ACE_LOCK>::tryacquire ()
 {
   Read_Guard_Type *guard = 0;
 
@@ -636,19 +643,19 @@ ACE_TSS_Read_Guard<ACE_LOCK>::tryacquire (void)
 }
 
 template <class ACE_LOCK> int
-ACE_TSS_Read_Guard<ACE_LOCK>::acquire_read (void)
+ACE_TSS_Read_Guard<ACE_LOCK>::acquire_read ()
 {
   return this->acquire ();
 }
 
 template <class ACE_LOCK> int
-ACE_TSS_Read_Guard<ACE_LOCK>::tryacquire_read (void)
+ACE_TSS_Read_Guard<ACE_LOCK>::tryacquire_read ()
 {
   return this->tryacquire ();
 }
 
 template <class ACE_LOCK> void
-ACE_TSS_Read_Guard<ACE_LOCK>::dump (void) const
+ACE_TSS_Read_Guard<ACE_LOCK>::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   ACE_TSS_Guard<ACE_LOCK>::dump ();

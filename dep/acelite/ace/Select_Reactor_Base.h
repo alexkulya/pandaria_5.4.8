@@ -4,9 +4,7 @@
 /**
  *  @file    Select_Reactor_Base.h
  *
- *  $Id: Select_Reactor_Base.h 93792 2011-04-07 11:48:50Z mcorino $
- *
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  */
 //=============================================================================
 
@@ -30,14 +28,20 @@
 # include "ace/Notification_Queue.h"
 #endif /* ACE_HAS_REACTOR_NOTIFICATION_QUEUE */
 
-#ifdef ACE_WIN32
+#if defined (ACE_WIN32) || defined (ACE_MQX)
+# ifndef ACE_SELECT_REACTOR_BASE_USES_HASH_MAP
+#  define ACE_SELECT_REACTOR_BASE_USES_HASH_MAP
+# endif
+#endif
+
+#ifdef ACE_SELECT_REACTOR_BASE_USES_HASH_MAP
 # include "ace/Null_Mutex.h"
 # include "ace/Hash_Map_Manager_T.h"
 # include "ace/Functor.h"  /* For ACE_Hash<void *> */
 # include <functional>      /* For std::equal_to<>  */
 #else
 # include "ace/Array_Base.h"
-#endif  /* ACE_WIN32 */
+#endif  /* ACE_SELECT_REACTOR_BASE_USES_HASH_MAP */
 
 #if !defined (ACE_DISABLE_NOTIFY_PIPE_DEFAULT)
 # define ACE_DISABLE_NOTIFY_PIPE_DEFAULT 0
@@ -52,13 +56,6 @@ typedef int (ACE_Event_Handler::*ACE_EH_PTMF) (ACE_HANDLE);
 // Forward declaration.
 class ACE_Select_Reactor_Impl;
 class ACE_Sig_Handler;
-
-/*
- * Hook to specialize the Select_Reactor_Base implementation
- * with the concrete reactor, e.g., select or tp reactor
- * specified at build/compilation time.
- */
-//@@ REACTOR_SPL_INCLUDE_FORWARD_DECL_ADD_HOOK
 
 /**
  * @class ACE_Select_Reactor_Handle_Set
@@ -137,7 +134,6 @@ public:
   /// Destructor.
   virtual ~ACE_Select_Reactor_Notify (void);
 
-  // = Initialization and termination methods.
   /// Initialize.
   virtual int open (ACE_Reactor_Impl *,
                     ACE_Timer_Queue * = 0,
@@ -225,7 +221,7 @@ public:
       ACE_Reactor_Mask mask = ACE_Event_Handler::ALL_EVENTS_MASK);
 
   /// Dump the state of an object.
-  virtual void dump (void) const;
+  virtual void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;
@@ -291,7 +287,7 @@ public:
   typedef ACE_Event_Handler * value_type;
 
   // = The mapping from <HANDLES> to <Event_Handlers>.
-#ifdef ACE_WIN32
+#ifdef ACE_SELECT_REACTOR_BASE_USES_HASH_MAP
   /**
    * The NT version implements this via a hash map
    * @c ACE_Event_Handler*.  Since NT implements @c ACE_HANDLE
@@ -313,11 +309,10 @@ public:
    */
   typedef ACE_Array_Base<value_type> map_type;
   typedef ACE_HANDLE max_handlep1_type;
-#endif  /* ACE_WIN32 */
+#endif  /* ACE_SELECT_REACTOR_BASE_USES_HASH_MAP */
 
   typedef map_type::size_type size_type;
 
-  // = Initialization and termination methods.
   /// Default "do-nothing" constructor.
   ACE_Select_Reactor_Handler_Repository (ACE_Select_Reactor_Impl &);
 
@@ -374,7 +369,7 @@ public:
   max_handlep1_type max_handlep1 (void) const;
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;
@@ -397,11 +392,11 @@ private:
   /// Reference to our @c Select_Reactor.
   ACE_Select_Reactor_Impl &select_reactor_;
 
-#ifndef ACE_WIN32
+#ifndef ACE_SELECT_REACTOR_BASE_USES_HASH_MAP
   /// The highest currently active handle, plus 1 (ranges between 0 and
   /// @c max_size_.
   max_handlep1_type max_handlep1_;
-#endif  /* !ACE_WIN32 */
+#endif  /* !ACE_SELECT_REACTOR_BASE_USES_HASH_MAP */
 
   /// Underlying table of event handlers.
   map_type event_handlers_;
@@ -419,7 +414,6 @@ public:
   typedef
     ACE_Select_Reactor_Handler_Repository::map_type::const_iterator const_base_iterator;
 
-  // = Initialization method.
   explicit ACE_Select_Reactor_Handler_Repository_Iterator (
     ACE_Select_Reactor_Handler_Repository const * s);
 
@@ -437,7 +431,7 @@ public:
   bool advance (void);
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;
@@ -486,13 +480,6 @@ public:
   /// the application.  The select reactor has no handlers that can be
   /// resumed by the  application. So return 0;
   virtual int resumable_handler (void);
-
-  /*
-   * Hook to add concrete methods required to specialize the
-   * implementation with concrete methods required for the concrete
-   * reactor implementation, for example, select, tp reactors.
-   */
-  //@@ REACTOR_SPL_PUBLIC_METHODS_ADD_HOOK
 
 protected:
   /// Allow manipulation of the <wait_set_> mask and <ready_set_> mask.
@@ -589,14 +576,13 @@ protected:
 
   /// Controls/access whether the notify handler should renew the
   /// Select_Reactor's token or not.
-  int supress_notify_renew (void);
-  void supress_notify_renew (int sr);
+  bool supress_notify_renew (void);
+  void supress_notify_renew (bool sr);
 
 private:
-
   /// Determine whether we should renew Select_Reactor's token after handling
   /// the notification message.
-  int supress_renew_;
+  bool supress_renew_;
 
   /// Deny access since member-wise won't work...
   ACE_Select_Reactor_Impl (const ACE_Select_Reactor_Impl &);

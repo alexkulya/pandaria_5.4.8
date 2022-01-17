@@ -1,25 +1,22 @@
 // -*- C++ -*-
-//
-// $Id: Intrusive_List.inl 91688 2010-09-09 11:21:50Z johnnyw $
-
 #include <algorithm>
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 template<class T> ACE_INLINE bool
-ACE_Intrusive_List<T>::is_empty (void) const
+ACE_Intrusive_List<T>::is_empty () const
 {
   return this->head_ == 0;
 }
 
 template<class T> ACE_INLINE T *
-ACE_Intrusive_List<T>::head (void) const
+ACE_Intrusive_List<T>::head () const
 {
   return this->head_;
 }
 
 template<class T> ACE_INLINE T *
-ACE_Intrusive_List<T>::tail (void) const
+ACE_Intrusive_List<T>::tail () const
 {
   return this->tail_;
 }

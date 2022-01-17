@@ -4,8 +4,6 @@
 /**
  *  @file    FIFO_Recv.h
  *
- *  $Id: FIFO_Recv.h 91574 2010-08-30 16:52:24Z shuston $
- *
  *  @author Doug Schmidt
  */
 //==========================================================================
@@ -75,7 +73,7 @@ public:
   ssize_t recv_n (void *buf, size_t len);
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

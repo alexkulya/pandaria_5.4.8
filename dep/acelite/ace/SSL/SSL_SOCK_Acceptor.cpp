@@ -1,14 +1,11 @@
 // -*- C++ -*-
-//
-// $Id: SSL_SOCK_Acceptor.cpp 91368 2010-08-16 13:03:34Z mhengstmengel $
-
 
 #include "SSL_SOCK_Acceptor.h"
 
 #include "ace/Handle_Set.h"
 #include "ace/OS_Errno.h"
 #include "ace/OS_NS_errno.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/Time_Value.h"
 #include "ace/Countdown_Time.h"
 #include "ace/Truncate.h"
@@ -25,7 +22,6 @@ ACE_SSL_SOCK_Acceptor::~ACE_SSL_SOCK_Acceptor (void)
 {
   ACE_TRACE ("ACE_SSL_SOCK_Acceptor::~ACE_SSL_SOCK_Acceptor");
 }
-
 
 int
 ACE_SSL_SOCK_Acceptor::ssl_accept (ACE_SSL_SOCK_Stream &new_stream,

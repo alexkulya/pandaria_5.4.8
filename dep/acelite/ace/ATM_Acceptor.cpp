@@ -1,8 +1,4 @@
-// $Id: ATM_Acceptor.cpp 91286 2010-08-05 09:04:31Z johnnyw $
-
 #include "ace/ATM_Acceptor.h"
-
-
 
 #if defined (ACE_HAS_ATM)
 
@@ -13,7 +9,6 @@
 #if !defined (__ACE_INLINE__)
 #include "ace/ATM_Acceptor.inl"
 #endif /* __ACE_INLINE__ */
-
 
 // Open versioned namespace, if enabled by the user.
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
@@ -75,7 +70,7 @@ ACE_ATM_Acceptor::get_local_addr (ACE_ATM_Addr &local_addr)
   if (ACE_OS::getsockname (acceptor_.get_handle (),
  (struct sockaddr *) & (myaddr->sockaddratmsvc),
                           &addrlen) < 0) {
-    ACE_DEBUG ((LM_DEBUG,
+    ACELIB_DEBUG ((LM_DEBUG,
                ACE_TEXT ("ATM_Acceptor (get_local_addr): ioctl: %d\n"),
                errno));
     return -1;
@@ -172,7 +167,7 @@ ACE_ATM_Acceptor::open (const ACE_Addr &remote_sap,
                                 params.get_flags ()
                                ))
       == ACE_INVALID_HANDLE) {
-    ACE_DEBUG (LM_DEBUG,
+    ACELIB_DEBUG (LM_DEBUG,
               ACE_TEXT ("Acceptor (socket): socket %d\n"),
               errno);
     return (ACE_INVALID_HANDLE);
@@ -209,7 +204,7 @@ ACE_ATM_Acceptor::open (const ACE_Addr &remote_sap,
                       &(local_sap_addr->sockaddratmsvc)),
                     sizeof (local_sap_addr->sockaddratmsvc)
                    ) == -1) {
-    ACE_DEBUG (LM_DEBUG,
+    ACELIB_DEBUG (LM_DEBUG,
               ACE_TEXT ("Acceptor (open): bind %d\n"),
               errno);
     return -1;
@@ -218,7 +213,7 @@ ACE_ATM_Acceptor::open (const ACE_Addr &remote_sap,
   if (ACE_OS::listen (handle,
                       backlog)
       == -1) {
-    ACE_DEBUG (LM_DEBUG,
+    ACELIB_DEBUG (LM_DEBUG,
               ACE_TEXT ("Acceptor (listen): listen %d\n"),
               errno);
     return -1;

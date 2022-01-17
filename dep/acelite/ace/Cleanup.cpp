@@ -1,5 +1,3 @@
-// $Id: Cleanup.cpp 91368 2010-08-16 13:03:34Z mhengstmengel $
-
 #include "ace/Cleanup.h"
 
 #if !defined (ACE_HAS_INLINED_OSCALLS)
@@ -10,6 +8,10 @@
 #include "ace/OS_NS_string.h"
 #include "ace/os_include/os_typeinfo.h"
 
+#if defined (ACE_HAS_ALLOC_HOOKS)
+# include "ace/Malloc_Base.h"
+#endif /* ACE_HAS_ALLOC_HOOKS */
+
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 void
@@ -18,7 +20,7 @@ ACE_Cleanup::cleanup (void *)
   delete this;
 }
 
-ACE_Cleanup::~ACE_Cleanup (void)
+ACE_Cleanup::~ACE_Cleanup ()
 {
 }
 
@@ -32,7 +34,7 @@ ACE_CLEANUP_DESTROYER_NAME (ACE_Cleanup *object, void *param)
 
 /*****************************************************************************/
 
-ACE_Cleanup_Info_Node::ACE_Cleanup_Info_Node (void)
+ACE_Cleanup_Info_Node::ACE_Cleanup_Info_Node ()
   : object_ (0),
     cleanup_hook_ (0),
     param_ (0),
@@ -51,11 +53,17 @@ ACE_Cleanup_Info_Node::ACE_Cleanup_Info_Node (void *object,
 {
 }
 
-ACE_Cleanup_Info_Node::~ACE_Cleanup_Info_Node (void)
+ACE_Cleanup_Info_Node::~ACE_Cleanup_Info_Node ()
 {
   if (this->name_)
+#if defined (ACE_HAS_ALLOC_HOOKS)
+    ACE_Allocator::instance()->free ((void *) name_);
+#else
     ACE_OS::free ((void *) name_);
+#endif /* ACE_HAS_ALLOC_HOOKS */
 }
+
+ACE_ALLOC_HOOK_DEFINE(ACE_Cleanup_Info_Node)
 
 bool
 ACE_Cleanup_Info_Node::operator== (const ACE_Cleanup_Info_Node &o) const
@@ -74,11 +82,11 @@ ACE_Cleanup_Info_Node::operator!= (const ACE_Cleanup_Info_Node &o) const
 
 /*****************************************************************************/
 
-ACE_OS_Exit_Info::ACE_OS_Exit_Info (void)
+ACE_OS_Exit_Info::ACE_OS_Exit_Info ()
 {
 }
 
-ACE_OS_Exit_Info::~ACE_OS_Exit_Info (void)
+ACE_OS_Exit_Info::~ACE_OS_Exit_Info ()
 {
 }
 
@@ -145,7 +153,7 @@ ACE_OS_Exit_Info::remove (void *object)
 
 
 void
-ACE_OS_Exit_Info::call_hooks (void)
+ACE_OS_Exit_Info::call_hooks ()
 {
   // Call all registered cleanup hooks, in reverse order of
   // registration.

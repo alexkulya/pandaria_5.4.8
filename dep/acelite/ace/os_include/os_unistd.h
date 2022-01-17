@@ -6,8 +6,6 @@
  *
  *  standard symbolic constants and types
  *
- *  $Id: os_unistd.h 92183 2010-10-08 08:44:15Z olli $
- *
  *  @author Don Hinton <dhinton@dresystems.com>
  *  @author This code was originally in various places including ace/OS.h.
  */
@@ -18,7 +16,7 @@
 
 #include /**/ "ace/pre.h"
 
-#include "ace/config-lite.h"
+#include /**/ "ace/config-lite.h"
 
 #if !defined (ACE_LACKS_PRAGMA_ONCE)
 # pragma once
@@ -52,6 +50,18 @@
 // for gethostname()
 #  include /**/ <hostLib.h>
 #endif /* ACE_VXWORKS */
+
+#ifdef ACE_MQX
+#  if !defined (STDIN_FILENO) && defined (_LLIO_STDIN)
+#    define STDIN_FILENO (_LLIO_STDIN)
+#  endif
+#  if !defined (STDOUT_FILENO) && defined (_LLIO_STDOUT)
+#    define STDOUT_FILENO (_LLIO_STDOUT)
+#  endif
+#  if !defined (STDERR_FILENO) && defined (_LLIO_STDERR)
+#    define STDERR_FILENO (_LLIO_STDERR)
+#  endif
+#endif
 
 // Place all additions (especially function declarations) within extern "C" {}
 #ifdef __cplusplus

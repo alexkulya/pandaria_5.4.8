@@ -4,8 +4,6 @@
 /**
  *  @file    Dev_Poll_Reactor.h
  *
- *  $Id: Dev_Poll_Reactor.h 94549 2011-10-03 06:31:27Z johnnyw $
- *
  *  @c /dev/poll (or Linux @c sys_epoll) based Reactor implementation.
  *
  *  @author  Ossama Othman <ossama@dre.vanderbilt.edu>
@@ -53,7 +51,6 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 class ACE_Sig_Handler;
 class ACE_Dev_Poll_Reactor;
 
-
 // ---------------------------------------------------------------------
 
 /**
@@ -69,7 +66,6 @@ class ACE_Dev_Poll_Reactor;
 class ACE_Dev_Poll_Reactor_Notify : public ACE_Reactor_Notify
 {
 public:
-
   /// Constructor
   ACE_Dev_Poll_Reactor_Notify (void);
 
@@ -101,7 +97,7 @@ public:
   /// Unimplemented method required by pure virtual method in abstract
   /// base class.
   /**
-   * This method's interface is not very compatibile with this
+   * This method's interface is not very compatible with this
    * Reactor's design.  It's not clear why this method is pure virtual
    * either.
    */
@@ -158,7 +154,7 @@ public:
     ACE_Reactor_Mask    = ACE_Event_Handler::ALL_EVENTS_MASK);
 
   /// Dump the state of an object.
-  virtual void dump (void) const;
+  virtual void dump () const;
 
   /// Method called by ACE_Dev_Poll_Reactor to obtain one notification.
   /// THIS METHOD MUST BE CALLED WITH THE REACTOR TOKEN HELD!
@@ -167,6 +163,8 @@ public:
   ///            dispatch. Note that the contained event handler may be
   ///            0 if there were only wake-ups (no handlers to dispatch).
   int dequeue_one (ACE_Notification_Buffer &nb);
+
+  ACE_ALLOC_HOOK_DECLARE;
 
 protected:
 
@@ -292,6 +290,8 @@ class ACE_Export ACE_Dev_Poll_Reactor : public ACE_Reactor_Impl
 
     /// Flag to say whether or not this handle is registered with epoll.
     bool controlled;
+
+    ACE_ALLOC_HOOK_DECLARE;
   };
 
 
@@ -310,12 +310,11 @@ class ACE_Export ACE_Dev_Poll_Reactor : public ACE_Reactor_Impl
    *
    * @note Calls to any method in this class, and any modification to a
    *       Event_Tuple returned from this class's methods, must be made
-   *       while holding the reactor token.
+   *       while holding the repository lock.
    */
   class Handler_Repository
   {
   public:
-
     /// Constructor.
     Handler_Repository (void);
 
@@ -377,17 +376,16 @@ class ACE_Export ACE_Dev_Poll_Reactor : public ACE_Reactor_Impl
     /// Returns the current table size.
     size_t size (void) const;
 
-    /// Returns the current table size.
+    /// Returns the maximum table size.
     size_t max_size (void) const;
 
     /// Dump the state of an object.
-    void dump (void) const;
+    void dump () const;
 
     /// Declare the dynamic allocation hooks.
     ACE_ALLOC_HOOK_DECLARE;
 
   private:
-
     /// Current number of handles.
     int size_;
 
@@ -404,7 +402,6 @@ class ACE_Export ACE_Dev_Poll_Reactor : public ACE_Reactor_Impl
   };
 
 public:
-
   /// Initialize @c ACE_Dev_Poll_Reactor with the default size.
   /**
    * The default size for the @c ACE_Dev_Poll_Reactor is the maximum
@@ -754,7 +751,7 @@ public:
    * Set the maximum number of times that ACE_Reactor_Impl will
    * iterate and dispatch the ACE_Event_Handlers that are passed in
    * via the notify queue before breaking out of its
-   * <ACE_Message_Queue::dequeue> loop.  By default, this is set to
+   * ACE_Message_Queue::dequeue() loop.  By default, this is set to
    * -1, which means "iterate until the queue is empty."  Setting this
    * to a value like "1 or 2" will increase "fairness" (and thus
    * prevent starvation) at the expense of slightly higher dispatching
@@ -766,7 +763,7 @@ public:
    * Get the maximum number of times that the ACE_Reactor_Impl will
    * iterate and dispatch the ACE_Event_Handlers that are passed in
    * via the notify queue before breaking out of its
-   * <ACE_Message_Queue::dequeue> loop.
+   * ACE_Message_Queue::dequeue() loop.
    */
   virtual int max_notify_iterations (void);
 
@@ -809,7 +806,7 @@ public:
   /// table.
   virtual size_t size (void) const;
 
-  /// Returns a reference to the Reactor's internal lock.
+  /// Returns a reference to the Reactor's internal repository lock.
   virtual ACE_Lock &lock (void);
 
   /// Wake up all threads waiting in the event loop.
@@ -910,7 +907,7 @@ public:
   //@}
 
   /// Dump the state of an object.
-  virtual void dump (void) const;
+  virtual void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;
@@ -967,12 +964,18 @@ protected:
                           ACE_Reactor_Mask mask);
 
   /// Remove the event handler associated with the given handle and
-  /// event mask from the "interest set." If @a eh is supplied, only
-  /// do the remove if @eh matches the event handler that's registered
-  /// for @a handle.
+  /// event mask from the "interest set." If @a eh is supplied, only do the
+  /// remove if @eh matches the event handler that's registered for @a handle.
+  /// The caller is expected to be holding the repo token on entry and have
+  /// @repo_guard referencing that token. It will be temporarily released
+  /// during a handle_close() callback if needed; if it is released for the
+  //// callback it will be reacquired before return.
+  // FUZZ: disable check_for_ACE_Guard
   int remove_handler_i (ACE_HANDLE handle,
                         ACE_Reactor_Mask mask,
+                        ACE_Guard<ACE_SYNCH_MUTEX> &repo_guard,
                         ACE_Event_Handler *eh = 0);
+  // FUZZ: enable check_for_ACE_Guard
 
   /// Temporarily remove the given handle from the "interest set."
   int suspend_handler_i (ACE_HANDLE handle);
@@ -995,7 +998,6 @@ protected:
   short reactor_mask_to_poll_event (ACE_Reactor_Mask mask);
 
 protected:
-
   /// Has the reactor been initialized.
   bool initialized_;
 
@@ -1015,17 +1017,6 @@ protected:
   /// epoll_wait() but not yet processed.
   struct epoll_event event_;
 
-  /// Event handlers that are suspended/resumed around upcalls are not
-  /// immediately resumed; they're added to this list for resumption at
-  /// the next epoll_wait() call. This avoids always needing to acquire the
-  /// token just to resume a handler. Of course, if there are no other
-  /// handlers in the to-be-resumed list and an epoll_wait is already in
-  /// progress, the reactor needs to be notified to force another run around
-  /// the epoll_wait() call.
-  typedef ACE_Array_Map<ACE_HANDLE, ACE_Event_Handler *> Resume_Map;
-  Resume_Map to_be_resumed_;
-  volatile bool epoll_wait_in_progress_;
-  ACE_SYNCH_MUTEX to_be_resumed_lock_;
 #else
   /// The pollfd array that `/dev/poll' will feed its results to.
   struct pollfd *dp_fds_;
@@ -1043,15 +1034,20 @@ protected:
   struct pollfd *end_pfds_;
 #endif  /* ACE_HAS_EVENT_POLL */
 
-  /// This flag is used to keep track of whether we are actively handling
-  /// events or not.
-  sig_atomic_t deactivated_;
-
-  /// Lock used for synchronization of reactor state.
+  /// Token serializing event waiter threads.
   ACE_Dev_Poll_Reactor_Token token_;
 
   /// Adapter used to return internal lock to outside world.
   ACE_Lock_Adapter<ACE_Dev_Poll_Reactor_Token> lock_adapter_;
+
+  /// This flag is used to keep track of whether we are actively handling
+  /// events or not.
+  sig_atomic_t deactivated_;
+
+  /// Token used to protect manipulation of the handler repository.
+  /// No need to hold the waiter token to change the repo.
+  //  ACE_DEV_POLL_TOKEN repo_token_;
+  ACE_SYNCH_MUTEX repo_lock_;
 
   /// The repository that contains all registered event handlers.
   Handler_Repository handler_rep_;
@@ -1104,7 +1100,6 @@ protected:
   class ACE_Export Token_Guard
   {
   public:
-
     /// Constructor that will grab the token for us
     Token_Guard (ACE_Dev_Poll_Reactor_Token &token);
 
@@ -1117,14 +1112,13 @@ protected:
 
     /// Returns whether the thread that created this object owns the
     /// token or not.
-    int is_owner (void);
+    bool is_owner (void);
 
     /// A helper method that acquires the token 1) at a low priority, and
     /// 2) wait quietly for the token, not waking another thread. This
     /// is appropriate for cases where a thread wants to wait for and
     /// dispatch an event, not causing an existing waiter to relinquish the
-    /// token, and also queuing up behind other threads waiting to modify
-    /// event records.
+    /// token.
     int acquire_quietly (ACE_Time_Value *max_wait = 0);
 
     /// A helper method that acquires the token at a high priority, and
@@ -1132,22 +1126,18 @@ protected:
     int acquire (ACE_Time_Value *max_wait = 0);
 
   private:
-
     Token_Guard (void);
 
   private:
-
     /// The Reactor token.
     ACE_Dev_Poll_Reactor_Token &token_;
 
     /// Flag that indicate whether the thread that created this object
-    /// owns the token or not. A value of 0 indicates that this class
-    /// hasn't got the token (and hence the thread) and a value of 1
+    /// owns the token or not. A value of false indicates that this class
+    /// hasn't got the token (and hence the thread) and a value of true
     /// vice-versa.
-    int owner_;
-
+    bool owner_;
   };
-
 };
 
 
@@ -1165,7 +1155,6 @@ protected:
 class ACE_Dev_Poll_Handler_Guard
 {
 public:
-
   /// Constructor
   /**
    * The constructor checks to see if @a eh is a reference-counted handler and
@@ -1189,13 +1178,11 @@ public:
   void release (void);
 
 private:
-
   /// The event handler being managed.
   ACE_Event_Handler *eh_;
 
   /// true if eh_ is a reference-counted handler.
   bool refcounted_;
-
 };
 
 ACE_END_VERSIONED_NAMESPACE_DECL
