@@ -4,9 +4,7 @@
 /**
  *  @file   OS_NS_errno.h
  *
- *  $Id: OS_NS_errno.h 94454 2011-09-08 17:36:56Z johnnyw $
- *
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  *  @author Jesper S. M|ller<stophph@diku.dk>
  *  @author and a cast of thousands...
  *
@@ -38,16 +36,20 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 namespace ACE_OS {
 
   ACE_NAMESPACE_INLINE_FUNCTION
-  int last_error (void);
+  int last_error ();
 
   ACE_NAMESPACE_INLINE_FUNCTION
   void last_error (int error);
 
   ACE_NAMESPACE_INLINE_FUNCTION
-  int set_errno_to_last_error (void);
+  int set_errno_to_last_error ();
 
   ACE_NAMESPACE_INLINE_FUNCTION
-  int set_errno_to_wsa_last_error (void);
+  int set_errno_to_wsa_last_error ();
+
+#ifdef ACE_MQX
+  int mqx_error_to_errno(int mqx_error);
+#endif
 
 } /* namespace ACE_OS */
 

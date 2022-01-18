@@ -4,9 +4,7 @@
 /**
  *  @file    SOCK_Connector.h
  *
- *  $Id: SOCK_Connector.h 91626 2010-09-07 10:59:20Z johnnyw $
- *
- *  @author Doug Schmidt <schmidt@cs.wustl.edu>
+ *  @author Doug Schmidt <d.schmidt@vanderbilt.edu>
  */
 //=============================================================================
 
@@ -44,7 +42,7 @@ class ACE_Export ACE_SOCK_Connector
 {
 public:
   /// Default constructor.
-  ACE_SOCK_Connector (void);
+  ACE_SOCK_Connector ();
 
   /**
    * Actively connect to a peer, producing a connected @c ACE_SOCK_Stream
@@ -249,7 +247,7 @@ public:
 #endif  // ACE_HAS_WINCE
 
   /// Default destructor.
-  ~ACE_SOCK_Connector (void);
+  ~ACE_SOCK_Connector ();
 
   // = Completion routine.
   /**
@@ -261,7 +259,7 @@ public:
    *                    to the peer.
    * @param remote_sap  If non-0, it points to the @c ACE_INET_Addr object
    *                    that will contain the address of the connected peer.
-   * @param timeout     Same values and return value possibilites as for
+   * @param timeout     Same values and return value possibilities as for
    *                    connect(). @see connect().
    */
   int complete (ACE_SOCK_Stream &new_stream,
@@ -276,7 +274,7 @@ public:
   typedef ACE_SOCK_Stream PEER_STREAM;
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

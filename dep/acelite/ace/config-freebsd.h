@@ -1,6 +1,4 @@
 /* -*- C++ -*- */
-// $Id: config-freebsd.h 95430 2012-01-11 20:45:28Z mcorino $
-
 // The following configuration file is designed to work for FreeBSD
 
 #ifndef ACE_CONFIG_H
@@ -14,6 +12,11 @@
 // Make sure we source in the OS version.
 #include <osreldate.h>
 
+// Make sure system defined macro (not related to ACE_OS::atop)
+// is not defined during ACE compilation
+#include <machine/param.h>
+#undef atop
+
 #include "ace/config-posix.h"
 
 #include "ace/config-g++-common.h"
@@ -22,7 +25,6 @@
 # undef ACE_HAS_PENTIUM
 #endif /* ACE_HAS_PENTIUM */
 
-#define ACE_HAS_3_PARAM_READDIR_R
 #define ACE_HAS_3_PARAM_WCSTOK
 #define ACE_HAS_4_4BSD_SENDMSG_RECVMSG
 #define ACE_HAS_ALLOCA
@@ -130,7 +132,6 @@
 # define ACE_LACKS_SIGSET
 # define ACE_LACKS_SIGSET_T
 # define ACE_LACKS_RWLOCK_T
-# define ACE_LACKS_READDIR_R
 # define ACE_LACKS_SETSCHED
 # define ACE_LACKS_PTHREAD_THR_SIGSETMASK
 # define ACE_LACKS_UCONTEXT_H

@@ -4,8 +4,6 @@
 /**
  *  @file    TP_Reactor.h
  *
- *  $Id: TP_Reactor.h 94454 2011-09-08 17:36:56Z johnnyw $
- *
  *  The ACE_TP_Reactor (aka, Thread Pool Reactor) uses the
  *  Leader/Followers pattern to demultiplex events among a pool of
  *  threads.  When using a thread pool reactor, an application
@@ -68,9 +66,10 @@ public:
 private:
   bool dispatch_;
 
-  // Disallow copying and assignment.
-  ACE_EH_Dispatch_Info (const ACE_EH_Dispatch_Info &);
-  ACE_EH_Dispatch_Info &operator= (const ACE_EH_Dispatch_Info &);
+  ACE_EH_Dispatch_Info (const ACE_EH_Dispatch_Info &) = delete;
+  ACE_EH_Dispatch_Info &operator= (const ACE_EH_Dispatch_Info &) = delete;
+  ACE_EH_Dispatch_Info (ACE_EH_Dispatch_Info &&) = delete;
+  ACE_EH_Dispatch_Info &operator= (ACE_EH_Dispatch_Info &&) = delete;
 };
 
 
@@ -116,13 +115,13 @@ public:
   int acquire_token (ACE_Time_Value *max_wait_time = 0);
 
 private:
-
   // Disallow default construction.
   ACE_TP_Token_Guard (void);
 
-  // Disallow copying and assignment.
-  ACE_TP_Token_Guard (const ACE_TP_Token_Guard &);
-  ACE_TP_Token_Guard &operator= (const ACE_TP_Token_Guard &);
+  ACE_TP_Token_Guard (const ACE_TP_Token_Guard &) = delete;
+  ACE_TP_Token_Guard &operator= (const ACE_TP_Token_Guard &) = delete;
+  ACE_TP_Token_Guard (ACE_TP_Token_Guard &&) = delete;
+  ACE_TP_Token_Guard &operator= (ACE_TP_Token_Guard &&) = delete;
 
 private:
 
@@ -134,7 +133,6 @@ private:
   /// hasn't got the token (and hence the thread) and a value of true
   /// vice-versa.
   bool owner_;
-
 };
 
 /**

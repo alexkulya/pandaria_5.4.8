@@ -4,8 +4,6 @@
 /**
  *  @file    Logging_Strategy.h
  *
- *  $Id: Logging_Strategy.h 91064 2010-07-12 10:11:24Z johnnyw $
- *
  *  @author Prashant Jain <pjain@cs.wustl.edu>
  *  @author Orlando Ribeiro <oribeiro@inescporto.pt>
  */
@@ -15,7 +13,7 @@
 #define ACE_LOGGING_STRATEGY_H
 
 #include "ace/Service_Object.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 
 #if !defined (ACE_LACKS_PRAGMA_ONCE)
 # pragma once
@@ -81,16 +79,16 @@ class ACE_Export ACE_Logging_Strategy : public ACE_Service_Object
 {
 public:
   /// Constructor.
-  ACE_Logging_Strategy (void);
+  ACE_Logging_Strategy ();
 
   /// Destructor.
-  ~ACE_Logging_Strategy (void);
+  ~ACE_Logging_Strategy ();
 
   /// Dynamic linking initialization hook.
   virtual int init (int argc, ACE_TCHAR *argv[]);
 
   /// Dynamic linking termination hook.
-  virtual int fini (void);
+  virtual int fini ();
 
   /**
    * Timeout handler which tests logfile size.  If the current logfile
@@ -114,7 +112,7 @@ public:
    */
   virtual void reactor (ACE_Reactor *r);
 
-  virtual ACE_Reactor * reactor (void) const;
+  virtual ACE_Reactor * reactor () const;
 
   /**
    * Parse arguments provided in svc.conf file.
@@ -205,10 +203,10 @@ protected:
   ACE_Log_Msg *log_msg_;
 };
 
-ACE_END_VERSIONED_NAMESPACE_DECL
-
 ACE_STATIC_SVC_DECLARE_EXPORT(ACE, ACE_Logging_Strategy)
 
 ACE_FACTORY_DECLARE (ACE, ACE_Logging_Strategy)
+
+ACE_END_VERSIONED_NAMESPACE_DECL
 
 #endif /* ACE_LOGGING_STRATEGY_H */

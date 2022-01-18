@@ -4,8 +4,6 @@
 /**
  *  @file   Connection_Recycling_Strategy.h
  *
- *  $Id: Connection_Recycling_Strategy.h 80826 2008-03-04 14:51:23Z wotte $
- *
  *  @author Doug Schmidt
  */
 //=============================================================================
@@ -29,8 +27,10 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 class ACE_Export ACE_Connection_Recycling_Strategy
 {
 public:
+  ACE_Connection_Recycling_Strategy ();
+
   /// Virtual Destructor
-  virtual ~ACE_Connection_Recycling_Strategy (void);
+  virtual ~ACE_Connection_Recycling_Strategy ();
 
   /// Remove from cache.
   virtual int purge (const void *recycling_act) = 0;
@@ -53,7 +53,6 @@ public:
   /// Cleanup hint and reset @a act_holder to zero if @a act_holder != 0.
   virtual int cleanup_hint (const void *recycling_act,
                             void **act_holder = 0) = 0;
-
 };
 
 ACE_END_VERSIONED_NAMESPACE_DECL

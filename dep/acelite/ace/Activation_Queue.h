@@ -4,10 +4,8 @@
 /**
  *  @file    Activation_Queue.h
  *
- *  $Id: Activation_Queue.h 91066 2010-07-12 11:05:04Z johnnyw $
- *
  *  @author Andres Kruse <Andres.Kruse@cern.ch>
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  */
 //=============================================================================
 
@@ -49,7 +47,7 @@ class ACE_Method_Request;
  *
  * @sa ACE_Method_Request
  */
-class ACE_Export ACE_Activation_Queue : private ACE_Copy_Disabled
+class ACE_Export ACE_Activation_Queue
 {
 public:
   /// Constructor.
@@ -129,7 +127,7 @@ public:
   int is_full (void) const;
 
   /// Dump the state of an request.
-  void dump (void) const;
+  void dump () const;
 
   /// Get a pointer to the underlying queue.
   ACE_Message_Queue<ACE_SYNCH> *queue (void) const;
@@ -149,13 +147,16 @@ protected:
   bool delete_queue_;
 
 private:
-
   /// Allocation strategy of the queue.
   ACE_Allocator *allocator_;
 
   /// Allocation strategy of the message blocks.
   ACE_Allocator *data_block_allocator_;
 
+  void operator= (const ACE_Activation_Queue &) = delete;
+  ACE_Activation_Queue (const ACE_Activation_Queue &) = delete;
+  void operator= (ACE_Activation_Queue &&) = delete;
+  ACE_Activation_Queue (ACE_Activation_Queue &&) = delete;
 };
 
 ACE_END_VERSIONED_NAMESPACE_DECL

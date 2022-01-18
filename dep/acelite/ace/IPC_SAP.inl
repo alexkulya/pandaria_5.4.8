@@ -1,19 +1,16 @@
 // -*- C++ -*-
-//
-// $Id: IPC_SAP.inl 80826 2008-03-04 14:51:23Z wotte $
-
 #include "ace/OS_NS_stropts.h"
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 ACE_INLINE
-ACE_IPC_SAP::~ACE_IPC_SAP (void)
+ACE_IPC_SAP::~ACE_IPC_SAP ()
 {
   // ACE_TRACE ("ACE_IPC_SAP::~ACE_IPC_SAP");
 }
 
 ACE_INLINE ACE_HANDLE
-ACE_IPC_SAP::get_handle (void) const
+ACE_IPC_SAP::get_handle () const
 {
   ACE_TRACE ("ACE_IPC_SAP::get_handle");
   return this->handle_;

@@ -1,17 +1,20 @@
 
-**MoP 5.4.8 Build 18414**
+**Mists of Pandaria 5.4.8 Build 18414**
 
 ## Requirements
 + Platform: Linux, Windows or Mac
 + Processor with SSE2 support
-+ Boost 1.70.0 (msvc 14.1 x64)
-+ MySQL = 5.7.0
-+ CMake 3.19.4 (x64)
-+ OpenSSL 1.0.2d (x64)
-+ MS Visual Studio 15 (2017) (Windows only)
++ ACE = 7.0.0 (included for Windows) 
++ MySQL = 5.7
++ CMake ≥ 3.14 (latest stable recommended) 
++ OpenSSL = 1.x.x
++ Boost ≥ 1.70 (latest stable recommended)
++ Windows SDK version 10
++ MS Visual Studio (Community) ≥ 16.4 (2019) (Desktop) (Not previews) 
++ GCC = 4.7.2 (Linux only)
 
 ## Copyright
-License: GPL 3.0
+License: GPL 2.0
 
 Read file [COPYING](COPYING.md)
 

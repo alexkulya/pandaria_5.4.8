@@ -4,8 +4,6 @@
 /**
  *  @file  UUID.h
  *
- *  $Id: UUID.h 88604 2010-01-18 18:01:19Z hillj $
- *
  *  @author Andrew T. Finnel <andrew@activesol.net>
  *  @author Yamuna Krishnmaurthy <yamuna@oomworks.com>
  */
@@ -45,12 +43,12 @@ namespace ACE_Utils
     typedef u_char Node_ID[NODE_ID_SIZE];
 
     /// Get the node id
-    Node_ID & node_ID (void);
+    Node_ID & node_ID ();
 
     /**
      * @overload
      */
-    const Node_ID & node_ID (void) const;
+    const Node_ID & node_ID () const;
 
     /// Test for equality.
     bool operator == (const UUID_Node & right) const;
@@ -88,47 +86,51 @@ namespace ACE_Utils
     enum { BINARY_SIZE = 16 };
 
     /// Constructor
-    UUID (void);
+    UUID ();
 
+#ifndef ACE_LACKS_SSCANF
     /// Constructs a UUID from a string representation.
     UUID (const ACE_CString& uuidString);
+#endif
 
     UUID (const UUID &right);
 
     // Destructor
-    ~UUID (void);
+    ~UUID ();
 
-    ACE_UINT32 time_low (void) const;
+    ACE_UINT32 time_low () const;
     void time_low (ACE_UINT32);
 
-    ACE_UINT16 time_mid (void) const;
+    ACE_UINT16 time_mid () const;
     void time_mid (ACE_UINT16);
 
-    ACE_UINT16 time_hi_and_version (void) const;
+    ACE_UINT16 time_hi_and_version () const;
     void time_hi_and_version (ACE_UINT16);
 
-    u_char clock_seq_hi_and_reserved (void) const;
+    u_char clock_seq_hi_and_reserved () const;
     void clock_seq_hi_and_reserved (u_char);
 
-    u_char clock_seq_low (void) const;
+    u_char clock_seq_low () const;
     void clock_seq_low (u_char);
 
-    UUID_Node & node (void);
-    const UUID_Node & node (void) const;
+    UUID_Node & node ();
+    const UUID_Node & node () const;
 
     void node (const UUID_Node & node);
 
-    ACE_CString* thr_id (void);
+    ACE_CString* thr_id ();
     void thr_id (char*);
 
-    ACE_CString* pid (void);
+    ACE_CString* pid ();
     void pid (char*);
 
     /// Returns a string representation of the UUID
-    const ACE_CString* to_string (void) const;
+    const ACE_CString* to_string () const;
 
+#ifndef ACE_LACKS_SSCANF
     /// Set the value using a string
     void from_string (const ACE_CString& uuid_string);
+#endif
 
     /// NIL UUID
     static const UUID NIL_UUID;
@@ -138,21 +140,25 @@ namespace ACE_Utils
     bool operator != (const UUID &right) const;
 
     /// Compute a hash value for the UUID.
-    unsigned long hash (void) const;
+    unsigned long hash () const;
 
     /// Assign an existing UUID to this UUID.
     const UUID & operator = (const UUID & rhs);
 
+    ACE_ALLOC_HOOK_DECLARE;
+
   private:
     /// Initialize the UUID
-    void init (void);
+    void init ();
 
     /**
      * Helper method to convert from a string UUID.
      *
      * @param[in]        uuid_string        String version of UUID.
      */
+#ifndef ACE_LACKS_SSCANF
     void from_string_i (const ACE_CString& uuid_string);
+#endif
 
     /// Data Members for Class Attributes
     struct data
@@ -197,14 +203,14 @@ namespace ACE_Utils
     enum {ACE_UUID_CLOCK_SEQ_MASK = 0x3FFF};
 
     /// Default constructor.
-    UUID_Generator(void);
+    UUID_Generator();
 
     /// Destructor.
     ~UUID_Generator();
 
     /// Initialize the UUID generator
     /// @deprecated This method may go away in some future release.
-    void init (void);
+    void init ();
 
     /// Format timestamp, clockseq, and nodeID into an UUID of the
     /// specified version and variant. For generating UUID's with
@@ -221,7 +227,7 @@ namespace ACE_Utils
 
     /// The locking strategy prevents multiple generators from accessing
     /// the UUID_state at the same time. Get the locking strategy.
-    ACE_SYNCH_MUTEX* lock (void);
+    ACE_SYNCH_MUTEX* lock ();
 
     /// Set a new locking strategy and return the old one.
     void lock (ACE_SYNCH_MUTEX* lock, bool release_lock);
@@ -261,7 +267,7 @@ namespace ACE_Utils
 
     bool destroy_lock_;
 
-    /// Initalization state of the generator.
+    /// Initialization state of the generator.
     bool is_init_;
   };
 
@@ -279,4 +285,3 @@ ACE_END_VERSIONED_NAMESPACE_DECL
 
 #include /**/ "ace/post.h"
 #endif // ACE_UUID_H
-

@@ -1,5 +1,3 @@
-// $Id: Test_and_Set.cpp 80826 2008-03-04 14:51:23Z wotte $
-
 #ifndef ACE_TEST_AND_SET_CPP
 #define ACE_TEST_AND_SET_CPP
 
@@ -20,7 +18,7 @@ ACE_Test_and_Set<ACE_LOCK, TYPE>::ACE_Test_and_Set (TYPE initial_value)
 
 // Returns true if we are done, else false.
 template <class ACE_LOCK, class TYPE> TYPE
-ACE_Test_and_Set<ACE_LOCK, TYPE>::is_set (void) const
+ACE_Test_and_Set<ACE_LOCK, TYPE>::is_set () const
 {
   ACE_GUARD_RETURN (ACE_LOCK, ace_mon, (ACE_LOCK &) this->lock_, this->is_set_);
   return this->is_set_;

@@ -859,11 +859,11 @@ int WorldSocket::HandleSendAuthSession()
 
     BigNumber _encryptSeed;
     _encryptSeed.SetRand(16 * 8);
-    packet.append(_encryptSeed.AsByteArray(16).get(), 16); // new encryption seeds
+    packet.append(_encryptSeed.AsByteArray(16), 16); // new encryption seeds
 
     BigNumber _decryptSeed;
     _decryptSeed.SetRand(16 * 8);
-    packet.append(_decryptSeed.AsByteArray(16).get(), 16); // new decryption seeds
+    packet.append(_decryptSeed.AsByteArray(16), 16); // new decryption seeds
 
     packet << uint8(1);
     packet << uint32(m_Seed);

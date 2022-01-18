@@ -4,8 +4,6 @@
 /**
  *  @file    Stats.h
  *
- *  $Id: Stats.h 80826 2008-03-04 14:51:23Z wotte $
- *
  *  @author David L. Levine
  */
 //==========================================================================
@@ -23,7 +21,7 @@
 #endif /* ACE_LACKS_PRAGMA_ONCE */
 
 #include "ace/Unbounded_Queue.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/Basic_Stats.h"
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
@@ -52,23 +50,23 @@ public:
   ACE_Stats_Value (const u_int precision);
 
   /// Accessor for precision.
-  u_int precision (void) const;
+  u_int precision () const;
 
   /// Set the whole_ field.
   void whole (const ACE_UINT32);
 
   /// Accessor for the whole_ field.
-  ACE_UINT32 whole (void) const;
+  ACE_UINT32 whole () const;
 
   /// Set the fractional_ field.
   void fractional (const ACE_UINT32);
 
   /// Accessor for the fractional_ field.
-  ACE_UINT32 fractional (void) const;
+  ACE_UINT32 fractional () const;
 
   /// Calculates the maximum value of the fractional portion, given its
   /// precision.
-  ACE_UINT32 fractional_field (void) const;
+  ACE_UINT32 fractional_field () const;
 
   /**
    * Access the value as an _unsigned_ 64 bit quantity.  It scales the
@@ -78,11 +76,10 @@ public:
   void scaled_value (ACE_UINT64 &) const;
 
   /// Print to stdout.
-  void dump (void) const;
+  void dump () const;
 
 private:
-
-  ACE_Stats_Value (void) {}
+  ACE_Stats_Value () = default;
 
 private:
   /// The integer portion of the value.
@@ -97,7 +94,6 @@ private:
    * is via the assignment operator.
    */
   u_int precision_;
-
 };
 
 /**
@@ -130,20 +126,20 @@ class ACE_Export ACE_Stats
 {
 public:
   /// Default constructor.
-  ACE_Stats (void);
+  ACE_Stats ();
 
   /// Provide a new sample.  Returns 0 on success, -1 if it fails due
   /// to running out of memory, or to rolling over of the sample count.
   int sample (const ACE_INT32 value);
 
   /// Access the number of samples provided so far.
-  ACE_UINT32 samples (void) const;
+  ACE_UINT32 samples () const;
 
   /// Value of the minimum sample provided so far.
-  ACE_INT32 min_value (void) const;
+  ACE_INT32 min_value () const;
 
   /// Value of the maximum sample provided so far.
-  ACE_INT32 max_value (void) const;
+  ACE_INT32 max_value () const;
 
   /**
    * Access the mean of all samples provided so far.  The fractional
@@ -167,7 +163,13 @@ public:
    */
   int print_summary (const u_int precision,
                      const ACE_UINT32 scale_factor = 1,
-                     FILE * = stdout) const;
+                     FILE *
+#ifdef ACE_LACKS_STDOUT
+                     = 0
+#else
+                     = stdout
+#endif
+                     ) const;
 
   /// Initialize internal state.
   void reset (void);
@@ -191,7 +193,7 @@ public:
                            ACE_Stats_Value &square_root);
 
   /// Print summary statistics to stdout.
-  void dump (void) const;
+  void dump () const;
 
 protected:
   /// Internal indication of whether there has been overflow.  Contains

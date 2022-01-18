@@ -1,9 +1,8 @@
-// $Id: Monitor_Base.cpp 82328 2008-07-15 17:20:17Z parsons $
-
 #include "ace/Monitor_Base.h"
 
 #if defined (ACE_HAS_MONITOR_FRAMEWORK) && (ACE_HAS_MONITOR_FRAMEWORK == 1)
 
+#include "ace/ACE.h"
 #include "ace/Monitor_Admin_Manager.h"
 #include "ace/Monitor_Control_Action.h"
 #include "ace/Monitor_Point_Registry.h"
@@ -29,7 +28,7 @@ namespace ACE
     {
     }
 
-    Monitor_Base::~Monitor_Base (void)
+    Monitor_Base::~Monitor_Base ()
     {
       ACE_GUARD (ACE_SYNCH_MUTEX, guard, this->mutex_);
 
@@ -37,13 +36,17 @@ namespace ACE
         {
           for (size_t i = 0UL; i < this->data_.index_; ++i)
             {
+#if defined (ACE_HAS_ALLOC_HOOKS)
+              ACE_Allocator::instance()->free(this->data_.list_[i]);
+#else
               delete [] this->data_.list_[i];
+#endif /* ACE_HAS_ALLOC_HOOKS */
             }
         }
     }
 
     void
-    Monitor_Base::update (void)
+    Monitor_Base::update ()
     {
       /// Overridden in derived classes.
     }
@@ -53,7 +56,7 @@ namespace ACE
     {
       if (this->data_.type_ == Monitor_Control_Types::MC_LIST)
         {
-          ACE_ERROR ((LM_ERROR,
+          ACELIB_ERROR ((LM_ERROR,
                       ACE_TEXT ("receive: can't store numeric value - ")
                       ACE_TEXT ("%s is a string type monitor\n"),
                       this->name_.c_str ()));
@@ -108,7 +111,7 @@ namespace ACE
     {
       if (this->data_.type_ != Monitor_Control_Types::MC_LIST)
         {
-          ACE_ERROR ((LM_ERROR,
+          ACELIB_ERROR ((LM_ERROR,
                       ACE_TEXT ("receive: can't store string values - ")
                       ACE_TEXT ("%s is a numeric type monitor\n"),
                       this->name_.c_str ()));
@@ -187,7 +190,7 @@ namespace ACE
     }
 
     void
-    Monitor_Base::clear (void)
+    Monitor_Base::clear ()
     {
       ACE_GUARD (ACE_SYNCH_MUTEX, guard, this->mutex_);
 
@@ -211,14 +214,14 @@ namespace ACE
 
       if (!mgr->admin ().monitor_point (this, time))
         {
-          ACE_ERROR ((LM_ERROR,
+          ACELIB_ERROR ((LM_ERROR,
                       "monitor point %s registration failed\n",
                       this->name ()));
         }
     }
 
     void
-    Monitor_Base::remove_from_registry (void)
+    Monitor_Base::remove_from_registry ()
     {
       if (!Monitor_Point_Registry::instance ()->remove (this->name ()))
         {
@@ -228,20 +231,20 @@ namespace ACE
 //      is using malloc with placement, then free, which may bypass the
 //      normal destructors. In any case, it happens only at shutdown
 //      and there seems to be no memory leak.
-//          ACE_ERROR ((LM_ERROR,
+//          ACELIB_ERROR ((LM_ERROR,
 //                      "monitor point %s unregistration failed\n",
 //                      this->name ()));
         }
     }
 
     double
-    Monitor_Base::average (void) const
+    Monitor_Base::average () const
     {
       if (this->data_.type_ == Monitor_Control_Types::MC_COUNTER
           || this->data_.type_ == Monitor_Control_Types::MC_GROUP
           || this->data_.type_ == Monitor_Control_Types::MC_LIST)
         {
-          ACE_ERROR_RETURN ((LM_ERROR,
+          ACELIB_ERROR_RETURN ((LM_ERROR,
                              ACE_TEXT ("average: %s is wrong monitor type\n"),
                              this->name_.c_str ()),
                             0);
@@ -255,13 +258,13 @@ namespace ACE
     }
 
     double
-    Monitor_Base::sum_of_squares (void) const
+    Monitor_Base::sum_of_squares () const
     {
       if (this->data_.type_ == Monitor_Control_Types::MC_COUNTER
           || this->data_.type_ == Monitor_Control_Types::MC_GROUP
           || this->data_.type_ == Monitor_Control_Types::MC_LIST)
         {
-          ACE_ERROR_RETURN ((LM_ERROR,
+          ACELIB_ERROR_RETURN ((LM_ERROR,
                              ACE_TEXT ("sum_of_squares: %s ")
                              ACE_TEXT ("is wrong monitor type\n"),
                              this->name_.c_str ()),
@@ -274,11 +277,11 @@ namespace ACE
     }
 
     size_t
-    Monitor_Base::count (void) const
+    Monitor_Base::count () const
     {
       if (this->data_.type_ == Monitor_Control_Types::MC_GROUP)
         {
-          ACE_ERROR_RETURN ((LM_ERROR,
+          ACELIB_ERROR_RETURN ((LM_ERROR,
                              ACE_TEXT ("count: %s is a monitor group\n"),
                              this->name_.c_str ()),
                             0UL);
@@ -292,12 +295,12 @@ namespace ACE
     }
 
     double
-    Monitor_Base::minimum_sample (void) const
+    Monitor_Base::minimum_sample () const
     {
       if (this->data_.type_ == Monitor_Control_Types::MC_GROUP
           || this->data_.type_ == Monitor_Control_Types::MC_LIST)
         {
-          ACE_ERROR_RETURN ((LM_ERROR,
+          ACELIB_ERROR_RETURN ((LM_ERROR,
                              ACE_TEXT ("minimum_sample: %s ")
                              ACE_TEXT ("is wrong monitor type\n"),
                              this->name_.c_str ()),
@@ -310,12 +313,12 @@ namespace ACE
     }
 
     double
-    Monitor_Base::maximum_sample (void) const
+    Monitor_Base::maximum_sample () const
     {
       if (this->data_.type_ == Monitor_Control_Types::MC_GROUP
           || this->data_.type_ == Monitor_Control_Types::MC_LIST)
         {
-          ACE_ERROR_RETURN ((LM_ERROR,
+          ACELIB_ERROR_RETURN ((LM_ERROR,
                              ACE_TEXT ("maximum_sample: %s ")
                              ACE_TEXT ("is wrong monitor type\n"),
                              this->name_.c_str ()),
@@ -328,12 +331,12 @@ namespace ACE
     }
 
     double
-    Monitor_Base::last_sample (void) const
+    Monitor_Base::last_sample () const
     {
       if (this->data_.type_ == Monitor_Control_Types::MC_GROUP
           || this->data_.type_ == Monitor_Control_Types::MC_LIST)
         {
-          ACE_ERROR_RETURN ((LM_ERROR,
+          ACELIB_ERROR_RETURN ((LM_ERROR,
                              ACE_TEXT ("last_sample: %s ")
                              ACE_TEXT ("is wrong monitor type\n"),
                              this->name_.c_str ()),
@@ -346,13 +349,13 @@ namespace ACE
     }
 
     Monitor_Control_Types::NameList
-    Monitor_Base::get_list (void) const
+    Monitor_Base::get_list () const
     {
       Monitor_Control_Types::NameList retval;
 
       if (this->data_.type_ != Monitor_Control_Types::MC_LIST)
         {
-          ACE_ERROR ((LM_ERROR,
+          ACELIB_ERROR ((LM_ERROR,
                       ACE_TEXT ("get_list: %s is not a ")
                       ACE_TEXT ("list monitor type\n"),
                       this->name_.c_str ()));
@@ -371,7 +374,7 @@ namespace ACE
     }
 
     void
-    Monitor_Base::clear_i (void)
+    Monitor_Base::clear_i ()
     {
       if (this->data_.type_ == Monitor_Control_Types::MC_LIST)
         {
@@ -399,4 +402,3 @@ namespace ACE
 ACE_END_VERSIONED_NAMESPACE_DECL
 
 #endif /* ACE_HAS_MONITOR_FRAMEWORK==1 */
-

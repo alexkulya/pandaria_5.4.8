@@ -1,27 +1,28 @@
-// $Id: Semaphore.cpp 91286 2010-08-05 09:04:31Z johnnyw $
-
 #include "ace/Semaphore.h"
 
 #if !defined (__ACE_INLINE__)
 #include "ace/Semaphore.inl"
 #endif /* __ACE_INLINE__ */
 
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 #include "ace/ACE.h"
+#if defined (ACE_HAS_ALLOC_HOOKS)
+# include "ace/Malloc_Base.h"
+#endif /* ACE_HAS_ALLOC_HOOKS */
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 ACE_ALLOC_HOOK_DEFINE(ACE_Semaphore)
 
 void
-ACE_Semaphore::dump (void) const
+ACE_Semaphore::dump () const
 {
 #if defined (ACE_HAS_DUMP)
 // ACE_TRACE ("ACE_Semaphore::dump");
 
-  ACE_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
-  ACE_DEBUG ((LM_DEBUG, ACE_TEXT ("\n")));
-  ACE_DEBUG ((LM_DEBUG, ACE_END_DUMP));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_BEGIN_DUMP, this));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_TEXT ("\n")));
+  ACELIB_DEBUG ((LM_DEBUG, ACE_END_DUMP));
 #endif /* ACE_HAS_DUMP */
 }
 
@@ -45,12 +46,12 @@ ACE_Semaphore::ACE_Semaphore (unsigned int count,
   if (ACE_OS::sema_init (&this->semaphore_, count, type,
                          name, arg, max) != 0)
 #endif
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT ("%p\n"),
                 ACE_TEXT ("ACE_Semaphore::ACE_Semaphore")));
 }
 
-ACE_Semaphore::~ACE_Semaphore (void)
+ACE_Semaphore::~ACE_Semaphore ()
 {
 // ACE_TRACE ("ACE_Semaphore::~ACE_Semaphore");
 

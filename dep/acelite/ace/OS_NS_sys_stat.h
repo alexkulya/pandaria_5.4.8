@@ -4,9 +4,7 @@
 /**
  *  @file   OS_NS_sys_stat.h
  *
- *  $Id: OS_NS_sys_stat.h 80826 2008-03-04 14:51:23Z wotte $
- *
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  *  @author Jesper S. M|ller<stophph@diku.dk>
  *  @author and a cast of thousands...
  *
@@ -43,9 +41,6 @@ typedef struct stati64 ACE_stat;
 #       define ACE_STAT_FUNC_NAME ::_stati64
 #       define ACE_WSTAT_FUNC_NAME ::_wstati64
 #   elif !defined (ACE_HAS_WINCE) && defined (_MSC_VER)
-#     if _MSC_VER >= 1400
-//      For vc8 which has time_t as 64bit
-//      64-bit file offsets, 64-bit time_t
 #       if defined (ACE_MSVC_USES_DOUBLE_UNDERSCORE_STAT64)
 typedef struct __stat64 ACE_stat;
 #       else
@@ -53,12 +48,10 @@ typedef struct _stat64 ACE_stat;
 #       endif
 #       define ACE_STAT_FUNC_NAME ::_stat64
 #       define ACE_WSTAT_FUNC_NAME ::_wstat64
-#     else
-//      For vc71 which has time_t as 32bit
+#   elif defined (__MINGW32__)
 typedef struct _stati64 ACE_stat;
-#       define ACE_STAT_FUNC_NAME ::_stati64
-#       define ACE_WSTAT_FUNC_NAME ::_wstati64
-#     endif  /* _MSC_VER >= 1400 */
+#     define ACE_STAT_FUNC_NAME ::_stati64
+#     define ACE_WSTAT_FUNC_NAME ::_wstati64
 #   else
 typedef struct stat ACE_stat;
 #     define ACE_STAT_FUNC_NAME ::stat

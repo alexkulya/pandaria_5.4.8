@@ -4,8 +4,6 @@
 /**
  *  @file   PI_Malloc.h
  *
- *  $Id: PI_Malloc.h 80826 2008-03-04 14:51:23Z wotte $
- *
  *  @author Priyanka Gontla <pgontla@ece.uci.edu>
  *  @author Based on code that existed in other ACE files.
  */
@@ -36,9 +34,9 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
  * @brief This information is stored in memory allocated by the Memory_Pool.
  *
  * This class implements the control block structure that can be
- * used in a "position indepent" fashion, i.e., you don't need to
+ * used in a "position independent" fashion, i.e., you don't need to
  * "map" the underlying memory pool to the same address in
- * processes sharing the memory.  The tradoff of this flexibility
+ * processes sharing the memory.  The trade off of this flexibility
  * is more expensive malloc/free operations.
  */
 class ACE_Export ACE_PI_Control_Block
@@ -80,14 +78,12 @@ public:
     char padding_[(ACE_PI_MALLOC_PADDING_SIZE) ? ACE_PI_MALLOC_PADDING_SIZE : ACE_MALLOC_ALIGN];
 
     /// Dump the state of the object.
-    void dump (void) const;
+    void dump () const;
 
   private:
-
     // Disallow copy construction and assignment.
     ACE_Malloc_Header (ACE_Malloc_Header const &);
     void operator= (ACE_Malloc_Header const &);
-
   };
 
   /**
@@ -103,7 +99,6 @@ public:
   class ACE_Export ACE_Name_Node
   {
   public:
-    // = Initialization methods.
     /// Constructor.
     ACE_Name_Node (const char *name,
                    char *name_ptr,
@@ -143,10 +138,9 @@ public:
     NAME_NODE_PTR prev_;
 
     /// Dump the state of the object.
-    void dump (void) const;
+    void dump () const;
 
   private:
-
     // Disallow assignment.
     void operator= (const ACE_Name_Node &);
   };
@@ -192,10 +186,9 @@ public:
   ACE_Malloc_Header base_;
 
   /// Dump the state of the object.
-  void dump (void) const;
+  void dump () const;
 
 private:
-
   // Disallow assignment.
   void operator= (const ACE_Control_Block &);
 };

@@ -1,6 +1,4 @@
 // Event_Handler.cpp
-// $Id: Event_Handler.cpp 91286 2010-08-05 09:04:31Z johnnyw $
-
 #include "ace/Event_Handler.h"
 #include "ace/OS_Errno.h"
 #include "ace/Reactor.h"
@@ -8,19 +6,12 @@
 /* Need to see if ACE_HAS_BUILTIN_ATOMIC_OP defined */
 #include "ace/Atomic_Op.h"
 
-#if !defined (__ACE_INLINE__)
-#include "ace/Event_Handler.inl"
-#endif /* __ACE_INLINE__ */
-
 #include <algorithm>
-
-
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 // Implement conceptually abstract virtual functions in the base class
 // so derived classes don't have to implement unused ones.
-
 ACE_Event_Handler::ACE_Event_Handler (ACE_Reactor *r,
                                       int p)
   : reference_count_ (1),
@@ -31,22 +22,20 @@ ACE_Event_Handler::ACE_Event_Handler (ACE_Reactor *r,
   // ACE_TRACE ("ACE_Event_Handler::ACE_Event_Handler");
 }
 
-ACE_Event_Handler::~ACE_Event_Handler (void)
+ACE_Event_Handler::~ACE_Event_Handler ()
 {
   // ACE_TRACE ("ACE_Event_Handler::~ACE_Event_Handler");
 }
 
 // Gets the file descriptor associated with this I/O device.
-
 ACE_HANDLE
-ACE_Event_Handler::get_handle (void) const
+ACE_Event_Handler::get_handle () const
 {
   ACE_TRACE ("ACE_Event_Handler::get_handle");
   return ACE_INVALID_HANDLE;
 }
 
 // Sets the file descriptor associated with this I/O device.
-
 void
 ACE_Event_Handler::set_handle (ACE_HANDLE)
 {
@@ -54,16 +43,14 @@ ACE_Event_Handler::set_handle (ACE_HANDLE)
 }
 
 // Gets the priority of this handler.
-
 int
-ACE_Event_Handler::priority (void) const
+ACE_Event_Handler::priority () const
 {
   ACE_TRACE ("ACE_Event_Handler::priority");
   return this->priority_;
 }
 
 // Sets the priority
-
 void
 ACE_Event_Handler::priority (int priority)
 {
@@ -73,7 +60,6 @@ ACE_Event_Handler::priority (int priority)
 
 // Called when the object is about to be removed from the Dispatcher
 // tables.
-
 int
 ACE_Event_Handler::handle_close (ACE_HANDLE, ACE_Reactor_Mask)
 {
@@ -82,7 +68,6 @@ ACE_Event_Handler::handle_close (ACE_HANDLE, ACE_Reactor_Mask)
 }
 
 // Called when input becomes available on fd.
-
 int
 ACE_Event_Handler::handle_input (ACE_HANDLE)
 {
@@ -91,7 +76,6 @@ ACE_Event_Handler::handle_input (ACE_HANDLE)
 }
 
 // Called when output is possible on fd.
-
 int
 ACE_Event_Handler::handle_output (ACE_HANDLE)
 {
@@ -100,7 +84,6 @@ ACE_Event_Handler::handle_output (ACE_HANDLE)
 }
 
 // Called when urgent data is available on fd.
-
 int
 ACE_Event_Handler::handle_exception (ACE_HANDLE)
 {
@@ -109,7 +92,6 @@ ACE_Event_Handler::handle_exception (ACE_HANDLE)
 }
 
 // Called when timer expires, TV stores the current time.
-
 int
 ACE_Event_Handler::handle_timeout (const ACE_Time_Value &, const void *)
 {
@@ -118,7 +100,6 @@ ACE_Event_Handler::handle_timeout (const ACE_Time_Value &, const void *)
 }
 
 // Called when a monitored Process exits
-
 int
 ACE_Event_Handler::handle_exit (ACE_Process *)
 {
@@ -127,7 +108,6 @@ ACE_Event_Handler::handle_exit (ACE_Process *)
 }
 
 // Called when a registered signal occurs.
-
 int
 ACE_Event_Handler::handle_signal (int, siginfo_t *, ucontext_t *)
 {
@@ -136,7 +116,7 @@ ACE_Event_Handler::handle_signal (int, siginfo_t *, ucontext_t *)
 }
 
 int
-ACE_Event_Handler::resume_handler (void)
+ACE_Event_Handler::resume_handler ()
 {
   ACE_TRACE ("ACE_Event_Handler::resume_handler");
 
@@ -144,7 +124,6 @@ ACE_Event_Handler::resume_handler (void)
   // resuming the handler
   return ACE_Event_Handler::ACE_REACTOR_RESUMES_HANDLER;
 }
-
 
 int
 ACE_Event_Handler::handle_qos (ACE_HANDLE)
@@ -168,21 +147,21 @@ ACE_Event_Handler::reactor (ACE_Reactor *reactor)
 }
 
 ACE_Reactor *
-ACE_Event_Handler::reactor (void) const
+ACE_Event_Handler::reactor () const
 {
   ACE_TRACE ("ACE_Event_Handler::reactor");
   return this->reactor_;
 }
 
 ACE_Reactor_Timer_Interface *
-ACE_Event_Handler::reactor_timer_interface (void) const
+ACE_Event_Handler::reactor_timer_interface () const
 {
   ACE_TRACE ("ACE_Event_Handler::reactor_timer_interface");
   return this->reactor_;
 }
 
 ACE_Event_Handler::Reference_Count
-ACE_Event_Handler::add_reference (void)
+ACE_Event_Handler::add_reference ()
 {
   bool const reference_counting_required =
     this->reference_counting_policy ().value () ==
@@ -195,7 +174,7 @@ ACE_Event_Handler::add_reference (void)
 }
 
 ACE_Event_Handler::Reference_Count
-ACE_Event_Handler::remove_reference (void)
+ACE_Event_Handler::remove_reference ()
 {
   bool const reference_counting_required =
     this->reference_counting_policy ().value () ==
@@ -203,8 +182,7 @@ ACE_Event_Handler::remove_reference (void)
 
   if (reference_counting_required)
     {
-      Reference_Count result =
-        --this->reference_count_;
+      Reference_Count const result = --this->reference_count_;
 
       if (result == 0)
         delete this;
@@ -217,7 +195,7 @@ ACE_Event_Handler::remove_reference (void)
     }
 }
 
-ACE_Event_Handler::Policy::~Policy (void)
+ACE_Event_Handler::Policy::~Policy ()
 {
 }
 
@@ -227,7 +205,7 @@ ACE_Event_Handler::Reference_Counting_Policy::Reference_Counting_Policy (Referen
 }
 
 ACE_Event_Handler::Reference_Counting_Policy::Value
-ACE_Event_Handler::Reference_Counting_Policy::value (void) const
+ACE_Event_Handler::Reference_Counting_Policy::value () const
 {
   return this->value_;
 }
@@ -239,7 +217,7 @@ ACE_Event_Handler::Reference_Counting_Policy::value (ACE_Event_Handler::Referenc
 }
 
 ACE_Event_Handler::Reference_Counting_Policy &
-ACE_Event_Handler::reference_counting_policy (void)
+ACE_Event_Handler::reference_counting_policy ()
 {
   return this->reference_counting_policy_;
 }
@@ -299,7 +277,7 @@ ACE_Event_Handler::remove_stdin_handler (ACE_Reactor *reactor,
 
 // ---------------------------------------------------------------------
 
-ACE_Event_Handler_var::ACE_Event_Handler_var (void)
+ACE_Event_Handler_var::ACE_Event_Handler_var ()
   : ptr_ (0)
 {
 }
@@ -318,7 +296,7 @@ ACE_Event_Handler_var::ACE_Event_Handler_var (const ACE_Event_Handler_var &b)
     }
 }
 
-ACE_Event_Handler_var::~ACE_Event_Handler_var (void)
+ACE_Event_Handler_var::~ACE_Event_Handler_var ()
 {
   if (this->ptr_ != 0)
     {
@@ -355,13 +333,13 @@ ACE_Event_Handler_var::operator->() const
 }
 
 ACE_Event_Handler *
-ACE_Event_Handler_var::handler (void) const
+ACE_Event_Handler_var::handler () const
 {
   return this->ptr_;
 }
 
 ACE_Event_Handler *
-ACE_Event_Handler_var::release (void)
+ACE_Event_Handler_var::release ()
 {
   ACE_Event_Handler * const old = this->ptr_;
   this->ptr_ = 0;
@@ -374,9 +352,27 @@ ACE_Event_Handler_var::reset (ACE_Event_Handler *p)
   *this = p;
 }
 
+ACE_Event_Handler_var::operator bool() const
+{
+  return this->ptr_ != nullptr;
+}
+
+bool
+ACE_Event_Handler_var::operator ==(std::nullptr_t) const
+{
+  return this->ptr_ == nullptr;
+}
+
+bool
+ACE_Event_Handler_var::operator !=(std::nullptr_t) const
+{
+  return this->ptr_ != nullptr;
+
+}
+
 // ---------------------------------------------------------------------
 
-ACE_Notification_Buffer::ACE_Notification_Buffer (void)
+ACE_Notification_Buffer::ACE_Notification_Buffer ()
   : eh_ (0),
     mask_ (ACE_Event_Handler::NULL_MASK)
 {

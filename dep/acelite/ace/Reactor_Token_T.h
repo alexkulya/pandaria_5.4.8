@@ -4,8 +4,6 @@
 /**
  *  @file    Reactor_Token_T.h
  *
- *  $Id: Reactor_Token_T.h 80826 2008-03-04 14:51:23Z wotte $
- *
  *  @author Steve Huston <shuston@riverace.com>
  */
 //=============================================================================
@@ -70,7 +68,7 @@ public:
   void reactor (ACE_Reactor_Impl &);
 
   /// Dump the state of an object.
-  virtual void dump (void) const;
+  virtual void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

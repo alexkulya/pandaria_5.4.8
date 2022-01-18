@@ -1,13 +1,14 @@
 // -*- C++ -*-
-//
-// $Id: Auto_Ptr.inl 80826 2008-03-04 14:51:23Z wotte $
-
 #include "ace/Global_Macros.h"
+
+#if defined (ACE_HAS_ALLOC_HOOKS)
+# include "ace/Malloc_Base.h"
+#endif /* ACE_HAS_ALLOC_HOOKS */
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 template<class X> ACE_INLINE void
-ACE_Auto_Basic_Ptr<X>::dump (void) const
+ACE_Auto_Basic_Ptr<X>::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   ACE_TRACE ("ACE_Auto_Basic_Ptr<X>::dump");
@@ -15,7 +16,7 @@ ACE_Auto_Basic_Ptr<X>::dump (void) const
 }
 
 template<class X> ACE_INLINE void
-ACE_Auto_Basic_Array_Ptr<X>::dump (void) const
+ACE_Auto_Basic_Array_Ptr<X>::dump () const
 {
 #if defined (ACE_HAS_DUMP)
   ACE_TRACE ("ACE_Auto_Basic_Array_Ptr<X>::dump");
@@ -30,14 +31,14 @@ ACE_Auto_Basic_Ptr<X>::ACE_Auto_Basic_Ptr (ACE_Auto_Basic_Ptr<X> &rhs)
 }
 
 template<class X> ACE_INLINE X *
-ACE_Auto_Basic_Ptr<X>::get (void) const
+ACE_Auto_Basic_Ptr<X>::get () const
 {
   ACE_TRACE ("ACE_Auto_Basic_Ptr<X>::get");
   return this->p_;
 }
 
 template<class X> ACE_INLINE X *
-ACE_Auto_Basic_Ptr<X>::release (void)
+ACE_Auto_Basic_Ptr<X>::release ()
 {
   ACE_TRACE ("ACE_Auto_Basic_Ptr<X>::release");
   X *old = this->p_;
@@ -66,7 +67,7 @@ ACE_Auto_Basic_Ptr<X>::operator= (ACE_Auto_Basic_Ptr<X> &rhs)
 }
 
 template<class X> ACE_INLINE
-ACE_Auto_Basic_Ptr<X>::~ACE_Auto_Basic_Ptr (void)
+ACE_Auto_Basic_Ptr<X>::~ACE_Auto_Basic_Ptr ()
 {
   ACE_TRACE ("ACE_Auto_Basic_Ptr<X>::~ACE_Auto_Basic_Ptr");
   delete this->get ();
@@ -100,14 +101,14 @@ ACE_Auto_Ptr<X>::operator-> () const
 }
 
 template<class X> ACE_INLINE X *
-ACE_Auto_Basic_Array_Ptr<X>::get (void) const
+ACE_Auto_Basic_Array_Ptr<X>::get () const
 {
   ACE_TRACE ("ACE_Auto_Basic_Array_Ptr<X>::get");
   return this->p_;
 }
 
 template<class X> ACE_INLINE X *
-ACE_Auto_Basic_Array_Ptr<X>::release (void)
+ACE_Auto_Basic_Array_Ptr<X>::release ()
 {
   ACE_TRACE ("ACE_Auto_Basic_Array_Ptr<X>::release");
   X *old = this->p_;
@@ -120,7 +121,12 @@ ACE_Auto_Basic_Array_Ptr<X>::reset (X *p)
 {
   ACE_TRACE ("ACE_Auto_Basic_Array_Ptr<X>::reset");
   if (this->get () != p)
+#if defined (ACE_HAS_ALLOC_HOOKS)
+    ACE_Allocator::instance()->free(this->get ());
+#else
     delete [] this->get ();
+#endif /* ACE_HAS_ALLOC_HOOKS */
+
   this->p_ = p;
 }
 
@@ -143,10 +149,14 @@ ACE_Auto_Basic_Array_Ptr<X>::operator= (ACE_Auto_Basic_Array_Ptr<X> &rhs)
 }
 
 template<class X> ACE_INLINE
-ACE_Auto_Basic_Array_Ptr<X>::~ACE_Auto_Basic_Array_Ptr (void)
+ACE_Auto_Basic_Array_Ptr<X>::~ACE_Auto_Basic_Array_Ptr ()
 {
   ACE_TRACE ("ACE_Auto_Basic_Array_Ptr<X>::~ACE_Auto_Basic_Array_Ptr");
+#if defined (ACE_HAS_ALLOC_HOOKS)
+  ACE_Allocator::instance()->free(this->get ());
+#else
   delete [] this->get ();
+#endif /* ACE_HAS_ALLOC_HOOKS */
 }
 
 template<class X> ACE_INLINE X &

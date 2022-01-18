@@ -4,8 +4,6 @@
 /**
  *  @file   Malloc_Allocator.h
  *
- *  $Id: Malloc_Allocator.h 80826 2008-03-04 14:51:23Z wotte $
- *
  *  @author Based on code that formerly existed in another ACE file.
  */
 //==========================================================================
@@ -44,8 +42,8 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
  *
  * This class uses the new/delete operators to allocate and free up
  * memory.  Please note that the only methods that are supported are
- * <malloc>, <calloc>, and <free>. All other methods are no-ops that
- * return -1 and set @c errno to <ENOTSUP>.  If you require this
+ * malloc(), calloc(), and free(). All other methods are no-ops that
+ * return -1 and set @c errno to @c ENOTSUP.  If you require this
  * functionality, please use: ACE_Allocator_Adapter <ACE_Malloc
  * <ACE_LOCAL_MEMORY_POOL, MUTEX> >, which will allow you to use the
  * added functionality of bind/find/etc. while using the new/delete
@@ -61,7 +59,7 @@ public:
   virtual void free (void *ptr);
 
   /// These methods are no-ops.
-  virtual int remove (void);
+  virtual int remove ();
   virtual int bind (const char *name, void *pointer, int duplicates = 0);
   virtual int trybind (const char *name, void *&pointer);
   virtual int find (const char *name, void *&pointer);
@@ -75,7 +73,7 @@ public:
 #if defined (ACE_HAS_MALLOC_STATS)
   virtual void print_stats (void) const;
 #endif /* ACE_HAS_MALLOC_STATS */
-  virtual void dump (void) const;
+  virtual void dump () const;
 
 private:
   // DO NOT ADD ANY STATE (DATA MEMBERS) TO THIS CLASS!!!!  See the
@@ -88,11 +86,11 @@ private:
  * @brief Defines a class that provided a highly optimized memory
  * management scheme for allocating memory statically.
  *
- * This class manages a fixed-size <POOL_SIZE> of memory.  Every
- * time <malloc>/<calloc> is called, it simply moves an internal
+ * This class manages a fixed-size @c POOL_SIZE of memory.  Every
+ * time malloc()/calloc() is called, it simply moves an internal
  * index forward and returns a pointer to the requested chunk.
  * All memory is allocated statically (typically via the
- * ACE_Static_Allocator template) and <free> is a no-op.  This
+ * ACE_Static_Allocator template) and free() is a no-op.  This
  * behavior is useful for use-cases where all the memory
  * allocation needs are known in advance and no deletions ever
  * occur.
@@ -105,7 +103,7 @@ public:
   virtual void *calloc (size_t nbytes, char initial_value = '\0');
   virtual void *calloc (size_t n_elem, size_t elem_size, char initial_value = '\0');
   virtual void free (void *ptr);
-  virtual int remove (void);
+  virtual int remove ();
   virtual int bind (const char *name, void *pointer, int duplicates = 0);
   virtual int trybind (const char *name, void *&pointer);
   virtual int find (const char *name, void *&pointer);
@@ -119,11 +117,11 @@ public:
 #if defined (ACE_HAS_MALLOC_STATS)
   virtual void print_stats (void) const;
 #endif /* ACE_HAS_MALLOC_STATS */
-  virtual void dump (void) const;
+  virtual void dump () const;
 
 protected:
   /// Don't allow direct instantiations of this class.
-  ACE_Static_Allocator_Base (void);
+  ACE_Static_Allocator_Base ();
 
   /// Pointer to the buffer.
   char *buffer_;

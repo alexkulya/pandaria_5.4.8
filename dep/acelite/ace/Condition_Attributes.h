@@ -4,11 +4,9 @@
 /**
  *  @file    Condition_Attributes.h
  *
- *  $Id: Condition_Attributes.h 96077 2012-08-20 08:13:23Z johnnyw $
- *
  *   Moved from Synch.h.
  *
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  */
 //==========================================================================
 
@@ -24,10 +22,6 @@
 
 #include "ace/OS_NS_Thread.h"
 
-#if defined (ACE_HAS_THREADS)
-
-// ACE platform supports some form of threading.
-
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 class ACE_Export ACE_Condition_Attributes
@@ -37,10 +31,10 @@ public:
   ACE_Condition_Attributes (int type = ACE_DEFAULT_SYNCH_TYPE);
 
   /// Destructor
-  ~ACE_Condition_Attributes (void);
+  ~ACE_Condition_Attributes ();
 
   /// Accessor for retrieving the current attributes
-  const ACE_condattr_t& attributes (void) const;
+  const ACE_condattr_t& attributes () const;
 
 protected:
   /// The attributes
@@ -62,7 +56,7 @@ public:
   {}
 
   /// Destructor
-  ~ACE_Condition_Attributes_T (void) {}
+  ~ACE_Condition_Attributes_T () {}
 
 private:
   // = Prevent assignment and initialization.
@@ -81,7 +75,7 @@ public:
   ACE_Condition_Attributes_T (int type = ACE_DEFAULT_SYNCH_TYPE);
 
   /// Destructor
-  ~ACE_Condition_Attributes_T (void);
+  ~ACE_Condition_Attributes_T ();
 
 private:
   // = Prevent assignment and initialization.
@@ -94,8 +88,6 @@ ACE_END_VERSIONED_NAMESPACE_DECL
 #if defined (__ACE_INLINE__)
 #include "ace/Condition_Attributes.inl"
 #endif /* __ACE_INLINE__ */
-
-#endif /* !ACE_HAS_THREADS */
 
 #include /**/ "ace/post.h"
 #endif /* ACE_CONDITION_ATTRIBUTES_H */

@@ -4,11 +4,9 @@
 /**
  *  @file    Condition_T.h
  *
- *  $Id: Condition_T.h 96061 2012-08-16 09:36:07Z mcorino $
- *
  *   Moved from Synch.h.
  *
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  */
 //==========================================================================
 
@@ -65,7 +63,7 @@ public:
                  void *arg = 0);
 
   /// Implicitly destroy the condition variable.
-  ~ACE_Condition (void);
+  ~ACE_Condition ();
 
   // = Lock accessors.
   /**
@@ -77,7 +75,7 @@ public:
   int wait (const ACE_Time_Value *abstime);
 
   /// Block on condition.
-  int wait (void);
+  int wait ();
 
   /**
    * Block on condition or until absolute time-of-day has passed.  If
@@ -90,23 +88,23 @@ public:
   int wait (MUTEX &mutex, const ACE_Time_Value *abstime = 0);
 
   /// Signal one waiting thread.
-  int signal (void);
+  int signal ();
 
   /// Signal *all* waiting threads.
-  int broadcast (void);
+  int broadcast ();
 
   // = Utility methods.
   /// Explicitly destroy the condition variable.
-  int remove (void);
+  int remove ();
 
   /// Returns a reference to the underlying mutex_;
-  MUTEX &mutex (void);
+  MUTEX &mutex ();
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
-  // ACE_ALLOC_HOOK_DECLARE;
-  // Declare the dynamic allocation hooks.
+  /// Declare the dynamic allocation hooks.
+  ACE_ALLOC_HOOK_DECLARE;
 
 protected:
   /// Condition variable.
@@ -117,8 +115,8 @@ protected:
 
 private:
   // = Prevent assignment and initialization.
-  ACE_UNIMPLEMENTED_FUNC (void operator= (const ACE_Condition<MUTEX> &))
-  ACE_UNIMPLEMENTED_FUNC (ACE_Condition (const ACE_Condition<MUTEX> &))
+  void operator= (const ACE_Condition<MUTEX> &) = delete;
+  ACE_Condition (const ACE_Condition<MUTEX> &) = delete;
 };
 
 /**
@@ -142,14 +140,13 @@ template <class MUTEX>
 class ACE_Thread_Condition : public ACE_Condition<MUTEX>
 {
 public:
-  // = Initialization method.
   ACE_Thread_Condition (MUTEX &m, const ACE_TCHAR *name = 0, void *arg = 0);
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
-  // ACE_ALLOC_HOOK_DECLARE;
-  // Declare the dynamic allocation hooks.
+  /// Declare the dynamic allocation hooks.
+  ACE_ALLOC_HOOK_DECLARE;
 };
 
 ACE_END_VERSIONED_NAMESPACE_DECL

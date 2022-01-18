@@ -4,13 +4,10 @@
 /**
  *  @file    Token_Request_Reply.h
  *
- *  $Id: Token_Request_Reply.h 80826 2008-03-04 14:51:23Z wotte $
- *
  *   Define the format used to exchange messages between the
  *   ACE_Token Server and its clients.
  *
- *
- *  @author Douglas C. Schmidt (schmidt@cs.wustl.edu)
+ *  @author Douglas C. Schmidt (d.schmidt@vanderbilt.edu)
  *  @author Tim Harrison (harrison@cs.wustl.edu)
  */
 //=============================================================================
@@ -137,7 +134,7 @@ public:
   int decode (void);
 
   /// Print out the values of the message for debugging purposes.
-  void dump (void) const;
+  void dump () const;
 
 private:
   // = The 5 fields in the <Transfer> struct are transmitted to the server.
@@ -234,7 +231,7 @@ public:
   int decode (void);
 
   /// Print out the values of the message for debugging purposes.
-  void dump (void) const;
+  void dump () const;
 
 private:
   // = The 2 fields in the <Transfer> struct are transmitted to the server.

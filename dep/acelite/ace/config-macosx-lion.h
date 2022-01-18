@@ -1,18 +1,16 @@
-// $Id: config-macosx-lion.h 94764 2011-10-15 01:02:57Z sowayaa $
 #ifndef ACE_CONFIG_MACOSX_LION_H
 #define ACE_CONFIG_MACOSX_LION_H
-
 
 #include "ace/config-macosx-leopard.h"
 
 #ifdef __clang__
-#ifdef ACE_HAS_GCC_ATOMIC_BUILTINS
-#undef ACE_HAS_GCC_ATOMIC_BUILTINS
-#endif
+# define ACE_ANY_OPS_USE_NAMESPACE
+#endif /* __clang__ */
 
-#define ACE_ANY_OPS_USE_NAMESPACE
-
-#endif
+#if  defined (__x86_64__)
+# define ACE_SSIZE_T_FORMAT_SPECIFIER_ASCII "%ld"
+# define ACE_SIZE_T_FORMAT_SPECIFIER_ASCII "%lu"
+#endif /* __x86_64__ */
 
 #define ACE_LACKS_UCONTEXT_H
 

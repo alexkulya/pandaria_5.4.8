@@ -4,8 +4,6 @@
 /**
  *  @file    QoS_Session_Factory.h
  *
- *  $Id: QoS_Session_Factory.h 80826 2008-03-04 14:51:23Z wotte $
- *
  *  @author Vishal Kachroo <vishal@cs.wustl.edu>
  */
 //=============================================================================
@@ -40,16 +38,12 @@ class ACE_QoS_Session;
  */
 class ACE_QoS_Export ACE_QoS_Session_Factory
 {
-
 public :
-
-  // = Initialization and termination methods.
   /// Default constructor.
   ACE_QoS_Session_Factory (void);
 
   /// Default destructor.
   ~ACE_QoS_Session_Factory (void);
-
 
   /// Types of sessions for this factory to manage.
   enum ACE_QoS_Session_Type

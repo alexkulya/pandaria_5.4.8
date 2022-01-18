@@ -4,10 +4,7 @@
 /**
  *  @file    Date_Time.h
  *
- *  $Id: Date_Time.h 80826 2008-03-04 14:51:23Z wotte $
- *
  *  @author Tim Harrison (harrison@cs.wustl.edu) (and he's darn proud of this ;-))
- *
  */
 //==========================================================================
 
@@ -39,7 +36,7 @@ public:
   /// Constructor initializes with the given ACE_Time_Value
   explicit ACE_Date_Time (const ACE_Time_Value& timevalue);
 
-  /// Constructor with init values, no check for validy
+  /// Constructor with init values, no check for validity
   /// Set/get portions of ACE_Date_Time, no check for validity.
   ACE_Date_Time (long day,
                  long month = 0,

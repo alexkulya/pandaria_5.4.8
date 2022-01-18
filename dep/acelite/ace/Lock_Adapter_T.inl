@@ -1,7 +1,4 @@
 // -*- C++ -*-
-//
-// $Id: Lock_Adapter_T.inl 93385 2011-02-14 20:21:20Z mitza $
-
 #include "ace/OS_Memory.h"
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
@@ -17,7 +14,7 @@ ACE_Lock_Adapter<ACE_LOCKING_MECHANISM>::ACE_Lock_Adapter (
 
 template <class ACE_LOCKING_MECHANISM>
 ACE_INLINE
-ACE_Lock_Adapter<ACE_LOCKING_MECHANISM>::ACE_Lock_Adapter (void)
+ACE_Lock_Adapter<ACE_LOCKING_MECHANISM>::ACE_Lock_Adapter ()
   : lock_ (0),
     delete_lock_ (true)
 {

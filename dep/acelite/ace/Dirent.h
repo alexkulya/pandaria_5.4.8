@@ -4,12 +4,10 @@
 /**
  *  @file    Dirent.h
  *
- *  $Id: Dirent.h 91064 2010-07-12 10:11:24Z johnnyw $
- *
  *  Define a portable C++ interface to ACE_OS_Dirent directory-entry
  *  manipulation.
  *
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  */
 //=============================================================================
 
@@ -35,9 +33,8 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 class ACE_Export ACE_Dirent
 {
 public:
-  // = Initialization and termination methods.
   /// Default constructor.
-  ACE_Dirent (void);
+  ACE_Dirent ();
 
   /// Constructor calls @c opendir()
   explicit ACE_Dirent (const ACE_TCHAR *dirname);
@@ -47,10 +44,10 @@ public:
   int open (const ACE_TCHAR *filename);
 
   /// Destructor calls @c closedir().
-  ~ACE_Dirent (void);
+  ~ACE_Dirent ();
 
   /// Closes the directory stream and frees the ACE_DIR structure.
-  void close (void);
+  void close ();
 
   // = Iterator methods.
   /**
@@ -70,20 +67,12 @@ public:
    * update the st_atime field of the directory each time the
    * directory is actually read.
    */
-  ACE_DIRENT *read (void);
-
-  /**
-   * Has the equivalent functionality as @c read() except that an
-   * @a entry and @a result buffer must be supplied by the caller to
-   * store the result.
-   */
-  int read (struct ACE_DIRENT *entry,
-            struct ACE_DIRENT **result);
+  ACE_DIRENT *read ();
 
   // = Manipulators.
   /// Returns the current location associated with the directory
   /// stream.
-  long tell (void);
+  long tell ();
 
   /**
    * Sets the position of the next @c read() operation on the
@@ -105,7 +94,7 @@ public:
    * the current state of the corresponding directory, as a call to
    * @c opendir() would.
    */
-  void rewind (void);
+  void rewind ();
 
 private:
   /// Pointer to the directory stream.

@@ -90,10 +90,11 @@ class instance_the_stonecore : public InstanceMapScript
             {
                 switch (type)
                 {
-                    case DATA_CORBORUS - 1:
+                    /*case DATA_CORBORUS - 1: // need to check this part if it's important
                         archaeologyQuestAura = data;
                         SaveToDB();
                         break;
+                    */
                     case DATA_CORBORUS:
                         if (HasManastormEventDone)
                             break;

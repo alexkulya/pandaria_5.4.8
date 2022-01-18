@@ -4,8 +4,6 @@
 /**
  *  @file Value_Ptr.h
  *
- *  $Id: Value_Ptr.h 92386 2010-10-28 07:44:37Z johnnyw $
- *
  *  Value_Ptr implementation based on code in Herb Sutter's book "More
  *  Exceptional C++".
  *
@@ -16,7 +14,7 @@
 #ifndef ACE_VALUE_PTR_H
 #define ACE_VALUE_PTR_H
 
-#include "ace/config-lite.h"
+#include /**/ "ace/config-lite.h"
 
 #include <algorithm>
 
@@ -72,13 +70,13 @@ namespace ACE
     explicit Value_Ptr (T * p = 0) : p_ (p) { }
 
     /// Destructor.
-    ~Value_Ptr (void) { delete this->p_; }
+    ~Value_Ptr () { delete this->p_; }
 
     /// Deference operator.
-    T & operator* (void) const { return *this->p_; }
+    T & operator* () const { return *this->p_; }
 
     /// Pointer operator.
-    T * operator-> (void) const { return this->p_; }
+    T * operator-> () const { return this->p_; }
 
     /// Non-throwing swap operation used to make assignment strongly
     /// exception-safe.

@@ -4,8 +4,6 @@
 /**
  *  @file    TLI_Acceptor.h
  *
- *  $Id: TLI_Acceptor.h 82723 2008-09-16 09:35:44Z johnnyw $
- *
  *  @author Doug Schmidt
  */
 //=============================================================================
@@ -47,9 +45,8 @@ class ACE_Export ACE_TLI_Acceptor : public ACE_TLI
 public:
   friend class ACE_Request_Queue;
 
-  // = Initialization and termination methods.
   /// Default constructor.
-  ACE_TLI_Acceptor (void);
+  ACE_TLI_Acceptor ();
 
   /// Initiate a passive mode socket.
   ACE_TLI_Acceptor (const ACE_Addr &remote_sap,
@@ -68,7 +65,7 @@ public:
                    const char device[] = ACE_TLI_TCP_DEVICE);
 
   /// Close down the acceptor and release resources.
-  int close (void);
+  int close ();
 
   // = Passive connection acceptance method.
 
@@ -91,7 +88,7 @@ public:
   typedef ACE_TLI_Stream PEER_STREAM;
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

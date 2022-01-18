@@ -1,18 +1,18 @@
-// $Id: Dump.cpp 91286 2010-08-05 09:04:31Z johnnyw $
-
 #include "ace/Dump.h"
 #include "ace/Guard_T.h"
 #include "ace/Thread_Mutex.h"
 #include "ace/Object_Manager.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 
-
+#if defined (ACE_HAS_ALLOC_HOOKS)
+# include "ace/Malloc_Base.h"
+#endif /* ACE_HAS_ALLOC_HOOKS */
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 // Implementations (very simple for now...)
 
-ACE_Dumpable::~ACE_Dumpable (void)
+ACE_Dumpable::~ACE_Dumpable ()
 {
   ACE_TRACE ("ACE_Dumpable::~ACE_Dumpable");
 }
@@ -47,15 +47,17 @@ ACE_Dumpable_Ptr::operator= (const ACE_Dumpable *dumper) const
     }
 }
 
-ACE_ODB::ACE_ODB (void)
+ACE_ODB::ACE_ODB ()
   // Let the Tuple default constructor initialize object_table_
   : current_size_ (0)
 {
   ACE_TRACE ("ACE_ODB::ACE_ODB");
 }
 
+ACE_ALLOC_HOOK_DEFINE(ACE_ODB)
+
 ACE_ODB *
-ACE_ODB::instance (void)
+ACE_ODB::instance ()
 {
   ACE_TRACE ("ACE_ODB::instance");
 
@@ -76,7 +78,7 @@ ACE_ODB::instance (void)
 }
 
 void
-ACE_ODB::dump_objects (void)
+ACE_ODB::dump_objects ()
 {
   ACE_TRACE ("ACE_ODB::dump_objects");
   for (int i = 0; i < this->current_size_; i++)

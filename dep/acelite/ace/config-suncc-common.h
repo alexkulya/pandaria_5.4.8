@@ -1,15 +1,9 @@
 // -*- C++ -*-
-//
-// $Id: config-suncc-common.h 91685 2010-09-09 09:35:14Z johnnyw $
-
 #ifndef ACE_SUNCC_COMMON_H
 #define ACE_SUNCC_COMMON_H
 #include /**/ "ace/pre.h"
 
-# define ACE_HAS_CPLUSPLUS_HEADERS
-# define ACE_HAS_STDCPP_STL_INCLUDES
 # define ACE_HAS_STANDARD_CPP_LIBRARY 1
-# define ACE_HAS_WORKING_EXPLICIT_TEMPLATE_DESTRUCTOR
 # define ACE_USES_STD_NAMESPACE_FOR_STDCPP_LIB 1
 # define ACE_HAS_STRING_CLASS
 # define ACE_EXPLICIT_TEMPLATE_DESTRUCTOR_TAKES_ARGS
@@ -50,6 +44,11 @@
 #endif /* ! ACE_LACKS_PRAGMA_ONCE */
 
 #define ACE_TEMPLATES_REQUIRE_SOURCE
+
+// Solaris Studio 12.4 implements symbol lookup correctly.
+#if defined (__SUNPRO_CC) && (__SUNPRO_CC >= 0x5130)
+#define ACE_ANY_OPS_USE_NAMESPACE
+#endif
 
 #include /**/ "ace/post.h"
 #endif /* ACE_SUNCC_COMMON_H */

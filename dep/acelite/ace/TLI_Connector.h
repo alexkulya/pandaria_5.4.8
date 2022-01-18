@@ -4,8 +4,6 @@
 /**
  *  @file    TLI_Connector.h
  *
- *  $Id: TLI_Connector.h 82723 2008-09-16 09:35:44Z johnnyw $
- *
  *  @author Doug Schmidt
  */
 //=============================================================================
@@ -16,7 +14,7 @@
 #include /**/ "ace/pre.h"
 
 #include "ace/TLI_Stream.h"
-#include "ace/Log_Msg.h"
+#include "ace/Log_Category.h"
 
 #if !defined (ACE_LACKS_PRAGMA_ONCE)
 # pragma once
@@ -35,7 +33,6 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 class ACE_Export ACE_TLI_Connector
 {
 public:
-  // = Initialization methods.
   /// Default constructor.
   ACE_TLI_Connector (void);
 
@@ -113,7 +110,7 @@ public:
   typedef ACE_TLI_Stream PEER_STREAM;
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

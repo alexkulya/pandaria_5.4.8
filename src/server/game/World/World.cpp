@@ -3045,38 +3045,6 @@ bool World::RemoveBanAccount(BanMode mode, std::string const& nameOrIP)
         stmt->setString(0, nameOrIP);
         LoginDatabase.Execute(stmt);
     }
-    else if (mode == BAN_SOLO)
-    {
-        uint32 account = sObjectMgr->GetPlayerAccountIdByPlayerName(nameOrIP);
-        if (!account)
-            return false;
-
-        uint32 memberId = GetprojectMemberID(account);
-        if (projectMemberInfo* info = GetprojectMemberInfo(memberId, false))
-        {
-            info->SetSetting(projectMemberInfo::Setting::SoloArenaBanUnbanDate, { 0u });
-            info->SetSetting(projectMemberInfo::Setting::SoloArenaBanBannedBy, { "" });
-
-            // Inform every online player on this account
-            for (auto&& accountId : info->GameAccountIDs)
-                if (WorldSession* session = FindSession(accountId))
-                    session->SendNotification(LANG_SOLO_QUEUE_UNBANNED);
-        }
-        else
-        {
-            PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_DEL_project_MEMBER_SETTING);
-            stmt->setUInt32(0, memberId);
-            stmt->setUInt32(1, (uint32)projectMemberInfo::Setting::SoloArenaBanUnbanDate);
-            LoginDatabase.Execute(stmt);
-
-            stmt = LoginDatabase.GetPreparedStatement(LOGIN_DEL_project_MEMBER_SETTING);
-            stmt->setUInt32(0, memberId);
-            stmt->setUInt32(1, (uint32)projectMemberInfo::Setting::SoloArenaBanBannedBy);
-            LoginDatabase.Execute(stmt);
-
-            // No need to iterate over game accounts and inform them, as none of them are online. Otherwise projectMemberInfo would've been found.
-        }
-    }
     else
     {
         uint32 account = 0;

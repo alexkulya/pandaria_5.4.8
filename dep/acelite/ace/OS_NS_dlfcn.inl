@@ -1,7 +1,4 @@
 // -*- C++ -*-
-//
-// $Id: OS_NS_dlfcn.inl 92474 2010-11-02 13:29:39Z johnnyw $
-
 #include "ace/OS_NS_macros.h"
 #include "ace/OS_NS_errno.h"
 #include "ace/OS_NS_fcntl.h"
@@ -58,11 +55,7 @@ ACE_OS::dlclose (ACE_SHLIB_HANDLE handle)
     return -1;
   if (desc.ref_count > 1)
     return 0;
-# if defined(__GNUC__) || __cplusplus >= 199707L
   ACE_OSCALL_RETURN (::shl_unload (handle), int, -1);
-# else
-  ACE_OSCALL_RETURN (::cxxshl_unload (handle), int, -1);
-# endif  /* aC++ vs. Hp C++ */
 #else
   ACE_UNUSED_ARG (handle);
   ACE_NOTSUP_RETURN (-1);
@@ -70,7 +63,7 @@ ACE_OS::dlclose (ACE_SHLIB_HANDLE handle)
 }
 
 ACE_INLINE ACE_TCHAR *
-ACE_OS::dlerror (void)
+ACE_OS::dlerror ()
 {
   ACE_OS_TRACE ("ACE_OS::dlerror");
 # if defined (ACE_HAS_SVR4_DYNAMIC_LINKING)
@@ -117,13 +110,7 @@ ACE_OS::dlopen (const ACE_TCHAR *fname,
 
 # if defined (ACE_HAS_SVR4_DYNAMIC_LINKING)
   void *handle;
-#   if defined (ACE_HAS_SGIDLADD)
-  ACE_OSCALL
-    (::sgidladd (ACE_TEXT_ALWAYS_CHAR (fname), mode), void *, 0, handle);
-#   else
-  ACE_OSCALL
-    (::dlopen (ACE_TEXT_ALWAYS_CHAR (fname), mode), void *, 0, handle);
-#   endif /* ACE_HAS_SGIDLADD */
+  ACE_OSCALL (::dlopen (ACE_TEXT_ALWAYS_CHAR (fname), mode), void *, 0, handle);
 #   if !defined (ACE_HAS_AUTOMATIC_INIT_FINI)
   if (handle != 0)
     {
@@ -147,13 +134,9 @@ ACE_OS::dlopen (const ACE_TCHAR *fname,
 
   ACE_WIN32CALL_RETURN (ACE_TEXT_LoadLibrary (fname), ACE_SHLIB_HANDLE, 0);
 # elif defined (__hpux)
-
-#   if defined(__GNUC__) || __cplusplus >= 199707L
   ACE_OSCALL_RETURN (::shl_load(fname, mode, 0L), ACE_SHLIB_HANDLE, 0);
-#   else
-  ACE_OSCALL_RETURN (::cxxshl_load(fname, mode, 0L), ACE_SHLIB_HANDLE, 0);
-#   endif  /* aC++ vs. Hp C++ */
 # elif defined (ACE_VXWORKS) && !defined (__RTP__)
+  ACE_UNUSED_ARG (mode);
   MODULE* handle = 0;
   // Open readonly
   ACE_HANDLE filehandle = ACE_OS::open (fname,
@@ -252,14 +235,28 @@ ACE_OS::dlsym (ACE_SHLIB_HANDLE handle,
 # elif defined (ACE_VXWORKS) && !defined (__RTP__)
 
   // For now we use the VxWorks global symbol table
-  // which resolves the most recently loaded symbols .. which resolve mostly what we want..
+  // which resolves the most recently loaded symbols, which resolve
+  // mostly what we want..
   ACE_UNUSED_ARG (handle);
+#if (ACE_VXWORKS < 0x690)
   SYM_TYPE symtype;
   char *value = 0;
   STATUS status;
   ACE_OSCALL (::symFindByName(sysSymTbl, symbolname, &value, &symtype), int, -1, status);
 
   return status == OK ? reinterpret_cast <void*>(value) : 0;
+#else
+  STATUS status;
+
+  SYMBOL_DESC symbolDesc;     /* symFind() descriptor */
+  ACE_OS::memset (&symbolDesc, 0, sizeof (SYMBOL_DESC));
+  symbolDesc.mask = SYM_FIND_BY_NAME;
+  symbolDesc.name = symbolname;
+
+  ACE_OSCALL (::symFind(sysSymTbl, &symbolDesc), int, -1, status);
+
+  return status == OK ? reinterpret_cast <void*>(symbolDesc.value) : 0;
+#endif /* (ACE_VXWORKS < 0x690) */
 
 # else
 

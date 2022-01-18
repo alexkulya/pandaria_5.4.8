@@ -4,8 +4,6 @@
 /**
  *  @file    iosfwd.h
  *
- *  $Id: iosfwd.h 89098 2010-02-21 21:51:41Z schmidt $
- *
  *  @author Irfan Pyarali
  *
  *  This file contains the portability ugliness for the Standard C++
@@ -32,12 +30,6 @@
 #endif /* ACE_LACKS_PRAGMA_ONCE */
 
 #if !defined (ACE_LACKS_IOSTREAM_TOTALLY)
-
-#if defined (__APPLE_CC__)
-// Should this really be here?  dhinton
-// FUZZ: disable check_for_streams_include
-# include "ace/streams.h"
-#endif
 
 #if defined (ACE_HAS_STANDARD_CPP_LIBRARY)  && \
     (ACE_HAS_STANDARD_CPP_LIBRARY != 0)

@@ -1,5 +1,3 @@
-// $Id: Intrusive_List_Node.cpp 80826 2008-03-04 14:51:23Z wotte $
-
 #ifndef ACE_INTRUSIVE_LIST_NODE_CPP
 #define ACE_INTRUSIVE_LIST_NODE_CPP
 
@@ -16,7 +14,7 @@
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 template<class T>
-ACE_Intrusive_List_Node<T>::ACE_Intrusive_List_Node (void)
+ACE_Intrusive_List_Node<T>::ACE_Intrusive_List_Node ()
   : prev_ (0)
   , next_ (0)
 {

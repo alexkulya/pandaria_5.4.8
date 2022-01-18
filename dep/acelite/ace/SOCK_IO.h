@@ -4,9 +4,7 @@
 /**
  *  @file    SOCK_IO.h
  *
- *  $Id: SOCK_IO.h 81014 2008-03-19 11:41:31Z johnnyw $
- *
- *  @author Douglas C. Schmidt <schmidt@cs.wustl.edu>
+ *  @author Douglas C. Schmidt <d.schmidt@vanderbilt.edu>
  */
 //==========================================================================
 
@@ -29,7 +27,7 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
  * @class ACE_SOCK_IO
  *
  * @brief Defines the methods for the ACE socket wrapper I/O routines
- * (e.g., send/recv).
+ * described below.
  *
  * If @a timeout == 0, then the call behaves as a normal
  * send/recv call, i.e., for blocking sockets, the call will
@@ -49,13 +47,11 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 class ACE_Export ACE_SOCK_IO : public ACE_SOCK
 {
 public:
-  // = Initialization and termination methods.
-
   /// Constructor.
-  ACE_SOCK_IO (void);
+  ACE_SOCK_IO ();
 
   /// Destructor.
-  ~ACE_SOCK_IO (void);
+  ~ACE_SOCK_IO ();
 
   /// Recv an @a n byte buffer from the connected socket.
   ssize_t recv (void *buf,
@@ -84,9 +80,11 @@ public:
   ssize_t recvv (iovec *io_vec,
                  const ACE_Time_Value *timeout = 0) const;
 
+#ifndef ACE_LACKS_VA_FUNCTIONS
   /// Recv @a n varargs messages to the connected socket.
   ssize_t recv (size_t n,
                 ...) const;
+#endif
 
   /// Recv @a n bytes via Win32 @c ReadFile using overlapped I/O.
   ssize_t recv (void *buf,
@@ -109,9 +107,11 @@ public:
                  int n,
                  const ACE_Time_Value *timeout = 0) const;
 
+#ifndef ACE_LACKS_VA_FUNCTIONS
   /// Send @a n varargs messages to the connected socket.
   ssize_t send (size_t n,
                 ...) const;
+#endif
 
   /// Send @a n bytes via Win32 <WriteFile> using overlapped I/O.
   ssize_t send (const void *buf,
@@ -119,7 +119,7 @@ public:
                 ACE_OVERLAPPED *overlapped) const;
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
   /// Declare the dynamic allocation hooks.
   ACE_ALLOC_HOOK_DECLARE;

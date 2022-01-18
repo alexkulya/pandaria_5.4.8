@@ -270,7 +270,7 @@ struct CreatureData
     float orientation;
     uint32 spawntimesecs;
     uint32 spawntimesecs_max;
-    float spawndist;
+    float wander_distance;
     uint32 currentwaypoint;
     uint32 curhealth;
     uint32 curmana;
@@ -652,8 +652,8 @@ class Creature : public Unit, public GridObject<Creature>, public MapObject
         uint32 GetRespawnDelayMax() const { return m_respawnDelayMax; }
         void SetRespawnDelay(uint32 delay) { m_respawnDelay = delay; }
 
-        float GetRespawnRadius() const { return m_respawnradius; }
-        void SetRespawnRadius(float dist) { m_respawnradius = dist; }
+        float GetWanderDistance() const { return m_wanderDistance; }
+        void SetWanderDistance(float dist) { m_wanderDistance = dist; }
 
         uint32 m_groupLootTimer;                            // (msecs)timer used for group loot
         uint32 lootingGroupLowGUID;                         // used to find group which is looting corpse
@@ -754,7 +754,7 @@ class Creature : public Unit, public GridObject<Creature>, public MapObject
         uint32 m_respawnDelayMax;                           // (secs) used for dynamic respawn
         uint32 m_corpseDelay;                               // (secs) delay between death and corpse disappearance
         TimeValue m_pickpocketLootRestore;
-        float m_respawnradius;
+        float m_wanderDistance;
 
         ReactStates m_reactState;                           // for AI, not charmInfo
 

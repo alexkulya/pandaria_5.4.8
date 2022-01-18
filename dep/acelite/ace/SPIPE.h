@@ -4,8 +4,6 @@
 /**
  *  @file    SPIPE.h
  *
- *  $Id: SPIPE.h 80826 2008-03-04 14:51:23Z wotte $
- *
  *  @author Doug Schmidt
  */
 //=============================================================================
@@ -81,7 +79,7 @@ public:
   int disable (int signum) const ;
 
   /// Dump the state of an object.
-  void dump (void) const;
+  void dump () const;
 
 #if defined (ACE_HAS_STREAM_PIPES)
   /// Temporary store of duplex pipe handle.

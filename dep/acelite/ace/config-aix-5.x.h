@@ -1,4 +1,3 @@
-// $Id: config-aix-5.x.h 93530 2011-03-11 12:12:40Z olli $
 //
 // Config file for AIX 5.1 and higher.
 
@@ -95,11 +94,6 @@
 
 # define ACE_HAS_SSIZE_T
 
-# if (__GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ == 0))
-// We have to explicitly instantiate static template members prior to g++ 4.1
-#   define ACE_HAS_EXPLICIT_STATIC_TEMPLATE_MEMBER_INSTANTIATION
-#endif /* g++ prior to 4.1 */
-
 # if !defined (ACE_MT_SAFE) || ACE_MT_SAFE != 0
     // ACE_MT_SAFE is #defined below, for all compilers.
 #   if !defined (_REENTRANT)
@@ -147,9 +141,6 @@
 
 #define ACE_HAS_AIX_HI_RES_TIMER
 
-// Compiler/platform has correctly prototyped header files.
-#define ACE_HAS_CPLUSPLUS_HEADERS
-
 // Prototypes for both signal() and struct sigaction are consistent.
 #define ACE_HAS_CONSISTENT_SIGNAL_PROTOTYPES
 
@@ -192,6 +183,8 @@
 #define ACE_HAS_SELECT_H
 
 #define ACE_HAS_REENTRANT_FUNCTIONS
+
+#define ACE_HAS_SIOCGIFCONF
 
 // Compiler/platform defines the sig_atomic_t typedef
 #define ACE_HAS_SIG_ATOMIC_T
@@ -311,7 +304,6 @@
 // AIX 5.1 has netinet/tcp.h
 #undef ACE_LACKS_NETINET_TCP_H
 
-#define ACE_HAS_3_PARAM_READDIR_R
 #define ACE_HAS_SCANDIR
 #define ACE_SCANDIR_CMP_USES_VOIDPTR
 #define ACE_SCANDIR_SEL_LACKS_CONST
@@ -320,5 +312,16 @@
 #define ACE_LACKS_ISCTYPE
 #define ACE_HAS_STRSIGNAL
 #define ACE_NEEDS_STRSIGNAL_RANGE_CHECK
+#define ACE_HAS_SOCKADDR_IN6_SIN6_LEN
+
+
+#if defined (ACE_AIX_VERS) && (ACE_AIX_VERS < 503)
+#  define ACE_LACKS_UNSETENV
+#  define ACE_LACKS_LOG2
+#  define ACE_LACKS_PTHREAD_ATTR_SETSTACK
+#endif /* ACE_AIX_VERS < 503 */
+
+#define ACE_SSIZE_T_FORMAT_SPECIFIER_ASCII "%ld"
+#define ACE_SIZE_T_FORMAT_SPECIFIER_ASCII "%lu"
 
 #endif /* ACE_CONFIG_AIX_5_X_H */

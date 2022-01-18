@@ -1,5 +1,3 @@
-// $Id: Task.cpp 95761 2012-05-15 18:23:04Z johnnyw $
-
 #include "ace/Task.h"
 #include "ace/Module.h"
 
@@ -7,6 +5,7 @@
 #include "ace/Task.inl"
 #endif /* __ACE_INLINE__ */
 
+#include "ace/OS_NS_string.h"
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -15,17 +14,22 @@ ACE_Task_Base::ACE_Task_Base (ACE_Thread_Manager *thr_man)
     thr_mgr_ (thr_man),
     flags_ (0),
     grp_id_ (-1)
+#if !(defined (ACE_TANDEM_T1248_PTHREADS) || defined (ACE_THREAD_T_IS_A_STRUCT))
     ,last_thread_id_ (0)
+#endif /* ! ACE_TANDEM_T1248_PTHREADS || ACE_THREAD_T_IS_A_STRUCT */
 {
+#if defined (ACE_TANDEM_T1248_PTHREADS) || defined (ACE_THREAD_T_IS_A_STRUCT)
+   ACE_OS::memset( &this->last_thread_id_, '\0', sizeof( this->last_thread_id_ ));
+#endif /* ACE_TANDEM_T1248_PTHREADS || ACE_THREAD_T_IS_A_STRUCT */
 }
 
-ACE_Task_Base::~ACE_Task_Base (void)
+ACE_Task_Base::~ACE_Task_Base ()
 {
 }
 
 /// Default ACE_Task service routine
 int
-ACE_Task_Base::svc (void)
+ACE_Task_Base::svc ()
 {
   ACE_TRACE ("ACE_Task_Base::svc");
   return 0;
@@ -50,7 +54,7 @@ ACE_Task_Base::close (u_long)
 /// Forward the call to close() so that existing applications don't
 /// break.
 int
-ACE_Task_Base::module_closed (void)
+ACE_Task_Base::module_closed ()
 {
   return this->close (1);
 }
@@ -65,7 +69,7 @@ ACE_Task_Base::put (ACE_Message_Block *, ACE_Time_Value *)
 
 /// Wait for all threads running in a task to exit.
 int
-ACE_Task_Base::wait (void)
+ACE_Task_Base::wait ()
 {
   ACE_TRACE ("ACE_Task_Base::wait");
 
@@ -79,7 +83,7 @@ ACE_Task_Base::wait (void)
 
 /// Suspend a task.
 int
-ACE_Task_Base::suspend (void)
+ACE_Task_Base::suspend ()
 {
   ACE_TRACE ("ACE_Task_Base::suspend");
   ACE_MT (ACE_GUARD_RETURN (ACE_Thread_Mutex, ace_mon, this->lock_, -1));
@@ -91,7 +95,7 @@ ACE_Task_Base::suspend (void)
 
 /// Resume a suspended task.
 int
-ACE_Task_Base::resume (void)
+ACE_Task_Base::resume ()
 {
   ACE_TRACE ("ACE_Task_Base::resume");
   ACE_MT (ACE_GUARD_RETURN (ACE_Thread_Mutex, ace_mon, this->lock_, -1));
@@ -127,10 +131,14 @@ ACE_Task_Base::activate (long flags,
     return 1; // Already active.
   else
     {
-      if (this->thr_count_ > 0 && this->grp_id_ != -1)
+      if ((this->thr_count_ > 0 || grp_id == -1) &&
+            this->grp_id_ != -1)
         // If we're joining an existing group of threads then make
-        // sure to use its group id.
+        // sure to (re)use its group id.
         grp_id = this->grp_id_;
+      else if (grp_id != -1)
+        // make sure to reset the cached grp_id
+        this->grp_id_ = -1;
       this->thr_count_ += n_threads;
     }
 
@@ -184,11 +192,11 @@ ACE_Task_Base::activate (long flags,
   if (this->grp_id_ == -1)
     this->grp_id_ = grp_spawned;
 
-#if defined(ACE_TANDEM_T1248_PTHREADS)
+#if defined(ACE_TANDEM_T1248_PTHREADS) || defined (ACE_THREAD_T_IS_A_STRUCT)
   ACE_OS::memcpy( &this->last_thread_id_, '\0', sizeof(this->last_thread_id_));
 #else
   this->last_thread_id_ = 0;    // Reset to prevent inadvertant match on ID
-#endif /* defined (ACE_TANDEM_T1248_PTHREADS) */
+#endif /* ACE_TANDEM_T1248_PTHREADS || ACE_THREAD_T_IS_A_STRUCT */
 
   return 0;
 
@@ -256,9 +264,10 @@ ACE_Task_Base::svc_run (void *args)
   t->thr_mgr ()->at_exit (t, ACE_Task_Base::cleanup, 0);
 #endif /* ACE_HAS_SIG_C_FUNC */
 
+  ACE_THR_FUNC_RETURN status;
   // Call the Task's svc() hook method.
   int const svc_status = t->svc ();
-  ACE_THR_FUNC_RETURN status;
+
 #if defined (ACE_HAS_INTEGRAL_TYPE_THR_FUNC_RETURN)
   // Reinterpret case between integral types is not mentioned in the C++ spec
   status = static_cast<ACE_THR_FUNC_RETURN> (svc_status);

@@ -4,8 +4,6 @@
 /**
  *  @file    SOCK_Dgram_Mcast_QoS.h
  *
- *  $Id: SOCK_Dgram_Mcast_QoS.h 80826 2008-03-04 14:51:23Z wotte $
- *
  *  @author Vishal Kachroo <vishal@cs.wustl.edu>
  */
 //=============================================================================
@@ -32,9 +30,7 @@ ACE_BEGIN_VERSIONED_NAMESPACE_DECL
  */
 class ACE_QoS_Export ACE_SOCK_Dgram_Mcast_QoS : public ACE_SOCK_Dgram_Mcast
 {
-
 public:
-  // = Initialization routines.
   /// Ctor, has same defaults as ACE_SOCK_Dgram_Mcast
   ACE_SOCK_Dgram_Mcast_QoS (options opts = DEFOPTS);
 

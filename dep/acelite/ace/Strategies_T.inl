@@ -1,7 +1,4 @@
 // -*- C++ -*-
-//
-// $Id: Strategies_T.inl 91688 2010-09-09 11:21:50Z johnnyw $
-
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
 template <class SVC_HANDLER> ACE_INLINE
@@ -12,7 +9,7 @@ ACE_Singleton_Strategy<SVC_HANDLER>::ACE_Singleton_Strategy (SVC_HANDLER *sh,
 {
   ACE_TRACE ("ACE_Singleton_Strategy<SVC_HANDLER>::ACE_Singleton_Strategy");
   if (this->open (sh, tm) == -1)
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT ("%p\n"),
                 ACE_TEXT ("ACE_Singleton_Strategy")));
 }
@@ -33,7 +30,7 @@ ACE_Creation_Strategy<SVC_HANDLER>::ACE_Creation_Strategy (ACE_Thread_Manager *t
 {
   ACE_TRACE ("ACE_Creation_Strategy<SVC_HANDLER>::ACE_Creation_Strategy");
   if (this->open (thr_mgr, reactor) == -1)
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT ("%p\n"),
                 ACE_TEXT ("ACE_Creation_Strategy")));
 }
@@ -51,13 +48,13 @@ ACE_DLL_Strategy<SVC_HANDLER>::ACE_DLL_Strategy (const ACE_TCHAR dll_name[],
                   svc_name,
                   svc_rep,
                   thr_mgr) == -1)
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT ("%p\n"),
                 ACE_TEXT ("open")));
 }
 
 template <class SVC_HANDLER> ACE_INLINE
-ACE_DLL_Strategy<SVC_HANDLER>::ACE_DLL_Strategy (void)
+ACE_DLL_Strategy<SVC_HANDLER>::ACE_DLL_Strategy ()
 {
   ACE_TRACE ("ACE_DLL_Strategy<SVC_HANDLER>::ACE_DLL_Strategy");
 }
@@ -79,7 +76,7 @@ ACE_Reactive_Strategy<SVC_HANDLER>::ACE_Reactive_Strategy (ACE_Reactor *reactor,
   if (this->open (reactor,
                   mask,
                   flags) == -1)
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT ("%p\n"),
                 ACE_TEXT ("ACE_Reactive_Strategy<SVC_HANDLER>::ACE_Reactive_Strategy")));
 }
@@ -105,7 +102,7 @@ ACE_Thread_Strategy<SVC_HANDLER>::ACE_Thread_Strategy (ACE_Thread_Manager *thr_m
                   thr_flags,
                   n_threads,
                   flags) == -1)
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT ("%p\n"),
                 ACE_TEXT ("ACE_Thread_Strategy<SVC_HANDLER>::ACE_Thread_Strategy")));
 }
@@ -128,7 +125,7 @@ ACE_Accept_Strategy<SVC_HANDLER, ACE_PEER_ACCEPTOR_2>::ACE_Accept_Strategy (ACE_
 }
 
 template <class SVC_HANDLER, ACE_PEER_CONNECTOR_1> ACE_INLINE
-ACE_Connect_Strategy<SVC_HANDLER, ACE_PEER_CONNECTOR_2>::ACE_Connect_Strategy (void)
+ACE_Connect_Strategy<SVC_HANDLER, ACE_PEER_CONNECTOR_2>::ACE_Connect_Strategy ()
 {
   ACE_TRACE ("ACE_Connect_Strategy<SVC_HANDLER, ACE_PEER_CONNECTOR_2>::ACE_Connect_Strategy");
 }
@@ -144,7 +141,7 @@ ACE_Process_Strategy<SVC_HANDLER>::ACE_Process_Strategy (size_t n_processes,
                   acceptor,
                   reactor,
                   avoid_zombies) == -1)
-    ACE_ERROR ((LM_ERROR,
+    ACELIB_ERROR ((LM_ERROR,
                 ACE_TEXT ("%p\n"),
                 ACE_TEXT ("ACE_Process_Strategy")));
 }
@@ -182,7 +179,7 @@ ACE_Schedule_All_Threaded_Strategy<SVC_HANDLER>::ACE_Schedule_All_Threaded_Strat
 }
 
 template <class T> ACE_INLINE
-ACE_Refcounted_Hash_Recyclable<T>::ACE_Refcounted_Hash_Recyclable (void)
+ACE_Refcounted_Hash_Recyclable<T>::ACE_Refcounted_Hash_Recyclable ()
   : ACE_Refcountable_T<ACE_Null_Mutex> (0),
     ACE_Hashable (),
     ACE_Recyclable (ACE_RECYCLABLE_UNKNOWN),
@@ -202,13 +199,13 @@ ACE_Refcounted_Hash_Recyclable<T>::ACE_Refcounted_Hash_Recyclable (const T &t,
 }
 
 template <class T> ACE_INLINE u_long
-ACE_Refcounted_Hash_Recyclable<T>::hash_i (void) const
+ACE_Refcounted_Hash_Recyclable<T>::hash_i () const
 {
   return this->t_.hash ();
 }
 
 template <class T> ACE_INLINE T &
-ACE_Refcounted_Hash_Recyclable<T>::subject (void)
+ACE_Refcounted_Hash_Recyclable<T>::subject ()
 {
   return this->t_;
 }

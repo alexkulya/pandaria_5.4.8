@@ -1,10 +1,9 @@
-// $Id: Monitor_Point_Registry.cpp 91813 2010-09-17 07:52:52Z johnnyw $
-
 #include "ace/Monitor_Point_Registry.h"
 
 #if defined (ACE_HAS_MONITOR_FRAMEWORK) && (ACE_HAS_MONITOR_FRAMEWORK == 1)
 
 #include "ace/Monitor_Base.h"
+#include "ace/Guard_T.h"
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -13,13 +12,13 @@ namespace ACE
   namespace Monitor_Control
   {
     Monitor_Point_Registry*
-    Monitor_Point_Registry::instance (void)
+    Monitor_Point_Registry::instance ()
     {
       return
         ACE_Singleton<Monitor_Point_Registry, ACE_SYNCH_MUTEX>::instance ();
     }
 
-    Monitor_Point_Registry::Monitor_Point_Registry (void)
+    Monitor_Point_Registry::Monitor_Point_Registry ()
       : constraint_id_ (0)
     {
     }
@@ -29,7 +28,7 @@ namespace ACE
     {
       if (type == 0)
         {
-          ACE_ERROR_RETURN ((LM_ERROR,
+          ACELIB_ERROR_RETURN ((LM_ERROR,
                              "registry add: null type\n"),
                             false);
         }
@@ -44,12 +43,12 @@ namespace ACE
         status = this->map_.bind (type->name (), type);
 
         /// Temporary debugging code.
-//        ACE_DEBUG ((LM_DEBUG, "adding %s\n", type->name ()));
+//        ACELIB_DEBUG ((LM_DEBUG, "adding %s\n", type->name ()));
       }
 
       if (status == -1)
         {
-          ACE_ERROR_RETURN ((LM_ERROR,
+          ACELIB_ERROR_RETURN ((LM_ERROR,
                              "registry add: map bind failed\n"),
                             false);
         }
@@ -62,7 +61,7 @@ namespace ACE
     {
       if (name == 0)
         {
-          ACE_ERROR_RETURN ((LM_ERROR,
+          ACELIB_ERROR_RETURN ((LM_ERROR,
                              "registry remove: null name\n"),
                             false);
         }
@@ -77,7 +76,7 @@ namespace ACE
         status = this->map_.unbind (name_str, mp);
 
         /// Temporary debugging code.
-//        ACE_DEBUG ((LM_DEBUG, "removing %s\n", name_str.c_str ()));
+//        ACELIB_DEBUG ((LM_DEBUG, "removing %s\n", name_str.c_str ()));
       }
 
       if (status == -1)
@@ -88,7 +87,7 @@ namespace ACE
 //      is using malloc with placement, then free, which may bypass the
 //      normal destructors. In any case, it happens only at shutdown
 //      and there seems to be no memory leak.
-//          ACE_ERROR_RETURN ((LM_ERROR,
+//          ACELIB_ERROR_RETURN ((LM_ERROR,
 //                             "registry remove: unbind failed for %s\n",
 //                             name),
 //                            false);
@@ -102,7 +101,7 @@ namespace ACE
     }
 
     Monitor_Control_Types::NameList
-    Monitor_Point_Registry::names (void)
+    Monitor_Point_Registry::names ()
     {
       Monitor_Control_Types::NameList name_holder_;
 
@@ -138,7 +137,7 @@ namespace ACE
     }
 
     long
-    Monitor_Point_Registry::constraint_id (void)
+    Monitor_Point_Registry::constraint_id ()
     {
       long retval = 0;
 
@@ -152,7 +151,7 @@ namespace ACE
     }
 
     void
-    Monitor_Point_Registry::cleanup (void)
+    Monitor_Point_Registry::cleanup ()
     {
       for (Map::ITERATOR i = this->map_.begin ();
            i != this->map_.end ();

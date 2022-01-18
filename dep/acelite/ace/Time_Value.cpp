@@ -1,6 +1,8 @@
-// $Id: Time_Value.cpp 96061 2012-08-16 09:36:07Z mcorino $
-
 #include "ace/Time_Value.h"
+
+#if defined (ACE_HAS_ALLOC_HOOKS)
+# include "ace/Malloc_Base.h"
+#endif /* ACE_HAS_ALLOC_HOOKS */
 
 #if !defined (__ACE_INLINE__)
 #include "ace/Time_Value.inl"
@@ -12,9 +14,12 @@
 #include "ace/Time_Policy.h"
 
 #ifdef ACE_HAS_CPP98_IOSTREAMS
-#include <ostream>
-#include <iomanip>
+# include <ostream>
+# include <iomanip>
 #endif /* ACE_HAS_CPP98_IOSTREAMS */
+
+#include <cstdlib>
+#include <cmath>
 
 ACE_BEGIN_VERSIONED_NAMESPACE_DECL
 
@@ -49,7 +54,7 @@ ACE_Time_Value::operator ++ (int)
 }
 
 ACE_Time_Value &
-ACE_Time_Value::operator ++ (void)
+ACE_Time_Value::operator ++ ()
 {
   // ACE_OS_TRACE ("ACE_Time_Value::operator ++ (void)");
   this->usec (this->usec () + 1);
@@ -69,7 +74,7 @@ ACE_Time_Value::operator -- (int)
 }
 
 ACE_Time_Value &
-ACE_Time_Value::operator -- (void)
+ACE_Time_Value::operator -- ()
 {
   // ACE_OS_TRACE ("ACE_Time_Value::operator -- (void)");
   this->usec (this->usec () - 1);
@@ -161,59 +166,37 @@ ACE_Time_Value::duplicate () const
 }
 
 void
-ACE_Time_Value::dump (void) const
+ACE_Time_Value::dump () const
 {
 }
 
 void
 ACE_Time_Value::normalize (bool saturate)
 {
-  // // ACE_OS_TRACE ("ACE_Time_Value::normalize");
-  // From Hans Rohnert...
+  // ACE_OS_TRACE ("ACE_Time_Value::normalize");
+  if (this->tv_.tv_usec >= ACE_ONE_SECOND_IN_USECS ||
+      this->tv_.tv_usec <= -ACE_ONE_SECOND_IN_USECS)
+    {
+      time_t const sec = std::abs(this->tv_.tv_usec) / ACE_ONE_SECOND_IN_USECS * (this->tv_.tv_usec > 0 ? 1 : -1);
+      suseconds_t const usec = static_cast<suseconds_t> (this->tv_.tv_usec - sec * ACE_ONE_SECOND_IN_USECS);
 
-  if (this->tv_.tv_usec >= ACE_ONE_SECOND_IN_USECS)
-    {
-      /*! \todo This loop needs some optimization.
-       */
-      if (!saturate) // keep the conditionnal expression outside the while loop to minimize performance cost
-        do
-          {
-            ++this->tv_.tv_sec;
-            this->tv_.tv_usec -= ACE_ONE_SECOND_IN_USECS;
-          }
-        while (this->tv_.tv_usec >= ACE_ONE_SECOND_IN_USECS);
+      if (saturate && this->tv_.tv_sec > 0 && sec > 0 &&
+          ACE_Numeric_Limits<time_t>::max() - this->tv_.tv_sec < sec)
+        {
+          this->tv_.tv_sec = ACE_Numeric_Limits<time_t>::max();
+          this->tv_.tv_usec = ACE_ONE_SECOND_IN_USECS - 1;
+        }
+      else if (saturate && this->tv_.tv_sec < 0 && sec < 0 &&
+               ACE_Numeric_Limits<time_t>::min() - this->tv_.tv_sec > sec)
+        {
+          this->tv_.tv_sec = ACE_Numeric_Limits<time_t>::min();
+          this->tv_.tv_usec = -ACE_ONE_SECOND_IN_USECS + 1;
+        }
       else
-        do
-          if (this->tv_.tv_sec < ACE_Numeric_Limits<time_t>::max())
-            {
-              ++this->tv_.tv_sec;
-              this->tv_.tv_usec -= ACE_ONE_SECOND_IN_USECS;
-            }
-          else
-            this->tv_.tv_usec = ACE_ONE_SECOND_IN_USECS - 1;
-        while (this->tv_.tv_usec >= ACE_ONE_SECOND_IN_USECS);
-    }
-  else if (this->tv_.tv_usec <= -ACE_ONE_SECOND_IN_USECS)
-    {
-      /*! \todo This loop needs some optimization.
-       */
-      if (!saturate)
-        do
-          {
-            --this->tv_.tv_sec;
-            this->tv_.tv_usec += ACE_ONE_SECOND_IN_USECS;
-          }
-        while (this->tv_.tv_usec <= -ACE_ONE_SECOND_IN_USECS);
-      else
-        do
-          if (this->tv_.tv_sec > ACE_Numeric_Limits<time_t>::min())
-            {
-              --this->tv_.tv_sec;
-              this->tv_.tv_usec += ACE_ONE_SECOND_IN_USECS;
-            }
-          else
-            this->tv_.tv_usec = -ACE_ONE_SECOND_IN_USECS + 1;
-        while (this->tv_.tv_usec <= -ACE_ONE_SECOND_IN_USECS);
+        {
+          this->tv_.tv_sec += sec;
+          this->tv_.tv_usec = usec;
+        }
     }
 
   if (this->tv_.tv_sec >= 1 && this->tv_.tv_usec < 0)
@@ -249,9 +232,7 @@ ACE_Time_Value::operator *= (double d)
   // Since this is a costly operation, we try to detect as soon as
   // possible if we are having a saturation in order to abort the rest
   // of the computation.
-  typedef ACE::If_Then_Else<(sizeof (double) > sizeof (time_t)),
-    double,
-    long double>::result_type float_type;
+  using float_type = ACE::If_Then_Else<(sizeof(double) > sizeof(time_t)), double, long double>::result_type;
 
   float_type sec_total = static_cast<float_type> (this->sec());
   sec_total *= d;
@@ -331,14 +312,14 @@ ACE_Time_Value::operator *= (double d)
 #ifdef ACE_HAS_CPP98_IOSTREAMS
 ostream &operator<<(ostream &o, const ACE_Time_Value &v)
 {
-  char oldFiller = o.fill ();
+  char const oldFiller = o.fill ();
   o.fill ('0');
   const timeval *tv = v;
   if (tv->tv_sec)
     {
       o << tv->tv_sec;
       if (tv->tv_usec)
-        o << '.' << std::setw (6) << ACE_STD_NAMESPACE::abs (tv->tv_usec);
+        o << '.' << std::setw (6) << std::labs (tv->tv_usec);
     }
   else if (tv->tv_usec < 0)
     o << "-0." << std::setw (6) << - tv->tv_usec;
