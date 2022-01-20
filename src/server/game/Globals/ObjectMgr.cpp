@@ -704,6 +704,51 @@ void ObjectMgr::LoadCreatureDifficultyModifiers()
     TC_LOG_INFO("server.loading", ">> Loaded %u creature difficulty modifiers in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
+void ObjectMgr::LoadCreatureSparringTemplate()
+{
+    uint32 oldMSTime = getMSTime();
+
+    //                                                   0               1
+    QueryResult result = WorldDatabase.Query("SELECT creature_id, health_limit_pct FROM creature_sparring_template");
+
+    if (!result)
+    {
+        TC_LOG_INFO("server.loading", ">> Loaded 0 creature template sparring definitions. DB table `creature_sparring_template` is empty.");
+        return;
+    }
+
+    uint32 count = 0;
+    do
+    {
+        Field* fields = result->Fetch();
+
+        uint32 entry = fields[0].GetUInt32();
+        float healthPct = fields[1].GetFloat();
+
+        if (!sObjectMgr->GetCreatureTemplate(entry))
+        {
+            TC_LOG_ERROR("sql.sql", "Creature template (Entry: %u) does not exist but has a record in `creature_sparring_template`", entry);
+            continue;
+        }
+
+        if (healthPct > 100.0f)
+        {
+            TC_LOG_ERROR("sql.sql", "Sparring entry (Entry: %u) exceeds the health percentage limit. Setting to 100.", entry);
+            healthPct = 100.0f;
+        }
+
+        if (healthPct <= 0.0f)
+        {
+            TC_LOG_ERROR("sql.sql", "Sparring entry (Entry: %u) has a negative or too small health percentage. Setting to 0.1.", entry);
+            healthPct = 0.1f;
+        }
+
+        _creatureSparringTemplateStore[entry] = healthPct;
+    } while (result->NextRow());
+
+    TC_LOG_INFO("server.loading", ">> Loaded %u creature sparring templates in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+}
+
 void ObjectMgr::CheckCreatureTemplate(CreatureTemplate const* cInfo)
 {
     if (!cInfo)

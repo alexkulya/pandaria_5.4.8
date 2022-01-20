@@ -2947,3 +2947,8 @@ void Creature::RecalculateDynamicHealth(uint32 newHealth)
         SetHealth(newHealth - damage);
     }
 }
+
+float Creature::GetSparringHealthLimit() const
+{
+    return sObjectMgr->GetSparringHealthLimitFor(GetEntry());
+}
