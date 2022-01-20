@@ -46,3 +46,8 @@ INSERT INTO `creature_text` (`entry`, `text_group`, `id`, `text`, `text_female`,
 (49337, 3, 0, "Ah, here he is.", "", 12, 0, 100, 1, 0, 0, "Darnell"),
 (49337, 4, 0, "We make our way, $N. Saltain said that we can find a few dead bodies up here.", "", 12, 0, 100, 1, 0, 0, "Darnell"),
 (49337, 5, 0, "I think I see some corpses up ahead. Let's go, $N! You do the searching and fighting. I'll do the lifting.", "", 12, 0, 100, 1, 0, 0, "Darnell");
+
+DELETE FROM `conditions` WHERE `SourceEntry` = 49337 AND `SourceTypeOrReferenceId` = 22;
+INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES
+(22, 1, 49337, 0, 0, 9, 0, 26800, 0, 0, 1, 0, 0, "", "SAI only when player has not take quest (26800)"),
+(22, 4, 49337, 0, 0, 9, 0, 26800, 0, 0, 0, 0, 0, "", "SAI only when player has take quest (26800)");
