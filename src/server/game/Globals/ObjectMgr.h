@@ -1108,6 +1108,7 @@ class ObjectMgr
         void LoadGraveyardOrientations();
         void LoadCreatureTemplates();
         void LoadCreatureTemplateAddons();
+        void LoadCreatureSparringTemplate();
         void LoadCreatureDifficultyModifiers();
         void CheckCreatureTemplate(CreatureTemplate const* cInfo);
         void LoadTempSummons();
@@ -1378,7 +1379,19 @@ class ObjectMgr
             return &itr->second;
         }
         GameObjectData& NewGOData(uint32 guid) { return _gameObjectDataStore[guid]; }
+
         void DeleteGOData(uint32 guid);
+
+        float GetSparringHealthLimitFor(uint32 entry) const
+        {
+            auto itr = _creatureSparringTemplateStore.find(entry);
+
+            if (itr != _creatureSparringTemplateStore.end())
+            {
+                return itr->second;
+            }
+            return 0.0f;
+        }
 
         TrinityStringLocale const* GetTrinityStringLocale(int32 entry) const
         {
@@ -1792,6 +1805,7 @@ class ObjectMgr
         CreatureAddonContainer _creatureAddonStore;
         GameObjectAddonContainer _gameObjectAddonStore;
         CreatureAddonContainer _creatureTemplateAddonStore;
+        CreatureSparringTemplateMap _creatureSparringTemplateStore;
         EquipmentInfoContainer _equipmentInfoStore;
         LinkedRespawnContainer _linkedRespawnStore;
         CreatureLocaleContainer _creatureLocaleStore;
