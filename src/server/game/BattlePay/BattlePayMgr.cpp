@@ -10,6 +10,8 @@
 #include "BattlePetMgr.h"
 #pragma execution_character_set("UTF-8")
 
+#define GetText(a, b, c) a->GetSession()->GetSessionDbLocaleIndex() == LOCALE_ruRU ? b : c
+
 BattlePayMgr::BattlePayMgr() : m_enabled(false), m_currency(BATTLE_PAY_CURRENCY_BETA)
 {
     m_purchase = new PurchaseInfo();
@@ -422,24 +424,24 @@ bool BattlePayMgr::HasEntryId(uint32 id)
 
 void BattlePayMgr::SendPointsBalance(WorldSession* session)
 {
-	if (Player* player = session->GetPlayer())
-	{
-		std::ostringstream data;
-		data << float(player->GetDonateTokens()) / BATTLE_PAY_CURRENCY_PRECISION;
-		player->SendBattlePayMessage("Your current balance is:", data);        
-	}
+    if (Player* player = session->GetPlayer())
+    {
+        std::ostringstream data;
+        data << float(player->GetDonateTokens()) / BATTLE_PAY_CURRENCY_PRECISION;
+        player->SendBattlePayMessage(GetText(player, "|cff1eff00Ваш текущий баланс:", "|cff1eff00Your current balance is:"), data);        
+    }
 }
 
 void BattlePayMgr::UpdatePointsBalance(WorldSession* session, uint64 points)
 {
-	if (Player* player = session->GetPlayer())
-	{
+    if (Player* player = session->GetPlayer())
+    {
         player->DestroyDonateTokenCount(points);
 
         std::ostringstream data1;
-		data1 << float(player->GetDonateTokens()) / BATTLE_PAY_CURRENCY_PRECISION;
-		player->SendBattlePayMessage("Thank you for your purchase!!! Your new balance is:", data1);  
-	}
+        data1 << float(player->GetDonateTokens()) / BATTLE_PAY_CURRENCY_PRECISION;
+        player->SendBattlePayMessage(GetText(player, "Спасибо за покупку. Ваш остаток на балансе:", "Thank you for your purchase. Your new balance is:"), data1);  
+    }
     else
     {
         PreparedStatement* stmt = FusionCMSDatabase.GetPreparedStatement(FUSION_UPD_BATTLEPAY_DECREMENT_COINS);
@@ -461,7 +463,7 @@ bool BattlePayMgr::HasPointsBalance(WorldSession* session, uint64 points)
         }
         else
         {
-            player->SendBattlePayMessage("You can't afford this!!!");
+            player->SendBattlePayMessage(GetText(player, "Вы не можете себе этого позволить!", "You can't afford this!"));
             return false;
         }
     }
@@ -475,7 +477,7 @@ bool BattlePayMgr::HasPointsBalance(WorldSession* session, uint64 points)
             return false;
 
         Field* fields = result_don->Fetch();
-	    uint64 balans = fields[0].GetUInt32();
+        uint64 balans = fields[0].GetUInt32();
 
         if(balans >= points)
             return true;
