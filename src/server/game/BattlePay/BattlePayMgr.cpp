@@ -426,7 +426,7 @@ void BattlePayMgr::SendPointsBalance(WorldSession* session)
 	{
 		std::ostringstream data;
 		data << float(player->GetDonateTokens()) / BATTLE_PAY_CURRENCY_PRECISION;
-		player->SendBattlePayMessage("Tu saldo actual es:", data);        
+		player->SendBattlePayMessage("Your current balance is:", data);        
 	}
 }
 
@@ -438,7 +438,7 @@ void BattlePayMgr::UpdatePointsBalance(WorldSession* session, uint64 points)
 
         std::ostringstream data1;
 		data1 << float(player->GetDonateTokens()) / BATTLE_PAY_CURRENCY_PRECISION;
-		player->SendBattlePayMessage("Gracias por su compra!!! Su nuevo saldo es:", data1);  
+		player->SendBattlePayMessage("Thank you for your purchase!!! Your new balance is:", data1);  
 	}
     else
     {
@@ -461,7 +461,7 @@ bool BattlePayMgr::HasPointsBalance(WorldSession* session, uint64 points)
         }
         else
         {
-            player->SendBattlePayMessage("No puedes permitirte esto!!!");
+            player->SendBattlePayMessage("You can't afford this!!!");
             return false;
         }
     }

@@ -1093,6 +1093,8 @@ class WorldSession : public Schedulable
         void SendLoadCUFProfiles();
 
         // Battle Pet
+        void HandlePetBattleStartPvpMatchmaking(WorldPacket& recvData);
+        void HandlePetBattleStopPvpMatchmaking(WorldPacket& recvData);
         void HandleBattlePetModifyName(WorldPacket& recvData);
         void HandleBattlePetDelete(WorldPacket& recvData);
         void HandleBattlePetSetBattleSlot(WorldPacket& recvData);
