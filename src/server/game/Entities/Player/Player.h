@@ -1953,6 +1953,7 @@ class Player : public Unit, public GridObject<Player>
     bool CanRewardQuest(Quest const* quest, bool msg);
     bool CanRewardQuest(Quest const* quest, uint32 reward, bool msg);
     void AddQuest(Quest const* quest, Object* questGiver);
+    void UpdateQuestPhase(uint32 quest_id, uint8 q_type, bool flag = false);
     void CompleteQuest(uint32 quest_id, bool completely = false, bool fromCommand = false);
     void IncompleteQuest(uint32 quest_id);
     void RewardQuest(Quest const* quest, uint32 reward, Object* questGiver, bool announce = true);

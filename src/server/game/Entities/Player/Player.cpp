@@ -16900,6 +16900,8 @@ void Player::AddQuest(Quest const* quest, Object* questGiver)
 
     SendQuestUpdate(questId);
 
+    UpdateQuestPhase(questId, 1);
+
     sScriptMgr->OnPlayerQuestAdded(this, quest);
 }
 
@@ -17006,6 +17008,8 @@ void Player::CompleteQuest(uint32 quest_id, bool completely, bool fromCommand)
 
             sScriptMgr->OnPlayerQuestCompleted(this, qInfo);
         }
+
+        UpdateQuestPhase(quest_id, 3);
     }
 }
 
@@ -17266,6 +17270,8 @@ void Player::RewardQuest(Quest const* quest, uint32 reward, Object* questGiver, 
     //lets remove flag for delayed teleports
     SetCanDelayTeleport(false);
 
+    UpdateQuestPhase(quest_id, 2);
+
     sScriptMgr->OnPlayerQuestRewarded(this, quest);
 
     SetSaveTimer(1);
@@ -17306,6 +17312,8 @@ void Player::FailQuest(uint32 questId)
             SendQuestFailed(questId);
 
         DestroyQuestItems(questId);
+
+        UpdateQuestPhase(questId, 0);
 
         sScriptMgr->OnPlayerQuestFailed(this, quest);
     }
@@ -17968,6 +17976,8 @@ void Player::DestroyQuestItems(uint32 questId)
         for (uint8 i = 0; i < QUEST_SOURCE_ITEM_IDS_COUNT; ++i)
             if (quest->RequiredSourceItemId[i]  && quest->RequiredSourceItemCount[i] && sObjectMgr->GetItemTemplate(quest->RequiredSourceItemId[i])->Bonding == BIND_QUEST_ITEM)
                 DestroyItemCount(quest->RequiredSourceItemId[i], quest->RequiredSourceItemCount[i], true, true);
+
+        UpdateQuestPhase(questId, 0);
     }
 }
 
@@ -27438,6 +27448,145 @@ bool Player::inRandomLfgDungeon()
     }
 
     return false;
+}
+
+void Player::UpdateQuestPhase(uint32 quest_id, uint8 q_type, bool flag)
+{
+    // Exclude GameMasters, instances/raid/battlegrounds/arena
+    if (IsGameMaster() || GetInstanceId() || (GetMap() && GetMap()->IsBattlegroundOrArena()))
+        return;
+
+    if (quest_id)
+    {
+        PreparedStatement* stmt = NULL;
+        if (!flag)
+        {
+            stmt = WorldDatabase.GetPreparedStatement(WORLD_UPD_QUEST_PHASE);
+            stmt->setUInt32(0, quest_id);
+            stmt->setUInt8(1, q_type);
+        }
+        else
+        {
+            stmt = WorldDatabase.GetPreparedStatement(WORLD_UPD_QUEST_PHASE_BY_AREAID);
+            stmt->setUInt32(0, GetMapId());
+            stmt->setUInt32(1, GetZoneId());
+            stmt->setUInt32(2, GetAreaId());
+            stmt->setUInt8(3, q_type);
+        }
+
+        PreparedQueryResult result = WorldDatabase.Query(stmt);
+        if (!result)
+        {
+            if (flag)
+            {
+                // Reset to 1 only if we haven't any auras with mod phase!
+                if (!HasAuraType(SPELL_AURA_PHASE))
+                {
+                    switch (GetZoneId())
+                    {
+                    case 4706:  // Ruins of Gilneas
+                        break;
+                    default:
+                        SetPhaseMask(1, true);
+                        break;
+                    }
+                }
+                else
+                {
+                    AuraEffectList const& phaseAura = GetAuraEffectsByType(SPELL_AURA_PHASE);
+                    for (AuraEffectList::const_iterator p = phaseAura.begin(); p != phaseAura.end(); ++p)
+                    {
+                        if (!phaseAura.empty())
+                        {
+                            if ((*p)->GetMiscValue() == 0)
+                                SetPhaseMask((*p)->GetMiscValue() + 1, true);
+                            else
+                                SetPhaseMask((*p)->GetMiscValue(), true);
+                        }
+                    }
+                }
+            }
+            return;
+        }
+
+        do
+        {
+            Field* fields = result->Fetch();
+            uint32 QuestId = fields[0].GetUInt32();
+            uint32 Phase = fields[1].GetUInt32();
+            uint32 type = fields[2].GetUInt8();
+            uint32 AreaId = fields[3].GetUInt32();
+            uint32 MapId = fields[4].GetUInt32();
+            uint32 ZoneId = fields[5].GetUInt32();
+
+            switch (q_type)
+            {
+            case 1: // On Quest Accept
+            case 2: // On Quest Reward
+            case 3: // On Quest Complete
+            {
+                if (Phase != GetPhaseMask())
+                    SetPhaseMask(Phase, true);
+                break;
+            }
+            case 4: // On Area Update
+            {
+                if (IsActiveQuest(QuestId))
+                {
+                    if (GetQuestStatus(QuestId) == QUEST_STATUS_INCOMPLETE || GetQuestStatus(QuestId) == QUEST_STATUS_COMPLETE)
+                    {
+                        if (Phase != GetPhaseMask())
+                        {
+                            if (GetMapId() == MapId && GetZoneId() == ZoneId && GetAreaId() == AreaId)
+                                SetPhaseMask(Phase, true);
+                        }
+                    }
+                    else if (GetQuestStatus(QuestId) == QUEST_STATUS_FAILED || GetQuestStatus(QuestId) == QUEST_STATUS_REWARDED)
+                    {
+                        // Reset to 1 only if we haven't any auras with mod phase!
+                        if (!HasAuraType(SPELL_AURA_PHASE))
+                            SetPhaseMask(1, true);
+                        else
+                        {
+                            AuraEffectList const& phaseAura = GetAuraEffectsByType(SPELL_AURA_PHASE);
+                            for (AuraEffectList::const_iterator p = phaseAura.begin(); p != phaseAura.end(); ++p)
+                            {
+                                if (!phaseAura.empty())
+                                {
+                                    if ((*p)->GetMiscValue() == 0)
+                                        SetPhaseMask((*p)->GetMiscValue() + 1, true);
+                                    else
+                                        SetPhaseMask((*p)->GetMiscValue(), true);
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+            default: // Is usualy 0 and used on Quest Fail
+            {
+                if (!HasAuraType(SPELL_AURA_PHASE))
+                    SetPhaseMask(1, true);
+                else
+                {
+                    AuraEffectList const& phaseAura = GetAuraEffectsByType(SPELL_AURA_PHASE);
+                    for (AuraEffectList::const_iterator p = phaseAura.begin(); p != phaseAura.end(); ++p)
+                    {
+                        if (!phaseAura.empty())
+                        {
+                            if ((*p)->GetMiscValue() == 0)
+                                SetPhaseMask((*p)->GetMiscValue() + 1, true);
+                            else
+                                SetPhaseMask((*p)->GetMiscValue(), true);
+                        }
+                    }
+                }
+                break;
+            }
+            }
+        } while (result->NextRow());
+    }
 }
 
 void Player::UpdateUnderwaterState(Map* m, float x, float y, float z)
