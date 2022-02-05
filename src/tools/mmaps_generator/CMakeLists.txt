@@ -42,6 +42,7 @@ target_link_libraries(mmaps_generator
   ${ACE_LIBRARY}
   ${BZIP2_LIBRARIES}
   ${ZLIB_LIBRARIES}
+  ${Boost_LIBRARIES}
 )
 
 if( UNIX )
