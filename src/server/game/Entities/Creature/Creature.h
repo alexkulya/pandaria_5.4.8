@@ -85,6 +85,7 @@ struct CreatureTemplate
     uint32  Modelid3;
     uint32  Modelid4;
     std::string  Name;
+    std::string  FemaleName;
     std::string  SubName;
     std::string  IconName;
     uint32  GossipMenuId;
@@ -232,6 +233,7 @@ typedef std::unordered_map<uint16, CreatureBaseStats> CreatureBaseStatsContainer
 struct CreatureLocale
 {
     StringVector Name;
+    StringVector FemaleName;
     StringVector SubName;
 };
 
@@ -281,6 +283,7 @@ struct CreatureData
     uint32 unit_flags;                                      // enum UnitFlags mask values
     uint32 unit_flags2;                                     // enum UnitFlags2 mask values
     uint32 dynamicflags;
+    float WalkMode;
     bool dbData;
     uint32 gameEventId = 0;
 };
@@ -657,6 +660,8 @@ class Creature : public Unit, public GridObject<Creature>, public MapObject
         float GetWanderDistance() const { return m_wanderDistance; }
         void SetWanderDistance(float dist) { m_wanderDistance = dist; }
 
+        float GetWalkMode() const { return m_WalkMode; }
+
         uint32 m_groupLootTimer;                            // (msecs)timer used for group loot
         uint32 lootingGroupLowGUID;                         // used to find group which is looting corpse
 
@@ -757,6 +762,7 @@ class Creature : public Unit, public GridObject<Creature>, public MapObject
         uint32 m_corpseDelay;                               // (secs) delay between death and corpse disappearance
         TimeValue m_pickpocketLootRestore;
         float m_wanderDistance;
+        float m_WalkMode;
 
         ReactStates m_reactState;                           // for AI, not charmInfo
 
