@@ -1,4 +1,5 @@
 = Thanks/credits file =
+    Pandaria 5.4.8
 
 * WoW Daemon Team, 2004
 * MaNGOS project, 2005-2008 <http://www.mangosproject.org>

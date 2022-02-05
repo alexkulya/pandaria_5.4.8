@@ -130,14 +130,25 @@ extern int main(int argc, char** argv)
 
     TC_LOG_INFO("server.authserver", "%s (authserver)", _FULLVERSION);
     TC_LOG_INFO("server.authserver", "<Ctrl-C> to stop.\n");
-    
-    TC_LOG_INFO("server.worldserver", " ████████╗██╗░░██╗░█████╗░██████╗░░██████╗░░█████╗░░██████╗████████╗");
-    TC_LOG_INFO("server.worldserver", " ╚══██╔══╝██║░░██║██╔══██╗██╔══██╗██╔════╝░██╔══██╗██╔════╝╚══██╔══╝ ");
-    TC_LOG_INFO("server.worldserver", " ░░░██║░░░███████║██║░░██║██████╔╝██║░░██╗░███████║╚█████╗░░░░██║░░░ ");
-    TC_LOG_INFO("server.worldserver", " ░░░██║░░░██║░░██║╚█████╔╝██║░░██║╚██████╔╝██║░░██║██████╔╝░░░██║░░░");
-    TC_LOG_INFO("server.worldserver", " ░░░╚═╝░░░╚═╝░░╚═╝░╚════╝░╚═╝░░╚═╝░╚═════╝░╚═╝░░╚═╝╚═════╝░░░░╚═╝░░░");
-    TC_LOG_INFO("server.worldserver", "  torghast project 2021(c) Private-sourced Game Emulation ");
-    TC_LOG_INFO("server.worldserver", "           <https://torghast-project.com> \n");
+
+    TC_LOG_INFO("server.authserver", "    ─╔═══╗╔═══╗╔═╗─╔╗╔═══╗╔═══╗╔═══╗╔══╗╔═══╗─                          ");
+    TC_LOG_INFO("server.authserver", "    ─║╔═╗║║╔═╗║║║╚╗║║╚╗╔╗║║╔═╗║║╔═╗║╚╣─╝║╔═╗║─                          ");
+    TC_LOG_INFO("server.authserver", "    ─║╚═╝║║║─║║║╔╗╚╝║─║║║║║║─║║║╚═╝║─║║─║║─║║─                          ");
+    TC_LOG_INFO("server.authserver", "    ─║╔══╝║╚═╝║║║╚╗║║─║║║║║╚═╝║║╔╗╔╝─║║─║╚═╝║─                          ");
+    TC_LOG_INFO("server.authserver", "    ─║║───║╔═╗║║║─║║║╔╝╚╝║║╔═╗║║║║╚╗╔╣─╗║╔═╗║─                          ");
+    TC_LOG_INFO("server.authserver", "    ─╚╝───╚╝─╚╝╚╝─╚═╝╚═══╝╚╝─╚╝╚╝╚═╝╚══╝╚╝─╚╝─                          ");
+    TC_LOG_INFO("server.authserver", "                                                                        ");
+    TC_LOG_INFO("server.authserver", "             ─╔═══╗───╔╗─╔╗────╔═══╗─                                   ");
+    TC_LOG_INFO("server.authserver", "             ─║╔══╝───║║─║║────║╔═╗║─                                   ");
+    TC_LOG_INFO("server.authserver", "             ─║╚══╗───║╚═╝║────║╚═╝║─                                   ");
+    TC_LOG_INFO("server.authserver", "             ─╚══╗║───╚══╗║────║╔═╗║─                                   ");
+    TC_LOG_INFO("server.authserver", "             ─╔══╝║──╔╗──║║─╔╗─║╚═╝║─                                   ");
+    TC_LOG_INFO("server.authserver", "             ─╚═══╝──╚╝──╚╝─╚╝─╚═══╝─                                   ");
+    TC_LOG_INFO("server.authserver", "                                                                        ");
+    TC_LOG_INFO("server.authserver", "                  PANDARIA 5.4.8                                        ");
+    TC_LOG_INFO("server.authserver", "                     Based on:                                          ");
+    TC_LOG_INFO("server.authserver", "                Project SkyFireEmu                                      ");
+    TC_LOG_INFO("server.authserver", "         <http://www.projectskyfire.org/> \n                            ");
 
     TC_LOG_INFO("server.authserver", "Using configuration file %s.", configFile);
 

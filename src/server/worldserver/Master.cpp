@@ -170,14 +170,24 @@ int Master::Run()
     TC_LOG_INFO("server.worldserver", "%s (worldserver-daemon)", _FULLVERSION);
     TC_LOG_INFO("server.worldserver", "<Ctrl-C> to stop.\n");
 
-    TC_LOG_INFO("server.worldserver", " ████████╗██╗░░██╗░█████╗░██████╗░░██████╗░░█████╗░░██████╗████████╗");
-    TC_LOG_INFO("server.worldserver", " ╚══██╔══╝██║░░██║██╔══██╗██╔══██╗██╔════╝░██╔══██╗██╔════╝╚══██╔══╝ ");
-    TC_LOG_INFO("server.worldserver", " ░░░██║░░░███████║██║░░██║██████╔╝██║░░██╗░███████║╚█████╗░░░░██║░░░ ");
-    TC_LOG_INFO("server.worldserver", " ░░░██║░░░██║░░██║╚█████╔╝██║░░██║╚██████╔╝██║░░██║██████╔╝░░░██║░░░");
-    TC_LOG_INFO("server.worldserver", " ░░░╚═╝░░░╚═╝░░╚═╝░╚════╝░╚═╝░░╚═╝░╚═════╝░╚═╝░░╚═╝╚═════╝░░░░╚═╝░░░");
-    TC_LOG_INFO("server.worldserver", "  torghast project 2021(c) Private-sourced Game Emulation ");
-    TC_LOG_INFO("server.worldserver", "           <https://torghast-project.com> \n");
-
+    TC_LOG_INFO("server.worldserver", "    ─╔═══╗╔═══╗╔═╗─╔╗╔═══╗╔═══╗╔═══╗╔══╗╔═══╗─                          ");
+    TC_LOG_INFO("server.worldserver", "    ─║╔═╗║║╔═╗║║║╚╗║║╚╗╔╗║║╔═╗║║╔═╗║╚╣─╝║╔═╗║─                          ");
+    TC_LOG_INFO("server.worldserver", "    ─║╚═╝║║║─║║║╔╗╚╝║─║║║║║║─║║║╚═╝║─║║─║║─║║─                          ");
+    TC_LOG_INFO("server.worldserver", "    ─║╔══╝║╚═╝║║║╚╗║║─║║║║║╚═╝║║╔╗╔╝─║║─║╚═╝║─                          ");
+    TC_LOG_INFO("server.worldserver", "    ─║║───║╔═╗║║║─║║║╔╝╚╝║║╔═╗║║║║╚╗╔╣─╗║╔═╗║─                          ");
+    TC_LOG_INFO("server.worldserver", "    ─╚╝───╚╝─╚╝╚╝─╚═╝╚═══╝╚╝─╚╝╚╝╚═╝╚══╝╚╝─╚╝─                          ");
+    TC_LOG_INFO("server.worldserver", "                                                                        ");
+    TC_LOG_INFO("server.worldserver", "             ─╔═══╗───╔╗─╔╗────╔═══╗─                                   ");
+    TC_LOG_INFO("server.worldserver", "             ─║╔══╝───║║─║║────║╔═╗║─                                   ");
+    TC_LOG_INFO("server.worldserver", "             ─║╚══╗───║╚═╝║────║╚═╝║─                                   ");
+    TC_LOG_INFO("server.worldserver", "             ─╚══╗║───╚══╗║────║╔═╗║─                                   ");
+    TC_LOG_INFO("server.worldserver", "             ─╔══╝║──╔╗──║║─╔╗─║╚═╝║─                                   ");
+    TC_LOG_INFO("server.worldserver", "             ─╚═══╝──╚╝──╚╝─╚╝─╚═══╝─                                   ");
+    TC_LOG_INFO("server.worldserver", "                                                                        ");
+    TC_LOG_INFO("server.worldserver", "                  PANDARIA 5.4.8                                        ");
+    TC_LOG_INFO("server.worldserver", "                     Based on:                                          ");
+    TC_LOG_INFO("server.worldserver", "                Project SkyFireEmu                                      ");
+    TC_LOG_INFO("server.worldserver", "         <http://www.projectskyfire.org/> \n                            ");
 
     /// worldserver PID file creation
     std::string pidFile = sConfigMgr->GetStringDefault("PidFile", "");
