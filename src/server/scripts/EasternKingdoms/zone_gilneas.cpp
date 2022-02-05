@@ -10,6 +10,16 @@ enum Gilneas
     EVENT_TALK_WITH_CITIZEN_2               = 3,
     EVENT_TALK_WITH_CITIZEN_3               = 4,
 
+    EVENT_START_DIALOG                      = 1,
+    EVENT_START_TALK_TO_GUARD               = 2,
+    EVENT_TALK_TO_GUARD_1                   = 3,
+    EVENT_TALK_TO_GUARD_2                   = 4,
+    EVENT_RESET_DIALOG                      = 5,
+
+    PRINCE_LIAM_GREYMANE_TEXT_00            = 0,
+    PRINCE_LIAM_GREYMANE_TEXT_01            = 1,
+    PRINCE_LIAM_GREYMANE_TEXT_02            = 2,
+
     NPC_PANICKED_CITIZEN_GATE               = 44086
 };
 
@@ -24,7 +34,7 @@ struct npc_gilneas_crow : public ScriptedAI
     {
         flying = false;
         spawn = 0;
-        me->SetPosition(me->GetCreatureData()->posX,me->GetCreatureData()->posY, me->GetCreatureData()->posZ, me->GetCreatureData()->orientation);
+        me->SetPosition(me->GetCreatureData()->posX, me->GetCreatureData()->posY, me->GetCreatureData()->posZ, me->GetCreatureData()->orientation);
     }
 
     void SpellHit(Unit* /*caster*/, const SpellInfo* spell) override
@@ -40,7 +50,7 @@ struct npc_gilneas_crow : public ScriptedAI
         }
     }
 
-    void UpdateAI(const uint32 diff) override
+    void UpdateAI(uint32 diff) override
     {
         if (!flying)
             return;
@@ -152,6 +162,63 @@ private:
     std::list<ObjectGuid> listOfCitizenGUID;
 };
 
+struct npc_prince_liam_greymane : public ScriptedAI
+{
+    npc_prince_liam_greymane(Creature *c) : ScriptedAI(c) { }
+
+    EventMap _events;
+
+    void Reset() override
+    {
+        _events.RescheduleEvent(EVENT_START_DIALOG, 1 * IN_MILLISECONDS);
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        _events.Update(diff);
+
+        while (uint32 eventId = _events.ExecuteEvent())
+        {
+            switch (eventId)
+            {
+                case EVENT_START_DIALOG:
+                {
+                    _events.ScheduleEvent(EVENT_RESET_DIALOG, 2 * MINUTE * IN_MILLISECONDS);
+                    _events.ScheduleEvent(EVENT_START_TALK_TO_GUARD, 1 * IN_MILLISECONDS);
+                    break;
+                }
+                case EVENT_START_TALK_TO_GUARD:
+                {
+                    Talk(PRINCE_LIAM_GREYMANE_TEXT_00);
+                    _events.ScheduleEvent(EVENT_TALK_TO_GUARD_1, 15 * IN_MILLISECONDS);
+                    break;
+                }
+                case EVENT_TALK_TO_GUARD_1:
+                {
+                    Talk(PRINCE_LIAM_GREYMANE_TEXT_01);
+                    _events.ScheduleEvent(EVENT_TALK_TO_GUARD_2, 18 * IN_MILLISECONDS);
+                    break;
+                }
+                case EVENT_TALK_TO_GUARD_2:
+                {
+                    Talk(PRINCE_LIAM_GREYMANE_TEXT_02);
+                    break;
+                }
+                case EVENT_RESET_DIALOG:
+                {
+                    Reset();
+                    break;
+                }
+            }
+        }
+
+        if (!UpdateVictim())
+            return;
+
+        DoMeleeAttackIfReady();
+    }
+};
+
 struct npc_rampaging_worgen : public ScriptedAI
 {
     npc_rampaging_worgen(Creature* creature) : ScriptedAI(creature) { }
@@ -173,5 +240,6 @@ void AddSC_gilneas()
 {
     new creature_script<npc_gilneas_crow>("npc_gilneas_crow");
     new creature_script<npc_gilneas_city_guard_gate>("npc_gilneas_city_guard_gate");
+    new creature_script<npc_prince_liam_greymane>("npc_prince_liam_greymane");
     new creature_script<npc_rampaging_worgen>("npc_rampaging_worgen");
 }
