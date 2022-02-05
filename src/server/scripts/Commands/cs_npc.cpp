@@ -770,6 +770,8 @@ public:
         else
             handler->PSendSysMessage("Motion Type: |CFFFF0000%u|R", target->GetMotionMaster()->GetCurrentMovementGeneratorType() == IDLE_MOTION_TYPE);
 
+        handler->PSendSysMessage("Wander Distance: |CFFFF0000%g|R", target->GetWanderDistance());
+
         handler->PSendSysMessage(LANG_NPCINFO_AIINFO, target->GetAIName().c_str(), target->GetScriptName().c_str());
 
         for (uint8 i = 0; i < NPCFLAG_COUNT; i++)

@@ -25,7 +25,7 @@ public:
         else if (!sWorld->getBoolConfig(CONFIG_WOW_TOKEN))
         {
             player->GetSession()->SendNotification("Coins disabled.");
-			player->CastSpell(player, 27880, true);
+            player->CastSpell(player, 27880, true);
         }
         else
         {
@@ -64,7 +64,7 @@ public:
         else if (!sWorld->getBoolConfig(CONFIG_WOW_TOKEN))
         {
             player->GetSession()->SendNotification("Coins disabled.");
-			player->CastSpell(player, 27880, true);
+            player->CastSpell(player, 27880, true);
         }
         else
         {
@@ -103,7 +103,7 @@ public:
         else if (!sWorld->getBoolConfig(CONFIG_WOW_TOKEN))
         {
             player->GetSession()->SendNotification("Coins disabled.");
-			player->CastSpell(player, 27880, true);
+            player->CastSpell(player, 27880, true);
         }
         else
         {
@@ -142,7 +142,7 @@ public:
         else if (!sWorld->getBoolConfig(CONFIG_WOW_TOKEN))
         {
             player->GetSession()->SendNotification("Coins disabled.");
-			player->CastSpell(player, 27880, true);
+            player->CastSpell(player, 27880, true);
         }
         else
         {
