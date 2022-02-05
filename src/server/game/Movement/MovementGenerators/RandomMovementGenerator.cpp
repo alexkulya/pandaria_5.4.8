@@ -110,10 +110,17 @@ void RandomMovementGenerator<Creature>::_setRandomLocation(Creature* creature)
     init.MoveTo(destX, destY, destZ);
 
     bool run = false;
+
     if (creature->GetAIName() == "SmartAI")
         run = CAST_AI(SmartAI, creature->AI()) && CAST_AI(SmartAI, creature->AI())->IsCreatureRun();
 
-    init.SetWalk(!run);
+    if (creature->GetWalkMode() == 1)
+        init.SetWalk(run);
+    else if (creature->GetWalkMode() == 2)
+        init.SetWalk((irand(0, 5) > 0) ? !run : run);
+    else
+        init.SetWalk(!run);
+
     init.Launch();
 
     //Call for creature group update
