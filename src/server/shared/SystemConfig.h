@@ -25,7 +25,7 @@
 #include "Define.h"
 #include "revision.h"
 
-#define _PACKAGENAME "SkyFire 5.x.x"
+#define _PACKAGENAME "Pandaria 5.4.8"
 
 #if TRINITY_ENDIAN == TRINITY_BIGENDIAN
 # define _ENDIAN_STRING "big-endian"

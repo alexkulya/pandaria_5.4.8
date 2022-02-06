@@ -1,13 +1,12 @@
 = Thanks/credits file =
-    Pandaria 5.4.8
 
 * WoW Daemon Team, 2004
-* MaNGOS project, 2005-2008 <http://www.mangosproject.org>
-* MaNGOS project, 2008-2011 <http://getmangos.com>
-* UDB project, 2007-2009 <http://udbforums.org>
-* SD2 project, 2008-2009 <http://www.scriptdev2.com>
-* TrinityCore, 2008-2021 <https://www.trinitycore.org/>
-* Project SkyFire, 2011-2021 <http://www.projectskyfire.org/>
+* MaNGOS project, 2005-2008 (http://www.mangosproject.org)
+* MaNGOS project, 2008-2011 (http://getmangos.com)
+* UDB project, 2007-2009 (http://udbforums.org)
+* SD2 project, 2008-2009 (http://www.scriptdev2.com)
+* TrinityCore, 2008-2021 (https://www.trinitycore.org/)
+* Project SkyFire, 2011-2021 (http://www.projectskyfire.org/)
 
 Special thanks should go out to the WowwoW team. We have gained help from
 them many times in the creation of this project. Keep up the good work guys.

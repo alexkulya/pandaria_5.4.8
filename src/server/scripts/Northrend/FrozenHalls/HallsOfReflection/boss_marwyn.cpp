@@ -110,14 +110,14 @@ class boss_marwyn : public CreatureScript
                         me->SetVisible(true);
 
                         Talk(SAY_AGGRO, ObjectAccessor::GetPlayer(*me, playerGuid));
-                        me->HandleEmoteCommand(EMOTE_ONESHOT_POINT_NO_SHEATHE);
+                        me->HandleEmoteCommand(EMOTE_ONESHOT_EXCLAMATION);
 
                         me->m_Events.Schedule(2000, [this]()
                         {
                             me->HandleEmoteStateCommand(0);
 
                             // Reset flags
-                            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_IMMUNE_TO_PC);
+                            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC);
                             me->SetReactState(REACT_AGGRESSIVE);
 
                             if (Unit* pUnit = me->SelectNearestTarget())

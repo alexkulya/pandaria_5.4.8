@@ -10,9 +10,11 @@ public:
     void OnUpdate(Player* player, uint32 diff)
     {
         timeInterval += diff;
+
         if (timeInterval >= player->ptr_Interval)
         {
             timeInterval -= player->ptr_Interval;
+
             if (player->IsInWorld() && sWorld->getBoolConfig(CONFIG_BONUS_TIME_REWARD))
             {
                 ChatHandler(player->GetSession()).PSendSysMessage("Bonus for played time.");

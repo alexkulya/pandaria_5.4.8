@@ -134,7 +134,7 @@ class boss_falric : public CreatureScript
                         me->m_Events.Schedule(8000, [this]()
                         {
                             // Reset flags
-                            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_IMMUNE_TO_PC);
+                            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC);
                             me->SetReactState(REACT_AGGRESSIVE);
 
                             if (Unit* pUnit = me->SelectNearestTarget())

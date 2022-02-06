@@ -3,21 +3,24 @@
 #include "Transport.h"
 
 // Darkmoon Deathmatch
-enum DarkmoonDeathmatchEnum
+enum DarkmoonDeathmatchData
 {
-    GAME_EVENT_DARKMOON_DEATHMATCH_ANNOUNCE     = 82,
-    GAME_EVENT_DARKMOON_DEATHMATCH_RUN          = 83,
-    NPC_DARKMOON_DEATHMATCH_ANNOUNCER           = 55402,
-    GO_DARKMOON_DEATHMATCH_CHEST                = 209620,
-    SPELL_ENTER_DEATHMATCH                      = 108919,
-    SPELL_EXIT_DEATHMATCH                       = 108923,
+    GAME_EVENT_DARKMOON_DEATHMATCH_ANNOUNCE           = 82,
+    GAME_EVENT_DARKMOON_DEATHMATCH_RUN                = 83,
+
+    NPC_DARKMOON_DEATHMATCH_ANNOUNCER                 = 55402,
+
+    GO_DARKMOON_DEATHMATCH_CHEST                      = 209620,
+
+    SPELL_ENTER_DEATHMATCH                            = 108919,
+    SPELL_EXIT_DEATHMATCH                             = 108923
 };
 
 enum Yells
 {
-    SAY_ANNOUNCE = 0,
-    SAY_RUN      = 1,
-    SAY_END      = 2
+    SAY_ANNOUNCE                                      = 0,
+    SAY_RUN                                           = 1,
+    SAY_END                                           = 2
 };
 
 class npc_darkmoon_deathmatch_announcer : public CreatureScript
