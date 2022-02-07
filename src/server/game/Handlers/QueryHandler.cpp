@@ -327,14 +327,10 @@ void WorldSession::HandleCreatureQueryOpcode(WorldPacket& recvData)
         data.WriteBits(qItemsSize, 22);                       // Quest items
         data.WriteBits(0, 11);
 
-        for (int i = 0; i < 8; i++)
-        {
-            if (i == 0)
-                data.WriteBits(Name.length() + 1, 11);
-            else if (i == 1)
-                data.WriteBits(FemaleName.length() + 1, 11);
-            else
-                data.WriteBits(0, 11);
+        for (int i = 0; i < 4; i++)
+        {            
+            data.WriteBits(i == 0 ? Name.length() + 1 : 0, 11);
+            data.WriteBits(0, 11);
         }
 
         data.WriteBit(creatureInfo->RacialLeader);
