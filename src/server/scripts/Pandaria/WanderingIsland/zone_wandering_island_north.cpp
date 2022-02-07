@@ -844,12 +844,13 @@ class npc_aysa : public CreatureScript
                             auto const maxSpawns = std::max<size_t>(maxSize * 3, 3);
 
                             for (size_t i = 0; i < maxSpawns; ++i)
-                                if (TempSummon* temp = me->SummonCreature(NPC_TROUBLEMAKER, 1171.71f, 3443.82f, 104.20f, 3.3f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 10000))
+                                if (TempSummon* temp = me->SummonCreature(NPC_TROUBLEMAKER, 1155.625f, 3438.559f, 104.97f, 3.3f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 10000))
                                 {
-                                    temp->AddThreat(me, 250.0f);
+                                    if (temp->AI())
+                                        temp->AI()->AttackStart(me);
 
-                                    temp->SetInCombatWith(me);
-                                    me->SetInCombatWith(me);
+                                    temp->AddThreat(me, 250.0f);
+                                    temp->GetMotionMaster()->Clear();
                                     temp->GetMotionMaster()->MoveChase(me);
                                 }
 
