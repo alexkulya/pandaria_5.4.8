@@ -92,7 +92,7 @@ public:
         // ok, normal (creature/GO starting) quest
         if (player->CanAddQuest(quest, true))
         {
-            player->AddQuest(quest, NULL);
+            player->AddQuestAndCheckCompletion(quest, NULL);
 
             bool brokenQuest = sObjectMgr->IsBrokenQuest(entry);
             if (player->CanCompleteQuest(entry) || brokenQuest)
