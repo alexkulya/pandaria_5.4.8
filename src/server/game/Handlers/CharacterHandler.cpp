@@ -1233,7 +1233,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
             pCurrChar->CastSpell(pCurrChar, HunterCreatePetSpells[pCurrChar->getRace()], true);
         }
 
-        if (pCurrChar->getRace() == RACE_UNDEAD_PLAYER)
+        if (pCurrChar->getRace() == RACE_UNDEAD_PLAYER && pCurrChar->getClass() != CLASS_DEATH_KNIGHT)
             pCurrChar->CastSpell(pCurrChar, 73523, true); // Undead - Rigor Mortis
 
         if (pCurrChar->getRace() == RACE_PANDAREN_NEUTRAL)
