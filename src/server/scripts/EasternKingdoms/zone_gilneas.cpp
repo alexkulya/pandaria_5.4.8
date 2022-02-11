@@ -1,11 +1,16 @@
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
+#include "PassiveAI.h"
 
 enum Gilneas
 {
     SPELL_PING_GILNEAN_CROW                 = 93275,
     SPELL_SUMMON_RAVENOUS_WORGEN_1          = 66836,
     SPELL_SUMMON_RAVENOUS_WORGEN_2          = 66925,
+    SPELL_SHOOT_INSTAKILL                   = 67593, // Visual problem
+    SPELL_COSMETIC_ATTACK                   = 69873,
+    SPELL_PULL_TO                           = 67357,
+    SPELL_GET_SHOT                          = 67349,
 
     EVENT_START_TALK_WITH_CITIZEN           = 1,
     EVENT_TALK_WITH_CITIZEN_1               = 2,
@@ -25,6 +30,10 @@ enum Gilneas
     EVENT_JUMP_TO_PRISON                    = 1,
     EVENT_AGGRO_PLAYER                      = 2,
     EVENT_FORCE_DESPAWN                     = 3,
+
+    EVENT_COSMETIC_ATTACK                   = 1,
+    EVENT_JUMP_TO_PLAYER                    = 2,
+    EVENT_SHOOT_JOSIAH                      = 3,
 
     PHASE_ROOF                              = 0,
     PHASE_COMBAT                            = 1,
@@ -51,12 +60,23 @@ enum Gilneas
     NPC_WORGEN_RUNT                         = 35456,
     NPC_WORGEN_RUNT_2                       = 35188,
     NPC_WORGEN_ALPHA                        = 35170,
-    NPC_WORGEN_ALPHA_2                      = 35167
+    NPC_WORGEN_ALPHA_2                      = 35167,
+    NPC_LORNA_CROWLEY                       = 35378,
+    NPC_GENERIC_TRIGGER_LAB                 = 35374,
+
+    SAY_JOSIAH_AVERY_1                      = 0,
+    SAY_JOSIAH_AVERY_2                      = 1,
+    SAY_JOSIAH_AVERY_3                      = 2,
+    SAY_JOSIAH_AVERY_4                      = 3,
+    SAY_JOSIAH_AVERY_5                      = 4,
+    SAY_JOSIAH_AVERY_6                      = 5
 };
 
 Position const runt2SummonJumpPos = { -1671.915f, 1446.734f, 52.28712f };
 Position const alphaSummonJumpPos = { -1656.723f, 1405.647f, 52.74205f };
 Position const alpha2SummonJumpPos = { -1675.44f, 1447.495f, 52.28762f };
+
+Position const josiahJumpPos = { -1796.63f, 1427.73f, 12.4624f };
 
 uint32 const runtHousePathSize1 = 13;
 
@@ -731,6 +751,160 @@ class spell_gen_gilneas_prison_periodic_dummy : public SpellScript
     }
 };
 
+struct npc_josiah_avery : public ScriptedAI
+{
+    npc_josiah_avery(Creature* creature) : ScriptedAI(creature) { }
+
+    uint32 _text_timer;
+    uint32 _current_text;
+
+    void Reset() override
+    {
+        _text_timer = 20 * IN_MILLISECONDS;
+        _current_text = 1;
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (!me->GetVictim() && me->FindNearestPlayer(20.0f))
+        {
+            if (_text_timer <= diff)
+            {
+                switch (_current_text)
+                {
+                    case 1:
+                        Talk(SAY_JOSIAH_AVERY_1);
+                        _current_text++;
+                        break;
+                    case 2:
+                        Talk(SAY_JOSIAH_AVERY_2);
+                        _current_text++;
+                        break;
+                    case 3:
+                        Talk(SAY_JOSIAH_AVERY_3);
+                        _current_text++;
+                        break;
+                    case 4:
+                        Talk(SAY_JOSIAH_AVERY_4);
+                        _current_text++;
+                        break;
+                    case 5:
+                        Talk(SAY_JOSIAH_AVERY_5);
+                        _current_text++;
+                        break;
+                    case 6:
+                        Talk(SAY_JOSIAH_AVERY_6);
+                        _current_text = 1;
+                        break;
+                }
+
+                _text_timer = 20 * IN_MILLISECONDS;
+            }
+            else
+            {
+                _text_timer -= diff;
+            }
+            return;
+        }
+    }
+};
+
+struct npc_josiah_avery_worgen_form : public PassiveAI
+{
+    npc_josiah_avery_worgen_form(Creature* creature) : PassiveAI(creature) { }
+
+    void IsSummonedBy(Unit* summoner) override
+    {
+        _playerGuid = summoner->GetGUID();
+
+        me->m_Events.AddLambdaEventAtOffset([this, summoner]()
+        {
+            me->SetFacingToObject(summoner);
+            _events.ScheduleEvent(EVENT_COSMETIC_ATTACK, 500);
+        }, 200);
+    }
+
+    void SpellHit(Unit* /*caster*/, const SpellInfo* spell)
+    {
+        if (spell->Id == SPELL_SHOOT_INSTAKILL)
+            me->CastSpell(me, SPELL_GET_SHOT);
+    }
+
+    void JustDied(Unit* /*killer*/) override
+    {
+        me->DespawnOrUnsummon(5 * IN_MILLISECONDS);
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        _events.Update(diff);
+
+        while (uint32 eventId = _events.ExecuteEvent())
+        {
+            switch(eventId)
+            {
+                case EVENT_COSMETIC_ATTACK:
+                    if (Player* player = ObjectAccessor::GetPlayer(*me, _playerGuid))
+                    {
+                        DoCast(player, SPELL_COSMETIC_ATTACK);
+
+                        me->m_Events.AddLambdaEventAtOffset([this, player]()
+                        {
+                            if (Creature* lorna = me->FindNearestCreature(NPC_LORNA_CROWLEY, 30.0f, true))
+                                player->GetMotionMaster()->MoveKnockbackFrom(lorna->GetPositionX(), lorna->GetPositionY(), 30, 30);
+                        }, 400);
+
+                        if (Creature* lorna = me->FindNearestCreature(NPC_LORNA_CROWLEY, 30.0f, true))
+                            if (Creature* labTrigger = lorna->FindNearestCreature(NPC_GENERIC_TRIGGER_LAB, 5.0f, true))
+                                labTrigger->CastSpell(player, SPELL_PULL_TO);
+
+                        _events.ScheduleEvent(EVENT_JUMP_TO_PLAYER, 1 * IN_MILLISECONDS);
+                    }
+                    break;
+                case EVENT_JUMP_TO_PLAYER:
+                    me->GetMotionMaster()->MoveJump(josiahJumpPos, 10.0f, 14.18636f);
+                    _events.ScheduleEvent(EVENT_SHOOT_JOSIAH, 1 * IN_MILLISECONDS + 200);
+                    break;
+                case EVENT_SHOOT_JOSIAH:
+                    if (Creature* lorna = me->FindNearestCreature(NPC_LORNA_CROWLEY, 30.0f, true))
+                        lorna->CastSpell(me, SPELL_SHOOT_INSTAKILL, true);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+private:
+    ObjectGuid _playerGuid;
+    EventMap _events;
+};
+
+class spell_gilneas_pull_to : public SpellScript
+{
+    PrepareSpellScript(spell_gilneas_pull_to);
+
+    void HandPullEffect(SpellEffIndex effIndex)
+    {
+        PreventHitDefaultEffect(effIndex);
+
+        if (Unit* playerTarget = GetHitPlayer())
+        {
+            if (Unit* trigger = GetCaster())
+            {
+                float angle = playerTarget->GetAngle(trigger);
+                playerTarget->SendMoveKnockBack(playerTarget->ToPlayer(), 30.0f, -7.361481f, cos(angle), sin(angle));
+            }
+        }
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_gilneas_pull_to::HandPullEffect, EFFECT_0, SPELL_EFFECT_PULL_TOWARDS);
+    }
+};
+
+
 void AddSC_gilneas()
 {
     new creature_script<npc_gilneas_crow>("npc_gilneas_crow");
@@ -738,4 +912,7 @@ void AddSC_gilneas()
     new creature_script<npc_prince_liam_greymane>("npc_prince_liam_greymane");
     new creature_script<npc_worgen_runt>("npc_worgen_runt");
     new spell_script<spell_gen_gilneas_prison_periodic_dummy>("spell_gen_gilneas_prison_periodic_dummy");
+    new creature_script<npc_josiah_avery>("npc_josiah_avery");
+    new creature_script<npc_josiah_avery_worgen_form>("npc_josiah_avery_worgen_form");
+    new spell_script<spell_gilneas_pull_to>("spell_gilneas_pull_to");
 }

@@ -1,5 +1,5 @@
 ################################################
-#   Torghast World Server configuration file    #
+#   Pandaria World Server configuration file   #
 ################################################
 [worldserver]
 
@@ -64,10 +64,10 @@ RealmID = 1
 #    DataDir
 #        Description: Data directory setting.
 #        Important:   DataDir needs to be quoted, as the string might contain space characters.
-#        Example:     "@prefix@/share/Torghast"
+#        Example:     "@prefix@/share/skyfire"
 #        Default:     "."
 
-DataDir = "."
+DataDir = "Data"
 
 #
 #    LogsDir
@@ -76,7 +76,7 @@ DataDir = "."
 #                     Logs directory must exists, or log file creation will be disabled.
 #        Default:     "" - (Log files will be stored in the current path)
 
-LogsDir = ""
+LogsDir = "Logs"
 
 #
 #    LoginDatabaseInfo
@@ -89,16 +89,16 @@ LogsDir = ""
 #                                                                 section my.ini)
 #                     ".;/path/to/unix_socket;username;password;database" - (use Unix sockets on
 #                                                                           Unix/Linux)
-#        Default:     "127.0.0.1;3306;Torghast;Torghast;auth"       - (LoginDatabaseInfo)
-#                     "127.0.0.1;3306;Torghast;Torghast;world"      - (WorldDatabaseInfo)
-#                     "127.0.0.1;3306;Torghast;Torghast;characters" - (CharacterDatabaseInfo)
-#                     "127.0.0.1;3306;Torghast;Torghast;FusionCMS"  - (FusionCMSDatabaseInfo)
+#        Default:     "127.0.0.1;3306;skyfire;skyfire;auth"       - (LoginDatabaseInfo)
+#                     "127.0.0.1;3306;skyfire;skyfire;world"      - (WorldDatabaseInfo)
+#                     "127.0.0.1;3306;skyfire;skyfire;characters" - (CharacterDatabaseInfo)
+#                     "127.0.0.1;3306;skyfire;skyfire;FusionCMS"  - (FusionCMSDatabaseInfo)
 
-LoginDatabaseInfo     = "127.0.0.1;3306;Torghast;Torghast;auth"
-WorldDatabaseInfo     = "127.0.0.1;3306;Torghast;Torghast;world"
-CharacterDatabaseInfo = "127.0.0.1;3306;Torghast;Torghast;characters"
-ArchiveDatabaseInfo   = "127.0.0.1;3306;Torghast;Torghast;archive"
-FusionCMSDatabaseInfo = "127.0.0.1;3306;Torghast;Torghast;FusionCMS"
+LoginDatabaseInfo     = "127.0.0.1;3306;root;root;auth"
+WorldDatabaseInfo     = "127.0.0.1;3306;root;root;world"
+CharacterDatabaseInfo = "127.0.0.1;3306;root;root;characters"
+ArchiveDatabaseInfo   = "127.0.0.1;3306;root;root;archive"
+FusionCMSDatabaseInfo = "127.0.0.1;3306;root;root;fusion"
 
 #
 #    LoginDatabase.WorkerThreads
@@ -197,7 +197,7 @@ Compression = 1
 #                     1+  - (Enabled)
 #                     0   - (Disabled, No limit)
 
-PlayerLimit = 100
+PlayerLimit = 1000
 
 #
 #    SaveRespawnTimeImmediately
@@ -291,7 +291,7 @@ PlayerSave.Stats.SaveOnlyOnLogout = 1
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-mmap.enablePathFinding = 0
+mmap.enablePathFinding = 1
 
 #
 #    vmap.enableLOS
@@ -453,7 +453,7 @@ ChatLogs.SysChan = 0
 #                     1 - (Enabled)
 
 
-ChatLogs.Party = 0
+ChatLogs.Party = 1
 
 #
 #    ChatLogs.Raid
@@ -462,7 +462,7 @@ ChatLogs.Party = 0
 #                     1 - (Enabled)
 
 
-ChatLogs.Raid = 0
+ChatLogs.Raid = 1
 
 #
 #    ChatLogs.Guild
@@ -478,7 +478,7 @@ ChatLogs.Guild = 0
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-ChatLogs.Public = 0
+ChatLogs.Public = 1
 
 #
 #    ChatLogs.Addon
@@ -623,7 +623,7 @@ DeclinedNames = 0
 #                     3 - (Expansion 3)
 #                     2 - (Expansion 2)
 #                     1 - (Expansion 1)
-#                     0 - (Disabled, Ignore and disable expansion content (maps, races, classes)
+#                     0 - (Disabled, Ignore and disable expansion content (maps, races, classes))
 
 Expansion = 4
 
@@ -881,6 +881,14 @@ Instance.IgnoreRaid = 0
 
 Instance.ResetTimeHour = 4
 
+
+#
+#    Instance.ResetTimeDay
+#        Week day when the global instance is reset (0..6) 0 == Sunday
+#        Default: 3 (Wednesday)
+
+Instance.ResetTimeDay = 3
+
 #
 #    Instance.UnloadDelay
 #        Description: Time (in milliseconds) before instance maps are unloaded from memory if no
@@ -1057,7 +1065,7 @@ ClientCacheVersion = 0
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-Event.Announce = 0
+Event.Announce = 1
 
 #
 #    BeepAtStart
@@ -1071,10 +1079,10 @@ BeepAtStart = 1
 #    Motd
 #        Description: Message of the Day, displayed at login.
 #                     Use '@' for a newline and be sure to escape special characters.
-#        Example:     "Welcome to John\'s Server@This server runs on Torghast Core."
-#        Default:     "Welcome to a Torghast server."
+#        Example:     "Welcome to John\'s Server@This server runs on SkyFire Core."
+#        Default:     "Welcome to a Pandaria server."
 
-Motd = "Welcome to a Torghast server."
+Motd = "Welcome to a Pandaria server."
 
 #
 #    Server.LoginInfo
@@ -1101,7 +1109,7 @@ TicketSystem.GMTickets = 1
 
 #
 #    FeedBackSystem
-#        Description: Allow/disallow sending new Bug , Suggestion , Complaint tickets.
+#        Description: Allow/disallow sending new Bug, Suggestion, Complaint tickets.
 #        Default:     1 - (Enabled)
 #                     0 - (Disabled)
 
@@ -1134,24 +1142,6 @@ DBC.EnforceItemAttributes = 1
 AccountInstancesPerHour = 5
 
 #
-#   Account.PasswordChangeSecurity
-#        Description: Controls how secure the password changes are.
-#        Default:     0 - None (Old and new password)
-#                     1 - Email (Email confirmation necessary)
-#                     2 - RBAC (RBAC enable or disables email confirmation per group)
-
-Account.PasswordChangeSecurity = 0
-
-#
-#   RBAC.FreePermissionMode
-#        Description: Enables Free permission mode. Gives all RBAC permissions to everyone.
-#        Default:     0 - Disabled
-#                     1 - Enabled (Everyone has all of the RBAC permissions)
-#
-
-RBAC.FreePermissionMode = 0
-
-#
 #   BirthdayTime
 #        Description: Set to date of project's birth in UNIX time. By default the date when TrinityCore was started (Thu Oct 2, 2008)
 #        Default:     1222964635
@@ -1171,7 +1161,7 @@ BirthdayTime = 1222964635
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-Warden.Enabled = 0
+Warden.Enabled = 1
 
 #
 #    Warden.NumMemChecks
@@ -1238,7 +1228,7 @@ Warden.BanDuration = 86400
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-AllowTwoSide.Interaction.Calendar = 0
+AllowTwoSide.Interaction.Calendar = 1
 
 #
 #    AllowTwoSide.Interaction.Channel
@@ -1246,7 +1236,7 @@ AllowTwoSide.Interaction.Calendar = 0
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-AllowTwoSide.Interaction.Channel = 0
+AllowTwoSide.Interaction.Channel = 1
 
 #
 #    AllowTwoSide.Interaction.Group
@@ -1254,7 +1244,7 @@ AllowTwoSide.Interaction.Channel = 0
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-AllowTwoSide.Interaction.Group = 0
+AllowTwoSide.Interaction.Group = 1
 
 #
 #    AllowTwoSide.Interaction.Guild
@@ -1262,7 +1252,7 @@ AllowTwoSide.Interaction.Group = 0
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-AllowTwoSide.Interaction.Guild = 0
+AllowTwoSide.Interaction.Guild = 1
 
 #
 #    AllowTwoSide.Interaction.Auction
@@ -1270,7 +1260,7 @@ AllowTwoSide.Interaction.Guild = 0
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-AllowTwoSide.Interaction.Auction = 0
+AllowTwoSide.Interaction.Auction = 1
 
 #
 #    AllowTwoSide.Trade
@@ -1278,7 +1268,7 @@ AllowTwoSide.Interaction.Auction = 0
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-AllowTwoSide.Trade = 0
+AllowTwoSide.Trade = 1
 
 #
 #    TalentsInspecting
@@ -1310,7 +1300,7 @@ ThreatRadius = 60
 #                     1.5 - (Enabled, 150%)
 #                     0   - (Disabled, 0%)
 
-Rate.Creature.Aggro = 1
+Rate.Creature.Aggro = 0.5
 
 #
 #    CreatureFamilyFleeAssistanceRadius
@@ -1661,6 +1651,9 @@ GM.LowerSecurity = 0
 
 GM.TicketSystem.ChanceOfGMSurvey = 50
 
+GM.UseOnlineMutes = 0
+GM.MaxMuteTime = 1440
+
 #
 ###################################################################################################
 
@@ -1723,8 +1716,8 @@ Visibility.Notify.Period.InBGArenas   = 1000
 #    Rate.Chi
 #    Rate.Energy
 #    Rate.Loyalty
-#        Description: Multiplier to configure health, mana, incoming rage, loss of rage, focus
-#                     energy and loyalty increase or decrease.
+#        Description: Multiplier to configure health, mana, incoming rage, loss of rage, focus and
+#                     energy increase or decrease.
 #        Default:     1 - (Rate.Health)
 #                     1 - (Rate.Mana)
 #                     1 - (Rate.Rage.Income)
@@ -1734,7 +1727,6 @@ Visibility.Notify.Period.InBGArenas   = 1000
 #                     1 - (Rate.Focus)
 #                     1 - (Rate.Chi)
 #                     1 - (Rate.Energy)
-#                     1 - (Rate.Loyalty)
 
 Rate.Health            = 1
 Rate.Mana              = 1
@@ -1745,7 +1737,6 @@ Rate.RunicPower.Loss   = 1
 Rate.Focus             = 1
 Rate.Chi               = 1
 Rate.Energy            = 1
-Rate.Loyalty           = 1
 
 #
 #    Rate.Skill.Discovery
@@ -2099,7 +2090,7 @@ Battleground.CastDeserter = 1
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-Battleground.QueueAnnouncer.Enable = 0
+Battleground.QueueAnnouncer.Enable = 1
 
 #
 #    Battleground.QueueAnnouncer.PlayerOnly
@@ -2187,7 +2178,7 @@ Battleground.RewardLoserHonorLast       = 3500
 #         Default:     0 - (Disabled)
 #                      1 - (Enabled, Experimental as of still being in development)
 
-Wintergrasp.Enable = 0
+Wintergrasp.Enable = 1
 
 #
 #     Wintergrasp.PlayerMax
@@ -2283,7 +2274,15 @@ Arena.AutoDistributeInterval = 7
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-Arena.QueueAnnouncer.Enable = 0
+Arena.QueueAnnouncer.Enable = 1
+
+#
+#    Arena.QueueAnnouncer.PlayerOnly
+#        Description: Announce arena queue announcement type.
+#        Default:     0 - (System message, Anyone can see it)
+#                     1 - (Private, Only queued players can see it)
+
+Arena.QueueAnnouncer.PlayerOnly = 0
 
 #
 #    Arena.ArenaSeason.ID
@@ -2414,7 +2413,7 @@ Ra.MinLevel = 3
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-SOAP.Enabled = 0
+SOAP.Enabled = 1
 
 #
 #    SOAP.IP
@@ -2466,7 +2465,7 @@ CharDelete.Heroic.MinLevel = 0
 #        Default:     30 - (Enabled)
 #                     0  - (Disabled, Don't delete any characters)
 
-CharDelete.KeepDays = 30
+CharDelete.KeepDays = 0
 
 #
 ###################################################################################################
@@ -2681,7 +2680,7 @@ Calculate.Gameoject.Zone.Area.Data = 0
 #        Default:     0 - (Disabled)
 #                     1 - (Enabled)
 
-Wow.Token = 0
+Wow.Token = 1
 
 #    AUTOMATIC EQUIPMENT LEVEL SCALE LEVEL 90
 #
@@ -2711,7 +2710,7 @@ Ilvl.Scaling.PvP = 463
 #        Default:   0 - (Disabled)
 #                   1 - (Enabled)
 
-PlayedTimeReward.Enabled = 0
+PlayedTimeReward.Enabled = 1
 
 #    PlayedTimeReward.Interval
 #        Description: Interval of bonus for time played
@@ -2800,7 +2799,7 @@ FirstOfTheKingdom.ThroneOfThunder = 1
 #                         Example:  536870912 (512 mb)
 #
 
-Appender.Console=1,3,0
+Appender.Console=1,3,0,13 11 9 5 3 1
 Appender.Server=2,2,0,Server.log,w
 Appender.GM=2,2,15,gm/gm_%s.log
 Appender.DBErrors=2,2,0,DBErrors.log
@@ -2954,12 +2953,12 @@ Guild.WeeklyReputationCap = 4375
 Currency.ResetInterval = 7
 
 #
-#    Currency.ResetWeekDay
+#    Currency.ResetDay
 #        Week day when currency week count is reset (0..6) 0 == Sunday
 #        Default: 3 (Wednesday)
 #
 
-Currency.ResetWeekDay = 3
+Currency.ResetDay = 3
 
 #
 #    Currency.ResetHour
@@ -3010,12 +3009,12 @@ Currency.MaxJusticePoints = 4000
 Currency.StartConquestPoints = 0
 
 #
-#    Currency.ConquestPointsDefaultWeekCap
+#    Currency.ConquestPointsWeekCap
 #        Amount of conquest points that player can earn per week
-#        Default: 1350
+#        Default: 1650
 #
 
-Currency.ConquestPointsDefaultWeekCap = 1350
+Currency.ConquestPointsWeekCap = 1650
 
 #
 #    Currency.ConquestPointsArenaReward
@@ -3024,6 +3023,14 @@ Currency.ConquestPointsDefaultWeekCap = 1350
 #
 
 Currency.ConquestPointsArenaReward = 180
+
+#
+#    Currency.ConquestPointsRatedBgReward
+#        Amount of conquest points rewarded by winning rated BG
+#        Default: 400
+#
+
+Currency.ConquestPointsRatedBgReward = 400
 
 #
 ###################################################################################################
@@ -3058,7 +3065,7 @@ BattlePet.InitialLevel = 1
 #                     1 - (Enabled)
 #
 
-BattlePay.StoreEnabled = 0
+BattlePay.StoreEnabled = 1
 
 #
 #    BattlePay.Currency
@@ -3072,7 +3079,7 @@ BattlePay.StoreEnabled = 0
 #                     16 - (Test)
 #
 
-BattlePay.Currency = 16
+BattlePay.Currency = 5
 
 #
 ###################################################################################################
@@ -3126,7 +3133,7 @@ BlackMarket.AuctionDelayMod = 60
 #                    0 - Log only ("network")
 #                    2 - Log + kick + ban
 
-PacketSpoof.Policy = 1
+PacketSpoof.Policy = 0
 
 #
 #    PacketSpoof.BanMode
@@ -3149,12 +3156,13 @@ PacketSpoof.BanDuration = 86400
 
 #
 ###################################################################################################
+
 ###################################################################################################
 # WORD FILTER SETTINGS
 #
-#    Description: 是否开启频道和邮箱喊话禁言
+#    Description: Filtering players chat for bad words.
 #    Default:     1 - (Enabled)
-#                     0 - (Disabled)
+#                 0 - (Disabled)
 
 WordFilter.Enable = 1
 
@@ -3163,16 +3171,17 @@ WordFilter.Enable = 1
 #   .wordfilter badword list 显示已经检测的关键字
 #   .reload bad_word 重新加载关键字表   
 
-#    Description: 禁言时间
-#    Default:     10000 - (10 秒)
+#    Description: Mute chat for player.
+#    Default:     10000 - (10 sec)
 #                     0     - (Disabled)
 
 WordFilter.MuteDuration = 10000
 
 #
 ###################################################################################################
-#    Transmogrification Custom config
+
 ###################################################################################################
+# TRANSMOGRIFICATION SETTINGS
 #
 #    SETTINGS
 #
@@ -3314,21 +3323,21 @@ Transmogrification.AllowCommon = false
 Transmogrification.AllowUncommon = true
 Transmogrification.AllowRare = true
 Transmogrification.AllowEpic = true
-Transmogrification.AllowLegendary = false
+Transmogrification.AllowLegendary = true
 Transmogrification.AllowArtifact = false
 Transmogrification.AllowHeirloom = true
 
-Transmogrification.AllowMixedArmorTypes = false
-Transmogrification.AllowMixedWeaponTypes = false
+Transmogrification.AllowMixedArmorTypes = true
+Transmogrification.AllowMixedWeaponTypes = true
 Transmogrification.AllowFishingPoles = false
 
-Transmogrification.IgnoreReqRace = false
-Transmogrification.IgnoreReqClass = false
-Transmogrification.IgnoreReqSkill = false
-Transmogrification.IgnoreReqSpell = false
-Transmogrification.IgnoreReqLevel = false
-Transmogrification.IgnoreReqEvent = false
-Transmogrification.IgnoreReqStats = false
+Transmogrification.IgnoreReqRace = true
+Transmogrification.IgnoreReqClass = true
+Transmogrification.IgnoreReqSkill = true
+Transmogrification.IgnoreReqSpell = true
+Transmogrification.IgnoreReqLevel = true
+Transmogrification.IgnoreReqEvent = true
+Transmogrification.IgnoreReqStats = true
 
 #
 #    SET FEATURE
@@ -3363,10 +3372,15 @@ Transmogrification.MaxSets = 10
 Transmogrification.EnableSetInfo = true
 Transmogrification.SetNpcText = 601084
 
-Transmogrification.SetCostModifier = 3.0f
+Transmogrification.SetCostModifier = 0
 Transmogrification.SetCopperCost = 0
 
-#DAMAGE CONFIG BALANCE SYSTEM
+#
+###################################################################################################
+
+###################################################################################################
+# DAMAGE CONFIG BALANCE SYSTEM
+#
 
 CONFIGSPECMAGEARCANE = 100.0
 CONFIGSPECMAGEFIRE = 100.0 
@@ -3406,7 +3420,9 @@ CONFIGSPECMONKBREWMASTER = 100.0
 CONFIGSPECMONKWINDWALKER = 100.0
 CONFIGSPECMONKMISTWEAVER = 100.0
 
-#HEALING BALANCING SYSTEM CUSTOM
+#
+# HEALING BALANCING SYSTEM CUSTOM
+#
 
 HEALCONFIGSPECMAGEARCANE = 100.0
 HEALCONFIGSPECMAGEFIRE = 100.0 
@@ -3446,8 +3462,137 @@ HEALCONFIGSPECMONKBREWMASTER = 100.0
 HEALCONFIGSPECMONKWINDWALKER = 100.0
 HEALCONFIGSPECMONKMISTWEAVER = 100.0
 
+#
 # PETS CUSTOM BALANCE SYSTEM
+#
 
 CONFIG_SPEC_PET_FEROCITY = 100
 CONFIG_SPEC_PET_TENACITY = 100
 CONFIG_SPEC_PET_CUNNING = 100
+CONFIG_PET_NO_SPEC = 100
+
+#
+# ISLE OF THUNDER
+#
+
+IsleofThunder.Stage = 1
+IsleofThunder.Progression.Horde = 0
+IsleofThunder.Progression.Alliance = 0
+
+#
+# OTHER
+#
+
+BonusRates.Enabled = 1
+
+DisconnectToleranceInterval = 1
+
+MonsterSight = 50
+GuarderSight = 50
+
+Channel.ConstantLocale = 0
+
+Battleground.IgnoreFaction = 1
+Battleground.HugeBgStartTime = 20
+Battleground.HugeBgEndTime = 22
+Battleground.DtBgEnabled = 1
+Battleground.DtBgStartTime = 10
+Battleground.DtBgEndTime = 23
+
+Arena.ProgressiveMMRTimer = 30000
+Arena.ProgressiveMMRStepSize = 50
+
+Visibility.RelocationLowerLimit = 10
+Visibility.AINotifyDelay = 1000
+
+CustomVisibility.Threshold.Map = 3
+CustomVisibility.Threshold.Zone = 7
+
+ExecutedServices.Log.Enabled = 1
+
+DungeonFinder.CastDeserter = 0
+DungeonFinder.OverrideRolesRequired = 0
+DungeonFinder.MultiqueueEnabled = 0
+DungeonFinder.KeepQueuesInDungeon = 0
+DungeonFinder.TanksNeeded = 1
+DungeonFinder.HealersNeeded = 1
+DungeonFinder.DPSNeeded = 3
+DungeonFinder.ShortageCheckInterval = 5
+DungeonFinder.ShortagePercent = 50
+DungeonFinder.MaxLfrQueues = 3
+
+GM.LogTrade = 0
+GM.AllowFriend = 0
+
+AllowTwoSide.WhoList = 0
+AllowTwoSide.Accounts = 1
+AllowTwoSide.AddFriend = 0
+AllowTwoSide.Interaction.Mail = 0
+AllowTwoSide.Interaction.Chat = 0
+AllowTwoSide.Interaction.DungeonFinder = 0
+
+Channel.SilentlyGMJoin = 0
+
+Transport.DisableMapObjPrespawn = 0
+Transport.DisableLocalPrespawn = 0
+Transport.PreferServerWorldPosition = 1
+Transport.LoadGrids = 1
+
+BonusRoll.MoneyMin = 285000
+BonusRoll.MoneyMax = 1285000
+
+ShowInfoPlayer.ban = 1
+ShowInfoPlayer.kick = 1
+ShowInfoPlayer.mute = 1
+
+TransferMail.Enabled = 1
+
+XP.Kill.Difference = 10
+XP.Gather.Difference = 10
+
+PetBattles.Endabled = 1
+
+ICore.Arena.HighLatencyThreshold = 200
+ICore.Arena.PrecastSpells = ""
+
+DeletingItem.Log.Enabled = 1
+DeletingItem.KeepDays = 30
+DeletingItem.MinEquipItemLevel = 410
+DeletingItem.MinOtherItemLevel = 85
+DeletingItem.MinQuality = 3
+DeletingItem.MaxQuality = 5
+
+Creature.PickPocketRefillDelay = 600000
+
+AuctionHouse.AllowSorting = 1
+AuctionHouse.ForceMainThread = 0
+AuctionHouse.MinDiffForLog = 25
+AuctionHouse.MinDiffForThrottle = 25
+
+Battleground.Rewards.Enabled = 1
+Battleground.Rewards.Item = 32546
+Battleground.Rewards.Games = 15
+
+ICore.RichPvPRewards.Enabled = 1
+ICore.RichPvPRewards.Item = 32547
+ICore.Rewards.RichPvPRewards.Chance = 30
+ICore.Rewards.RichPvPRewards.Games = 30
+
+Arena.RbgRewards.Enabled = 1
+Arena.WinStreakMod.Enabled = 1
+Arena.WinStreakMod.Limit = 96
+
+ICore.RoyaleEvent.Enabled = 1
+
+VengeanceMultipier = 1
+
+BoostPromotion.Enabled = 1
+
+Rate.XP.Kill.Premium = 1
+Rate.XP.Quest.Premium = 1
+Rate.XP.Explore.Premium = 1
+Rate.Reputation.Premium = 1
+Rate.Honor.Premium = 1
+Rate.XP.Gather = 1
+
+Rate.Modw.InGame = 1
