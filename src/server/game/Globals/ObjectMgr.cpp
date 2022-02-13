@@ -1795,8 +1795,8 @@ void ObjectMgr::LoadCreatures()
 
     //                                                      0        1   2      3          4            5           6           7            8            9                10                11
     QueryResult result = WorldDatabase.Query("SELECT creature.guid, id, map, modelid, equipment_id, position_x, position_y, position_z, orientation, spawntimesecs, spawntimesecs_max, wander_distance, "
-    //         12            13         14         15          16         17         18          19             20                 21                  22                     23                   24                     25
-        "currentwaypoint, curhealth, curmana, movement_type, spawnMask, phaseMask, eventEntry, pool_entry, creature.npcflag, creature.npcflag2, creature.unit_flags, creature.unit_flags2, creature.dynamicflags, creature.walk_mode "
+    //         12            13         14         15          16         17         18          19             20                 21                  22                     23                   24                     25                   26
+        "currentwaypoint, curhealth, curmana, movement_type, spawnMask, phaseMask, eventEntry, pool_entry, creature.npcflag, creature.npcflag2, creature.unit_flags, creature.unit_flags2, creature.dynamicflags, creature.ScriptName, creature.walk_mode "
         "FROM creature "
         "LEFT OUTER JOIN game_event_creature ON creature.guid = game_event_creature.guid "
         "LEFT OUTER JOIN pool_creature ON creature.guid = pool_creature.guid");
@@ -1856,7 +1856,12 @@ void ObjectMgr::LoadCreatures()
         data.unit_flags           = fields[22].GetUInt32();
         data.unit_flags2          = fields[23].GetUInt32();
         data.dynamicflags         = fields[24].GetUInt32();
-        data.WalkMode             = fields[25].GetFloat();
+        data.ScriptId             = GetScriptId(fields[25].GetCString());
+
+        if (!data.ScriptId)
+            data.ScriptId = cInfo->ScriptID;
+
+        data.WalkMode             = fields[26].GetFloat();
 
         data.gameEventId = gameEvent;
 
@@ -2143,8 +2148,8 @@ void ObjectMgr::LoadGameobjects()
 
     //                                                0                1   2    3           4           5           6
     QueryResult result = WorldDatabase.Query("SELECT gameobject.guid, id, map, position_x, position_y, position_z, orientation, "
-    //   7          8          9          10         11             12            13     14         15         16          17
-        "rotation0, rotation1, rotation2, rotation3, spawntimesecs, animprogress, state, spawnMask, phaseMask, eventEntry, pool_entry "
+    //   7          8          9          10         11             12             13       14         15         16          17           18
+        "rotation0, rotation1, rotation2, rotation3, spawntimesecs, animprogress, state, spawnMask, phaseMask, eventEntry, pool_entry, ScriptName "
         "FROM gameobject LEFT OUTER JOIN game_event_gameobject ON gameobject.guid = game_event_gameobject.guid "
         "LEFT OUTER JOIN pool_gameobject ON gameobject.guid = pool_gameobject.guid");
 
@@ -2241,6 +2246,10 @@ void ObjectMgr::LoadGameobjects()
         data.phaseMask      = fields[15].GetUInt32();
         int16 gameEvent     = fields[16].GetInt8();
         uint32 PoolId       = fields[17].GetUInt32();
+        data.ScriptId       = GetScriptId(fields[18].GetCString());
+
+        if (!data.ScriptId)
+            data.ScriptId = gInfo->ScriptId;
 
         data.gameEventId = gameEvent;
 
@@ -9046,7 +9055,11 @@ void ObjectMgr::LoadScriptNames()
       "UNION "
       "SELECT DISTINCT(ScriptName) FROM battleground_template WHERE ScriptName <> '' "
       "UNION "
+      "SELECT DISTINCT(ScriptName) FROM creature WHERE ScriptName <> '' "
+      "UNION "
       "SELECT DISTINCT(ScriptName) FROM creature_template WHERE ScriptName <> '' "
+      "UNION "
+      "SELECT DISTINCT(ScriptName) FROM gameobject WHERE ScriptName <> '' "
       "UNION "
       "SELECT DISTINCT(ScriptName) FROM gameobject_template WHERE ScriptName <> '' "
       "UNION "
