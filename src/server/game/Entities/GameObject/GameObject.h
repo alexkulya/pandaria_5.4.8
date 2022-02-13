@@ -787,6 +787,7 @@ struct GameObjectData
     GOState go_state;
     uint16 spawnMask;
     uint8 artKit;
+    uint32 ScriptId;
     bool dbData;
     uint32 gameEventId = 0;
 };
@@ -1006,7 +1007,7 @@ class GameObject : public WorldObject, public GridObject<GameObject>, public Map
 
         void EventInform(uint32 eventId);
 
-        virtual uint32 GetScriptId() const { return GetGOInfo()->ScriptId; }
+        virtual uint32 GetScriptId() const;
         GameObjectAI* AI() const { return m_AI; }
 
         std::string GetAIName() const;
