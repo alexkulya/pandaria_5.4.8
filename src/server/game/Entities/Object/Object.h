@@ -868,6 +868,8 @@ class WorldObject : public Object, public WorldLocation
 
         void GetCreatureListWithEntryInGridAppend(std::list<Creature*>& lList, uint32 uiEntry, float fMaxSearchRange) const;
 
+        void GetCreaturesWithEntryInRange(std::list<Creature*>& creatureList, float radius, uint32 entry);
+
         void DestroyForNearbyPlayers();
         virtual void UpdateObjectVisibility(bool forced = true);
         void UpdateStealthVisibility(uint32 diff);

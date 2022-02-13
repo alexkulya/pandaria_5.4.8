@@ -2,6 +2,7 @@
 #include "ScriptedCreature.h"
 #include "ScriptedEscortAI.h"
 #include "SpellScript.h"
+#include "Object.h"
 
 class npc_master_shang_xi : public CreatureScript
 {
@@ -133,67 +134,77 @@ class go_wandering_weapon_rack : public GameObjectScript
         }
 };
 
-class npc_training_target : public CreatureScript
+struct npc_training_target : public ScriptedAI
 {
-    public:
-        npc_training_target() : CreatureScript("npc_training_target") { }
+    uint32 resetTimer;
 
-        struct npc_training_targetAI : public ScriptedAI
+    npc_training_target(Creature* creature) : ScriptedAI(creature)
+    {
+        SetCombatMovement(false);
+    }
+
+    void Reset() override
+    {
+        me->SetReactState(REACT_PASSIVE);
+        // disable rotate
+        me->SetControlled(true, UNIT_STATE_STUNNED);
+        // imune to knock aways like blast wave
+        me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK, true);
+
+        me->m_Events.AddLambdaEventAtOffset([this]()
         {
-            uint32 resetTimer;
+            std::list<Creature*> trainees;
+            me->GetCreaturesWithEntryInRange(trainees, 4.0f, 65469);
+            me->GetCreaturesWithEntryInRange(trainees, 4.0f, 53565);
 
-            npc_training_targetAI(Creature* creature) : ScriptedAI(creature)
-            {
-                SetCombatMovement(false);
-            }
+            for (Creature* unit : trainees)
+                unit->AI()->SetData(1, 1);
+        }, 500);
 
-            void Reset() override
-            {
-                me->SetReactState(REACT_PASSIVE);
-                // disable rotate
-                me->SetControlled(true, UNIT_STATE_STUNNED);
-                // imune to knock aways like blast wave
-                me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK, true);
+        resetTimer = 5 * IN_MILLISECONDS;
+    }
 
-                resetTimer = 5000;
-            }
+    void EnterEvadeMode() override
+    {
+        if (_EnterEvadeMode())
+            Reset();
+    }
 
-            void EnterEvadeMode() override
-            {
-                if (_EnterEvadeMode())
-                    Reset();
-            }
+    void JustDied(Unit* /*killer*/) override
+    {
+        std::list<Creature*> trainees;
+        me->GetCreaturesWithEntryInRange(trainees, 4.0f, 65469);
+        me->GetCreaturesWithEntryInRange(trainees, 4.0f, 53565);
 
-            void DamageTaken(Unit* /*attacker*/, uint32& /*damage*/) override
-            {
-                resetTimer = 5000;
-            }
+        for (Creature* unit : trainees)
+            unit->AI()->SetData(2, 2);
+    }
 
-            void UpdateAI(uint32 diff) override
-            {
-                if (!UpdateVictim())
-                    return;
+    void DamageTaken(Unit* /*attacker*/, uint32& /*damage*/) override
+    {
+        resetTimer = 5 * IN_MILLISECONDS;
+    }
 
-                if (!me->HasUnitState(UNIT_STATE_STUNNED))
-                    me->SetControlled(true, UNIT_STATE_STUNNED);
+    void UpdateAI(uint32 diff) override
+    {
+        if (!UpdateVictim())
+            return;
 
-                if (resetTimer <= diff)
-                {
-                    EnterEvadeMode();
-                    resetTimer = 5000;
-                }
-                else
-                    resetTimer -= diff;
-            }
+        if (!me->HasUnitState(UNIT_STATE_STUNNED))
+            me->SetControlled(true, UNIT_STATE_STUNNED);
 
-            void MoveInLineOfSight(Unit* /*who*/) override { }
-        };
-
-        CreatureAI* GetAI(Creature* creature) const override
+        if (resetTimer <= diff)
         {
-            return new npc_training_targetAI(creature);
+            EnterEvadeMode();
+            resetTimer = 5000;
         }
+        else
+            resetTimer -= diff;
+    }
+
+    void MoveInLineOfSight(Unit* /*who*/) override { }
 };
+
 
 class npc_tushui_trainee : public CreatureScript
 {
@@ -1206,117 +1217,6 @@ class npc_merchant_lorvo : public CreatureScript
         }
 };
 
-class npc_instructors : public CreatureScript
-{
-    public:
-        npc_instructors() : CreatureScript("npc_instructors") { }
-
-        struct npc_instructorsAI : public ScriptedAI
-        {
-            EventMap events;
-            uint8 rand;
-
-            npc_instructorsAI(Creature* creature) : ScriptedAI(creature) { }
-
-            uint32 punch1;
-            uint32 punch2;
-            uint32 punch3;
-
-            void Reset() override
-            {
-                punch1 = 300;
-                punch2 = 2800;
-                punch3 = 5300;
-            }
-
-            void UpdateAI(uint32 diff) override
-            {
-                if (punch1 <= diff)
-                {
-                    me->HandleEmoteCommand(35);
-                    punch1 = 7500;
-                }
-                else
-                    punch1 -= diff;
-
-                if (punch2 <= diff)
-                {
-                    me->HandleEmoteCommand(36);
-                    punch2 = 7500;
-                }
-                else
-                    punch2 -= diff;
-
-                if (punch3 <= diff)
-                {
-                    me->HandleEmoteCommand(37);
-                    punch3 = 7500;
-                }
-                else
-                    punch3 -= diff;
-            }
-        };
-
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new npc_instructorsAI(creature);
-        }
-};
-
-class npc_aspiring_trainee : public CreatureScript
-{
-    public:
-        npc_aspiring_trainee() : CreatureScript("npc_aspiring_trainee") { }
-
-        struct npc_aspiring_traineeAI : public ScriptedAI
-        {
-            npc_aspiring_traineeAI(Creature* creature) : ScriptedAI(creature) { }
-
-            uint32 punch1;
-            uint32 punch2;
-            uint32 punch3;
-
-            void Reset() override
-            {
-                punch1 = 1000;
-                punch2 = 3500;
-                punch3 = 6000;
-            }
-
-            void UpdateAI(uint32 diff) override
-            {
-                if (punch1 <= diff)
-                {
-                    me->HandleEmoteCommand(35);
-                    punch1 = 7500;
-                }
-                else
-                    punch1 -= diff;
-
-                if (punch2 <= diff)
-                {
-                    me->HandleEmoteCommand(36);
-                    punch2 = 7500;
-                }
-                else
-                    punch2 -= diff;
-
-                if (punch3 <= diff)
-                {
-                    me->HandleEmoteCommand(37);
-                    punch3 = 7500;
-                }
-                else
-                    punch3 -= diff;
-            }
-        };
-
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new npc_aspiring_traineeAI(creature);
-        }
-};
-
 class spell_lit_brazier_of_flame : public SpellScriptLoader
 {
     public:
@@ -1432,7 +1332,7 @@ void AddSC_wandering_island_north()
 {
     new npc_master_shang_xi();
     new go_wandering_weapon_rack();
-    new npc_training_target();
+    new creature_script<npc_training_target>("npc_training_target");
     new npc_tushui_trainee();
     new npc_huojin_trainee();
     new boss_jaomin_ro();
@@ -1445,8 +1345,6 @@ void AddSC_wandering_island_north()
     new spell_huo_benediction();
     new AreaTrigger_at_temple_entrance();
     new npc_trainee_nim();
-    new npc_instructors();
-    new npc_aspiring_trainee();
     new npc_merchant_lorvo();
     new spell_lit_brazier_of_flame();
     new spell_feet_of_fury();
