@@ -340,6 +340,9 @@ struct CreatureAddon
     uint32 bytes1;
     uint32 bytes2;
     uint32 emote;
+    uint16 ai_anim_kit;
+    uint16 movement_anim_kit;
+    uint16 melee_anim_kit;
     std::vector<uint32> auras;
 };
 

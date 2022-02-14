@@ -2205,6 +2205,10 @@ bool Creature::LoadCreaturesAddon(bool reload)
     if (cainfo->emote != 0)
         HandleEmoteStateCommand(cainfo->emote);
 
+    SetAIAnimKitId(cainfo->ai_anim_kit);
+    SetMovementAnimKitId(cainfo->movement_anim_kit);
+    SetMeleeAnimKitId(cainfo->melee_anim_kit);
+
     //Load Path
     if (cainfo->path_id != 0)
         m_path_id = cainfo->path_id;
