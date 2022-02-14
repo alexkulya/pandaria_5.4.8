@@ -572,8 +572,8 @@ void ObjectMgr::LoadCreatureTemplateAddons()
 {
     uint32 oldMSTime = getMSTime();
 
-    //                                                0       1       2      3       4       5      6
-    QueryResult result = WorldDatabase.Query("SELECT entry, path_id, mount, bytes1, bytes2, emote, auras FROM creature_template_addon");
+    //                                                 0       1       2      3       4       5         6              7                 8           9
+    QueryResult result = WorldDatabase.Query("SELECT entry, path_id, mount, bytes1, bytes2, emote, ai_anim_kit, movement_anim_kit, melee_anim_kit, auras FROM creature_template_addon");
 
     if (!result)
     {
@@ -596,13 +596,16 @@ void ObjectMgr::LoadCreatureTemplateAddons()
 
         CreatureAddon& creatureAddon = _creatureTemplateAddonStore[entry];
 
-        creatureAddon.path_id = fields[1].GetUInt32();
-        creatureAddon.mount   = fields[2].GetUInt32();
-        creatureAddon.bytes1  = fields[3].GetUInt32();
-        creatureAddon.bytes2  = fields[4].GetUInt32();
-        creatureAddon.emote   = fields[5].GetUInt32();
+        creatureAddon.path_id           = fields[1].GetUInt32();
+        creatureAddon.mount             = fields[2].GetUInt32();
+        creatureAddon.bytes1            = fields[3].GetUInt32();
+        creatureAddon.bytes2            = fields[4].GetUInt32();
+        creatureAddon.emote             = fields[5].GetUInt32();
+        creatureAddon.ai_anim_kit       = fields[6].GetUInt16();
+        creatureAddon.movement_anim_kit = fields[7].GetUInt16();
+        creatureAddon.melee_anim_kit    = fields[8].GetUInt16();
 
-        Tokenizer tokens(fields[6].GetString(), ' ');
+        Tokenizer tokens(fields[9].GetString(), ' ');
         uint8 i = 0;
         creatureAddon.auras.resize(tokens.size());
         for (Tokenizer::const_iterator itr = tokens.begin(); itr != tokens.end(); ++itr)
@@ -647,6 +650,24 @@ void ObjectMgr::LoadCreatureTemplateAddons()
         {
             TC_LOG_ERROR("sql.sql", "Creature (Entry: %u) has invalid emote (%u) defined in `creature_template_addon`.", entry, creatureAddon.emote);
             creatureAddon.emote = 0;
+        }
+
+        if (creatureAddon.ai_anim_kit && !sAnimKitStore.LookupEntry(creatureAddon.ai_anim_kit))
+        {
+            TC_LOG_ERROR("sql.sql", "Creature (Entry: %u) has invalid ai_anim_kit (%u) defined in `creature_template_addon`.", entry, creatureAddon.ai_anim_kit);
+            creatureAddon.ai_anim_kit = 0;
+        }
+
+        if (creatureAddon.movement_anim_kit && !sAnimKitStore.LookupEntry(creatureAddon.movement_anim_kit))
+        {
+            TC_LOG_ERROR("sql.sql", "Creature (Entry: %u) has invalid movement_anim_kit (%u) defined in `creature_template_addon`.", entry, creatureAddon.movement_anim_kit);
+            creatureAddon.movement_anim_kit = 0;
+        }
+
+        if (creatureAddon.melee_anim_kit && !sAnimKitStore.LookupEntry(creatureAddon.melee_anim_kit))
+        {
+            TC_LOG_ERROR("sql.sql", "Creature (Entry: %u) has invalid melee_anim_kit (%u) defined in `creature_template_addon`.", entry, creatureAddon.melee_anim_kit);
+            creatureAddon.melee_anim_kit = 0;
         }
 
         ++count;
@@ -1093,8 +1114,8 @@ void ObjectMgr::LoadCreatureAddons()
 {
     uint32 oldMSTime = getMSTime();
 
-    //                                                0       1       2      3       4       5      6
-    QueryResult result = WorldDatabase.Query("SELECT guid, path_id, mount, bytes1, bytes2, emote, auras FROM creature_addon");
+    //                                                 0       1       2      3       4      5         6               7                8           9
+    QueryResult result = WorldDatabase.Query("SELECT guid, path_id, mount, bytes1, bytes2, emote, ai_anim_kit, movement_anim_kit, melee_anim_kit, auras FROM creature_addon");
 
     if (!result)
     {
@@ -1125,12 +1146,15 @@ void ObjectMgr::LoadCreatureAddons()
             TC_LOG_ERROR("sql.sql", "Creature (GUID %u) has movement type set to WAYPOINT_MOTION_TYPE but no path assigned", guid);
         }
 
-        creatureAddon.mount   = fields[2].GetUInt32();
-        creatureAddon.bytes1  = fields[3].GetUInt32();
-        creatureAddon.bytes2  = fields[4].GetUInt32();
-        creatureAddon.emote   = fields[5].GetUInt32();
+        creatureAddon.mount             = fields[2].GetUInt32();
+        creatureAddon.bytes1            = fields[3].GetUInt32();
+        creatureAddon.bytes2            = fields[4].GetUInt32();
+        creatureAddon.emote             = fields[5].GetUInt32();
+        creatureAddon.ai_anim_kit       = fields[6].GetUInt16();
+        creatureAddon.movement_anim_kit = fields[7].GetUInt16();
+        creatureAddon.melee_anim_kit    = fields[8].GetUInt16();
 
-        Tokenizer tokens(fields[6].GetString(), ' ');
+        Tokenizer tokens(fields[9].GetString(), ' ');
         uint8 i = 0;
         creatureAddon.auras.resize(tokens.size());
         for (Tokenizer::const_iterator itr = tokens.begin(); itr != tokens.end(); ++itr)
@@ -1175,6 +1199,24 @@ void ObjectMgr::LoadCreatureAddons()
         {
             TC_LOG_ERROR("sql.sql", "Creature (GUID: %u) has invalid emote (%u) defined in `creature_addon`.", guid, creatureAddon.emote);
             creatureAddon.emote = 0;
+        }
+
+        if (creatureAddon.ai_anim_kit && !sAnimKitStore.LookupEntry(creatureAddon.ai_anim_kit))
+        {
+            TC_LOG_ERROR("sql.sql", "Creature (GUID: " UI64FMTD ") has invalid ai_anim_kit (%u) defined in `creature_addon`.", guid, creatureAddon.ai_anim_kit);
+            creatureAddon.ai_anim_kit = 0;
+        }
+
+        if (creatureAddon.movement_anim_kit && !sAnimKitStore.LookupEntry(creatureAddon.movement_anim_kit))
+        {
+            TC_LOG_ERROR("sql.sql", "Creature (GUID: " UI64FMTD ") has invalid movement_anim_kit (%u) defined in `creature_addon`.", guid, creatureAddon.movement_anim_kit);
+            creatureAddon.movement_anim_kit = 0;
+        }
+
+        if (creatureAddon.melee_anim_kit && !sAnimKitStore.LookupEntry(creatureAddon.melee_anim_kit))
+        {
+            TC_LOG_ERROR("sql.sql", "Creature (GUID: " UI64FMTD ") has invalid melee_anim_kit (%u) defined in `creature_addon`.", guid, creatureAddon.melee_anim_kit);
+            creatureAddon.melee_anim_kit = 0;
         }
 
         ++count;
