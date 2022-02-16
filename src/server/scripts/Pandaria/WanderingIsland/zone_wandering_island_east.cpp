@@ -516,6 +516,7 @@ class npc_water_spirit_dailo : public CreatureScript
             {
                 player->CLOSE_GOSSIP_MENU();
                 player->KilledMonsterCredit(55548);
+                player->KilledMonsterCredit(55547); //hack
                 player->RemoveAurasDueToSpell(59073); // Remove Phase 2, first water spirit disapear
 
                 if (Creature* shu = player->SummonCreature(55558, creature->GetPositionX(), creature->GetPositionY(), creature->GetPositionZ(), creature->GetOrientation(), TEMPSUMMON_MANUAL_DESPAWN, 0))
