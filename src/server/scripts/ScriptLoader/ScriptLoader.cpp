@@ -125,6 +125,7 @@ void AddSC_achievement_scripts();
 void AddSC_brawlers_guild();
 void AddSC_on_duel();
 void AddSC_transmog();
+void AddSC_world_map_scripts();
 
 //eastern kingdoms
 void AddSC_boss_alizabal();                  //Baradin Hold
@@ -1156,6 +1157,7 @@ void AddWorldScripts()
     AddSC_chat_log();
     AddSC_on_duel();
 	AddSC_transmog();
+    AddSC_world_map_scripts();
 #endif
 }
 

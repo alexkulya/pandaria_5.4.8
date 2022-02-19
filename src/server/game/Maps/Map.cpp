@@ -230,7 +230,7 @@ m_unloadTimer(0), m_VisibleDistance(DEFAULT_VISIBILITY_DISTANCE),
 m_VisibilityNotifyPeriod(DEFAULT_VISIBILITY_NOTIFY_PERIOD),
 m_activeNonPlayersIter(m_activeNonPlayers.end()), _transportsUpdateIter(_transports.end()),
 i_gridExpiry(expiry), debugFlexPlayersCount(0),
-i_scriptLock(false)
+i_scriptLock(false), _defaultLight(GetDefaultMapLight(id))
 {
     m_parentMap = (_parent ? _parent : this);
     for (unsigned int idx=0; idx < MAX_NUMBER_OF_GRIDS; ++idx)
@@ -484,6 +484,7 @@ bool Map::AddPlayerToMap(Player* player)
 
     SendInitSelf(player);
     SendInitTransports(player);
+    SendZoneDynamicInfo(player);
 
     player->m_clientGUIDs.clear();
     player->UpdateObjectVisibility(false);
@@ -3777,6 +3778,7 @@ void Map::LoadRespawnTimes()
     PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_CREATURE_RESPAWNS);
     stmt->setUInt16(0, GetId());
     stmt->setUInt32(1, GetInstanceId());
+
     if (PreparedQueryResult result = CharacterDatabase.Query(stmt))
     {
         do
@@ -3829,6 +3831,7 @@ void Map::DeleteRespawnTimesInDB(uint16 mapId, uint32 instanceId)
 time_t Map::GetLinkedRespawnTime(uint64 guid) const
 {
     uint64 linkedGuid = sObjectMgr->GetLinkedRespawnGuid(guid);
+
     switch (GUID_HIPART(linkedGuid))
     {
         case HIGHGUID_UNIT:
@@ -3840,4 +3843,107 @@ time_t Map::GetLinkedRespawnTime(uint64 guid) const
     }
 
     return time_t(0);
+}
+
+void Map::SendZoneDynamicInfo(Player* player)
+{
+    uint32 zoneId = GetZoneId(player->GetPositionX(), player->GetPositionY(), player->GetPositionZ());
+    ZoneDynamicInfoMap::const_iterator itr = _zoneDynamicInfo.find(zoneId);
+
+    if (itr == _zoneDynamicInfo.end())
+        return;
+
+    if (uint32 music = itr->second.MusicId)
+    {
+        WorldPacket data(SMSG_PLAY_MUSIC, 4);
+        data << uint32(music);
+        player->SendDirectMessage(&data);
+    }
+
+    if (uint32 weather = itr->second.WeatherId)
+    {
+        WorldPacket data(SMSG_WEATHER, 4 + 4 + 1);
+        data << uint32(weather);
+        data << float(itr->second.WeatherGrade);
+        data << uint8(0);
+        player->SendDirectMessage(&data);
+    }
+
+    if (uint32 overrideLight = itr->second.OverrideLightId)
+    {
+        WorldPacket data(SMSG_OVERRIDE_LIGHT, 4 + 4 + 1);
+        data << uint32(_defaultLight);
+        data << uint32(overrideLight);
+        data << uint32(itr->second.LightFadeInTime);
+        player->SendDirectMessage(&data);
+    }
+}
+
+void Map::SetZoneMusic(uint32 zoneId, uint32 musicId)
+{
+    if (_zoneDynamicInfo.find(zoneId) == _zoneDynamicInfo.end())
+        _zoneDynamicInfo.insert(ZoneDynamicInfoMap::value_type(zoneId, ZoneDynamicInfo()));
+
+    _zoneDynamicInfo[zoneId].MusicId = musicId;
+
+    Map::PlayerList const& players = GetPlayers();
+
+    if (!players.isEmpty())
+    {
+        WorldPacket data(SMSG_PLAY_MUSIC, 4);
+        data << uint32(musicId);
+
+        for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
+            if (Player* player = itr->GetSource())
+                if (player->GetZoneId() == zoneId)
+                    player->SendDirectMessage(&data);
+    }
+}
+
+void Map::SetZoneWeather(uint32 zoneId, uint32 weatherId, float weatherGrade)
+{
+    if (_zoneDynamicInfo.find(zoneId) == _zoneDynamicInfo.end())
+        _zoneDynamicInfo.insert(ZoneDynamicInfoMap::value_type(zoneId, ZoneDynamicInfo()));
+
+    ZoneDynamicInfo& info = _zoneDynamicInfo[zoneId];
+    info.WeatherId = weatherId;
+    info.WeatherGrade = weatherGrade;
+    Map::PlayerList const& players = GetPlayers();
+
+    if (!players.isEmpty())
+    {
+        WorldPacket data(SMSG_WEATHER, 4 + 4 + 1);
+        data << uint32(weatherId);
+        data << float(weatherGrade);
+        data << uint8(0);
+
+        for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
+            if (Player* player = itr->GetSource())
+                if (player->GetZoneId() == zoneId)
+                    player->SendDirectMessage(&data);
+    }
+}
+
+void Map::SetZoneOverrideLight(uint32 zoneId, uint32 lightId, uint32 fadeInTime)
+{
+    if (_zoneDynamicInfo.find(zoneId) == _zoneDynamicInfo.end())
+        _zoneDynamicInfo.insert(ZoneDynamicInfoMap::value_type(zoneId, ZoneDynamicInfo()));
+
+    ZoneDynamicInfo& info = _zoneDynamicInfo[zoneId];
+    info.OverrideLightId = lightId;
+    info.LightFadeInTime = fadeInTime;
+    Map::PlayerList const& players = GetPlayers();
+
+    if (!players.isEmpty())
+    {
+        WorldPacket data(SMSG_OVERRIDE_LIGHT, 4 + 4 + 1);
+        data << uint32(_defaultLight);
+        data << uint32(lightId);
+        data << uint32(fadeInTime);
+
+        for (Map::PlayerList::const_iterator itr = players.begin(); itr != players.end(); ++itr)
+            if (Player* player = itr->GetSource())
+                if (player->GetZoneId() == zoneId)
+                    player->SendDirectMessage(&data);
+    }
 }

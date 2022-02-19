@@ -78,8 +78,11 @@
 
 #define SIZEFMTD ACE_SIZE_T_FORMAT_SPECIFIER
 
-
-
+#if COMPILER == COMPILER_MICROSOFT
+#  define SZFMTD "%Iu"
+#else
+#  define SZFMTD "%zu"
+#endif
 
 typedef std::int64_t  int64;
 typedef std::int32_t  int32;

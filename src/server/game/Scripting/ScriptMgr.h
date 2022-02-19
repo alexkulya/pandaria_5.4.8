@@ -355,6 +355,10 @@ class WorldMapScript : public ScriptObject, public MapScript<Map>
     protected:
 
         WorldMapScript(const char* name, uint32 mapId);
+
+    public:
+
+        bool IsDatabaseBound() const final { return true; } 
 };
 
 class InstanceMapScript : public ScriptObject, public MapScript<InstanceMap>
@@ -950,6 +954,12 @@ public:
 // Placed here due to ScriptRegistry::AddScript dependency.
 #define sScriptMgr ACE_Singleton<ScriptMgr, ACE_Null_Mutex>::instance()
 
+typedef std::vector<ScriptObject*> UnusedScriptContainer;
+typedef std::list<std::string> UnusedScriptNamesContainer;
+
+extern UnusedScriptContainer UnusedScripts;
+extern UnusedScriptNamesContainer UnusedScriptNames;
+
 // Manages registration, loading, and execution of scripts.
 class ScriptMgr
 {
@@ -975,6 +985,7 @@ class ScriptMgr
     public: /* Unloading */
 
         void Unload();
+        void UnloadUnusedScripts();
 
     public: /* SpellScriptLoader */
 

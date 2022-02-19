@@ -42,6 +42,9 @@ namespace
     ExampleScriptContainer ExampleScripts;
 }
 
+UnusedScriptContainer UnusedScripts;
+UnusedScriptNamesContainer UnusedScriptNames;
+
 // This is the global static registry of scripts.
 template<class TScript>
 class ScriptRegistry
@@ -97,6 +100,13 @@ class ScriptRegistry
                     {
                         ScriptPointerList[id] = script;
                         sScriptMgr->IncrementScriptCount();
+
+                    #ifdef SCRIPTS
+                        UnusedScriptNamesContainer::iterator itr = std::lower_bound(UnusedScriptNames.begin(), UnusedScriptNames.end(), script->GetName());
+
+                        if (itr != UnusedScriptNames.end() && *itr == script->GetName())
+                            UnusedScriptNames.erase(itr);
+                    #endif
                     }
                     else
                     {
@@ -116,6 +126,8 @@ class ScriptRegistry
 
                     // These scripts don't get stored anywhere so throw them into this to avoid leaking memory
                     ExampleScripts.insert(script);
+
+                    UnusedScripts.push_back(script);
                 }
             }
             else
@@ -192,6 +204,16 @@ void ScriptMgr::Initialize()
     TC_LOG_INFO("server.loading", "Loading C++ scripts");
     FillSpellSummary();
     _scriptLoader();
+
+#ifdef SCRIPTS
+    for (std::string const& scriptName : UnusedScriptNames)
+    {
+        TC_LOG_ERROR("sql.sql", "ScriptName '%s' exists in database, but no core script found!", scriptName.c_str());
+    }
+#endif
+
+    UnloadUnusedScripts();
+
     TC_LOG_INFO("server.loading", ">> Loaded %u C++ scripts in %u ms", GetScriptCount(), GetMSTimeDiffToNow(oldMSTime));
 }
 
@@ -236,8 +258,18 @@ void ScriptMgr::Unload()
         delete *itr;
     ExampleScripts.clear();
 
+    UnloadUnusedScripts();
+
     delete [] SpellSummary;
     delete [] UnitAI::AISpellInfo;
+}
+
+void ScriptMgr::UnloadUnusedScripts()
+{
+    for (size_t i = 0; i < UnusedScripts.size(); ++i)
+        delete UnusedScripts[i];
+
+    UnusedScripts.clear();
 }
 
 void ScriptMgr::LoadDatabase()
