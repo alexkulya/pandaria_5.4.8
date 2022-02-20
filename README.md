@@ -1,6 +1,8 @@
 
 **Mists of Pandaria 5.4.8 Build 18414**
 
+Discord link: https://discord.gg/y3zspxan7k
+
 ## Requirements
 + Platform: Linux, Windows or Mac
 + Processor with SSE2 support
