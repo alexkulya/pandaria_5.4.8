@@ -3596,3 +3596,36 @@ Rate.Honor.Premium = 1
 Rate.XP.Gather = 1
 
 Rate.Modw.InGame = 1
+
+###################################################################################################
+# SinglePlayer options
+#
+#   Solocraft.Enable
+#       Description: Solocraft is a mod that boosts stats of players on dungeons and raids.
+#                    Mod for singleplayer or low populated servers.
+#       Default:     0 (disabled)
+#                    1 (enabled)
+
+Solocraft.Enable = 0
+
+#   Solocraft.Announce
+#       Description: If solocraft is enabled, announce that it is on when entering a dungeon?
+#       Default:     0 (disabled)
+#                    1 (enabled)
+
+Solocraft.Announce = 0
+
+#   Difficulty Multipliers
+#       Description: Difficulty multipliers for dungeons.
+#       Defaults: 5, 10, 15, 10, 25, 30, 40
+
+Solocraft.Dungeon = 5
+Solocraft.Heroic = 10
+Solocraft.Mythic = 15
+Solocraft.Raid10 = 10
+Solocraft.Raid25 = 25
+Solocraft.Raid30 = 30
+Solocraft.Raid40 = 40
+
+#
+###################################################################################################
