@@ -1,3 +1,20 @@
+/*
+* This file is part of the Pandaria 5.4.8 Project. See THANKS file for Copyright information
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the
+* Free Software Foundation; either version 2 of the License, or (at your
+* option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "ScriptPCH.h"
 #include "MapManager.h"
 #include "World.h"
@@ -6,9 +23,7 @@
 #include "Object.h"
 #include "PassiveAI.h"
 
-namespace AFDRoyale
-{
-
+namespace AFDRoyale {
 WorldLocation const DropCenter { 37, 179.298798f, 11.457070f, 600.0f };
 WorldLocation const RingCenter { 37, 179.298798f, 11.457070f, 237.332336f };
 float const RingDistances[]  = { 600.0f, 600.0f, 500.0f, 400.0f, 300.0f, 200.0f, 100.0f,  50.0f,  25.0f,  15.0f,  10.0f,   5.0f,   0.0f,   0.0f };

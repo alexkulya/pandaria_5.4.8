@@ -7,6 +7,7 @@
 * SD2 project, 2008-2009 (http://www.scriptdev2.com)
 * TrinityCore, 2008-2021 (https://www.trinitycore.org/)
 * Project SkyFire, 2011-2021 (http://www.projectskyfire.org/)
+* Pandaria 5.4.8, 2021-2022 (https://github.com/alexkulya/pandaria_5.4.8/)
 
 Special thanks should go out to the WowwoW team. We have gained help from
 them many times in the creation of this project. Keep up the good work guys.
