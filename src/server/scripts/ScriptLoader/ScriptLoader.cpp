@@ -2141,6 +2141,7 @@ void AddSC_custom_reward();
 void AddSC_Boost_Profession();
 void AddSC_Custom_Items();
 void AddSC_solocraft();
+void AddSC_XpWeekend();
 
 
 void AddCustomScripts()
@@ -2154,6 +2155,7 @@ AddSC_custom_reward();
 AddSC_Boost_Profession();
 AddSC_Custom_Items();
 AddSC_solocraft();
+AddSC_XpWeekend();
 
 #endif
     AddSC_Anticheat();
