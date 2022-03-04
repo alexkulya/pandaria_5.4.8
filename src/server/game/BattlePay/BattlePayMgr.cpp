@@ -27,7 +27,6 @@
 #include "BattlePetMgr.h"
 #pragma execution_character_set("UTF-8")
 
-#define GetText(a, b, c) a->GetSession()->GetSessionDbLocaleIndex() == LOCALE_ruRU ? b : c
 
 BattlePayMgr::BattlePayMgr() : m_enabled(false), m_currency(BATTLE_PAY_CURRENCY_BETA)
 {
@@ -445,7 +444,7 @@ void BattlePayMgr::SendPointsBalance(WorldSession* session)
     {
         std::ostringstream data;
         data << float(player->GetDonateTokens()) / BATTLE_PAY_CURRENCY_PRECISION;
-        player->SendBattlePayMessage(GetText(player, "|cff1eff00Ваш текущий баланс:", "|cff1eff00Your current balance is:"), data);        
+        player->SendBattlePayMessage(sObjectMgr->GetTrinityString(15005, session->GetSessionDbLocaleIndex()),data);
     }
 }
 
@@ -457,7 +456,7 @@ void BattlePayMgr::UpdatePointsBalance(WorldSession* session, uint64 points)
 
         std::ostringstream data1;
         data1 << float(player->GetDonateTokens()) / BATTLE_PAY_CURRENCY_PRECISION;
-        player->SendBattlePayMessage(GetText(player, "Спасибо за покупку. Ваш остаток на балансе:", "Thank you for your purchase. Your new balance is:"), data1);  
+        player->SendBattlePayMessage(sObjectMgr->GetTrinityString(15006, session->GetSessionDbLocaleIndex()),data1);
     }
     else
     {
@@ -480,7 +479,7 @@ bool BattlePayMgr::HasPointsBalance(WorldSession* session, uint64 points)
         }
         else
         {
-            player->SendBattlePayMessage(GetText(player, "Вы не можете себе этого позволить!", "You can't afford this!"));
+            player->SendBattlePayMessage(sObjectMgr->GetTrinityString(15007, session->GetSessionDbLocaleIndex()));
             return false;
         }
     }
