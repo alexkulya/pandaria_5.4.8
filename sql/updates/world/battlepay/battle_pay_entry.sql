@@ -302,4 +302,17 @@ INSERT INTO `battle_pay_entry` (`id`, `productId`, `groupId`, `idx`, `title`, `d
 (351, 351, 4, 0, "|cff0070ddBlossoming Ancient", "Promo Pet", 874857, 0, 2, 0),
 (352, 352, 4, 0, "|cff0070ddAlterac Brandy", "Promo Pet", 132620, 0, 2, 0),
 (353, 353, 4, 0, "|cff0070ddCore Hound Pup", "Promo Pet", 236191, 0, 2, 0),
-(354, 354, 4, 0, "|cff0070ddSoul-Trader Beacon", "Promo Pet", 136039, 0, 2, 0);
+(354, 354, 4, 0, "|cff0070ddSoul-Trader Beacon", "Promo Pet", 136039, 0, 2, 0),
+(355, 355, 4, 0, "|cffffffffPolar Bear Collar", "Promo Pet", 132498, 0, 2, 0),
+(356, 356, 4, 0, "|cff0070ddRocket Chicken", "Promo Pet", 133883, 0, 2, 0),
+(357, 357, 4, 0, "|cff0070ddSilver Pig Coin", "Promo Pet", 133786, 0, 2, 0),
+(358, 358, 4, 0, "|cff0070ddPurple Puffer", "Promo Pet", 133920, 0, 2, 0),
+(359, 359, 2, 0, "|cffa335eeEmerald Hippogryph", "Promo Flying mount", 929300, 0, 2, 0),
+(360, 360, 2, 0, "|cffa335eeHeart of the Nightwing", "Promo Flying mount", 399041, 0, 2, 0),
+(361, 361, 2, 0, "|cffa335eeHearthsteed", "Promo Flying mount", 853211, 0, 2, 0),
+(362, 362, 2, 0, "|cffa335eeReins of the Dread Raven", "Promo Flying mount", 952015, 0, 2, 0),
+(363, 363, 2, 0, "|cffa335eeTyrael's Charger", "Promo Flying mount", 577318, 0, 2, 0),
+(364, 364, 2, 0, "|cffa335eeArmored Bloodwing", "Promo Flying mount", 804461, 0, 2, 0),
+(365, 365, 2, 0, "|cffa335eeHeart of the Aspects", "Promo Flying mount", 576138, 0, 2, 0),
+(366, 366, 2, 0, "|cffa335eeIron Skyreaver", "Promo Flying mount", 943739, 0, 2, 0),
+(367, 367, 2, 0, "|cffa335eeWinged Guardian", "Promo Flying mount", 526356, 0, 2, 0);
