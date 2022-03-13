@@ -169,6 +169,60 @@ public:
     }
 };
 
+template<uint32 Level>
+class battle_pay_level : public ItemScript
+{
+public:
+    battle_pay_level(const char *ScriptName) : ItemScript(ScriptName) { }
+
+    bool OnUse(Player *player, Item *item, const SpellCastTargets &)
+    {
+        if (player->IsInCombat() || player->InArena() || player->InBattleground())
+        {
+            player->GetSession()->SendNotification(GetText(player, "Вы не можете использовать этот жетон, пока находитесь в бою, на арене или поле боя.", "You may not use this token whilst you are in combat or present in an arena or battleground."));
+        }
+        else if (Level <= player->getLevel())
+        {
+            ChatHandler(player->GetSession()).SendSysMessage(GetText(player, "Текущий уровень вашего персонажа слишком высокий.", "Your current character level is too high."));
+        }
+        else
+        {
+            player->GiveLevel(Level);
+            ChatHandler(player->GetSession()).SendSysMessage(GetText(player, "Спасибо за помощь проекту Pandaria 5.4.8, вы только что повысили уровень своего порсонажа до 90-го.", "Thanks for helping the Pandaria 5.4.8 project, you just leveled up your character to level 90."));
+            player->DestroyItemCount(item->GetEntry(), 1, true);
+            player->SaveToDB();
+        }
+        return true;
+    }
+};
+
+template<AtLoginFlags FlagAtLogin>
+class battle_pay_service : public ItemScript
+{
+public:
+    battle_pay_service(const char *ScriptName) : ItemScript(ScriptName) { }
+
+    bool OnUse(Player *player, Item *item, const SpellCastTargets &)
+    {
+        if (player->IsInCombat() || player->InArena() || player->InBattleground())
+        {
+            player->GetSession()->SendNotification(GetText(player, "Вы не можете использовать этот жетон, пока находитесь в бою, на арене или поле боя.", "You may not use this token whilst you are in combat or present in an arena or battleground."));
+        }
+        else if (player->HasAtLoginFlag((AtLoginFlags)0xFFFFFFFF))
+        {
+            ChatHandler(player->GetSession()).SendSysMessage(GetText(player, "Вы уже активировали эту функцию.", "You have already activated this feature."));
+        }
+        else
+        {
+            player->SetAtLoginFlag(FlagAtLogin);
+            player->DestroyItemCount(item->GetEntry(), 1, true);
+            ChatHandler(player->GetSession()).SendSysMessage(GetText(player, "Спасибо за помощь проекту Pandaria 5.4.8, вы только что активировали функцию по изменению своего персонажа. Пожалуйста перезайдите на свою учетную запись.", "Thanks for helping the Pandaria 5.4.8 project, you have just activated the function to change your character. Please re-login to your account."));
+            player->SaveToDB();
+        }
+        return true;
+    }
+};
+
 void AddSC_Custom_Items()
 {
     new battle_pay_currency_honor_1000("battle_pay_currency_honor_1000");
@@ -181,4 +235,9 @@ void AddSC_Custom_Items()
     new battle_pay_gold<BattlePay::Gold_30K>("battle_pay_gold_30k");
     new battle_pay_gold<BattlePay::Gold_80K>("battle_pay_gold_80k");
     new battle_pay_gold<BattlePay::Gold_150K>("battle_pay_gold_150k");
+    new battle_pay_level<90>("battle_pay_service_level_90");
+    new battle_pay_service<AtLoginFlags::AT_LOGIN_RENAME>("battle_pay_service_rename");
+    new battle_pay_service<AtLoginFlags::AT_LOGIN_CHANGE_FACTION>("battle_pay_service_change_faction");
+    new battle_pay_service<AtLoginFlags::AT_LOGIN_CHANGE_RACE>("battle_pay_service_change_race");
+    new battle_pay_service<AtLoginFlags::AT_LOGIN_CUSTOMIZE>("battle_pay_service_customize");
 }

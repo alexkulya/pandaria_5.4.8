@@ -9,7 +9,7 @@ INSERT INTO `battle_pay_group` (`id`, `idx`, `name`, `icon`, `type`) VALUES
 (7, 7, "Reinforcements ", 939378, 0),
 (8, 8, "Toys", 940867, 0),
 (9, 9, "Gold", 939377, 0),
-(10, 10, "WoW Tokens", 940869, 0),
+(10, 10, "Tokens and currency", 940869, 0),
 (11, 11, "Gaming Services", 939382, 0),
 (12, 12, "Family Heirlooms", 940862, 0),
 (13, 13, "Mogushan-HM", 940856, 0),

@@ -1,9 +1,9 @@
 TRUNCATE TABLE `battle_pay_product`;
 INSERT INTO `battle_pay_product` (`id`, `title`, `description`, `icon`, `price`, `discount`, `displayId`, `type`, `choiceType`, `flags`, `flagsInfo`) VALUES
-(1, "Shop: WoW Token - 01", "01 point for the Pandaria-WoW shop", 939375, 2, 0, 0, 0, 1, 5, 0),
-(2, "Shop: WoW Token - 02", "02 point for the Pandaria-WoW shop", 939375, 3, 0, 0, 0, 1, 5, 0),
-(3, "Shop: WoW Token - 05", "05 point for the Pandaria-WoW shop", 939375, 7, 0, 0, 0, 1, 5, 0),
-(4, "Shop: WoW Token - 10", "10 point for the Pandaria-WoW shop", 939375, 13, 0, 0, 0, 1, 5, 0),
+(1, "Shop: WoW Token - 01", "01 point for the Pandaria-WoW shop", 939375, 2, 0, 0, 0, 1, 47, 0),
+(2, "Shop: WoW Token - 02", "02 point for the Pandaria-WoW shop", 939375, 3, 0, 0, 0, 1, 47, 0),
+(3, "Shop: WoW Token - 05", "05 point for the Pandaria-WoW shop", 939375, 7, 0, 0, 0, 1, 47, 0),
+(4, "Shop: WoW Token - 10", "10 point for the Pandaria-WoW shop", 939375, 13, 0, 0, 0, 1, 47, 0),
 (13, "Shop: Foror's Crate of Endless Resist Gear Sto", "Bag of 36 slot", 132764, 12, 0, 0, 0, 1, 47, 0),
 (14, "Shop: Royal Satchel", "Bag of 28 slot", 348521, 9, 0, 0, 0, 1, 47, 0),
 (15, "Shop: Lure Master Tackle Box", "Bag of 36 slot", 466035, 8, 0, 0, 0, 1, 47, 0),
@@ -321,4 +321,9 @@ INSERT INTO `battle_pay_product` (`id`, `title`, `description`, `icon`, `price`,
 (371, "Shop: 10.000 gold", "Grants you 10.000 gold.", 133786, 50, 0, 0, 0, 1, 47, 0),
 (372, "Shop: 30.000 gold", "Grants you 30.000 gold.", 133787, 90, 0, 0, 0, 1, 47, 0),
 (373, "Shop: 80.000 gold", "Grants you 80.000 gold.", 133784, 140, 0, 0, 0, 1, 47, 0),
-(374, "Shop: 150.000 gold", "Grants you 150.000 gold.", 133785, 200, 0, 0, 0, 1, 47, 0);
+(374, "Shop: 150.000 gold", "Grants you 150.000 gold.", 133785, 200, 0, 0, 0, 1, 47, 0),
+(375, "Shop: Level up to 90", "Instantly raises the character's level to level 90.", 614740, 100, 5, 0, 0, 1, 47, 0),
+(376, "Shop: Rename", "Allows you to change the character's name.", 136235, 40, 50, 0, 0, 1, 47, 0),
+(377, "Shop: Change faction", "Allows you to change the character's faction.", 136235, 90, 50, 0, 0, 1, 47, 0),
+(378, "Shop: Change race", "Allows you to change the character's race.", 136235, 50, 50, 0, 0, 1, 47, 0),
+(379, "Shop: Customize", "Allows you to change the character's appearance.", 136235, 45, 55, 0, 0, 1, 47, 0);
