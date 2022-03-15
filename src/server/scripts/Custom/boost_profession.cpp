@@ -19,9 +19,9 @@
 #include "Chat.h"
 #include "ServiceMgr.h"
 
-enum skillsId
+enum SkillsID
 {
-    FIRST_AID                               = 129, // first Aid
+    FIRST_AID                               = 129, // First Aid
     BLACKSMITHING                           = 164, // Blacksmithing
     LEATHERWORKING                          = 165, // Leatherworking
     ALCHEMY                                 = 171, // Alchemy
@@ -38,9 +38,9 @@ enum skillsId
     ARCHAEOLOGY                             = 794  // Archaeology
 }; 
 
-enum spellId_600
+enum SpellID_600
 {
-    SPELL_600_FIRST_AID                     = 110406, // first Aid
+    SPELL_600_FIRST_AID                     = 110406, // First Aid
     SPELL_600_BLACKSMITHING                 = 110396, // Blacksmithing
     SPELL_600_LEATHERWORKING                = 110423, // Leatherworking
     SPELL_600_ALCHEMY                       = 105206, // Alchemy
@@ -57,16 +57,18 @@ enum spellId_600
     SPELL_600_ARCHAEOLOGY                   = 110393  // Archaeology
 };  
 
-class Boost_Profession : public ItemScript
+class battle_pay_boost_profession : public ItemScript
 {
 public:
-    Boost_Profession() : ItemScript("Boost_Profession") { }
+    battle_pay_boost_profession() : ItemScript("battle_pay_boost_profession") { }
 
     bool OnUse(Player* player, Item* item, SpellCastTargets const& targets) override
     {
+        bool ru = player->GetSession()->GetSessionDbLocaleIndex() == LOCALE_ruRU;
+
         player->PlayerTalkClass->ClearMenus();        
         player->SaveToDB();
-        
+
         if (player->HasSkill(FIRST_AID))
             player->ADD_GOSSIP_ITEM_DB(51002, 0, GOSSIP_SENDER_MAIN, FIRST_AID);
         if (player->HasSkill(BLACKSMITHING))
@@ -97,17 +99,19 @@ public:
             player->ADD_GOSSIP_ITEM_DB(51002, 13, GOSSIP_SENDER_MAIN, INSCRIPTION);
         if (player->HasSkill(ARCHAEOLOGY))
             player->ADD_GOSSIP_ITEM_DB(51002, 14, GOSSIP_SENDER_MAIN, ARCHAEOLOGY);
-        player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Bye", GOSSIP_SENDER_MAIN, 1);
 
+        player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, ru ? "|TInterface/PaperDollInfoFrame/UI-GearManager-LeaveItem-Transparent:28|t Закрыть" : "|TInterface/PaperDollInfoFrame/UI-GearManager-LeaveItem-Transparent:28|t Close", GOSSIP_SENDER_MAIN, 1);
         player->SEND_GOSSIP_MENU(20010, item->GetGUID());
         return true;
     }
 
     void OnGossipSelect(Player* player, Item* item, uint32 sender, uint32 action)
     {
+        bool ru = player->GetSession()->GetSessionDbLocaleIndex() == LOCALE_ruRU;
+
         player->PlayerTalkClass->ClearMenus();
         uint32 confirm = 0;
-        
+
         switch (action)
         {
             case 1:
@@ -226,9 +230,9 @@ public:
 
             if (player->HasSkill(action) && player->GetSkillValue(action) < maxvalueprof)
                 player->SetSkill(action, player->GetSkillStep(action), maxvalueprof, maxvalueprof);
-            
-            ChatHandler(player->GetSession()).PSendSysMessage("Thanks for supporting the project!");
-            player->DestroyItemCount(item->GetEntry(), 1, true); //Item is destroyed on useage.
+
+            ChatHandler(player->GetSession()).PSendSysMessage(ru ? "Спасибо за поддержку проекта!" : "Thanks for supporting the project!");
+            player->DestroyItemCount(item->GetEntry(), 1, true);
 
             std::ostringstream infoSkill;
             infoSkill << "Skill: " << uint32(action) << " Value: " << uint32(maxvalueprof);
@@ -238,9 +242,9 @@ public:
         else if (confirm == 2)
         {
             player->SetSkill(action, player->GetSkillStep(action), 600, 600);
-            
-            ChatHandler(player->GetSession()).PSendSysMessage("Thanks for supporting the project!");
-            player->DestroyItemCount(item->GetEntry(), 1, true); //Item is destroyed on useage.
+
+            ChatHandler(player->GetSession()).PSendSysMessage(ru ? "Спасибо за поддержку проекта!" : "Thanks for supporting the project!");
+            player->DestroyItemCount(item->GetEntry(), 1, true);
 
             std::ostringstream infoSkill;
             infoSkill << "Skill: " << uint32(action) << " Value: 600";
@@ -249,22 +253,25 @@ public:
         }
         else
         {
-            ChatHandler(player->GetSession()).PSendSysMessage("You don't have that profession");
+            ChatHandler(player->GetSession()).PSendSysMessage(ru ? "Произошла ошибка." : "An error has occurred.");
         }
+
         player->SaveToDB();
     }
 };
 
-class Boost_Profession_Small : public ItemScript
+class battle_pay_boost_profession_small : public ItemScript
 {
 public:
-    Boost_Profession_Small() : ItemScript("Boost_Profession_Small") { }
+    battle_pay_boost_profession_small() : ItemScript("battle_pay_boost_profession_small") { }
 
     bool OnUse(Player* player, Item* item, SpellCastTargets const& targets) override
     {
+        bool ru = player->GetSession()->GetSessionDbLocaleIndex() == LOCALE_ruRU;
+
         player->PlayerTalkClass->ClearMenus();        
         player->SaveToDB();
-        
+
         if (player->HasSkill(FIRST_AID))
             player->ADD_GOSSIP_ITEM_DB(51002, 0, GOSSIP_SENDER_MAIN, FIRST_AID);
         if (player->HasSkill(BLACKSMITHING))
@@ -295,25 +302,27 @@ public:
             player->ADD_GOSSIP_ITEM_DB(51002, 13, GOSSIP_SENDER_MAIN, INSCRIPTION);
         if (player->HasSkill(ARCHAEOLOGY))
             player->ADD_GOSSIP_ITEM_DB(51002, 14, GOSSIP_SENDER_MAIN, ARCHAEOLOGY);
-        player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Bye", GOSSIP_SENDER_MAIN, 1);
 
+        player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, ru ? "|TInterface/PaperDollInfoFrame/UI-GearManager-LeaveItem-Transparent:28|t Закрыть" : "|TInterface/PaperDollInfoFrame/UI-GearManager-LeaveItem-Transparent:28|t Close", GOSSIP_SENDER_MAIN, 1);
         player->SEND_GOSSIP_MENU(20011, item->GetGUID());
         return true;
     }
 
     void OnGossipSelect(Player* player, Item* item, uint32 sender, uint32 action)
     {
+        bool ru = player->GetSession()->GetSessionDbLocaleIndex() == LOCALE_ruRU;
+
         player->PlayerTalkClass->ClearMenus();
-        
+
         if (player->HasSkill(action))
         {
             int32 maxvalueprof = player->GetMaxSkillValue(action);
 
             if (player->HasSkill(action) && player->GetSkillValue(action) < maxvalueprof)
                 player->SetSkill(action, player->GetSkillStep(action), maxvalueprof, maxvalueprof);
-            
-            ChatHandler(player->GetSession()).PSendSysMessage("Thanks for supporting the project!");
-            player->DestroyItemCount(item->GetEntry(), 1, true); //Item is destroyed on useage.
+
+            ChatHandler(player->GetSession()).PSendSysMessage(ru ? "Спасибо за поддержку проекта!" : "Thanks for supporting the project!");
+            player->DestroyItemCount(item->GetEntry(), 1, true);
 
             std::ostringstream infoSkill;
             infoSkill << "Skill: " << uint32(action) << " Value: " << uint32(maxvalueprof);
@@ -322,15 +331,15 @@ public:
         }
         else
         {
-            ChatHandler(player->GetSession()).PSendSysMessage("You don't have that profession");
+            ChatHandler(player->GetSession()).PSendSysMessage(ru ? "Произошла ошибка." : "An error has occurred.");
         }
-        
+
         player->CLOSE_GOSSIP_MENU();
     }
 };
 
 void AddSC_Boost_Profession()
 {
-    new Boost_Profession();
-    new Boost_Profession_Small();
+    new battle_pay_boost_profession();
+    new battle_pay_boost_profession_small();
 }

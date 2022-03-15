@@ -1,7 +1,7 @@
 TRUNCATE TABLE `battle_pay_entry`;
 INSERT INTO `battle_pay_entry` (`id`, `productId`, `groupId`, `idx`, `title`, `description`, `icon`, `displayId`, `banner`, `flags`) VALUES
-(1, 83, 1, 0, "|cffff8000Boost 90", "Level Up 90", 236544, 0, 2, 0),
-(2, 83, 11, 0, "|cffff8000Boost 90", "Level Up 90", 236544, 0, 2, 0),
+(1, 83, 1, 0, "|cffff8000Promotion", "Feature to «promote» your character on the current account or create a new one with some bonuses.\n\nAs bonuses you will receive:\n- iLevel 408 equipment\n- iLevel 408 weapon\n- iLevel 408 accessories and cloak\n- 1000 gold\n- Instant Level 90\n- Mount: Red Wind Rider (Horde) or Snow White Gryphon (Alliance)", 236544, 0, 2, 0),
+(2, 83, 11, 0, "|cffff8000Promotion", "Feature to «promote» your character on the current account or create a new one with some bonuses.\n\nAs bonuses you will receive:\n- iLevel 408 equipment\n- iLevel 408 weapon\n- iLevel 408 accessories and cloak\n- 1000 gold\n- Instant Level 90\n- Mount: Red Wind Rider (Horde) or Snow White Gryphon (Alliance)", 236544, 0, 2, 0),
 (3, 1, 10, 0, "|cff1eff00WoW Token - 01", "01 point for the Pandaria-WoW shop", 939375, 0, 2, 0),
 (4, 2, 10, 0, "|cff0070ddWoW Token - 02", "02 point for the Pandaria-WoW shop", 939375, 0, 2, 0),
 (5, 3, 10, 0, "|cffa335eeWoW Token - 05", "05 point for the Pandaria-WoW shop", 939375, 0, 2, 0),
@@ -82,8 +82,8 @@ INSERT INTO `battle_pay_entry` (`id`, `productId`, `groupId`, `idx`, `title`, `d
 (88, 88, 2, 0, "|cffa335eeSwift Razzashi Raptor", "Terrestrial mount", 132253, 0, 2, 0),
 (89, 89, 2, 0, "|cffa335eeWooly White Rhino", "Terrestrial mount", 236194, 0, 2, 0),
 (90, 90, 2, 0, "|cffa335eeX-53 Touring Rocket", "Flying mount", 370664, 0, 2, 0),
-(91, 91, 11, 0, "Profession Boost", "Grants you a level 600 profession", 0, 0, 2, 0),
-(92, 92, 11, 0, "Minor Profession Boost", "Boost your profession to the maximum available (75, 150, 225, 300, 375, 450, 525 or 600 points)", 0, 0, 2, 0),
+(91, 91, 11, 0, "|cffa335eeProfession Boost", "Gives you the ability to level up any of your professions to 600.", 464483, 0, 2, 0),
+(92, 92, 11, 0, "|cff0070ddMinor Profession Boost", "Gives you the opportunity to level up any of your professions to the maximum available (75, 150, 225, 300, 375, 450, 525 or 600 points).", 464483, 0, 2, 0),
 (93, 93, 10, 0, "1000 Honor Points", "Grants you 1000 Honor points", 0, 0, 2, 0),
 (100, 100, 13, 0, "DaggeroftheSevenStars", "Item level 502", 0, 0, 2, 0),
 (101, 101, 13, 0, "StonefleshLeggings", "Item level 502", 0, 0, 2, 0),
@@ -325,6 +325,13 @@ INSERT INTO `battle_pay_entry` (`id`, `productId`, `groupId`, `idx`, `title`, `d
 (374, 374, 9, 0, "|cffff8000150.000 gold", "Grants you 150.000 gold.", 133785, 0, 2, 0),
 (375, 375, 11, 0, "|cffffd700Level up to 90", "All heroes have difficult times in their lives. Sometimes things get so stagnant that a new impetus is needed. This is good for a one-time increase in the level of one of your characters to the 90th. Your hero will instantly take new heights and will be able to immediately join the battle on the front line.", 614740, 0, 2, 0),
 (376, 376, 11, 0, "|cffffd700Rename", "You don't have to wear the same name all your life. Maybe you got tired of being chased for autographs (or to punch you in the neck), or maybe you just came up with something better. In any case, a new name - a new life!", 136235, 0, 2, 0),
-(377, 377, 11, 0, "|cffffd700Change faction", "«Traitor!..» Yes, it's easy to throw loud phrases. Your faction allies are unlikely to be pleased that you decided to leave. But in fact, what do you actually owe them? Maybe it's time to see how others are doing? Maybe you already have friends there! Who knows, suddenly, as they say, «epics» are really more purple where we are not... The faction change includes a change of race, so that it would be easier to join the ranks of new allies.", 136235, 0, 2, 0),
-(378, 378, 11, 0, "|cffffd700Change race", "Genetics is a cruel thing. Try to live green all the time. Or blue. Or purple. And also sharp-witted. Sometimes a cosmetic change of image is not enough and drastic measures are required: change the race completely!", 136235, 0, 2, 0),
-(379, 379, 11, 0, "|cffffd700Customize", "Everything flows, everything changes. People, haircuts, interest rates... If you're tired of the way your character looks and you don't want to walk around in a helmet with the visor down, then this service will come in handy. Still like this in real life...! You can completely change the appearance and even, if you want, the gender of your character.", 136235, 0, 2, 0);
+(377, 377, 11, 0, "|cffffd700Change faction", "«Traitor!..» Yes, it's easy to throw loud phrases. Your faction allies are unlikely to be pleased that you decided to leave. But in fact, what do you actually owe them? Maybe it's time to see how others are doing? Maybe you already have friends there! Who knows, suddenly, as they say, «epics» are really more purple where we are not... The faction change includes a change of race, so that it would be easier to join the ranks of new allies.", 939373, 0, 2, 0),
+(378, 378, 11, 0, "|cffffd700Change race", "Genetics is a cruel thing. Try to live green all the time. Or blue. Or purple. And also sharp-witted. Sometimes a cosmetic change of image is not enough and drastic measures are required: change the race completely!", 939374, 0, 2, 0),
+(379, 379, 11, 0, "|cffffd700Customize", "Everything flows, everything changes. People, haircuts, interest rates... If you're tired of the way your character looks and you don't want to walk around in a helmet with the visor down, then this service will come in handy. Still like this in real life...! You can completely change the appearance and even, if you want, the gender of your character.", 136235, 0, 2, 0),
+(380, 380, 2, 0, "|cffa335eeReins of the Swift Spectral Tiger", "Promo mount", 298591, 0, 2, 0),
+(381, 381, 2, 0, "|cffa335eeWarforged Nightmare", "Promo Flying mount", 986419, 0, 2, 0),
+(382, 382, 2, 0, "|cffa335eeMagic Rooster Egg", "Promo mount", 132834, 0, 2, 0),
+(383, 383, 2, 0, "|cffa335eeSwift Zhevra", "Promo mount", 132226, 0, 2, 0),
+(384, 384, 2, 0, "|cffa335eeReins of the Dark Phoenix", "Promo Flying mount", 464141, 0, 2, 0),
+(385, 385, 2, 0, "|cffa335eeGrinning Reaver", "Promo Flying mount", 986420, 0, 2, 0),
+(386, 386, 2, 0, "|cffa335eeStormcrow", "Promo Flying mount", 897087, 0, 2, 0);
