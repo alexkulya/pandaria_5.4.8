@@ -28,6 +28,8 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (38423, 0, 3, 0, 38, 0, 100, 0, 1, 1, 0, 0, 80, 3842300, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Data Set 1 1 - Start Script"),
 (38423, 0, 4, 0, 0, 0, 100, 0, 1000, 1000, 8000, 8000, 11, 73255, 0, 0, 0, 0, 0, 11, 38306, 100, 0, 0, 0, 0, 0, "Zuni - In Combat - Cast Spell 'Earth Shock'"),
 (38423, 0, 5, 0, 0, 0, 100, 0, 4000, 4000, 14000, 14000, 11, 73254, 0, 0, 0, 0, 0, 11, 38306, 100, 0, 0, 0, 0, 0, "Zuni - In Combat - Cast Spell 'Lightning Bolt'"),
+(38423, 0, 6, 7, 38, 0, 100, 0, 2, 2, 0, 0, 20, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Data Set 2 2 - Auto Attack Stop"),
+(38423, 0, 7, 0, 61, 0, 100, 0, 0, 0, 0, 0, 75, 82950, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Data Set 2 2 (Link) - Cast Visual Spell"),
 
 (3842300, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 91, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Script - Remove Flag Sitting"),
 (3842300, 9, 1, 0, 0, 0, 100, 0, 1000, 1000, 0, 0, 69, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, -730.031, -5594.71, 25.6244, 0, "Zuni - On Script - Move To Position"),
@@ -43,7 +45,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (38225, 0, 4, 0, 62, 0, 100, 0, 11020, 0, 0, 0, 81, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On Gossip Select - Remove Npc Flag Quest Giver"),
 (38225, 0, 5, 0, 40, 0, 100, 0, 1, 38225, 0, 0, 80, 3822500, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On WP 1 Reached - Start Script"),
 (38225, 0, 6, 0, 38, 0, 100, 0, 1, 1, 0, 0, 49, 0, 0, 0, 0, 0, 0, 11, 38306, 100, 0, 0, 0, 0, 0, "Vol'jin - On Data Set 1 1 - Start Attack Creature ID: 38306, Distance 100 Yards"),
-(38225, 0, 7, 0, 0, 0, 100, 0, 2000, 2000, 2000, 2000, 11, 6660, 0, 0, 0, 0, 0, 11, 38306, 100, 0, 0, 0, 0, 0, "Vol'jin - In Combat - Cast Spell 'Shoot'"),
+(38225, 0, 7, 0, 0, 0, 100, 0, 2000, 2000, 2000, 2000, 11, 20463, 0, 0, 0, 0, 0, 11, 38306, 100, 0, 0, 0, 0, 0, "Vol'jin - In Combat - Cast Spell 'Shoot'"),
 (38225, 0, 8, 0, 0, 0, 100, 0, 20000, 30000, 20000, 30000, 11, 73087, 0, 0, 0, 0, 0, 11, 38306, 100, 0, 0, 0, 0, 0, "Vol'jin - In Combat - Cast Spell 'Shadow Shock'"),
 
 (3822500, 9, 0, 0, 0, 0, 100, 0, 1000, 1000, 0, 0, 101, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On Script - Set Home Position"),
@@ -60,12 +62,22 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (38437, 0, 5, 0, 0, 0, 100, 0, 0, 0, 600000, 600000, 11, 71984, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - In Combat - Cast Spell 'Healing Stream Totem'"),
 (38437, 0, 6, 0, 0, 0, 100, 0, 1000, 1000, 600000, 600000, 11, 73393, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - In Combat - Cast Spell 'Mana Stream Totem'"),
 (38437, 0, 7, 0, 0, 0, 100, 0, 2000, 2000, 65000, 65000, 11, 71974, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - In Combat - Cast Spell 'Serpent Ward'"),
+(38437, 0, 8, 9, 38, 0, 100, 0, 3, 3, 0, 0, 20, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - On Data Set 3 3 - Auto Attack Stop"),
+(38437, 0, 9, 0, 61, 0, 100, 0, 0, 0, 0, 0, 75, 82950, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - On Data Set 3 3 (Link) - Cast Visual Spell"),
 
 (38306, 0, 0, 1, 11, 0, 100, 0, 0, 0, 0, 0, 8, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - On Respawn - Set React State Defensive"),
 (38306, 0, 1, 0, 61, 0, 100, 0, 0, 0, 0, 0, 18, 768, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - On Respawn (Link) - Set Unit Flags (768)"),
 (38306, 0, 2, 0, 0, 0, 100, 0, 0, 0, 3000, 3000, 11, 46987, 0, 0, 0, 0, 0, 10, 252717, 38225, 0, 0, 0, 0, 0, "Zar'jira - In Combat - Cast Spell 'Frostbolt'"),
 (38306, 0, 3, 0, 0, 0, 100, 0, 7000, 7000, 15000, 20000, 87, 3830601, 3830602, 3830603, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - In Combat - Start Random Script"),
 (38306, 0, 4, 0, 38, 0, 100, 0, 1, 1, 0, 0, 80, 3830600, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - On Data Set 1 1 - Start Script"),
+(38306, 0, 5, 6, 2, 0, 100, 1, 0, 50, 0, 0, 11, 34326, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - Between 0-50% Health - Cast Visual Spell"),
+(38306, 0, 6, 7, 61, 0, 100, 1, 0, 0, 0, 0, 45, 3, 3, 0, 0, 0, 0, 11, 38437, 100, 0, 0, 0, 0, 0, "Zar'jira - Between 0-50% Health (Link) - Set Data 3 3 (Creature ID: 38437)"),
+(38306, 0, 7, 8, 61, 0, 100, 0, 0, 0, 0, 0, 45, 2, 2, 0, 0, 0, 0, 11, 38423, 100, 0, 0, 0, 0, 0, "Zar'jira - Between 0-50% Health (Link) - Set Data 2 2 (Creature ID: 38423)"),
+(38306, 0, 8, 9, 61, 0, 100, 0, 0, 0, 0, 0, 45, 2, 2, 0, 0, 0, 0, 11, 38225, 100, 0, 0, 0, 0, 0, "Zar'jira - Between 0-50% Health (Link) - Set Data 2 2 (Creature ID: 38225)"),
+(38306, 0, 9, 10, 61, 0, 100, 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - Between 0-50% Health (Link) - Auto Attack Stop"),
+(38306, 0, 10, 0, 61, 0, 100, 0, 0, 0, 0, 0, 22, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - Between 0-50% Health (Link) - Set Phase 1"),
+(38306, 0, 11, 12, 60, 1, 100, 1, 1000, 1000, 0, 0, 18, 256, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - On Update - Set Unit Flags (256)(Phase 1)"),
+(38306, 0, 12, 0, 61, 1, 100, 0, 0, 0, 0, 0, 45, 1, 1, 0, 0, 0, 0, 11, 38542, 100, 0, 0, 0, 0, 0, "Zar'jira - On Update (Link) - Set Data 1 1 (Creature ID: 38542)"),
 
 (3830600, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - On Script - Say Text Line 0"),
 (3830600, 9, 1, 0, 0, 0, 100, 0, 16000, 16000, 0, 0, 19, 768, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - On Script - Remove Unit Flags (768)"),
@@ -80,6 +92,10 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (3830602, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 12, 38302, 1, 60000, 0, 0, 0, 8, 0, 0, 0, -703.477, -5590.16, 28, 3.4007, "Zar'jira - On Script - Summon Creature"),
 
 (3830603, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 12, 38302, 6, 10000, 1, 0, 0, 8, 0, 0, 0, -699.04, -5595.67, 25.755, 0, "Zar'jira - On Script - Summon Creature"),
+
+(38542, 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 47, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Fire of the Seas - On Respawn - Set Visibility Off"),
+(38542, 0, 1, 2, 38, 0, 100, 0, 1, 1, 0, 0, 47, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Fire of the Seas - On Data Set 1 1 - Set Visibility On"),
+(38542, 0, 2, 0, 61, 0, 100, 0, 0, 0, 0, 0, 11, 73294, 0, 0, 0, 0, 0, 11, 38306, 100, 0, 0, 0, 0, 0, "Fire of the Seas - On Data Set 2 2 (Link) - Cast Spell 'Fire of the Seas Energy Beam'"),
 
 (38302, 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 8, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Manifestation of the Sea Witch - On Respawn - Set React State Aggressive"),
 (38302, 0, 1, 0, 54, 0, 100, 0, 0, 0, 0, 0, 49, 0, 0, 0, 0, 0, 0, 21, 50, 0, 0, 0, 0, 0, 0, "Manifestation of the Sea Witch - On Summmoned - Attack Start"),
