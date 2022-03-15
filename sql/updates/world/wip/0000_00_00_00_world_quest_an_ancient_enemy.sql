@@ -21,7 +21,7 @@ UPDATE `creature_template` SET `faction_A` = 2224, `faction_H` = 2224 WHERE `ent
 
 UPDATE `creature_template` SET `AIName` = "SmartAI", `ScriptName` = "" WHERE `entry` IN (38423, 38225, 38437, 38306, 38542, 38302, 38452);
 DELETE FROM `smart_scripts` WHERE `entryorguid` IN (38423, 38225, 38437, 38306, 38542, 38302, -252718, 38452) AND `source_type` = 0;
-DELETE FROM `smart_scripts` WHERE `entryorguid` IN (3842300, 3842301, 3822500, 3822501, 3830600, 3830601, 3830602, 3830603, 3843700, 3843701, 3843702) AND `source_type` = 9;
+DELETE FROM `smart_scripts` WHERE `entryorguid` IN (3842300, 3842301, 3842302, 3822500, 3822501, 3830600, 3830601, 3830602, 3830603, 3843700, 3843701, 3843702) AND `source_type` = 9;
 INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
 (38423, 0, 0, 1, 11, 0, 100, 0, 0, 0, 0, 0, 18, 768, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Respawn - Set Unit Flags (768)"),
 (38423, 0, 1, 0, 61, 0, 100, 0, 0, 0, 0, 0, 59, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Respawn (Link) - Set Run Off"),
@@ -29,12 +29,19 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (38423, 0, 4, 0, 0, 0, 100, 0, 1000, 1000, 8000, 8000, 11, 73255, 0, 0, 0, 0, 0, 11, 38306, 100, 0, 0, 0, 0, 0, "Zuni - In Combat - Cast Spell 'Earth Shock'"),
 (38423, 0, 5, 0, 0, 0, 100, 0, 4000, 4000, 14000, 14000, 11, 73254, 0, 0, 0, 0, 0, 11, 38306, 100, 0, 0, 0, 0, 0, "Zuni - In Combat - Cast Spell 'Lightning Bolt'"),
 (38423, 0, 6, 7, 38, 0, 100, 0, 2, 2, 0, 0, 20, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Data Set 2 2 - Auto Attack Stop"),
-(38423, 0, 7, 8, 61, 0, 100, 0, 0, 0, 0, 0, 75, 82950, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Data Set 2 2 (Link) - Cast Visual Spell"),
-(38423, 0, 8, 0, 61, 0, 100, 0, 0, 0, 0, 0, 11, 93199, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Data Set 2 2 (Link) - Cast Visual Spell"),
+(38423, 0, 7, 8, 61, 0, 100, 0, 0, 0, 0, 0, 75, 82950, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Data Set 2 2 (Link) - Cast Cosmetic Spell"),
+(38423, 0, 8, 0, 61, 0, 100, 0, 0, 0, 0, 0, 11, 93199, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Data Set 2 2 (Link) - Cast Cosmetic Spell"),
 (38423, 0, 9, 10, 38, 0, 100, 0, 3, 3, 0, 0, 28, 82950, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Data Set 3 3 - Remove Cosmetic Spell"),
-(38423, 0, 10, 11, 61, 0, 100, 0, 0, 0, 0, 0, 20, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Data Set 3 3 (Link) - Auto Attack Start"),
-(38423, 0, 11, 0, 61, 0, 100, 0, 0, 0, 0, 0, 49, 1, 0, 0, 0, 0, 0, 11, 38306, 100, 0, 0, 0, 0, 0, "Zuni - On Data Set 3 3 (Link) - Start Attack Creature ID: 38306, Distance 100 Yards"),
-(38423, 0, 12, 0, 4, 0, 100, 0, 0, 0, 0, 0, 91, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Aggro - Remove Flag Sitting"),
+(38423, 0, 10, 11, 61, 0, 100, 0, 0, 0, 0, 0, 28, 93199, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Data Set 3 3 (Link) - Remove Cosmetic Spell"),
+(38423, 0, 11, 12, 61, 0, 100, 0, 0, 0, 0, 0, 20, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Data Set 3 3 (Link) - Auto Attack Start"),
+(38423, 0, 12, 0, 61, 0, 100, 0, 0, 0, 0, 0, 49, 0, 0, 0, 0, 0, 0, 11, 38306, 100, 0, 0, 0, 0, 0, "Zuni - On Data Set 3 3 (Link) - Start Attack Creature ID: 38306, Distance 100 Yards"),
+(38423, 0, 13, 0, 4, 0, 100, 0, 0, 0, 0, 0, 91, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Aggro - Remove Flag Sitting"),
+(38423, 0, 14, 15, 38, 0, 100, 0, 4, 4, 0, 0, 20, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Data Set 4 4 - Auto Attack Stop"),
+(38423, 0, 15, 16, 61, 0, 100, 0, 0, 0, 0, 0, 75, 82950, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Data Set 4 4 (Link) - Cast Cosmetic Spell"),
+(38423, 0, 16, 0, 61, 0, 100, 0, 0, 0, 0, 0, 11, 93199, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Data Set 4 4 (Link) - Cast Cosmetic Spell"),
+(38423, 0, 17, 0, 38, 0, 100, 0, 5, 5, 0, 0, 80, 3842301, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Data Set 5 5 - Start Script"),
+(38423, 0, 18, 0, 34, 0, 100, 0, 8, 1, 0, 0, 101, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On MI 1 - Set Home Position"),
+(38423, 0, 19, 0, 38, 0, 100, 0, 6, 6, 0, 0, 80, 3842302, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Data Set 6 6 - Start Script"),
 
 (3842300, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 91, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Script - Remove Flag Sitting"),
 (3842300, 9, 1, 0, 0, 0, 100, 0, 1000, 1000, 0, 0, 69, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, -730.031, -5594.71, 25.6244, 0, "Zuni - On Script - Move To Position"),
@@ -42,6 +49,15 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (3842300, 9, 3, 0, 0, 0, 100, 0, 0, 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Script - Combat Movement Stop"),
 (3842300, 9, 4, 0, 0, 0, 100, 0, 2000, 2000, 0, 0, 19, 768, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Script - Remove Unit Flags (768)"),
 (3842300, 9, 5, 0, 0, 0, 100, 0, 2000, 2000, 0, 0, 49, 0, 0, 0, 0, 0, 0, 11, 38306, 100, 0, 0, 0, 0, 0, "Zuni - On Script - Start Attack Creature ID: 38306, Distance 100 Yards"),
+
+(3842301, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 28, 82950, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Script - Remove Cosmetic Spell"),
+(3842301, 9, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 28, 93199, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Script - Remove Cosmetic Spell"),
+(3842301, 9, 2, 0, 0, 0, 100, 0, 800, 800, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Script - Say Text Line 0"),
+(3842301, 9, 3, 0, 0, 0, 100, 0, 0, 0, 0, 0, 59, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Script - Set Run On"),
+(3842301, 9, 4, 0, 0, 0, 100, 0, 0, 0, 0, 0, 69, 1, 0, 0, 0, 0, 0, 8, 0, 0, 0, -712.563, -5575.99, 27, 0, "Zuni - On Script - Move To Position"),
+
+(3842302, 9, 0, 0, 0, 0, 100, 0, 200, 200, 0, 0, 11, 69252, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Script - Cast Spell 'Frost Explosion'"),
+(3842302, 9, 1, 0, 0, 0, 100, 0, 1000, 1000, 0, 0, 75, 114371, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Script - Add Aura 'Permanent Feign Death'"),
 
 (38225, 0, 0, 0, 62, 0, 100, 0, 11020, 0, 0, 0, 72, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On Gossip Select - Close Gossip"),
 (38225, 0, 1, 0, 62, 0, 100, 0, 11020, 0, 0, 0, 53, 0, 38225, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On Gossip Select - WP Start"),
@@ -55,6 +71,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (38225, 0, 9, 0, 0, 2, 100, 0, 20000, 30000, 20000, 30000, 11, 73087, 0, 0, 0, 0, 0, 11, 38306, 100, 0, 0, 0, 0, 0, "Vol'jin - In Combat - Cast Spell 'Shadow Shock'"),
 (38225, 0, 10, 0, 38, 0, 100, 0, 2, 2, 0, 0, 11, 72044, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On Data Set 2 2 - Cast Cosmetic Spell"),
 (38225, 0, 11, 0, 38, 0, 100, 0, 3, 3, 0, 0, 22, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On Data Set 3 3 - Set Phase 2"),
+(38225, 0, 12, 0, 38, 0, 100, 0, 4, 4, 0, 0, 11, 72044, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On Data Set 4 4 - Cast Cosmetic Spell"),
 
 (3822500, 9, 0, 0, 0, 0, 100, 0, 1000, 1000, 0, 0, 101, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On Script - Set Home Position"),
 (3822500, 9, 1, 0, 0, 0, 100, 0, 1000, 1000, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On Script - Say Text Line 0"),
@@ -77,17 +94,28 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (38437, 0, 10, 11, 38, 0, 100, 0, 4, 4, 0, 0, 28, 82950, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - On Data Set 4 4 - Remove Cosmetic Spell"),
 (38437, 0, 11, 12, 61, 0, 100, 0, 0, 0, 0, 0, 28, 93199, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - On Data Set 4 4 (Link) - Remove Cosmetic Spell"),
 (38437, 0, 12, 0, 61, 0, 100, 0, 0, 0, 0, 0, 20, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - On Data Set 4 4 (Link) - Auto Attack Start"),
+(38437, 0, 13, 14, 38, 0, 100, 0, 5, 5, 0, 0, 20, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - On Data Set 5 5 - Auto Attack Stop"),
+(38437, 0, 14, 0, 61, 0, 100, 0, 0, 0, 0, 0, 80, 3843701, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - On Data Set 5 5 (Link) - Start Script"),
 
-(3843700, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 11, 66033, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - On Script - Cast Visual Spell"),
-(3843700, 9, 1, 0, 0, 0, 100, 0, 400, 400, 0, 0, 11, 93199, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - On Script - Cast Visual Spell"),
-(3843700, 9, 2, 0, 0, 0, 100, 0, 800, 800, 0, 0, 75, 82950, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - On Script - Cast Visual Spell"),
+(3843700, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 11, 66033, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - On Script - Cast Cosmetic Spell"),
+(3843700, 9, 1, 0, 0, 0, 100, 0, 400, 400, 0, 0, 11, 93199, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - On Script - Cast Cosmetic Spell"),
+(3843700, 9, 2, 0, 0, 0, 100, 0, 800, 800, 0, 0, 75, 82950, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - On Script - Cast Cosmetic Spell"),
+
+(3843701, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 11, 66033, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - On Script - Cast Cosmetic Spell"),
+(3843701, 9, 1, 0, 0, 0, 100, 0, 400, 400, 0, 0, 11, 93199, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - On Script - Cast Cosmetic Spell"),
+(3843701, 9, 2, 0, 0, 0, 100, 0, 800, 800, 0, 0, 75, 82950, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - On Script - Cast Cosmetic Spell"),
+(3843701, 9, 3, 0, 0, 0, 100, 0, 2000, 2000, 0, 0, 45, 5, 5, 0, 0, 0, 0, 11, 38423, 100, 0, 0, 0, 0, 0, "Vanira - On Script - Set Data 5 5 (Creature ID: 38423)"),
+(3843701, 9, 4, 0, 0, 0, 100, 0, 0, 0, 0, 0, 28, 93199, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - On Script - Remove Cosmetic Spell"),
+(3843701, 9, 5, 0, 0, 0, 100, 0, 0, 0, 0, 0, 28, 82950, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - On Script - Remove Cosmetic Spell"),
+(3843701, 9, 6, 0, 0, 0, 100, 0, 600, 600, 0, 0, 20, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - On Script - Auto Attack Start"),
+(3843701, 9, 7, 0, 0, 0, 100, 0, 0, 0, 0, 0, 49, 0, 0, 0, 0, 0, 0, 11, 38306, 100, 0, 0, 0, 0, 0, "Vanira - On Script - Start Attack Creature ID: 38306, Distance 100 Yards"),
 
 (38306, 0, 0, 1, 11, 0, 100, 0, 0, 0, 0, 0, 8, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - On Respawn - Set React State Defensive"),
 (38306, 0, 1, 0, 61, 0, 100, 0, 0, 0, 0, 0, 18, 768, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - On Respawn (Link) - Set Unit Flags (768)"),
 (38306, 0, 2, 0, 0, 2, 100, 0, 0, 0, 3000, 3000, 11, 46987, 0, 0, 0, 0, 0, 10, 252717, 38225, 0, 0, 0, 0, 0, "Zar'jira - In Combat - Cast Spell 'Frostbolt' (Phase 2)"),
 (38306, 0, 3, 0, 0, 2, 100, 0, 7000, 7000, 15000, 20000, 87, 3830601, 3830602, 3830603, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - In Combat - Start Random Script (Phase 2)"),
 (38306, 0, 4, 0, 38, 0, 100, 0, 1, 1, 0, 0, 80, 3830600, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - On Data Set 1 1 - Start Script"),
-(38306, 0, 5, 6, 2, 0, 100, 1, 0, 50, 0, 0, 11, 34326, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - Between 0-50% Health - Cast Visual Spell"),
+(38306, 0, 5, 6, 2, 0, 100, 1, 0, 50, 0, 0, 11, 34326, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - Between 0-50% Health - Cast Cosmetic Spell"),
 (38306, 0, 6, 7, 61, 0, 100, 1, 0, 0, 0, 0, 45, 3, 3, 0, 0, 0, 0, 11, 38437, 100, 0, 0, 0, 0, 0, "Zar'jira - Between 0-50% Health (Link) - Set Data 3 3 (Creature ID: 38437)"),
 (38306, 0, 7, 8, 61, 0, 100, 0, 0, 0, 0, 0, 45, 2, 2, 0, 0, 0, 0, 11, 38423, 100, 0, 0, 0, 0, 0, "Zar'jira - Between 0-50% Health (Link) - Set Data 2 2 (Creature ID: 38423)"),
 (38306, 0, 8, 9, 61, 0, 100, 0, 0, 0, 0, 0, 45, 2, 2, 0, 0, 0, 0, 11, 38225, 100, 0, 0, 0, 0, 0, "Zar'jira - Between 0-50% Health (Link) - Set Data 2 2 (Creature ID: 38225)"),
@@ -105,6 +133,15 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (38306, 0, 20, 21, 61, 0, 100, 0, 0, 0, 0, 0, 45, 4, 4, 0, 0, 0, 0, 11, 38437, 100, 0, 0, 0, 0, 0, "Zar'jira - On Variable Decimal 1 3 (Link) - Set Data 4 4 (Creature ID: 38437)"),
 (38306, 0, 21, 22, 61, 0, 100, 0, 0, 0, 0, 0, 45, 3, 3, 0, 0, 0, 0, 11, 38423, 100, 0, 0, 0, 0, 0, "Zar'jira - On Variable Decimal 1 3 (Link) - Set Data 3 3 (Creature ID: 38423)"),
 (38306, 0, 22, 0, 61, 0, 100, 0, 0, 0, 0, 0, 22, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - On Variable Decimal 1 3 (Link) - Set Phase 2"),
+(38306, 0, 23, 24, 2, 0, 100, 1, 0, 10, 0, 0, 45, 5, 5, 0, 0, 0, 0, 11, 38437, 100, 0, 0, 0, 0, 0, "Zar'jira - Between 0-10% Health - Set Data 5 5 (Creature ID: 38437)"),
+(38306, 0, 24, 25, 61, 0, 100, 0, 0, 0, 0, 0, 45, 4, 4, 0, 0, 0, 0, 11, 38423, 100, 0, 0, 0, 0, 0, "Zar'jira - Between 0-10% Health (Link) - Set Data 4 4 (Creature ID: 38423)"),
+(38306, 0, 25, 26, 61, 0, 100, 0, 0, 0, 0, 0, 45, 4, 4, 0, 0, 0, 0, 11, 38225, 100, 0, 0, 0, 0, 0, "Zar'jira - Between 0-10% Health (Link) - Set Data 4 4 (Creature ID: 38225)"),
+(38306, 0, 26, 27, 61, 0, 100, 0, 0, 0, 0, 0, 20, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - Between 0-10% Health (Link) - Auto Attack Stop"),
+(38306, 0, 27, 0, 61, 0, 100, 0, 0, 0, 0, 0, 22, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - Between 0-10% Health (Link) - Set Phase 1"),
+(38306, 0, 28, 29, 2, 0, 100, 1, 0, 4, 0, 0, 45, 2, 2, 0, 0, 0, 0, 11, 38452, 100, 0, 0, 0, 0, 0, "Zar'jira - Between 0-4% Health - Set Data 2 2 (Creature ID: 38452)"),
+(38306, 0, 29, 0, 61, 0, 100, 0, 0, 0, 0, 0, 66, 0, 0, 0, 0, 0, 0, 11, 38423, 100, 0, 0, 0, 0, 0, "Zar'jira - On Data Set 3 3 - Set Orientation To Creature ID: 38423"),
+(38306, 0, 30, 31, 6, 0, 100, 0, 0, 0, 0, 0, 1, 3, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - On Death - Say Text Line 3"),
+(38306, 0, 31, 0, 61, 0, 100, 0, 0, 0, 0, 0, 45, 6, 6, 0, 0, 0, 0, 11, 38423, 100, 0, 0, 0, 0, 0, "Zar'jira - On Death - Set Data 6 6 (Creature ID: 38423)"),
 
 (3830600, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - On Script - Say Text Line 0"),
 (3830600, 9, 1, 0, 0, 0, 100, 0, 16000, 16000, 0, 0, 19, 768, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - On Script - Remove Unit Flags (768)"),
@@ -134,14 +171,14 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (38302, 0, 3, 0, 6, 0, 100, 0, 0, 0, 0, 0, 41, 1000, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Manifestation of the Sea Witch - On Death - Despawn (1000 ms)"),
 
 (38452, 0, 0, 0, 8, 0, 100, 0, 72044, 0, 0, 0, 86, 72045, 0, 11, 38306, 100, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Sea Witch Channel Bunny - On Spell Hit 72044 - Cross Cast Cosmetic Spell"),
-(38452, 0, 1, 0, 38, 0, 100, 0, 2, 2, 0, 0, 51, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Sea Witch Channel Bunny - On Data Set 2 2 - Kill Self");
+(38452, 0, 1, 0, 38, 0, 100, 0, 2, 2, 0, 0, 41, 1000, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Sea Witch Channel Bunny - On Data Set 2 2 - Despawn Self (1000 ms)");
 
 DELETE FROM `conditions` WHERE `SourceEntry` = 72045 AND `SourceGroup` = 1 AND `SourceTypeOrReferenceId` = 13;
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES
 (13, 1, 72045, 0, 0, 31, 0, 3, 38452, 0, 0, 0, 0, "", "Spell ID: 72045 target Sea Witch Channel Bunny");
 
 UPDATE `creature_template` SET `InhabitType` = 4 WHERE `entry` = 38452;
-UPDATE `creature` SET `position_x` = -713.983215, `position_y` = -5587.527344, `wander_distance` = 0, `movement_type` = 0 WHERE `guid` = 302892;
+UPDATE `creature` SET `position_x` = -713.983215, `position_y` = -5587.527344, `wander_distance` = 0, `movement_type` = 0, `spawntimesecs` = 10 WHERE `guid` = 302892;
 DELETE FROM `creature_addon` WHERE `guid` = 302892;
 DELETE FROM `waypoint_data` WHERE `id` = 302892;
 
