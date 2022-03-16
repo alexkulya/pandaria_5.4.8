@@ -58,7 +58,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (3842301, 9, 0, 0, 0, 0, 100, 0, 200, 200, 0, 0, 28, 73004, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Script - Remove Cosmetic Spell"),
 (3842301, 9, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 28, 93199, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Script - Remove Cosmetic Spell"),
 (3842301, 9, 2, 0, 0, 0, 100, 0, 0, 0, 0, 0, 18, 768, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Script - Set Unit Flags (768)"),
-(3842301, 9, 2, 0, 0, 0, 100, 0, 400, 400, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Script - Say Text Line 0"),
+(3842301, 9, 3, 0, 0, 0, 100, 0, 400, 400, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Script - Say Text Line 0"),
 (3842301, 9, 4, 0, 0, 0, 100, 0, 200, 200, 0, 0, 59, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zuni - On Script - Set Run On"),
 (3842301, 9, 5, 0, 0, 0, 100, 0, 0, 0, 0, 0, 69, 1, 0, 0, 0, 0, 0, 8, 0, 0, 0, -712.563, -5575.99, 27, 0, "Zuni - On Script - Move To Position"),
 
@@ -75,14 +75,16 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (38225, 0, 5, 6, 38, 0, 100, 0, 1, 1, 0, 0, 49, 0, 0, 0, 0, 0, 0, 11, 38306, 100, 0, 0, 0, 0, 0, "Vol'jin - On Data Set 1 1 - Start Attack Creature ID: 38306, Distance 100 Yards"),
 (38225, 0, 6, 0, 61, 0, 100, 0, 0, 0, 0, 0, 80, 3822501, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On Data Set 1 1 (Link) - Start Script"),
 (38225, 0, 7, 0, 0, 2, 100, 0, 3000, 4000, 3000, 4000, 11, 20463, 0, 0, 0, 0, 0, 11, 38306, 100, 0, 0, 0, 0, 0, "Vol'jin - In Combat- Cast Spell 'Shoot' (Phase 2)"),
-(38225, 0, 8, 0, 0, 2, 100, 0, 20000, 30000, 20000, 30000, 11, 73087, 0, 0, 0, 0, 0, 11, 38306, 100, 0, 0, 0, 0, 0, "Vol'jin - On Update - Cast Spell 'Shadow Shock' (Phase 2)"),
-(38225, 0, 9, 0, 38, 0, 100, 0, 2, 2, 0, 0, 11, 72044, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On Data Set 2 2 - Cast Cosmetic Spell"),
-(38225, 0, 10, 0, 38, 0, 100, 0, 3, 3, 0, 0, 22, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On Data Set 3 3 - Set Phase 2"),
-(38225, 0, 11, 0, 38, 0, 100, 0, 4, 4, 0, 0, 11, 72044, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On Data Set 4 4 - Cast Cosmetic Spell"),
-(38225, 0, 12, 0, 38, 0, 100, 0, 5, 5, 0, 0, 53, 1, 382250, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On Data Set 5 5 - Start WP"),
-(38225, 0, 13, 0, 40, 0, 100, 0, 2, 382250, 0, 0, 41, 1000, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On WP 2 Reached - Despawn Self (1000 ms)"),
-(38225, 0, 14, 15, 11, 0, 100, 0, 0, 0, 0, 0, 17, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On Respawn - Clear Emote State (0)"),
-(38225, 0, 15, 0, 61, 0, 100, 0, 0, 0, 0, 0, 80, 3822502, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On Respawn (Link) - Start Script"),
+(38225, 0, 8, 0, 0, 2, 100, 0, 20000, 30000, 20000, 30000, 11, 73087, 0, 0, 0, 0, 0, 11, 38306, 100, 0, 0, 0, 0, 0, "Vol'jin - In Combat - Cast Spell 'Shadow Shock' (Phase 2)"),
+(38225, 0, 9, 10, 38, 0, 100, 0, 2, 2, 0, 0, 70, 0, 0, 0, 0, 0, 0, 11, 38452, 100, 0, 0, 0, 0, 0, "Vol'jin - On Data Set 2 2 - Respawn Target"),
+(38225, 0, 10, 0, 61, 0, 100, 0, 0, 0, 0, 0, 11, 72044, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On Data Set 2 2 (Link) - Cast Cosmetic Spell"),
+(38225, 0, 11, 0, 38, 0, 100, 0, 3, 3, 0, 0, 22, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On Data Set 3 3 - Set Phase 2"),
+(38225, 0, 12, 13, 38, 0, 100, 0, 4, 4, 0, 0, 70, 0, 0, 0, 0, 0, 0, 11, 38452, 100, 0, 0, 0, 0, 0, "Vol'jin - On Data Set 4 4 - Respawn Target"),
+(38225, 0, 13, 0, 61, 0, 100, 0, 0, 0, 0, 0, 11, 72044, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On Data Set 4 4 (Link) - Cast Cosmetic Spell"),
+(38225, 0, 14, 0, 38, 0, 100, 0, 5, 5, 0, 0, 53, 1, 382250, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On Data Set 5 5 - Start WP"),
+(38225, 0, 15, 0, 40, 0, 100, 0, 2, 382250, 0, 0, 41, 1000, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On WP 2 Reached - Despawn Self (1000 ms)"),
+(38225, 0, 16, 17, 11, 0, 100, 0, 0, 0, 0, 0, 17, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On Respawn - Clear Emote State (0)"),
+(38225, 0, 17, 0, 61, 0, 100, 0, 0, 0, 0, 0, 80, 3822502, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On Respawn (Link) - Start Script"),
 
 (3822500, 9, 0, 0, 0, 0, 100, 0, 1000, 1000, 0, 0, 101, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On Script - Set Home Position"),
 (3822500, 9, 1, 0, 0, 0, 100, 0, 0, 0, 0, 0, 21, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vol'jin - On Script - Combat Movement Stop"),
@@ -158,12 +160,11 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (38306, 0, 2, 0, 0, 2, 100, 0, 0, 0, 3000, 3000, 11, 46987, 0, 0, 0, 0, 0, 10, 252717, 38225, 0, 0, 0, 0, 0, "Zar'jira - In Combat - Cast Spell 'Frostbolt' (Phase 2)"),
 (38306, 0, 3, 0, 0, 2, 100, 0, 7000, 7000, 15000, 20000, 87, 3830601, 3830602, 3830603, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - In Combat - Start Random Script (Phase 2)"),
 (38306, 0, 4, 0, 38, 0, 100, 0, 1, 1, 0, 0, 80, 3830600, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - On Data Set 1 1 - Start Script"),
-
 (38306, 0, 5, 6, 2, 0, 100, 1, 0, 50, 0, 0, 92, 0, 46987, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - Between 0-50% Health - Interrupt Spell Cast"),
 (38306, 0, 6, 7, 61, 0, 100, 0, 0, 0, 0, 0, 11, 34326, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - Between 0-50% Health (Link) - Cast Cosmetic Spell"),
 (38306, 0, 7, 8, 61, 0, 100, 0, 0, 0, 0, 0, 22, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - Between 0-50% Health (Link) - Set Phase 1"),
 (38306, 0, 8, 9, 61, 0, 100, 0, 0, 0, 0, 0, 45, 3, 3, 0, 0, 0, 0, 11, 38437, 100, 0, 0, 0, 0, 0, "Zar'jira - Between 0-50% Health (Link) - Set Data 3 3 (Creature ID: 38437)"),
-(38306, 0, 9, 10 61, 0, 100, 0, 0, 0, 0, 0, 45, 2, 2, 0, 0, 0, 0, 11, 38423, 100, 0, 0, 0, 0, 0, "Zar'jira - Between 0-50% Health (Link) - Set Data 2 2 (Creature ID: 38423)"),
+(38306, 0, 9, 10, 61, 0, 100, 0, 0, 0, 0, 0, 45, 2, 2, 0, 0, 0, 0, 11, 38423, 100, 0, 0, 0, 0, 0, "Zar'jira - Between 0-50% Health (Link) - Set Data 2 2 (Creature ID: 38423)"),
 (38306, 0, 10, 0, 61, 0, 100, 0, 0, 0, 0, 0, 45, 2, 2, 0, 0, 0, 0, 11, 38225, 100, 0, 0, 0, 0, 0, "Zar'jira - Between 0-50% Health (Link) - Set Data 2 2 (Creature ID: 38225)"),
 (38306, 0, 11, 12, 60, 1, 100, 1, 1000, 1000, 0, 0, 18, 256, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - On Update - Set Unit Flags (256)(Phase 1)"),
 (38306, 0, 12, 13, 61, 1, 100, 0, 0, 0, 0, 0, 45, 1, 1, 0, 0, 0, 0, 11, 38542, 100, 0, 0, 0, 0, 0, "Zar'jira - On Update (Link) - Set Data 1 1 (Creature ID: 38542)"),
@@ -179,7 +180,7 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (38306, 0, 22, 0, 61, 0, 100, 0, 0, 0, 0, 0, 22, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - On Variable Decimal 1 3 (Link) - Set Phase 2"),
 (38306, 0, 23, 24, 2, 0, 100, 1, 0, 10, 0, 0, 92, 0, 46987, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - Between 0-10% Health - Interrupt Spell Cast"),
 (38306, 0, 24, 25, 61, 0, 100, 0, 0, 0, 0, 0, 11, 34326, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - Between 0-10% Health (Link) - Cast Cosmetic Spell"),
-(38306, 0, 25, 26, 61, 0, 100, 0, 0, 0, 0, 0, 22, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - Between 0-10% Health (Link) - Set Phase 1"),
+(38306, 0, 25, 26, 61, 0, 100, 0, 0, 0, 0, 0, 22, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Zar'jira - Between 0-10% Health (Link) - Set Phase 0"),
 (38306, 0, 26, 27, 61, 0, 100, 0, 0, 0, 0, 0, 45, 5, 5, 0, 0, 0, 0, 11, 38437, 100, 0, 0, 0, 0, 0, "Zar'jira - Between 0-10% Health (Link) - Set Data 5 5 (Creature ID: 38437)"),
 (38306, 0, 27, 28, 61, 0, 100, 0, 0, 0, 0, 0, 45, 4, 4, 0, 0, 0, 0, 11, 38423, 100, 0, 0, 0, 0, 0, "Zar'jira - Between 0-10% Health (Link) - Set Data 4 4 (Creature ID: 38423)"),
 (38306, 0, 28, 0, 61, 0, 100, 0, 0, 0, 0, 0, 45, 4, 4, 0, 0, 0, 0, 11, 38225, 100, 0, 0, 0, 0, 0, "Zar'jira - Between 0-10% Health (Link) - Set Data 4 4 (Creature ID: 38225)"),
@@ -224,15 +225,14 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (38302, 0, 3, 0, 6, 0, 100, 0, 0, 0, 0, 0, 41, 1000, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Manifestation of the Sea Witch - On Death - Despawn Self (1000 ms)"),
 
 (38452, 0, 0, 0, 8, 0, 100, 0, 72044, 0, 0, 0, 86, 72045, 0, 11, 38306, 100, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Sea Witch Channel Bunny - On Spell Hit 72044 - Cross Cast Cosmetic Spell"),
-(38452, 0, 1, 2, 38, 0, 100, 0, 2, 2, 0, 0, 41, 1000, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Sea Witch Channel Bunny - On Data Set 2 2 - Despawn Self (1000 ms)"),
-(38452, 0, 2, 0, 61, 0, 100, 0, 0, 0, 0, 0, 51, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Sea Witch Channel Bunny - On Data Set 2 2 (Link) - Kill Self");
+(38452, 0, 1, 0, 38, 0, 100, 0, 2, 2, 0, 0, 51, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Sea Witch Channel Bunny - On Data Set 2 2 - Kill Self");
 
 DELETE FROM `conditions` WHERE `SourceEntry` = 72045 AND `SourceGroup` = 1 AND `SourceTypeOrReferenceId` = 13;
 INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry`, `SourceId`, `ElseGroup`, `ConditionTypeOrReference`, `ConditionTarget`, `ConditionValue1`, `ConditionValue2`, `ConditionValue3`, `NegativeCondition`, `ErrorType`, `ErrorTextId`, `ScriptName`, `Comment`) VALUES
 (13, 1, 72045, 0, 0, 31, 0, 3, 38452, 0, 0, 0, 0, "", "Spell ID: 72045 target Sea Witch Channel Bunny");
 
 UPDATE `creature_template` SET `InhabitType` = 4 WHERE `entry` = 38452;
-UPDATE `creature` SET `position_x` = -713.983215, `position_y` = -5587.527344, `wander_distance` = 0, `movement_type` = 0, `spawntimesecs` = 10 WHERE `guid` = 302892;
+UPDATE `creature` SET `position_x` = -713.983215, `position_y` = -5587.527344, `wander_distance` = 0, `movement_type` = 0, `spawntimesecs` = 300 WHERE `guid` = 302892;
 DELETE FROM `creature_addon` WHERE `guid` = 302892;
 DELETE FROM `waypoint_data` WHERE `id` = 302892;
 
