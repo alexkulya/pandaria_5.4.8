@@ -309,6 +309,7 @@ class UnitAI
         void DoCast(Unit* victim, uint32 spellId, bool triggered = false);
         void DoCast(SelectAggroTarget targetType, uint32 spellId, bool triggered = false, uint32 position = 0, float dist = 0.0f, bool playerOnly = true, int32 aura = 0);
         void DoCastToAllHostilePlayers(uint32 spellid, bool triggered = false);
+        void DoCastSelf(uint32 spellId, bool triggered = false);
         void DoCastVictim(uint32 spellId, bool triggered = false);
         void DoCastAOE(uint32 spellId, bool triggered = false);
 

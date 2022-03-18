@@ -194,6 +194,14 @@ void UnitAI::DoCast(SelectAggroTarget targetType, uint32 spellId, bool triggered
         me->CastSpell(target, spellId, triggered);
 }
 
+void UnitAI::DoCastSelf(uint32 spellId, bool triggered)
+{
+    if (!triggered && me->HasUnitState(UNIT_STATE_CASTING))
+        return;
+
+    me->CastSpell(me, spellId, triggered);
+}
+
 void UnitAI::DoCastVictim(uint32 spellId, bool triggered)
 {
     if (!me->GetVictim() || (me->HasUnitState(UNIT_STATE_CASTING) && !triggered))

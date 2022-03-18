@@ -223,7 +223,7 @@ public:
     }
 };
 
-void AddSC_Custom_Items()
+void AddSC_custom_items()
 {
     new battle_pay_currency_honor_1000("battle_pay_currency_honor_1000");
     new battle_pay_currency_justice_1000("battle_pay_currency_justice_1000");

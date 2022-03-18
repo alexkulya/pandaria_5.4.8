@@ -338,7 +338,7 @@ public:
     }
 };
 
-void AddSC_Boost_Profession()
+void AddSC_boost_profession()
 {
     new battle_pay_boost_profession();
     new battle_pay_boost_profession_small();
