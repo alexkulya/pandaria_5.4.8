@@ -3681,6 +3681,11 @@ void BattlegroundMap::RemoveAllPlayers()
                     player->TeleportTo(player->GetBattlegroundEntryPoint());
 }
 
+Player* Map::GetPlayer(uint64 guid)
+{
+    return ObjectAccessor::GetObjectInMap(guid, this, (Player*)NULL);
+}
+
 Creature* Map::GetCreature(uint64 guid)
 {
     return ObjectAccessor::GetObjectInMap(guid, this, (Creature*)NULL);
