@@ -19,6 +19,8 @@
 #include "Chat.h"
 #include "ServiceMgr.h"
 
+#define GetText(a, b, c) a->GetSession()->GetSessionDbLocaleIndex() == LOCALE_ruRU ? b : c
+
 namespace BattlePay
 {
     enum Type:int64
@@ -31,8 +33,6 @@ namespace BattlePay
         Gold_150K                           = 1500000000U
     };
 }
-
-#define GetText(a, b, c) a->GetSession()->GetSessionDbLocaleIndex() == LOCALE_ruRU ? b : c
 
 class battle_pay_currency_honor_1000 : public ItemScript
 {
@@ -54,7 +54,7 @@ public:
         }
         else
         {
-            ChatHandler(player->GetSession()).SendSysMessage(GetText(player, "У вас нет необходимого токена.", "You do not have the necessary token."));
+            ChatHandler(player->GetSession()).SendSysMessage(GetText(player, "У вас нет необходимого жетона.", "You do not have the necessary token."));
         }
         return true;
     }
@@ -80,7 +80,7 @@ public:
         }
         else
         {
-            ChatHandler(player->GetSession()).SendSysMessage(GetText(player, "У вас нет необходимого токена.", "You do not have the necessary token."));
+            ChatHandler(player->GetSession()).SendSysMessage(GetText(player, "У вас нет необходимого жетона.", "You do not have the necessary token."));
         }
         return true;
     }
@@ -106,7 +106,7 @@ public:
         }
         else
         {
-            ChatHandler(player->GetSession()).SendSysMessage(GetText(player, "У вас нет необходимого токена.", "You do not have the necessary token."));
+            ChatHandler(player->GetSession()).SendSysMessage(GetText(player, "У вас нет необходимого жетона.", "You do not have the necessary token."));
         }
         return true;
     }
@@ -132,7 +132,7 @@ public:
         }
         else
         {
-            ChatHandler(player->GetSession()).SendSysMessage(GetText(player, "У вас нет необходимого токена.", "You do not have the necessary token."));
+            ChatHandler(player->GetSession()).SendSysMessage(GetText(player, "У вас нет необходимого жетона.", "You do not have the necessary token."));
         }
         return true;
     }
