@@ -1,23 +1,25 @@
-UPDATE `creature_template` SET `AIName` = "SmartAI", `ScriptName` = "" WHERE `entry` = 38326;
-DELETE FROM `smart_scripts` WHERE `entryorguid` IN (38300, 38326, 38301) AND `source_type` = 0;
+UPDATE `creature_template` SET `AIName` = "SmartAI", `ScriptName` = "" WHERE `entry` IN (38326, 38324);
+DELETE FROM `smart_scripts` WHERE `entryorguid` IN (38300, 38326, 38301, 38324) AND `source_type` = 0;
 INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
 (38300, 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 8, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Spitescale Wavethrasher - On Respawn - Set React State Aggressive"),
 (38300, 0, 1, 0, 0, 0, 100, 0, 4000, 5000, 17000, 23000, 11, 79810, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, "Spitescale Wavethrasher - In Combat - Cast Spell 'Frost Cleave'"),
 
 (38326, 0, 0, 0, 0, 0, 100, 0, 3400, 4700, 3400, 4700, 11, 73212, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, "Darkspear Shaman - In Combat - Cast Spell 'Lightning Bolt'"),
 (38326, 0, 1, 0, 2, 0, 100, 0, 0, 40, 14000, 21000, 11, 72014, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Darkspear Shaman - At 40% HP - Cast Spell 'Chain Heal'"),
+(38326, 0, 2, 0, 1, 0, 100, 0, 1000, 1000, 5000, 5000, 49, 0, 0, 0, 0, 0, 0, 11, 38300, 30, 0, 0, 0, 0, 0, "Darkspear Shaman - OOC - Start Attack Creature ID: 38300, 30 Yards"),
 
 (38301, 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 8, 2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Spitescale Siren - On Respawn - Set React State Aggressive"),
 (38301, 0, 1, 0, 9, 0, 100, 0, 0, 40, 3400, 4700, 11, 32011, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, "Spitescale Siren - On Close 0-40 Yards - Cast Spell 'Chain Lightning'"),
 (38301, 0, 2, 0, 0, 0, 100, 0, 5000, 8000, 22000, 24000, 11, 15117, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, "Spitescale Siren - In Combat - Cast Spell 'Water Bolt'"),
-(38301, 0, 3, 0, 38, 0, 100, 0, 1, 1, 0, 0, 49, 0, 0, 0, 0, 0, 0, 21, 50, 0, 0, 0, 0, 0, 0, "Spitescale Siren - On Data Set 1 1 - Start Attack");
+(38301, 0, 3, 0, 38, 0, 100, 0, 1, 1, 0, 0, 49, 0, 0, 0, 0, 0, 0, 21, 50, 0, 0, 0, 0, 0, 0, "Spitescale Siren - On Data Set 1 1 - Start Attack"),
+
+(38324, 0, 0, 0, 1, 0, 100, 0, 1000, 1000, 5000, 5000, 49, 0, 0, 0, 0, 0, 0, 11, 38300, 30, 0, 0, 0, 0, 0, "Darkspear Tribesman - OOC - Start Attack Creature ID: 38300, 30 Yards");
 
 UPDATE `creature_template_addon` SET `auras` = "91218" WHERE `entry` = 38306;
 
 UPDATE `creature_template` SET `unit_flags` = 0 WHERE `entry` IN (38225, 38306, 38437, 38423, 38542);
 UPDATE `creature_template` SET `speed_walk` = 0.001, `speed_run` = 0.001 WHERE `entry` = 38306;
-UPDATE `creature_template` SET `faction_A` = 2102, `faction_H` = 2102 WHERE `entry` = 38300;
-UPDATE `creature_template` SET `faction_A` = 2224, `faction_H` = 2224 WHERE `entry` = 38302;
+UPDATE `creature_template` SET `faction_A` = 2224, `faction_H` = 2224 WHERE `entry` IN (38302, 38300);
 
 UPDATE `creature` SET `spawntimesecs` = 3600 WHERE `guid` IN (252720, 252718, 252905, 252906, 252719);
 UPDATE `creature` SET `spawntimesecs` = 300 WHERE `guid` = 252717;
@@ -122,6 +124,8 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (38437, 0, 15, 0, 38, 0, 100, 0, 6, 6, 0, 0, 80, 3843702, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - On Data Set 6 6 - Start Script"),
 (38437, 0, 16, 0, 34, 0, 100, 0, 8, 2, 0, 0, 80, 3843703, 2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - On MI 1 - Start Script"),
 (38437, 0, 17, 0, 11, 0, 100, 0, 0, 0, 0, 0, 17, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - On Respawn - Clear Emote State (0)"),
+(38437, 0, 18, 19, 62, 0, 100, 0, 11107, 0, 0, 0, 72, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, "Vanira - On Gossip Select - Close Gossip"),
+(38437, 0, 19, 0, 61, 0, 100, 0, 0, 0, 0, 0, 62, 1, 0, 0, 0, 0, 0, 7, 0, 0, 0, -1286.517578, -5566.907227, 20.926611, 3.940922, "Vanira - On Gossip Select (Link) - Teleport"),
 
 (3843700, 9, 0, 0, 0, 0, 100, 0, 0, 0, 0, 0, 11, 66033, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - On Script - Cast Cosmetic Spell"),
 (3843700, 9, 1, 0, 0, 0, 100, 0, 400, 400, 0, 0, 11, 93199, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Vanira - On Script - Cast Cosmetic Spell"),
