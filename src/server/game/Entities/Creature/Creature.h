@@ -1,21 +1,19 @@
 /*
- * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+* This file is part of the Pandaria 5.4.8 Project. See THANKS file for Copyright information
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the
+* Free Software Foundation; either version 2 of the License, or (at your
+* option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #ifndef TRINITYCORE_CREATURE_H
 #define TRINITYCORE_CREATURE_H
@@ -85,6 +83,7 @@ struct CreatureTemplate
     uint32  Modelid3;
     uint32  Modelid4;
     std::string  Name;
+    std::string  FemaleName;
     std::string  SubName;
     std::string  IconName;
     uint32  GossipMenuId;
@@ -232,6 +231,7 @@ typedef std::unordered_map<uint16, CreatureBaseStats> CreatureBaseStatsContainer
 struct CreatureLocale
 {
     StringVector Name;
+    StringVector FemaleName;
     StringVector SubName;
 };
 
@@ -281,6 +281,8 @@ struct CreatureData
     uint32 unit_flags;                                      // enum UnitFlags mask values
     uint32 unit_flags2;                                     // enum UnitFlags2 mask values
     uint32 dynamicflags;
+    uint32 ScriptId;
+    float WalkMode;
     bool dbData;
     uint32 gameEventId = 0;
 };
@@ -336,6 +338,9 @@ struct CreatureAddon
     uint32 bytes1;
     uint32 bytes2;
     uint32 emote;
+    uint16 ai_anim_kit;
+    uint16 movement_anim_kit;
+    uint16 melee_anim_kit;
     std::vector<uint32> auras;
 };
 
@@ -657,6 +662,8 @@ class Creature : public Unit, public GridObject<Creature>, public MapObject
         float GetWanderDistance() const { return m_wanderDistance; }
         void SetWanderDistance(float dist) { m_wanderDistance = dist; }
 
+        float GetWalkMode() const { return m_WalkMode; }
+
         uint32 m_groupLootTimer;                            // (msecs)timer used for group loot
         uint32 lootingGroupLowGUID;                         // used to find group which is looting corpse
 
@@ -757,6 +764,7 @@ class Creature : public Unit, public GridObject<Creature>, public MapObject
         uint32 m_corpseDelay;                               // (secs) delay between death and corpse disappearance
         TimeValue m_pickpocketLootRestore;
         float m_wanderDistance;
+        float m_WalkMode;
 
         ReactStates m_reactState;                           // for AI, not charmInfo
 

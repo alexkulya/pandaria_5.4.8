@@ -1,21 +1,19 @@
 /*
- * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+* This file is part of the Pandaria 5.4.8 Project. See THANKS file for Copyright information
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the
+* Free Software Foundation; either version 2 of the License, or (at your
+* option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include "MapManager.h"
 #include "InstanceSaveMgr.h"
@@ -160,28 +158,34 @@ enum ToES_achi_check
 {
     // Heart of Fear (6 bosses)
     // For Normal
-    ACH_THE_DREAD_APPROACH = 6718,
-    ACH_NIGHTMARE_OF_SHEKZEER = 6845,
+    ACH_THE_DREAD_APPROACH                  = 6718,
+    ACH_NIGHTMARE_OF_SHEKZEER               = 6845,
     // For Heroic
-    ACH_ZORLOK_H = 6725,
-    ACH_TAYAK_H = 6726,
-    ACH_GARALON_H = 6727,
-    ACH_MELJARAK_H = 6728,
-    ACH_UNSOK_H = 6729,
-    ACH_SHEKZEER_H = 6730,
+    ACH_ZORLOK_H                            = 6725,
+    ACH_TAYAK_H                             = 6726,
+    ACH_GARALON_H                           = 6727,
+    ACH_MELJARAK_H                          = 6728,
+    ACH_UNSOK_H                             = 6729,
+    ACH_SHEKZEER_H                          = 6730,
     // Mogushan Vaults
     // For Normal
-    ACH_GUARDIANS_OF_MOGUSHAN = 6458,
-    ACH_THE_VAULT_OF_MYSTERIES = 6844,
+    ACH_GUARDIANS_OF_MOGUSHAN               = 6458,
+    ACH_THE_VAULT_OF_MYSTERIES              = 6844,
     // For Heroic
-    ACH_STONE_GUARD_H = 6719,
-    ACH_FENG_H = 6720,
-    ACH_GARAJAL_H = 6721,
-    ACH_FOUR_KINGS_H = 6722,
-    ACH_ELEGON_H = 6723,
-    ACH_WILL_OF_THE_EMPEROR_H = 6724,
+    ACH_STONE_GUARD_H                       = 6719,
+    ACH_FENG_H                              = 6720,
+    ACH_GARAJAL_H                           = 6721,
+    ACH_FOUR_KINGS_H                        = 6722,
+    ACH_ELEGON_H                            = 6723,
+    ACH_WILL_OF_THE_EMPEROR_H               = 6724,
     // Terrace of Endless Spring
-    ACH_TOES_NORMAL = 6689,
+    ACH_TOES_NORMAL                         = 6689,
+    /// Strings
+    STRING_ID_00                            = 15000,
+    STRING_ID_01                            = 15001,
+    STRING_ID_02                            = 15002,
+    STRING_ID_03                            = 15003,
+    STRING_ID_04                            = 15004
 };
 
 bool HasCompletedMogushan(Player* p, Difficulty mapDiff)
@@ -193,7 +197,7 @@ bool HasCompletedMogushan(Player* p, Difficulty mapDiff)
         else
         {
             if (p->GetSession())
-                p->GetSession()->SendNotification(15004);
+                p->GetSession()->SendNotification(STRING_ID_04);
             return false;
         }
     }
@@ -204,7 +208,7 @@ bool HasCompletedMogushan(Player* p, Difficulty mapDiff)
         else
         {
             if (p->GetSession())
-                p->GetSession()->SendNotification(15003);
+                p->GetSession()->SendNotification(STRING_ID_03);
             return false;
         }
     }
@@ -219,7 +223,7 @@ bool HasCompletedHoF(Player* p, Difficulty mapDiff)
         else
         {
             if (p->GetSession())
-                p->GetSession()->SendNotification(15002);
+                p->GetSession()->SendNotification(STRING_ID_02);
             return false;
         }
 
@@ -231,7 +235,7 @@ bool HasCompletedHoF(Player* p, Difficulty mapDiff)
         else
         {
             if (p->GetSession())
-                p->GetSession()->SendNotification(15001);
+                p->GetSession()->SendNotification(STRING_ID_01);
             return false;
         }
     }
@@ -355,7 +359,7 @@ bool MapManager::CanPlayerEnter(uint32 mapid, Player* player, bool loginCheck)
             if (!player->HasAchieved(ACH_TOES_NORMAL))
             {
                 if (player->GetSession())
-                    player->GetSession()->SendNotification(15000);
+                    player->GetSession()->SendNotification(STRING_ID_00);
                 return false;
             }
         }

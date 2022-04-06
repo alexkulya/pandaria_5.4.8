@@ -1,3 +1,20 @@
+/*
+* This file is part of the Pandaria 5.4.8 Project. See THANKS file for Copyright information
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the
+* Free Software Foundation; either version 2 of the License, or (at your
+* option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef BATTLE_PAY_MGR_H
 #define BATTLE_PAY_MGR_H
 
@@ -6,10 +23,10 @@
 #include "Opcodes.h"
 #include "WorldSession.h"
 
-#define MAX_BATTLE_PAY_PRODUCT_TITLE_SIZE       50
+#define MAX_BATTLE_PAY_PRODUCT_TITLE_SIZE 55
 #define MAX_BATTLE_PAY_PRODUCT_DESCRIPTION_SIZE 500
-#define MAX_BATTLE_PAY_GROUP_NAME_SIZE          16
-#define BATTLE_PAY_CURRENCY_PRECISION           10000
+#define MAX_BATTLE_PAY_GROUP_NAME_SIZE 16
+#define BATTLE_PAY_CURRENCY_PRECISION 10000
 
 enum BattlePayCurrency
 {

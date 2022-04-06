@@ -1,21 +1,19 @@
 /*
- * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+* This file is part of the Pandaria 5.4.8 Project. See THANKS file for Copyright information
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the
+* Free Software Foundation; either version 2 of the License, or (at your
+* option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include "ScriptLoader.h"
 
@@ -125,6 +123,7 @@ void AddSC_achievement_scripts();
 void AddSC_brawlers_guild();
 void AddSC_on_duel();
 void AddSC_transmog();
+void AddSC_world_map_scripts();
 
 //eastern kingdoms
 void AddSC_boss_alizabal();                  //Baradin Hold
@@ -1156,6 +1155,7 @@ void AddWorldScripts()
     AddSC_chat_log();
     AddSC_on_duel();
 	AddSC_transmog();
+    AddSC_world_map_scripts();
 #endif
 }
 
@@ -2133,23 +2133,22 @@ void AddBattlegroundScripts()
 
 #endif
 void AddSC_npc_teleport();
-void AddSC_protected_zone();
 void AddSC_wow_token();
 void AddSC_custom_reward();
-void AddSC_Boost_Profession();
-void AddSC_Custom_Items();
-
+void AddSC_boost_profession();
+void AddSC_custom_items();
+void AddSC_solocraft_system();
 
 void AddCustomScripts()
 {
 #ifdef SCRIPTS
     /* This is where custom scripts should be added. */
 AddSC_npc_teleport();
-AddSC_protected_zone();
 AddSC_wow_token();
 AddSC_custom_reward();
-AddSC_Boost_Profession();
-AddSC_Custom_Items();
+AddSC_boost_profession();
+AddSC_custom_items();
+AddSC_solocraft_system();
 
 #endif
     AddSC_Anticheat();

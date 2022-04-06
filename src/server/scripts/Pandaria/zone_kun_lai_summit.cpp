@@ -1,3 +1,20 @@
+/*
+* This file is part of the Pandaria 5.4.8 Project. See THANKS file for Copyright information
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the
+* Free Software Foundation; either version 2 of the License, or (at your
+* option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "ScriptedGossip.h"
@@ -12,7 +29,7 @@ enum eSpells
     SPELL_VANISH                  = 125632,
     SPELL_SMOKED_BLADE            = 125633,
     SPELL_INEVITABILITY           = 135843,
-                                  
+
     // Tongue of Ba-Shon          
     SPELL_SUMMON_CHO_FORCE        = 118996,
     SPELL_SUMMON_CHO              = 118953,
@@ -189,9 +206,9 @@ class npc_nessos_the_oracle : public CreatureScript
             {
                 events.Reset();
 
-                events.ScheduleEvent(EVENT_VICIOUS_REND, 7000);
-                events.ScheduleEvent(EVENT_GRAPPLING_HOOK, 17000);
-                events.ScheduleEvent(EVENT_VANISH, 12000);
+                events.ScheduleEvent(EVENT_VICIOUS_REND, 7 * IN_MILLISECONDS);
+                events.ScheduleEvent(EVENT_GRAPPLING_HOOK, 17 * IN_MILLISECONDS);
+                events.ScheduleEvent(EVENT_VANISH, 12 * IN_MILLISECONDS);
             }
 
             void JustDied(Unit* /*killer*/) override { }
@@ -210,22 +227,23 @@ class npc_nessos_the_oracle : public CreatureScript
                         case EVENT_VICIOUS_REND:
                             if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
                                 me->CastSpell(target, SPELL_VICIOUS_REND, false);
-                            events.ScheduleEvent(EVENT_VICIOUS_REND,      7000);
+
+                            events.ScheduleEvent(EVENT_VICIOUS_REND, 7 * IN_MILLISECONDS);
                             break;
                         case EVENT_GRAPPLING_HOOK:
                             if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
                                 me->CastSpell(target, SPELL_GRAPPLING_HOOK, false);
-                            events.ScheduleEvent(EVENT_GRAPPLING_HOOK, 17000);
+
+                            events.ScheduleEvent(EVENT_GRAPPLING_HOOK, 17 * IN_MILLISECONDS);
                             break;
                         case EVENT_VANISH:
                             me->CastSpell(me, SPELL_VANISH, false);
-                            events.ScheduleEvent(EVENT_VANISH, 20000);
-                            events.ScheduleEvent(EVENT_SMOKED_BLADE, urand(0, 8000));
+                            events.ScheduleEvent(EVENT_VANISH, 20 * IN_MILLISECONDS);
+                            events.ScheduleEvent(EVENT_SMOKED_BLADE, urand(0, 8 * IN_MILLISECONDS));
                             break;
                         case EVENT_SMOKED_BLADE:
                             if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
                                 me->CastSpell(target, SPELL_SMOKED_BLADE, false);
-
                             break;
                         default:
                             break;
@@ -272,9 +290,9 @@ class npc_ski_thik : public CreatureScript
             {
                 events.Reset();
 
-                events.ScheduleEvent(EVENT_BLADE_FURY,       8000);
-                events.ScheduleEvent(EVENT_TORNADO,         40000);
-                events.ScheduleEvent(EVENT_WINDSONG,        32000);
+                events.ScheduleEvent(EVENT_BLADE_FURY, 8 * IN_MILLISECONDS);
+                events.ScheduleEvent(EVENT_TORNADO, 40 * IN_MILLISECONDS);
+                events.ScheduleEvent(EVENT_WINDSONG, 32 * IN_MILLISECONDS);
             }
 
             void JustDied(Unit* /*killer*/) override { }
@@ -307,17 +325,17 @@ class npc_ski_thik : public CreatureScript
                         case EVENT_BLADE_FURY:
                             if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
                                 me->CastSpell(target, SPELL_BLADE_FURY, false);
-                            events.ScheduleEvent(EVENT_BLADE_FURY,      8000);
+                            events.ScheduleEvent(EVENT_BLADE_FURY, 8 * IN_MILLISECONDS);
                             break;
                         case EVENT_TORNADO:
                             if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
                                 me->CastSpell(target, SPELL_TORNADO, false);
-                            events.ScheduleEvent(EVENT_TORNADO, 40000);
+                            events.ScheduleEvent(EVENT_TORNADO, 40 * IN_MILLISECONDS);
                             break;
                         case EVENT_WINDSONG:
                             if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
                                 me->CastSpell(target, SPELL_WINDSONG, false);
-                            events.ScheduleEvent(EVENT_WINDSONG, 32000);
+                            events.ScheduleEvent(EVENT_WINDSONG, 32 * IN_MILLISECONDS);
                             break;
 
                         default:
@@ -364,9 +382,9 @@ class npc_mogujia_soul_caller : public CreatureScript
             {
                 events.Reset();
 
-                events.ScheduleEvent(EVENT_DRAIN_LIFE,      20000);
-                events.ScheduleEvent(EVENT_SHADOW_BOLT,     15000);
-                events.ScheduleEvent(EVENT_SHADOW_CRASH,    32000);
+                events.ScheduleEvent(EVENT_DRAIN_LIFE, 20 * IN_MILLISECONDS);
+                events.ScheduleEvent(EVENT_SHADOW_BOLT, 15 * IN_MILLISECONDS);
+                events.ScheduleEvent(EVENT_SHADOW_CRASH, 32 * IN_MILLISECONDS);
             }
 
             void UpdateAI(uint32 diff) override
@@ -386,17 +404,17 @@ class npc_mogujia_soul_caller : public CreatureScript
                         case EVENT_DRAIN_LIFE:
                             if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
                                 me->CastSpell(target, SPELL_DRAIN_LIFE, false);
-                            events.ScheduleEvent(EVENT_DRAIN_LIFE,      20000);
+                            events.ScheduleEvent(EVENT_DRAIN_LIFE, 20 * IN_MILLISECONDS);
                             break;
                         case EVENT_SHADOW_BOLT:
                             if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
                                 me->CastSpell(target, SPELL_SHADOW_BOLT, false);
-                            events.ScheduleEvent(EVENT_SHADOW_BOLT, 15000);
+                            events.ScheduleEvent(EVENT_SHADOW_BOLT, 15 * IN_MILLISECONDS);
                             break;
                         case EVENT_SHADOW_CRASH:
                             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM))
                                 me->CastSpell(target, SPELL_SHADOW_CRASH, false);
-                            events.ScheduleEvent(EVENT_SHADOW_CRASH, 32000);
+                            events.ScheduleEvent(EVENT_SHADOW_CRASH, 32 * IN_MILLISECONDS);
                             break;
                         default:
                             break;
@@ -415,7 +433,7 @@ class npc_mogujia_soul_caller : public CreatureScript
 
 enum eQuilenStonemawSpells
 {
-    SPELL_UNSTABLE_SERUM        =  127373,
+    SPELL_UNSTABLE_SERUM        = 127373,
 };
 
 enum eQuilenStonemawEvents
@@ -437,7 +455,7 @@ class npc_quilen_stonemaw : public CreatureScript
             void Reset() override
             {
                 events.Reset();
-                events.ScheduleEvent(EVENT_UNSTABLE_SERUM,      5000);
+                events.ScheduleEvent(EVENT_UNSTABLE_SERUM, 5 * IN_MILLISECONDS);
             }
 
             void UpdateAI(uint32 diff) override
@@ -457,7 +475,7 @@ class npc_quilen_stonemaw : public CreatureScript
                         case EVENT_UNSTABLE_SERUM:
                             if (Unit* target = me->SelectNearestTarget(5.0f))
                                 me->CastSpell(target, SPELL_UNSTABLE_SERUM, false);
-                            events.ScheduleEvent(EVENT_UNSTABLE_SERUM,      5000);
+                            events.ScheduleEvent(EVENT_UNSTABLE_SERUM, 5 * IN_MILLISECONDS);
                             break;
 
                         default:
@@ -504,9 +522,9 @@ class npc_zai_the_outcast : public CreatureScript
             {
                 events.Reset();
 
-                events.ScheduleEvent(EVENT_RAIN_DANCE,       8000);
-                events.ScheduleEvent(EVENT_TORRENT,         40000);
-                events.ScheduleEvent(EVENT_WATER_BOLT,      32000);
+                events.ScheduleEvent(EVENT_RAIN_DANCE, 8 * IN_MILLISECONDS);
+                events.ScheduleEvent(EVENT_TORRENT, 40 * IN_MILLISECONDS);
+                events.ScheduleEvent(EVENT_WATER_BOLT, 32 * IN_MILLISECONDS);
             }
 
             void JustDied(Unit* /*killer*/) override { }

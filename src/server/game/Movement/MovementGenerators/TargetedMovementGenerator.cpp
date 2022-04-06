@@ -1,21 +1,19 @@
 /*
- * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+* This file is part of the Pandaria 5.4.8 Project. See THANKS file for Copyright information
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the
+* Free Software Foundation; either version 2 of the License, or (at your
+* option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include "ByteBuffer.h"
 #include "TargetedMovementGenerator.h"
@@ -55,7 +53,7 @@ bool TargetedMovementGeneratorMedium<T, D>::_setTargetLocation(T* owner, bool up
     if (static_cast<D*>(this)->IsTargetReachableNow(owner, false) && (!updateDestination || owner->IsWithinLOSInMap(i_target.getTarget())))
         return false;
 
-    if (owner->GetTotalAuraEffectValue(SPELL_AURA_MOD_DECREASE_SPEED) <= -99.9f)    // Oh...
+    if (owner->GetTotalAuraEffectValue(SPELL_AURA_MOD_DECREASE_SPEED) <= -99.9f) // Oh...
         return false;
 
     // Hack for Beth'tilac
@@ -107,16 +105,21 @@ bool TargetedMovementGeneratorMedium<T, D>::_setTargetLocation(T* owner, bool up
         {
             leadingTarget = true;
             MovementFlags flags = (MovementFlags)i_target->GetUnitMovementFlags();
+
             if (flags & (MOVEMENTFLAG_FORWARD | MOVEMENTFLAG_BACKWARD | MOVEMENTFLAG_STRAFE_LEFT | MOVEMENTFLAG_STRAFE_RIGHT))
             {
                 // Calculate leading destination
                 Position ownerPos = i_target->GetPosition();
+
                 if (flags & MOVEMENTFLAG_FORWARD)
                     ownerPos.m_positionX += 1.0f;
+
                 if (flags & MOVEMENTFLAG_BACKWARD)
                     ownerPos.m_positionX -= 1.0f;
+
                 if (flags & MOVEMENTFLAG_STRAFE_LEFT)
                     ownerPos.m_positionY += 1.0f;
+
                 if (flags & MOVEMENTFLAG_STRAFE_RIGHT)
                     ownerPos.m_positionY -= 1.0f;
                 // TODO: Ascend/Descend, Pitch?
@@ -126,16 +129,21 @@ bool TargetedMovementGeneratorMedium<T, D>::_setTargetLocation(T* owner, bool up
                 float const distance = i_target->GetSpeed(GetTargetMoveType()) * (LEADING_TIME + std::min<uint32>(LEADING_TIME, latency * 2)) / IN_MILLISECONDS;
 
                 Position leadingDest{ x, y, z };
+
                 if (!(flags & (MOVEMENTFLAG_SWIMMING | MOVEMENTFLAG_FLYING)))
                     leadingDest.m_positionZ += 0.5f; // To prevent stopping at various bumps on the road
+
                 float stepDistance = distance / LEADING_STEPS;
+
                 for (uint32 i = 0; i < LEADING_STEPS; ++i)
                 {
                     Position prev = leadingDest;
                     owner->MovePositionToFirstCollision(leadingDest, stepDistance, direction - owner->GetOrientation());
+
                     if (prev.GetExactDist2dSq(&leadingDest) < std::min(CONTACT_DISTANCE, stepDistance) / 1.25f)
                         break;
                 }
+
                 leadingDest.GetPosition(x, y, z);
             }
         }
@@ -143,7 +151,7 @@ bool TargetedMovementGeneratorMedium<T, D>::_setTargetLocation(T* owner, bool up
     else
     {
         // the destination has not changed, we just need to refresh the path (usually speed change)
-        G3D::Vector3 end{ i_path->GetEndPosition() };
+        G3D::Vector3 end { i_path->GetEndPosition() };
         if (pathTransport)
             pathTransport->CalculatePassengerPosition(end.x, end.y, end.z);
 
@@ -161,9 +169,15 @@ bool TargetedMovementGeneratorMedium<T, D>::_setTargetLocation(T* owner, bool up
     {
         switch (owner->GetMapId())
         {
-            case 489: i_path->SetPathLengthLimit(90.0f); break; // Warsong Gulch
-            case 562: i_path->SetPathLengthLimit(80.0f); break; // Blade's Edge Arena
-            default:  i_path->SetPathLengthLimit(250.0f); break;
+            case 489:
+                i_path->SetPathLengthLimit(90.0f);
+                break; // Warsong Gulch
+            case 562:
+                i_path->SetPathLengthLimit(80.0f);
+                break; // Blade's Edge Arena
+            default:
+                i_path->SetPathLengthLimit(250.0f);
+                break;
         }
     }
 
@@ -172,11 +186,12 @@ bool TargetedMovementGeneratorMedium<T, D>::_setTargetLocation(T* owner, bool up
         && owner->HasUnitState(UNIT_STATE_FOLLOW));
 
     bool result = i_path->CalculatePath(x, y, z, forceDest);
+
     if (!result || (i_path->GetPathType() & PATHFIND_NOPATH) && !forceDest)
     {
-        // Cant reach target
-        // Cant reach target
+        // Can't reach target
         i_recalculateTravel = true;
+
         if (updateDestination)
             i_recheckDistance.Reset(owner->GetMap()->IsBattlegroundOrArena() ? 100 : 1000);
         return false;
@@ -187,10 +202,12 @@ bool TargetedMovementGeneratorMedium<T, D>::_setTargetLocation(T* owner, bool up
     owner->AddUnitState(UNIT_STATE_CHASE);
 
     Movement::MoveSplineInit init(owner);
+
     if (i_path->GetPathType() == PATHFIND_NOPATH)
         init.MoveTo(x, y, z, false);
     else
         init.MovebyPath(i_path->GetPath());
+
     init.SetWalk(((D*)this)->EnableWalking());
 
     if (leadingTarget)
@@ -244,6 +261,7 @@ bool TargetedMovementGeneratorMedium<T, D>::DoUpdate(T* owner, uint32 time_diff)
     {
         bool stop = true;
         Spell* spell = owner->GetCurrentSpell(CURRENT_GENERIC_SPELL);
+
         if (spell)
             for (auto&& effect : owner->GetAuraEffectsByType(SPELL_AURA_CAST_WHILE_WALKING))
                 if (effect->IsAffectingSpell(spell->GetSpellInfo()))
@@ -276,6 +294,7 @@ bool TargetedMovementGeneratorMedium<T, D>::DoUpdate(T* owner, uint32 time_diff)
     {
         i_recheckDistance.Update(time_diff);
         i_recheckLOS.Update(time_diff);
+
         if (i_recheckDistance.Passed())
         {
             i_recheckDistance.Reset(100);
@@ -290,6 +309,7 @@ bool TargetedMovementGeneratorMedium<T, D>::DoUpdate(T* owner, uint32 time_diff)
     bool transportChanged = false;
     Transport* myTransport = owner->GetTransport();
     Transport* targetTransport = i_target->GetTransport();
+
     if (myTransport != targetTransport)
     {
         // Don't allow static spawns to step off transports
@@ -318,6 +338,7 @@ bool TargetedMovementGeneratorMedium<T, D>::DoUpdate(T* owner, uint32 time_diff)
     if (i_recalculateTravel || targetMoved)
     {
         bool splineStarted = _setTargetLocation(owner, targetMoved);
+
         if (!splineStarted && transportChanged)
             owner->SendMovementFlagUpdate();
     }
@@ -325,6 +346,7 @@ bool TargetedMovementGeneratorMedium<T, D>::DoUpdate(T* owner, uint32 time_diff)
     if (owner->movespline->Finalized())
     {
         static_cast<D*>(this)->MovementInform(owner);
+
         if (i_angle == 0.f && !owner->HasInArc(0.01f, i_target.getTarget()))
             owner->SetInFront(i_target.getTarget());
 
@@ -371,12 +393,16 @@ UnitMoveType TargetedMovementGeneratorMedium<T, D>::GetTargetMoveType() const
     if (i_target->GetTypeId() == TYPEID_PLAYER)
     {
         MovementFlags flags = (MovementFlags)i_target->GetUnitMovementFlags();
+
         if (flags & MOVEMENTFLAG_SWIMMING)
             return flags & MOVEMENTFLAG_BACKWARD ? MOVE_SWIM_BACK : MOVE_SWIM;
+
         if (flags & MOVEMENTFLAG_FLYING)
             return flags & MOVEMENTFLAG_BACKWARD ? MOVE_FLIGHT_BACK : MOVE_FLIGHT;
+
         if (flags & MOVEMENTFLAG_WALKING)
             return MOVE_WALK;
+
         return flags & MOVEMENTFLAG_BACKWARD ? MOVE_RUN_BACK : MOVE_RUN;
     }
     return static_cast<D const*>(this)->EnableWalking() ? MOVE_WALK : MOVE_RUN;

@@ -1,22 +1,19 @@
 /*
- * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
- * Copyright (C) 2006-2014 ScriptDev2 <https://github.com/scriptdev2/scriptdev2/>
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+* This file is part of the Pandaria 5.4.8 Project. See THANKS file for Copyright information
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the
+* Free Software Foundation; either version 2 of the License, or (at your
+* option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
@@ -29,6 +26,8 @@
 #include "Player.h"
 #include "SpellInfo.h"
 #include "CreatureTextMgr.h"
+#include "MoveSplineInit.h"
+#include <G3D/Vector3.h>
 
 /*######
 ##Quest 12848
@@ -324,7 +323,125 @@ public:
     }
 
 };
+/*
+enum EyeOfAcherusData
+{
+    SPELL_EYE_VISUAL                        = 51892,
+    SPELL_EYE_FLIGHT_BOOST                  = 51923,
+    SPELL_EYE_FLIGHT                        = 51890,
 
+    EVENT_MOVE_START                        = 1,
+
+    TALK_MOVE_START                         = 0,
+    TALK_CONTROL                            = 1,
+
+    POINT_EYE_FALL                          = 1,
+    POINT_EYE_MOVE_END                      = 3
+};
+
+Position const EyeOFAcherusFallPoint = { 2361.21f, -5660.45f, 496.7444f, 0.0f };
+
+Position const EyeOfAcherusPath[] =
+{
+    { 2361.21f, -5660.45f, 496.744f },
+    { 2341.57f, -5672.8f,  538.394f },
+    { 1957.4f,  -5844.1f,  273.867f },
+    { 1758.01f, -5876.79f, 166.867f }
+};
+std::size_t const EyeOfAcherusPathSize = std::extent<decltype(EyeOfAcherusPath)>::value;
+
+struct npc_eye_of_acherus : public ScriptedAI
+{
+    npc_eye_of_acherus(Creature* creature) : ScriptedAI(creature)
+    {
+        me->SetDisplayId(me->GetCreatureTemplate()->Modelid1);
+
+        if (Player* owner = me->GetCharmerOrOwner()->ToPlayer())
+            owner->SendAutoRepeatCancel(me);
+
+        DoCast(me, SPELL_EYE_VISUAL);
+        me->SetDisableGravity(true);
+        me->SetReactState(REACT_PASSIVE);
+        me->SetControlled(true, UNIT_STATE_ROOT);
+
+        me->GetMotionMaster()->MovePoint(POINT_EYE_FALL, EyeOFAcherusFallPoint, false);
+
+        Movement::MoveSplineInit init(me);
+        init.MoveTo(EyeOFAcherusFallPoint.GetPositionX(), EyeOFAcherusFallPoint.GetPositionY(), EyeOFAcherusFallPoint.GetPositionZ(), false);
+        init.SetFall();
+        init.Launch();
+
+        _events.ScheduleEvent(EVENT_MOVE_START, 6 * IN_MILLISECONDS);
+    }
+
+    void OnCharmed(bool apply) override { }
+
+    void UpdateAI(uint32 diff) override
+    {
+        _events.Update(diff);
+
+        while (uint32 eventId = _events.ExecuteEvent())
+        {
+            switch (eventId)
+            {
+                case EVENT_MOVE_START:
+                {
+                    DoCast(me, SPELL_EYE_FLIGHT_BOOST);
+                    me->SetControlled(false, UNIT_STATE_ROOT);
+
+                    if (Player* owner = me->GetCharmerOrOwner()->ToPlayer())
+                    {
+                        for (uint8 i = 0; i < MAX_MOVE_TYPE; ++i)
+                            me->SetSpeed(UnitMoveType(i), owner->GetSpeedRate(UnitMoveType(i)), true);
+
+                        Talk(TALK_MOVE_START, owner);
+                    }
+
+                    me->GetMotionMaster()->MovePoint(POINT_EYE_MOVE_END, EyeOFAcherusFallPoint, true);
+
+                    Movement::PointsArray path;
+                    path.reserve(EyeOfAcherusPathSize);
+                    std::transform(std::begin(EyeOfAcherusPath), std::end(EyeOfAcherusPath), std::back_inserter(path), [](Position const& pos)
+                    {
+                        return G3D::Vector3(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ());
+                    });
+
+                    Movement::MoveSplineInit init(me);
+                    init.MovebyPath(path);
+                    init.Launch();
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+    }
+
+    void MovementInform(uint32 movementType, uint32 pointId) override
+    {
+        if (movementType == POINT_MOTION_TYPE && pointId == POINT_EYE_MOVE_END)
+        {
+            me->RemoveAllAuras();
+
+            if (Player* owner = me->GetCharmerOrOwner()->ToPlayer())
+            {
+                owner->RemoveAura(SPELL_EYE_FLIGHT_BOOST);
+
+                for (uint8 i = 0; i < MAX_MOVE_TYPE; ++i)
+                    me->SetSpeed(UnitMoveType(i), owner->GetSpeedRate(UnitMoveType(i)), true);
+
+                Talk(TALK_CONTROL, owner);
+            }
+
+            me->SetDisableGravity(false);
+            DoCast(me, SPELL_EYE_FLIGHT);
+        }
+    }
+
+private:
+    EventMap _events;
+};
+*/
 /*######
 ## npc_death_knight_initiate
 ######*/
@@ -1084,6 +1201,7 @@ void AddSC_the_scarlet_enclave_c1()
     new npc_unworthy_initiate();
     new npc_unworthy_initiate_anchor();
     new go_acherus_soul_prison();
+    //new creature_script<npc_eye_of_acherus>("npc_eye_of_acherus");
     new npc_death_knight_initiate();
     new npc_salanar_the_horseman();
     new npc_dark_rider_of_acherus();

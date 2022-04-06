@@ -1,21 +1,19 @@
 /*
- * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+* This file is part of the Pandaria 5.4.8 Project. See THANKS file for Copyright information
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the
+* Free Software Foundation; either version 2 of the License, or (at your
+* option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #ifndef TRINITY_MAP_H
 #define TRINITY_MAP_H
@@ -238,6 +236,18 @@ enum LevelRequirementVsMode
     LEVELREQUIREMENT_HEROIC = 70
 };
 
+struct ZoneDynamicInfo
+{
+    ZoneDynamicInfo() : MusicId(0), WeatherId(0), WeatherGrade(0.0f),
+        OverrideLightId(0), LightFadeInTime(0) { }
+
+    uint32 MusicId;
+    uint32 WeatherId;
+    float WeatherGrade;
+    uint32 OverrideLightId;
+    uint32 LightFadeInTime;
+};
+
 #if defined(__GNUC__)
 #pragma pack()
 #else
@@ -251,7 +261,9 @@ enum LevelRequirementVsMode
 #define MIN_UNLOAD_DELAY      1                             // immediate unload
 #define MAP_INVALID_ZONE      0xFFFFFFFF                    // Invalid zone, used for checking players location
 
-typedef std::map<uint32/*leaderDBGUID*/, CreatureGroup*>        CreatureGroupHolderType;
+typedef std::map<uint32/*leaderDBGUID*/, CreatureGroup*> CreatureGroupHolderType;
+
+typedef std::unordered_map<uint32 /*zoneId*/, ZoneDynamicInfo> ZoneDynamicInfoMap;
 
 class Map : public GridRefManager<NGridType>
 {
@@ -444,6 +456,7 @@ class Map : public GridRefManager<NGridType>
 
         TempSummon* SummonCreature(uint32 entry, Position const& pos, SummonPropertiesEntry const* properties = NULL, uint32 duration = 0, Unit* summoner = NULL, uint32 spellId = 0, uint32 vehId = 0, bool visibleOnlyBySummoner = false);
         void SummonCreatureGroup(uint8 group, std::list<TempSummon*>* list = NULL);
+        Player* GetPlayer(uint64 guid);
         Creature* GetCreature(uint64 guid);
         GameObject* GetGameObject(uint64 guid);
         Transport* GetTransport(uint64 guid);
@@ -501,6 +514,11 @@ class Map : public GridRefManager<NGridType>
 
         void SendInitTransports(Player* player);
         void SendRemoveTransports(Player* player);
+        void SendZoneDynamicInfo(Player* player);
+
+        void SetZoneMusic(uint32 zoneId, uint32 musicId);
+        void SetZoneWeather(uint32 zoneId, uint32 weatherId, float weatherGrade);
+        void SetZoneOverrideLight(uint32 zoneId, uint32 lightId, uint32 fadeInTime);
 
         void SetMMapErrorReportEnabled(bool on) { m_mmapErrorReportEnabled = on; }
 
@@ -686,6 +704,9 @@ class Map : public GridRefManager<NGridType>
         std::map<uint32, uint64> m_worldStates;
 
         uint32 debugFlexPlayersCount;
+
+        ZoneDynamicInfoMap _zoneDynamicInfo;
+        uint32 _defaultLight;
 };
 
 enum InstanceResetMethod

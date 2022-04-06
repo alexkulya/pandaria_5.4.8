@@ -1,21 +1,19 @@
 /*
- * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+* This file is part of the Pandaria 5.4.8 Project. See THANKS file for Copyright information
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the
+* Free Software Foundation; either version 2 of the License, or (at your
+* option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include "Creature.h"
 #include "BattlegroundMgr.h"
@@ -147,7 +145,7 @@ bool ForcedDespawnDelayEvent::Execute(uint64 /*e_time*/, uint32 /*p_time*/)
 Creature::Creature(bool isWorldObject): Unit(isWorldObject), MapObject(),
 lootForPickPocketed(false), lootForBody(false), m_groupLootTimer(0), lootingGroupLowGUID(0),
 m_PlayerDamageReq(0), m_lootRecipient(0), m_lootRecipientGroup(0), m_corpseRemoveTime(0), m_respawnTime(0),
-m_respawnDelay(300), m_corpseDelay(60), m_wanderDistance(0.0f), m_reactState(REACT_AGGRESSIVE),
+m_respawnDelay(300), m_corpseDelay(60), m_wanderDistance(0.0f), m_WalkMode(0.0f), m_reactState(REACT_AGGRESSIVE),
 m_defaultMovementType(IDLE_MOTION_TYPE), m_DBTableGuid(0), m_equipmentId(0), m_originalEquipmentId(0), m_AlreadyCallAssistance(false),
 m_AlreadySearchedAssistance(false), m_regenHealth(true), m_AI_locked(false), m_meleeDamageSchoolMask(SPELL_SCHOOL_MASK_NORMAL),
 m_creatureInfo(NULL), m_creatureData(NULL), m_path_id(0), m_formation(NULL), m_respawnDelayMax(0), dynamicHealthPlayersCount(0)
@@ -790,7 +788,7 @@ bool Creature::Create(uint32 guidlow, Map* map, uint32 phaseMask, uint32 Entry, 
         SetGender(minfo->gender);
     }
 
-    LastUsedScriptID = GetCreatureTemplate()->ScriptID;
+    LastUsedScriptID = GetScriptId();
 
     /// @todo Replace with spell, handle from DB
     if (IsSpiritHealer() || IsSpiritGuide())
@@ -1041,6 +1039,7 @@ void Creature::SaveToDB(uint32 mapid, uint16 spawnMask, uint32 phaseMask)
     data.unit_flags = unit_flags;
     data.unit_flags2 = unit_flags2;
     data.dynamicflags = dynamicflags;
+    data.WalkMode = m_WalkMode;
 
     // update in DB
     SQLTransaction trans = WorldDatabase.BeginTransaction();
@@ -1074,6 +1073,7 @@ void Creature::SaveToDB(uint32 mapid, uint16 spawnMask, uint32 phaseMask)
     stmt->setUInt32(index++, unit_flags);
     stmt->setUInt32(index++, unit_flags2);
     stmt->setUInt32(index++, dynamicflags);
+    stmt->setFloat(index++, m_WalkMode);
     trans->Append(stmt);
 
     WorldDatabase.CommitTransaction(trans);
@@ -1320,6 +1320,8 @@ bool Creature::LoadCreatureFromDB(uint32 guid, Map* map, bool addToMap)
 
     m_respawnDelay = data->spawntimesecs;
     m_respawnDelayMax = data->spawntimesecs_max;
+
+    m_WalkMode = data->WalkMode;
 
     m_deathState = ALIVE;
 
@@ -2201,6 +2203,10 @@ bool Creature::LoadCreaturesAddon(bool reload)
     if (cainfo->emote != 0)
         HandleEmoteStateCommand(cainfo->emote);
 
+    SetAIAnimKitId(cainfo->ai_anim_kit);
+    SetMovementAnimKitId(cainfo->movement_anim_kit);
+    SetMeleeAnimKitId(cainfo->melee_anim_kit);
+
     //Load Path
     if (cainfo->path_id != 0)
         m_path_id = cainfo->path_id;
@@ -2518,6 +2524,9 @@ std::string Creature::GetScriptName() const
 
 uint32 Creature::GetScriptId() const
 {
+    if (CreatureData const* creatureData = GetCreatureData())
+        return creatureData->ScriptId;
+
     return sObjectMgr->GetCreatureTemplate(GetEntry())->ScriptID;
 }
 

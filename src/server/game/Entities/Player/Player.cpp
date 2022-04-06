@@ -1,21 +1,19 @@
 /*
- * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+* This file is part of the Pandaria 5.4.8 Project. See THANKS file for Copyright information
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the
+* Free Software Foundation; either version 2 of the License, or (at your
+* option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include "Player.h"
 #include "AccountMgr.h"
@@ -40,6 +38,7 @@
 #include "DisableMgr.h"
 #include "Formulas.h"
 #include "GameEventMgr.h"
+#include "GameObjectAI.h"
 #include "GossipDef.h"
 #include "GridNotifiers.h"
 #include "GridNotifiersImpl.h"
@@ -16428,11 +16427,7 @@ void Player::SendPreparedQuest(uint64 guid)
                 }
 
                 if (quest->IsAutoAccept() && CanAddQuest(quest, true) && CanTakeQuest(quest, true))
-                {
-                    AddQuest(quest, object);
-                    if (CanCompleteQuest(questId))
-                        CompleteQuest(questId);
-                }
+                    AddQuestAndCheckCompletion(quest, object);
 
                 if (!sWorld->getBoolConfig(CONFIG_QUEST_IGNORE_AUTO_COMPLETE) && quest->GetQuestMethod() == 0 && quest->IsRepeatable() && !quest->IsDailyOrWeekly())
                     PlayerTalkClass->SendQuestGiverRequestItems(quest, guid, CanCompleteRepeatableQuest(quest), true);
@@ -16807,6 +16802,40 @@ bool Player::CanRewardQuest(Quest const* quest, uint32 reward, bool msg)
     }
 
     return true;
+}
+
+void Player::AddQuestAndCheckCompletion(Quest const* quest, Object* questGiver)
+{
+    AddQuest(quest, questGiver);
+
+    bool brokenQuest = sObjectMgr->IsBrokenQuest(quest->GetQuestId());
+
+    if (CanCompleteQuest(quest->GetQuestId()) || brokenQuest)
+        CompleteQuest(quest->GetQuestId(), brokenQuest, false);
+
+    if (!questGiver)
+        return;
+
+    switch (questGiver->GetTypeId())
+    {
+        case TYPEID_UNIT:
+            sScriptMgr->OnQuestAccept(this, (questGiver->ToCreature()), quest);
+            questGiver->ToCreature()->AI()->sQuestAccept(this, quest);
+            break;
+        case TYPEID_ITEM:
+        case TYPEID_CONTAINER:
+        {
+            Item* item = (Item*)questGiver;
+            sScriptMgr->OnQuestAccept(this, item, quest);
+            break;
+        }
+        case TYPEID_GAMEOBJECT:
+            sScriptMgr->OnQuestAccept(this, questGiver->ToGameObject(), quest);
+            questGiver->ToGameObject()->AI()->QuestAccept(this, quest);
+            break;
+        default:
+            break;
+    }
 }
 
 void Player::AddQuest(Quest const* quest, Object* questGiver)

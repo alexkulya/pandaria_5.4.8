@@ -1,11 +1,9 @@
 /*
-* Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
-* Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
-* Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
+* This file is part of the Pandaria 5.4.8 Project. See THANKS file for Copyright information
 *
 * This program is free software; you can redistribute it and/or modify it
 * under the terms of the GNU General Public License as published by the
-* Free Software Foundation; either version 3 of the License, or (at your
+* Free Software Foundation; either version 2 of the License, or (at your
 * option) any later version.
 *
 * This program is distributed in the hope that it will be useful, but WITHOUT
@@ -270,6 +268,7 @@ void WorldSession::HandleQuestgiverAcceptQuestOpcode(WorldPacket& recvData)
             }
 
             bool brokenQuest = sObjectMgr->IsBrokenQuest(questId);
+
             if (_player->CanCompleteQuest(questId) || brokenQuest)
                 _player->CompleteQuest(questId, brokenQuest, false);
 
@@ -396,12 +395,7 @@ void WorldSession::HandleQuestgiverQueryQuestOpcode(WorldPacket& recvData)
             return;
 
         if (quest->IsAutoAccept() && _player->CanAddQuest(quest, true))
-        {
-            _player->AddQuest(quest, object);
-            bool brokenQuest = sObjectMgr->IsBrokenQuest(questId);
-            if (_player->CanCompleteQuest(questId) || brokenQuest)
-                _player->CompleteQuest(questId, brokenQuest, false);
-        }
+            _player->AddQuestAndCheckCompletion(quest, object);
 
         if (!sWorld->getBoolConfig(CONFIG_QUEST_IGNORE_AUTO_COMPLETE) && quest->GetQuestMethod() == 0)
             _player->PlayerTalkClass->SendQuestGiverRequestItems(quest, object->GetGUID(), _player->CanCompleteQuest(quest->GetQuestId()), true);
@@ -501,28 +495,21 @@ void WorldSession::HandleQuestgiverChooseRewardOpcode(WorldPacket& recvData)
 
         switch (object->GetTypeId())
         {
-        case TYPEID_UNIT:
-        case TYPEID_PLAYER:
+            case TYPEID_UNIT:
+            case TYPEID_PLAYER:
             {
                 //For AutoSubmition was added plr case there as it almost same exclute AI script cases.
                 Creature* creatureQGiver = object->ToCreature();
+
                 if (!creatureQGiver || !(sScriptMgr->OnQuestReward(_player, creatureQGiver, quest, reward)))
                 {
                     // Send next quest
                     if (Quest const* nextQuest = _player->GetNextQuest(guid, quest))
                     {
-                        if (_player->CanAddQuest(nextQuest, true) && _player->CanTakeQuest(nextQuest, true))
-                        {
-                            if (nextQuest->IsAutoAccept())
-                            {
-                                _player->AddQuest(nextQuest, object);
-                                bool brokenQuest = sObjectMgr->IsBrokenQuest(nextQuest->GetQuestId());
-                                if (_player->CanCompleteQuest(nextQuest->GetQuestId()) || brokenQuest)
-                                    _player->CompleteQuest(nextQuest->GetQuestId(), brokenQuest, false);
-                            }
+                        if (nextQuest->IsAutoAccept() && _player->CanAddQuest(nextQuest, true) && _player->CanTakeQuest(nextQuest, true))
+                            _player->AddQuestAndCheckCompletion(nextQuest, object);
 
-                            _player->PlayerTalkClass->SendQuestGiverQuestDetails(nextQuest, guid, true);
-                        }
+                        _player->PlayerTalkClass->SendQuestGiverQuestDetails(nextQuest, guid, true);
                     }
 
                     if (creatureQGiver)
@@ -530,28 +517,23 @@ void WorldSession::HandleQuestgiverChooseRewardOpcode(WorldPacket& recvData)
                 }
                 break;
             }
-        case TYPEID_GAMEOBJECT:
-            if (!sScriptMgr->OnQuestReward(_player, ((GameObject*)object), quest, reward))
-            {
-                // Send next quest
-                if (Quest const* nextQuest = _player->GetNextQuest(guid, quest))
+            case TYPEID_GAMEOBJECT:
+                if (!sScriptMgr->OnQuestReward(_player, ((GameObject*)object), quest, reward))
                 {
-                    if (nextQuest->IsAutoAccept() && _player->CanAddQuest(nextQuest, true) && _player->CanTakeQuest(nextQuest, true))
+                    // Send next quest
+                    if (Quest const* nextQuest = _player->GetNextQuest(guid, quest))
                     {
-                        _player->AddQuest(nextQuest, object);
-                        bool brokenQuest = sObjectMgr->IsBrokenQuest(nextQuest->GetQuestId());
-                        if (_player->CanCompleteQuest(nextQuest->GetQuestId()) || brokenQuest)
-                            _player->CompleteQuest(nextQuest->GetQuestId(), brokenQuest, false);
+                        if (nextQuest->IsAutoAccept() && _player->CanAddQuest(nextQuest, true) && _player->CanTakeQuest(nextQuest, true))
+                            _player->AddQuestAndCheckCompletion(nextQuest, object);
+
+                        _player->PlayerTalkClass->SendQuestGiverQuestDetails(nextQuest, guid, true);
                     }
 
-                    _player->PlayerTalkClass->SendQuestGiverQuestDetails(nextQuest, guid, true);
+                    object->ToGameObject()->AI()->QuestReward(_player, quest, reward);
                 }
-
-                object->ToGameObject()->AI()->QuestReward(_player, quest, reward);
-            }
-            break;
-        default:
-            break;
+                break;
+            default:
+                break;
         }
     }
     else
@@ -591,10 +573,12 @@ void WorldSession::HandleQuestgiverRequestRewardOpcode(WorldPacket& recvData)
     TC_LOG_DEBUG("network", "WORLD: Received CMSG_QUESTGIVER_REQUEST_REWARD npc = %u, quest = %u", uint32(GUID_LOPART(guid)), questId);
 
     Quest const* quest = sObjectMgr->GetQuestTemplate(questId);
+
     if (!quest)
         return;
 
     Object* object = ObjectAccessor::GetObjectByTypeMask(*_player, guid, TYPEMASK_PLAYER | TYPEMASK_UNIT | TYPEMASK_GAMEOBJECT);
+
     if (!quest->HasFlag(QUEST_FLAGS_AUTOCOMPLETE))
     {
         if (!object || !object->hasInvolvedQuest(questId))
@@ -606,6 +590,7 @@ void WorldSession::HandleQuestgiverRequestRewardOpcode(WorldPacket& recvData)
     }
 
     bool brokenQuest = sObjectMgr->IsBrokenQuest(questId);
+
     if (_player->CanCompleteQuest(questId) || brokenQuest)
         _player->CompleteQuest(questId, brokenQuest, false);
 
@@ -769,6 +754,7 @@ void WorldSession::HandleQuestgiverCompleteQuest(WorldPacket& recvData)
             bg->HandleQuestComplete(questId, _player);
 
         bool brokenQuest = sObjectMgr->IsBrokenQuest(questId);
+
         if (_player->CanCompleteQuest(questId) || brokenQuest)
             _player->CompleteQuest(questId, brokenQuest, false);
 
@@ -862,11 +848,7 @@ void WorldSession::HandlePushQuestToParty(WorldPacket& recvPacket)
         sender->SendPushToPartyResponse(receiver, QUEST_PARTY_MSG_SHARING_QUEST);
 
         if (quest->IsAutoAccept() && receiver->CanAddQuest(quest, true) && receiver->CanTakeQuest(quest, true))
-        {
-            receiver->AddQuest(quest, sender);
-            if (receiver->CanCompleteQuest(questId))
-                receiver->CompleteQuest(questId);
-        }
+            receiver->AddQuestAndCheckCompletion(quest, sender);
 
         if ((quest->IsAutoComplete() && quest->IsRepeatable() && !quest->IsDailyOrWeekly()) || quest->HasFlag(QUEST_FLAGS_AUTOCOMPLETE))
             receiver->PlayerTalkClass->SendQuestGiverRequestItems(quest, sender->GetGUID(), receiver->CanCompleteRepeatableQuest(quest), true);

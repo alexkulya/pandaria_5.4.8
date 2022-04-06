@@ -1,21 +1,19 @@
 /*
- * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+* This file is part of the Pandaria 5.4.8 Project. See THANKS file for Copyright information
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the
+* Free Software Foundation; either version 2 of the License, or (at your
+* option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include "ScriptMgr.h"
 #include "Config.h"
@@ -41,6 +39,9 @@ namespace
     typedef std::set<ScriptObject*> ExampleScriptContainer;
     ExampleScriptContainer ExampleScripts;
 }
+
+UnusedScriptContainer UnusedScripts;
+UnusedScriptNamesContainer UnusedScriptNames;
 
 // This is the global static registry of scripts.
 template<class TScript>
@@ -97,6 +98,13 @@ class ScriptRegistry
                     {
                         ScriptPointerList[id] = script;
                         sScriptMgr->IncrementScriptCount();
+
+                    #ifdef SCRIPTS
+                        UnusedScriptNamesContainer::iterator itr = std::lower_bound(UnusedScriptNames.begin(), UnusedScriptNames.end(), script->GetName());
+
+                        if (itr != UnusedScriptNames.end() && *itr == script->GetName())
+                            UnusedScriptNames.erase(itr);
+                    #endif
                     }
                     else
                     {
@@ -116,6 +124,8 @@ class ScriptRegistry
 
                     // These scripts don't get stored anywhere so throw them into this to avoid leaking memory
                     ExampleScripts.insert(script);
+
+                    UnusedScripts.push_back(script);
                 }
             }
             else
@@ -192,6 +202,16 @@ void ScriptMgr::Initialize()
     TC_LOG_INFO("server.loading", "Loading C++ scripts");
     FillSpellSummary();
     _scriptLoader();
+
+#ifdef SCRIPTS
+    for (std::string const& scriptName : UnusedScriptNames)
+    {
+        TC_LOG_ERROR("sql.sql", "ScriptName '%s' exists in database, but no core script found!", scriptName.c_str());
+    }
+#endif
+
+    UnloadUnusedScripts();
+
     TC_LOG_INFO("server.loading", ">> Loaded %u C++ scripts in %u ms", GetScriptCount(), GetMSTimeDiffToNow(oldMSTime));
 }
 
@@ -236,8 +256,18 @@ void ScriptMgr::Unload()
         delete *itr;
     ExampleScripts.clear();
 
+    UnloadUnusedScripts();
+
     delete [] SpellSummary;
     delete [] UnitAI::AISpellInfo;
+}
+
+void ScriptMgr::UnloadUnusedScripts()
+{
+    for (size_t i = 0; i < UnusedScripts.size(); ++i)
+        delete UnusedScripts[i];
+
+    UnusedScripts.clear();
 }
 
 void ScriptMgr::LoadDatabase()

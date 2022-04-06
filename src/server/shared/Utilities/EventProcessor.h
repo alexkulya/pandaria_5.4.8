@@ -1,21 +1,19 @@
 /*
- * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+* This file is part of the Pandaria 5.4.8 Project. See THANKS file for Copyright information
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the
+* Free Software Foundation; either version 2 of the License, or (at your
+* option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #ifndef __EVENTPROCESSOR_H
 #define __EVENTPROCESSOR_H
@@ -28,25 +26,41 @@
 
 class BasicEvent
 {
-    public:
-        BasicEvent() { to_Abort = false; }
-        virtual ~BasicEvent() { }                           // override destructor to perform some actions on event removal
+public:
+    BasicEvent() { to_Abort = false; }
+    virtual ~BasicEvent() { }                           // override destructor to perform some actions on event removal
 
-        // this method executes when the event is triggered
-        // return false if event does not want to be deleted
-        // e_time is execution time, p_time is update interval
-        virtual bool Execute(uint64 /*e_time*/, uint32 /*p_time*/) { return true; }
+    // this method executes when the event is triggered
+    // return false if event does not want to be deleted
+    // e_time is execution time, p_time is update interval
+    virtual bool Execute(uint64 /*e_time*/, uint32 /*p_time*/) { return true; }
 
-        virtual bool IsDeletable() const { return true; }   // this event can be safely deleted
+    virtual bool IsDeletable() const { return true; }   // this event can be safely deleted
 
-        virtual void Abort(uint64 /*e_time*/) { }           // this method executes when the event is aborted
+    virtual void Abort(uint64 /*e_time*/) { }           // this method executes when the event is aborted
 
-        bool to_Abort;                                      // set by externals when the event is aborted, aborted events don't execute
-        // and get Abort call when deleted
+    bool to_Abort;                                      // set by externals when the event is aborted, aborted events don't execute
+    // and get Abort call when deleted
 
-        // these can be used for time offset control
-        uint64 m_addTime = 0;                               // time when the event was added to queue, filled by event handler
-        uint64 m_execTime = 0;                              // planned time of next execution, filled by event handler
+    // these can be used for time offset control
+    uint64 m_addTime = 0;                               // time when the event was added to queue, filled by event handler
+    uint64 m_execTime = 0;                              // planned time of next execution, filled by event handler
+};
+
+template<typename T>
+class LambdaBasicEvent : public BasicEvent
+{
+public:
+    LambdaBasicEvent(T&& callback) : BasicEvent(), _callback(std::move(callback)) { }
+
+    bool Execute(uint64, uint32) override
+    {
+        _callback();
+        return true;
+    }
+
+private:
+    T _callback;
 };
 
 class GroupedEvent : public BasicEvent
@@ -91,7 +105,6 @@ protected:
     uint32 m_repeat;
 };
 
-
 typedef std::multimap<uint64, BasicEvent*> EventList;
 
 class EventProcessor
@@ -108,10 +121,17 @@ class EventProcessor
         void KillAllEvents(bool force);
         template<class EventFilter>
         void KillCustomEvents(EventFilter const& filter);
-        void AddEvent(BasicEvent* Event, uint64 e_time, bool set_addtime = true);
         void RescheduleEvent(BasicEvent* event, uint64 e_time);
 
         uint64 CalculateTime(uint64 t_offset) const;
+
+        void AddEvent(BasicEvent* Event, uint64 e_time, bool set_addtime = true);
+        template<typename T>
+        void AddLambdaEvent(T&& event, uint64 e_time, bool set_addtime = true) { AddEvent(new LambdaBasicEvent<T>(std::move(event)), e_time, set_addtime); }
+
+        void AddEventAtOffset(BasicEvent* event, uint32 offset) { AddEvent(event, CalculateTime(offset)); }
+        template<typename T>
+        void AddLambdaEventAtOffset(T&& event, uint32 offset) { AddEventAtOffset(new LambdaBasicEvent<T>(std::move(event)), offset); }
 
         void Schedule(uint32 delay, BasicEvent* Event) { AddEvent(Event, CalculateTime(delay)); }
         void Schedule(uint32 delay, FunctionEvent::function_type const& function) { Schedule(delay, new FunctionEvent(function)); }

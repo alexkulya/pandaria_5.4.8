@@ -1,21 +1,19 @@
 /*
- * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+* This file is part of the Pandaria 5.4.8 Project. See THANKS file for Copyright information
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the
+* Free Software Foundation; either version 2 of the License, or (at your
+* option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include "Common.h"
 #include "Language.h"
@@ -291,32 +289,37 @@ void WorldSession::HandleCreatureQueryOpcode(WorldPacket& recvData)
 
     WorldPacket data(SMSG_CREATURE_QUERY_RESPONSE, 500);
 
-    CreatureTemplate const* info = sObjectMgr->GetCreatureTemplate(entry);
+    CreatureTemplate const* creatureInfo = sObjectMgr->GetCreatureTemplate(entry);
 
     data << uint32(entry);
-    data.WriteBit(info != 0);                                 // Has data
+    data.WriteBit(creatureInfo != 0); // Has data
 
-    if (info)
+    if (creatureInfo)
     {
-        std::string Name, SubName;
-        Name = info->Name;
-        SubName = info->SubName;
+        std::string Name, FemaleName, SubName;
+        Name = creatureInfo->Name;
+        FemaleName = creatureInfo->FemaleName;
+        SubName = creatureInfo->SubName;
+
         uint8 qItemsSize = 0;
+
         for (int i = 0; i < MAX_CREATURE_QUEST_ITEMS; i++)
-            if (info->questItems[i] != 0)
+            if (creatureInfo->questItems[i] != 0)
                 qItemsSize++;
 
-        int loc_idx = GetSessionDbLocaleIndex();
-        if (loc_idx >= 0)
+        LocaleConstant locale = GetSessionDbLocaleIndex();
+
+        if (locale >= 0)
         {
-            if (CreatureLocale const* cl = sObjectMgr->GetCreatureLocale(entry))
+            if (CreatureLocale const* creatureLocale = sObjectMgr->GetCreatureLocale(entry))
             {
-                ObjectMgr::GetLocaleString(cl->Name, loc_idx, Name);
-                ObjectMgr::GetLocaleString(cl->SubName, loc_idx, SubName);
+                ObjectMgr::GetLocaleString(creatureLocale->Name, locale, Name);
+                ObjectMgr::GetLocaleString(creatureLocale->FemaleName, locale, FemaleName);
+                ObjectMgr::GetLocaleString(creatureLocale->SubName, locale, SubName);
             }
         }
 
-        TC_LOG_DEBUG("network", "WORLD: CMSG_CREATURE_QUERY '%s' - Entry: %u.", info->Name.c_str(), entry);
+        TC_LOG_DEBUG("network", "WORLD: CMSG_CREATURE_QUERY '%s' - Entry: %u.", creatureInfo->Name.c_str(), entry);
 
         data.WriteBits(SubName.length() ? SubName.length() + 1 : 0, 11);
         data.WriteBits(qItemsSize, 22);                       // Quest items
@@ -328,38 +331,38 @@ void WorldSession::HandleCreatureQueryOpcode(WorldPacket& recvData)
             data.WriteBits(0, 11);
         }
 
-        data.WriteBit(info->RacialLeader);
-        data.WriteBits(info->IconName.length() + 1, 6);
+        data.WriteBit(creatureInfo->RacialLeader);
+        data.WriteBits(creatureInfo->IconName.length() + 1, 6);
         data.FlushBits();
 
-        data << uint32(info->KillCredit[0]);                  // New in 3.1, kill credit
-        data << uint32(info->Modelid4);                       // Modelid4
-        data << uint32(info->Modelid2);                       // Modelid2
-        data << uint32(info->expansion);                      // Expansion Required
-        data << uint32(info->type);                           // CreatureType.dbc
-        data << float(info->ModHealth);                       // Hp modifier
-        data << uint32(info->type_flags);                     // Flags
-        data << uint32(info->type_flags2);                    // Flags2
-        data << uint32(info->rank);                           // Creature Rank (elite, boss, etc)
-        data << uint32(info->movementId);                     // CreatureMovementInfo.dbc
+        data << uint32(creatureInfo->KillCredit[0]);                  // New in 3.1, kill credit
+        data << uint32(creatureInfo->Modelid4);                       // Modelid4
+        data << uint32(creatureInfo->Modelid2);                       // Modelid2
+        data << uint32(creatureInfo->expansion);                      // Expansion Required
+        data << uint32(creatureInfo->type);                           // CreatureType.dbc
+        data << float(creatureInfo->ModHealth);                       // Hp modifier
+        data << uint32(creatureInfo->type_flags);                     // Flags
+        data << uint32(creatureInfo->type_flags2);                    // Flags2
+        data << uint32(creatureInfo->rank);                           // Creature Rank (elite, boss, etc)
+        data << uint32(creatureInfo->movementId);                     // CreatureMovementInfo.dbc
         data << Name;
 
         if (SubName != "")
-            data << SubName;                                  // Subname
+            data << SubName;                                          // Subname
 
-        data << uint32(info->Modelid1);                       // Modelid1
-        data << uint32(info->Modelid3);                       // Modelid3
+        data << uint32(creatureInfo->Modelid1);                       // Modelid1
+        data << uint32(creatureInfo->Modelid3);                       // Modelid3
 
-        if (info->IconName != "")
-            data << info->IconName;                           // "Directions" for guard, string for Icons 2.3.0
+        if (creatureInfo->IconName != "")
+            data << creatureInfo->IconName;                           // "Directions" for guard, string for Icons 2.3.0
 
         for (uint32 i = 0; i < MAX_CREATURE_QUEST_ITEMS; ++i)
-            if (info->questItems[i] != 0)
-                data << uint32(info->questItems[i]);          // ItemId[6], quest drop
+            if (creatureInfo->questItems[i] != 0)
+                data << uint32(creatureInfo->questItems[i]);          // ItemId[6], quest drop
 
-        data << uint32(info->KillCredit[1]);                  // New in 3.1, kill credit
-        data << float(info->ModMana);                         // Mana modifier
-        data << uint32(info->family);                         // CreatureFamily.dbc
+        data << uint32(creatureInfo->KillCredit[1]);                  // New in 3.1, kill credit
+        data << float(creatureInfo->ModMana);                         // Mana modifier
+        data << uint32(creatureInfo->family);                         // CreatureFamily.dbc
 
         TC_LOG_DEBUG("network", "WORLD: Sent SMSG_CREATURE_QUERY_RESPONSE");
     }

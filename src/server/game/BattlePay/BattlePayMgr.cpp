@@ -1,4 +1,21 @@
-﻿#include "BattlePayMgr.h"
+﻿/*
+* This file is part of the Pandaria 5.4.8 Project. See THANKS file for Copyright information
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the
+* Free Software Foundation; either version 2 of the License, or (at your
+* option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "BattlePayMgr.h"
 #include "Common.h"
 #include "DatabaseEnv.h"
 #include "Log.h"
@@ -10,7 +27,6 @@
 #include "BattlePetMgr.h"
 #pragma execution_character_set("UTF-8")
 
-#define GetText(a, b, c) a->GetSession()->GetSessionDbLocaleIndex() == LOCALE_ruRU ? b : c
 
 BattlePayMgr::BattlePayMgr() : m_enabled(false), m_currency(BATTLE_PAY_CURRENCY_BETA)
 {
@@ -428,7 +444,7 @@ void BattlePayMgr::SendPointsBalance(WorldSession* session)
     {
         std::ostringstream data;
         data << float(player->GetDonateTokens()) / BATTLE_PAY_CURRENCY_PRECISION;
-        player->SendBattlePayMessage(GetText(player, "|cff1eff00Ваш текущий баланс:", "|cff1eff00Your current balance is:"), data);        
+        player->SendBattlePayMessage(sObjectMgr->GetTrinityString(15005, session->GetSessionDbLocaleIndex()),data);
     }
 }
 
@@ -440,7 +456,7 @@ void BattlePayMgr::UpdatePointsBalance(WorldSession* session, uint64 points)
 
         std::ostringstream data1;
         data1 << float(player->GetDonateTokens()) / BATTLE_PAY_CURRENCY_PRECISION;
-        player->SendBattlePayMessage(GetText(player, "Спасибо за покупку. Ваш остаток на балансе:", "Thank you for your purchase. Your new balance is:"), data1);  
+        player->SendBattlePayMessage(sObjectMgr->GetTrinityString(15006, session->GetSessionDbLocaleIndex()),data1);
     }
     else
     {
@@ -463,7 +479,7 @@ bool BattlePayMgr::HasPointsBalance(WorldSession* session, uint64 points)
         }
         else
         {
-            player->SendBattlePayMessage(GetText(player, "Вы не можете себе этого позволить!", "You can't afford this!"));
+            player->SendBattlePayMessage(sObjectMgr->GetTrinityString(15007, session->GetSessionDbLocaleIndex()));
             return false;
         }
     }

@@ -25,7 +25,7 @@ if (UNIX)
 endif()
 
 # Set projectname (must be done AFTER setting configurationtypes)
-project(Project_Skyfire)
+project(Pandaria_5.4.8)
 
 # CMake policies (can not be handled elsewhere)
 cmake_minimum_required(VERSION 2.8.9)

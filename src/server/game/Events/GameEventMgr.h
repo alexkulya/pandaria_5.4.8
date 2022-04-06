@@ -1,21 +1,19 @@
 /*
- * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
- *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 3 of the License, or (at your
- * option) any later version.
- *
- * This program is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
- * more details.
- *
- * You should have received a copy of the GNU General Public License along
- * with this program. If not, see <http://www.gnu.org/licenses/>.
- */
+* This file is part of the Pandaria 5.4.8 Project. See THANKS file for Copyright information
+*
+* This program is free software; you can redistribute it and/or modify it
+* under the terms of the GNU General Public License as published by the
+* Free Software Foundation; either version 2 of the License, or (at your
+* option) any later version.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+* more details.
+*
+* You should have received a copy of the GNU General Public License along
+* with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #ifndef TRINITY_GAMEEVENT_MGR_H
 #define TRINITY_GAMEEVENT_MGR_H
@@ -69,6 +67,7 @@ struct GameEventData
     uint32 occurence;       // time between end and start
     uint32 length;          // length of the event (minutes) after finishing all conditions
     HolidayIds holiday_id;
+    uint8 holidayStage;
     GameEventState state;   // state of the game event, these are saved into the game_event table on change!
     GameEventConditionMap conditions;  // conditions to finish
     std::set<uint16 /*gameevent id*/> prerequisite_events;  // events that must be completed before starting this event
@@ -118,6 +117,7 @@ class GameEventMgr
         bool CheckOneGameEvent(uint16 entry) const;
         uint32 NextCheck(uint16 entry) const;
         void LoadFromDB();
+        void LoadHolidayDates();
         uint32 Update();
         bool IsActiveEvent(uint16 event_id) { return (m_ActiveEvents.find(event_id) != m_ActiveEvents.end()); }
         uint32 StartSystem();
@@ -153,6 +153,7 @@ class GameEventMgr
         bool hasGameObjectQuestActiveEventExcept(uint32 quest_id, uint16 event_id);
         bool hasCreatureActiveEventExcept(uint32 creature_guid, uint16 event_id);
         bool hasGameObjectActiveEventExcept(uint32 go_guid, uint16 event_id);
+        void SetHolidayEventTime(GameEventData& event);
 
         typedef std::list<uint32> GuidList;
         typedef std::list<uint32> IdList;
@@ -188,6 +189,7 @@ class GameEventMgr
     public:
         GameEventGuidMap  mGameEventCreatureGuids;
         GameEventGuidMap  mGameEventGameobjectGuids;
+        std::set<uint32> modifiedHolidays;
 };
 
 #define sGameEventMgr ACE_Singleton<GameEventMgr, ACE_Null_Mutex>::instance()
