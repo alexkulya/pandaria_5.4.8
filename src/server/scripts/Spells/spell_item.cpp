@@ -2215,53 +2215,6 @@ class spell_item_nitro_boots : public SpellScriptLoader
         }
 };
 
-enum TeachLanguage
-{
-    SPELL_LEARN_GNOMISH_BINARY      = 50242,
-    SPELL_LEARN_GOBLIN_BINARY       = 50246,
-};
-
-class spell_item_teach_language : public SpellScriptLoader
-{
-    public:
-        spell_item_teach_language() : SpellScriptLoader("spell_item_teach_language") { }
-
-        class spell_item_teach_language_SpellScript : public SpellScript
-        {
-            PrepareSpellScript(spell_item_teach_language_SpellScript);
-
-            bool Load() override
-            {
-                return GetCaster()->GetTypeId() == TYPEID_PLAYER;
-            }
-
-            bool Validate(SpellInfo const* /*spell*/) override
-            {
-                if (!sSpellMgr->GetSpellInfo(SPELL_LEARN_GNOMISH_BINARY) || !sSpellMgr->GetSpellInfo(SPELL_LEARN_GOBLIN_BINARY))
-                    return false;
-                return true;
-            }
-
-            void HandleDummy(SpellEffIndex /* effIndex */)
-            {
-                Player* caster = GetCaster()->ToPlayer();
-
-                if (roll_chance_i(34))
-                    caster->CastSpell(caster, caster->GetTeam() == ALLIANCE ? SPELL_LEARN_GNOMISH_BINARY : SPELL_LEARN_GOBLIN_BINARY, true);
-            }
-
-            void Register() override
-            {
-                OnEffectHitTarget += SpellEffectFn(spell_item_teach_language_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
-            }
-        };
-
-        SpellScript* GetSpellScript() const override
-        {
-            return new spell_item_teach_language_SpellScript();
-        }
-};
-
 enum RocketBoots
 {
     SPELL_ROCKET_BOOTS_PROC      = 30452,
@@ -4516,7 +4469,6 @@ void AddSC_item_spell_scripts()
     new spell_item_impale_leviroth();
     new spell_item_brewfest_mount_transformation();
     new spell_item_nitro_boots();
-    new spell_item_teach_language();
     new spell_item_rocket_boots();
     new spell_item_pygmy_oil();
     new spell_item_unusual_compass();
