@@ -383,10 +383,10 @@ Position const WorgenRuntHousePos[] =
     { -1622.665f, 1489.818f, 71.03797f, 3.776179f },
 };
 
-uint8 const childrenPathLenght01 = 6;
-Position const childrenPath01[3][childrenPathLenght01] =
+uint8 const JamesPathLenght = 6;
+Position const JamesPath[][JamesPathLenght] =
 {
-    { // James
+    {
         { -1925.925049f, 2539.176514f, 1.392833f, 0.0f },
         { -1913.658203f, 2545.986328f, 1.465530f, 0.0f },
         { -1904.370728f, 2552.793213f, 1.132485f, 0.0f },
@@ -394,7 +394,12 @@ Position const childrenPath01[3][childrenPathLenght01] =
         { -1886.868774f, 2540.282471f, 1.706371f, 0.0f },
         { -1882.739746f, 2543.941865f, 1.628683f, 0.0f },
     },
-    { // Cynthia
+};
+
+uint8 const CynthiaPathLenght = 6;
+Position const CynthiaPath[][CynthiaPathLenght] =
+{
+    {
         { -1947.965088f, 2518.669434f, 1.826697f, 0.0f },
         { -1923.350830f, 2521.841553f, 1.586985f, 0.0f },
         { -1917.197632f, 2520.494385f, 2.297501f, 0.0f },
@@ -402,18 +407,30 @@ Position const childrenPath01[3][childrenPathLenght01] =
         { -1886.868774f, 2540.282471f, 1.706371f, 0.0f },
         { -1882.739746f, 2543.941865f, 1.628683f, 0.0f },
     },
-    { // Ashley
+};
+
+uint8 const AshleyPathLenght = 13;
+Position const AshleyPath[][AshleyPathLenght] =
+{
+    {
         { -1928.023682f, 2558.467285f, 12.733648f, 0.0f },
         { -1928.248901f, 2553.930176f, 12.734390f, 0.0f },
         { -1923.981567f, 2552.113770f, 12.736046f, 0.0f },
         { -1919.301514f, 2563.295166f, 3.579522f, 0.0f },
+        { -1930.442017f, 2562.145996f, 3.579824f, 0.0f },
+        { -1941.160156f, 2566.118896f, 1.392157f, 0.0f },
+        { -1940.852295f, 2543.049072f, 1.392157f, 0.0f },
+        { -1919.504517f, 2543.273926f, 1.392157f, 0.0f },
+        { -1913.658203f, 2545.986328f, 1.465530f, 0.0f },
+        { -1904.370728f, 2552.793213f, 1.132485f, 0.0f },
+        { -1900.970459f, 2550.849365f, 0.714445f, 0.0f },
         { -1886.868774f, 2540.282471f, 1.706371f, 0.0f },
         { -1882.739746f, 2543.941865f, 1.628683f, 0.0f },
     },
 };
 
-uint8 const childrenPathLenght02 = 3;
-Position const childrenPath02[1][childrenPathLenght02] =
+uint8 const childrenBasementPathLenght = 3;
+Position const childrenBasementPath[][childrenBasementPathLenght] =
 {
     {
         { -1879.062378f, 2546.958984f, -0.130342f, 0.0f },
@@ -709,31 +726,31 @@ struct npc_worgen_runt : public ScriptedAI
                 break;
             case WORGEN_ID_CATHEDRAL_2:
                 _wayPointCounter = runtCathedralPathSize2;
-                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize2, worgenRuntCathedralPath1, runtCathedralPathSize2);
+                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize2, worgenRuntCathedralPath2, runtCathedralPathSize2);
                 break;
             case WORGEN_ID_CATHEDRAL_3:
                 _wayPointCounter = runtCathedralPathSize3;
-                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize3, worgenRuntCathedralPath1, runtCathedralPathSize3);
+                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize3, worgenRuntCathedralPath3, runtCathedralPathSize3);
                 break;
             case WORGEN_ID_CATHEDRAL_4:
                 _wayPointCounter = runtCathedralPathSize4;
-                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize4, worgenRuntCathedralPath1, runtCathedralPathSize4);
+                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize4, worgenRuntCathedralPath4, runtCathedralPathSize4);
                 break;
             case WORGEN_ID_CATHEDRAL_5:
                 _wayPointCounter = runtCathedralPathSize5;
-                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize5, worgenRuntCathedralPath1, runtCathedralPathSize5);
+                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize5, worgenRuntCathedralPath5, runtCathedralPathSize5);
                 break;
             case WORGEN_ID_CATHEDRAL_6:
                 _wayPointCounter = runtCathedralPathSize6;
-                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize6, worgenRuntCathedralPath1, runtCathedralPathSize6);
+                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize6, worgenRuntCathedralPath6, runtCathedralPathSize6);
                 break;
             case WORGEN_ID_CATHEDRAL_7:
                 _wayPointCounter = runtCathedralPathSize7;
-                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize7, worgenRuntCathedralPath1, runtCathedralPathSize7);
+                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize7, worgenRuntCathedralPath7, runtCathedralPathSize7);
                 break;
             case WORGEN_ID_CATHEDRAL_8:
                 _wayPointCounter = runtCathedralPathSize8;
-                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize8, worgenRuntCathedralPath1, runtCathedralPathSize8);
+                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize8, worgenRuntCathedralPath8, runtCathedralPathSize8);
                 break;
         }
     }
@@ -1060,24 +1077,21 @@ class npc_gilneas_children : public CreatureScript
                         break;
                         case EVENT_START_RUN:
                         {
-                            uint32 path = 0;
-
                             switch (me->GetEntry())
                             {
                                 case NPC_JAMES:
-                                    path = 0;
+                                    me->GetMotionMaster()->MoveSplinePath(JamesPath[0], JamesPathLenght, false, false, 0.f, false, false);
                                     break;
                                 case NPC_CYNTHIA:
-                                    path = 1;
+                                    me->GetMotionMaster()->MoveSplinePath(CynthiaPath[0], CynthiaPathLenght, false, false, 0.f, false, false);
                                     break;
                                 case NPC_ASHLEY:
-                                    path = 2;
+                                    me->GetMotionMaster()->MoveSplinePath(AshleyPath[0], AshleyPathLenght, false, false, 0.f, false, false);
                                     break;
                                 default:
                                     return;
                             }
 
-                            me->GetMotionMaster()->MoveSplinePath(childrenPath01[path], childrenPathLenght01, false, false, 0.f, false, false);
                             events.ScheduleEvent(EVENT_OPEN_DOOR, me->GetSplineDuration());
                         }
                         break;
@@ -1096,7 +1110,7 @@ class npc_gilneas_children : public CreatureScript
                         }
                         break;
                         case EVENT_RESUME_RUN:
-                            me->GetMotionMaster()->MoveSplinePath(childrenPath02[0], childrenPathLenght02, false, false, 0.f, false, false);
+                            me->GetMotionMaster()->MoveSplinePath(childrenBasementPath[0], childrenBasementPathLenght, false, false, 0.f, false, false);
                             me->DespawnOrUnsummon(me->GetSplineDuration());
                             break;
                         case EVENT_CRY:
