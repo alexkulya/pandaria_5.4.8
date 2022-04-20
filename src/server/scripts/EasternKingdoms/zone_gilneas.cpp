@@ -86,7 +86,29 @@ enum Gilneas
     SAY_JOSIAH_AVERY_3                      = 2,
     SAY_JOSIAH_AVERY_4                      = 3,
     SAY_JOSIAH_AVERY_5                      = 4,
-    SAY_JOSIAH_AVERY_6                      = 5
+    SAY_JOSIAH_AVERY_6                      = 5,
+
+    SPELL_SAVE_CYNTHIA                      = 68597,
+    SPELL_SAVE_ASHLEY                       = 68598,
+    SPELL_SAVE_JAMES                        = 68596,
+
+    PLAYER_SAY_CYNTHIA                      = 0,
+    PLAYER_SAY_ASHLEY                       = 1,
+    PLAYER_SAY_JAMES                        = 2,
+
+    NPC_JAMES                               = 36289,
+    NPC_CYNTHIA                             = 36287,
+    NPC_ASHLEY                              = 36288,
+
+    EVENT_TALK_TO_PLAYER                    = 1,
+    EVENT_START_RUN                         = 2,
+    EVENT_OPEN_DOOR                         = 3,
+    EVENT_RESUME_RUN                        = 4,
+    EVENT_CRY                               = 5,
+
+    CHILDREN_TEXT_ID                        = 0,
+
+    GO_DOOR_TO_THE_BASEMENT                 = 196411
 };
 
 Position const runt2SummonJumpPos = { -1671.915f, 1446.734f, 52.28712f };
@@ -359,6 +381,69 @@ Position const WorgenRuntHousePos[] =
     { -1631.979f, 1491.585f, 71.11481f, 4.032866f },
     { -1627.273f, 1499.689f, 68.89395f, 4.251452f },
     { -1622.665f, 1489.818f, 71.03797f, 3.776179f },
+};
+
+uint8 const JamesPathLenght = 6;
+Position const JamesPath[][JamesPathLenght] =
+{
+    {
+        { -1925.925049f, 2539.176514f, 1.392833f, 0.0f },
+        { -1913.658203f, 2545.986328f, 1.465530f, 0.0f },
+        { -1904.370728f, 2552.793213f, 1.132485f, 0.0f },
+        { -1900.970459f, 2550.849365f, 0.714445f, 0.0f },
+        { -1886.868774f, 2540.282471f, 1.706371f, 0.0f },
+        { -1882.739746f, 2543.941865f, 1.628683f, 0.0f },
+    },
+};
+
+uint8 const CynthiaPathLenght = 6;
+Position const CynthiaPath[][CynthiaPathLenght] =
+{
+    {
+        { -1947.965088f, 2518.669434f, 1.826697f, 0.0f },
+        { -1923.350830f, 2521.841553f, 1.586985f, 0.0f },
+        { -1917.197632f, 2520.494385f, 2.297501f, 0.0f },
+        { -1890.082031f, 2519.952148f, 1.425827f, 0.0f },
+        { -1886.868774f, 2540.282471f, 1.706371f, 0.0f },
+        { -1882.739746f, 2543.941865f, 1.628683f, 0.0f },
+    },
+};
+
+uint8 const AshleyPathLenght = 13;
+Position const AshleyPath[][AshleyPathLenght] =
+{
+    {
+        { -1928.023682f, 2558.467285f, 12.733648f, 0.0f },
+        { -1928.248901f, 2553.930176f, 12.734390f, 0.0f },
+        { -1923.981567f, 2552.113770f, 12.736046f, 0.0f },
+        { -1919.301514f, 2563.295166f, 3.579522f, 0.0f },
+        { -1930.442017f, 2562.145996f, 3.579824f, 0.0f },
+        { -1941.160156f, 2566.118896f, 1.392157f, 0.0f },
+        { -1940.852295f, 2543.049072f, 1.392157f, 0.0f },
+        { -1919.504517f, 2543.273926f, 1.392157f, 0.0f },
+        { -1913.658203f, 2545.986328f, 1.465530f, 0.0f },
+        { -1904.370728f, 2552.793213f, 1.132485f, 0.0f },
+        { -1900.970459f, 2550.849365f, 0.714445f, 0.0f },
+        { -1886.868774f, 2540.282471f, 1.706371f, 0.0f },
+        { -1882.739746f, 2543.941865f, 1.628683f, 0.0f },
+    },
+};
+
+uint8 const childrenBasementPathLenght = 3;
+Position const childrenBasementPath[][childrenBasementPathLenght] =
+{
+    {
+        { -1879.062378f, 2546.958984f, -0.130342f, 0.0f },
+        { -1873.854980f, 2550.903564f, -5.898719f, 0.0f },
+        { -1868.589844f, 2536.521240f, -6.365717f, 0.0f },
+    },
+};
+
+const std::string PlayerText[3] =
+{
+    "It's not safe here. Go to the Allens' basement.",
+    "Join the others inside the basement next door. Hurry!",
+    "Your mother's in the basement next door. Get to her now!",
 };
 
 struct npc_gilneas_crow : public ScriptedAI
@@ -641,31 +726,31 @@ struct npc_worgen_runt : public ScriptedAI
                 break;
             case WORGEN_ID_CATHEDRAL_2:
                 _wayPointCounter = runtCathedralPathSize2;
-                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize2, worgenRuntCathedralPath1, runtCathedralPathSize2);
+                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize2, worgenRuntCathedralPath2, runtCathedralPathSize2);
                 break;
             case WORGEN_ID_CATHEDRAL_3:
                 _wayPointCounter = runtCathedralPathSize3;
-                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize3, worgenRuntCathedralPath1, runtCathedralPathSize3);
+                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize3, worgenRuntCathedralPath3, runtCathedralPathSize3);
                 break;
             case WORGEN_ID_CATHEDRAL_4:
                 _wayPointCounter = runtCathedralPathSize4;
-                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize4, worgenRuntCathedralPath1, runtCathedralPathSize4);
+                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize4, worgenRuntCathedralPath4, runtCathedralPathSize4);
                 break;
             case WORGEN_ID_CATHEDRAL_5:
                 _wayPointCounter = runtCathedralPathSize5;
-                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize5, worgenRuntCathedralPath1, runtCathedralPathSize5);
+                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize5, worgenRuntCathedralPath5, runtCathedralPathSize5);
                 break;
             case WORGEN_ID_CATHEDRAL_6:
                 _wayPointCounter = runtCathedralPathSize6;
-                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize6, worgenRuntCathedralPath1, runtCathedralPathSize6);
+                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize6, worgenRuntCathedralPath6, runtCathedralPathSize6);
                 break;
             case WORGEN_ID_CATHEDRAL_7:
                 _wayPointCounter = runtCathedralPathSize7;
-                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize7, worgenRuntCathedralPath1, runtCathedralPathSize7);
+                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize7, worgenRuntCathedralPath7, runtCathedralPathSize7);
                 break;
             case WORGEN_ID_CATHEDRAL_8:
                 _wayPointCounter = runtCathedralPathSize8;
-                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize8, worgenRuntCathedralPath1, runtCathedralPathSize8);
+                me->GetMotionMaster()->MoveSmoothPath(runtCathedralPathSize8, worgenRuntCathedralPath8, runtCathedralPathSize8);
                 break;
         }
     }
@@ -921,6 +1006,122 @@ class spell_gilneas_pull_to : public SpellScript
     }
 };
 
+class npc_gilneas_children : public CreatureScript
+{
+    public:
+        npc_gilneas_children(const char* scriptName, uint32 spellId, uint8 playerSayId) : CreatureScript(scriptName), _spellId(spellId), _playerSayId(playerSayId) { }
+
+    private:
+        uint32 _spellId;
+        uint8 _playerSayId;
+
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return new creature_script(creature, _spellId, _playerSayId);
+        }
+
+        struct creature_script : public ScriptedAI
+        {
+            creature_script(Creature* creature, uint32 spellId, uint8 playerSayId) : ScriptedAI(creature), _spellId(spellId), _playerSayId(playerSayId) { }
+
+            EventMap events;
+            uint64 playerGUID;
+            uint32 _spellId;
+            uint8 _playerSayId;
+            bool activated;
+
+            void Reset() override
+            {
+                events.Reset();
+                playerGUID = 0;
+                activated = false;
+                me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+
+                if (me->GetEntry() == NPC_CYNTHIA)
+                    events.ScheduleEvent(EVENT_CRY, 1000);
+            }
+
+            void SpellHit(Unit* caster, const SpellInfo* spell)
+            {
+                if (!activated && spell->Id == _spellId)
+                {
+                    if (Player* player = caster->ToPlayer())
+                    {
+                        activated = true;
+                        playerGUID = player->GetGUID();
+                        player->Say(PlayerText[_playerSayId], LANG_UNIVERSAL);
+                        player->KilledMonsterCredit(me->GetEntry(), 0);
+                        me->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+                        events.ScheduleEvent(EVENT_TALK_TO_PLAYER, 3500);
+                    }
+                }
+            }
+
+            void UpdateAI(uint32 diff) override
+            {
+                events.Update(diff);
+
+                if (uint32 eventId = events.ExecuteEvent())
+                {
+                    switch (eventId)
+                    {
+                        case EVENT_TALK_TO_PLAYER:
+                        {
+                            events.CancelEvent(EVENT_CRY);
+
+                            if (Player* player = ObjectAccessor::GetPlayer(*me, playerGUID))
+                                Talk(CHILDREN_TEXT_ID, player);
+
+                            events.ScheduleEvent(EVENT_START_RUN, 5000);
+                        }
+                        break;
+                        case EVENT_START_RUN:
+                        {
+                            switch (me->GetEntry())
+                            {
+                                case NPC_JAMES:
+                                    me->GetMotionMaster()->MoveSplinePath(JamesPath[0], JamesPathLenght, false, false, 0.f, false, false);
+                                    break;
+                                case NPC_CYNTHIA:
+                                    me->GetMotionMaster()->MoveSplinePath(CynthiaPath[0], CynthiaPathLenght, false, false, 0.f, false, false);
+                                    break;
+                                case NPC_ASHLEY:
+                                    me->GetMotionMaster()->MoveSplinePath(AshleyPath[0], AshleyPathLenght, false, false, 0.f, false, false);
+                                    break;
+                                default:
+                                    return;
+                            }
+
+                            events.ScheduleEvent(EVENT_OPEN_DOOR, me->GetSplineDuration());
+                        }
+                        break;
+                        case EVENT_OPEN_DOOR:
+                        {
+                            if (GameObject* door = me->FindNearestGameObject(GO_DOOR_TO_THE_BASEMENT, 10.0f))
+                            {
+                                if (door->GetGoState() == GO_STATE_READY)
+                                {
+                                    door->UseDoorOrButton();
+                                    events.ScheduleEvent(EVENT_RESUME_RUN, 2000);
+                                }
+                                else
+                                    events.ScheduleEvent(EVENT_RESUME_RUN, 0);
+                            }
+                        }
+                        break;
+                        case EVENT_RESUME_RUN:
+                            me->GetMotionMaster()->MoveSplinePath(childrenBasementPath[0], childrenBasementPathLenght, false, false, 0.f, false, false);
+                            me->DespawnOrUnsummon(me->GetSplineDuration());
+                            break;
+                        case EVENT_CRY:
+                            me->HandleEmoteCommand(EMOTE_ONESHOT_CRY);
+                            events.ScheduleEvent(EVENT_CRY, urand(1000, 1500));
+                            break;
+                    }
+                }
+            }
+        };
+};
 
 void AddSC_gilneas()
 {
@@ -932,4 +1133,7 @@ void AddSC_gilneas()
     new creature_script<npc_josiah_avery>("npc_josiah_avery");
     new creature_script<npc_josiah_avery_worgen_form>("npc_josiah_avery_worgen_form");
     new spell_script<spell_gilneas_pull_to>("spell_gilneas_pull_to");
+    new npc_gilneas_children("npc_james", SPELL_SAVE_JAMES, PLAYER_SAY_JAMES);
+    new npc_gilneas_children("npc_ashley", SPELL_SAVE_ASHLEY, PLAYER_SAY_ASHLEY);
+    new npc_gilneas_children("npc_cynthia", SPELL_SAVE_CYNTHIA, PLAYER_SAY_CYNTHIA);
 }
