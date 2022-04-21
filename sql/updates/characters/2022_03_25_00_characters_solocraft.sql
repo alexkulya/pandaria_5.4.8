@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS `custom_solocraft_character_stats` (
-  `GUID` tinyint unsigned NOT NULL,
+  `GUID` int(10) UNSIGNED NOT NULL,
   `Difficulty` float NOT NULL,
   `GroupSize` int NOT NULL,
   `SpellPower` int unsigned NOT NULL DEFAULT "0",
