@@ -61,6 +61,9 @@
 
 bool AFDRoyaleRepopRequestHook(Player* player);
 
+#ifdef ELUNA
+#include "HookMgr.h"
+#endif
 void WorldSession::HandleRepopRequestOpcode(WorldPacket& recvData)
 {
     TC_LOG_DEBUG("network", "WORLD: Recvd CMSG_REPOP_REQUEST Message");
@@ -87,6 +90,9 @@ void WorldSession::HandleRepopRequestOpcode(WorldPacket& recvData)
             GetPlayer()->GetName().c_str(), GetPlayer()->GetGUIDLow());
         GetPlayer()->KillPlayer();
     }
+#ifdef ELUNA
+    sHookMgr->OnRepop(GetPlayer());
+#endif
 
     //this is spirit release confirm?
     GetPlayer()->BuildPlayerRepop();
@@ -989,6 +995,9 @@ void WorldSession::HandleReclaimCorpseOpcode(WorldPacket& recvData)
 
     if (!corpse->IsWithinDistInMap(GetPlayer(), CORPSE_RECLAIM_RADIUS, true))
         return;
+#ifdef ELUNA
+    sHookMgr->OnResurrect(GetPlayer());
+#endif
 
     // resurrect
     GetPlayer()->ResurrectPlayer(GetPlayer()->InBattleground() ? 1.0f : 0.5f);

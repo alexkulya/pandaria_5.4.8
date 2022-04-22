@@ -176,6 +176,8 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/dep/g3dlite/include
   ${CMAKE_SOURCE_DIR}/dep/SFMT
   ${CMAKE_SOURCE_DIR}/dep/zlib
+  ${CMAKE_SOURCE_DIR}/dep/lualib
+  ${CMAKE_SOURCE_DIR}/src/LuaEngine 
   ${CMAKE_SOURCE_DIR}/src/server/collision
   ${CMAKE_SOURCE_DIR}/src/server/collision/Management
   ${CMAKE_SOURCE_DIR}/src/server/collision/Models
@@ -275,6 +277,8 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/Warden/Modules
   ${CMAKE_CURRENT_SOURCE_DIR}/Weather
   ${CMAKE_CURRENT_SOURCE_DIR}/World
+  ${CMAKE_CURRENT_SOURCE_DIR}/SharedPtrs
+  ${CMAKE_SOURCE_DIR}/src/server/scripts/PrecompiledHeaders
   ${ACE_INCLUDE_DIR}
   ${MYSQL_INCLUDE_DIR}
   ${OPENSSL_INCLUDE_DIR}
@@ -287,10 +291,19 @@ endif()
 add_library(game STATIC
   ${game_STAT_SRCS}
   ${game_STAT_PCH_SRC}
+  ${lua_STAT_SRCS}
+  ${LuaEngine_STAT_SRCS}
 )
 
 add_dependencies(game revision.h)
+add_dependencies(game lua)
 
+if (ELUNA)
+target_link_libraries(game
+ lua
+ LuaEngine
+)
+endif()
 # Generate precompiled header
 if (USE_COREPCH)
   add_cxx_pch(game ${game_STAT_PCH_HDR} ${game_STAT_PCH_SRC})

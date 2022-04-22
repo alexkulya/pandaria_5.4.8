@@ -215,13 +215,13 @@ std::string Transmogrification::GetItemLink(Item* item, WorldSession* session) c
         {
             const ItemRandomSuffixEntry* itemRandEntry = sItemRandomSuffixStore.LookupEntry(-item->GetItemRandomPropertyId());
             if (itemRandEntry)
-                suffix = itemRandEntry->nameSuffix[LOCALE_zhCN];
+                suffix = itemRandEntry->nameSuffix[loc_idx];
         }
         else
         {
             const ItemRandomPropertiesEntry* itemRandEntry = sItemRandomPropertiesStore.LookupEntry(item->GetItemRandomPropertyId());
             if (itemRandEntry)
-                suffix = itemRandEntry->nameSuffix[LOCALE_zhCN];
+                suffix = itemRandEntry->nameSuffix[loc_idx];
         }
         if (suffix)
         {

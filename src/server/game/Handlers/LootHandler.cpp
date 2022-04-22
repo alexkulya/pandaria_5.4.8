@@ -34,6 +34,9 @@
 #include "GridNotifiersImpl.h"
 #include "CellImpl.h"
 #include "CustomLogs.h"
+#ifdef ELUNA
+#include "HookMgr.h"
+#endif
 
 void WorldSession::HandleAutostoreLootItemOpcode(WorldPacket& recvData)
 {
@@ -296,6 +299,9 @@ void WorldSession::HandleLootMoneyOpcode(WorldPacket& /*recvData*/)
                     group->LogEvent("Money looted: %s by %s", Group::FormatMoney(loot->gold).c_str(), Group::Format(player).c_str());
         }
 
+#ifdef ELUNA
+        sHookMgr->OnLootMoney(player, loot->gold);
+#endif
         loot->gold = 0;
 
         // Delete the money loot record from the DB
@@ -707,7 +713,9 @@ void WorldSession::HandleLootMasterGiveOpcode(WorldPacket& recvData)
                 group->LogEvent("Master looter gave item: %s to %s", Group::Format(newitem).c_str(), Group::Format(target).c_str());
 
         sScriptMgr->OnItemPickup(target, newitem, loot->GetItemPickupSourceType(), loot->sourceEntry);
-
+#ifdef ELUNA
+        sHookMgr->OnLootItem(target, newitem, item.count, lootguid);
+#endif
         // mark as looted
         item.count = 0;
         item.is_looted = true;

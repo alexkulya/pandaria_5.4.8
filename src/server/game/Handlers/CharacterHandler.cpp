@@ -48,6 +48,9 @@
 #include "ServiceMgr.h"
 #include "ServiceBoost.h"
 
+#ifdef ELUNA
+#include "HookMgr.h"
+#endif
 class LoginQueryHolder : public SQLQueryHolder
 {
 private:
@@ -1203,6 +1206,10 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
         pCurrChar->SendTalentsInfoData();              // original talents send already in to SendInitialPacketsBeforeAddToMap, resend reset state
         SendNotification(LANG_RESET_TALENTS);
     }
+#ifdef ELUNA
+    if (pCurrChar->HasAtLoginFlag(AT_LOGIN_FIRST))
+        sHookMgr->OnFirstLogin(pCurrChar);
+#endif
 
     if (pCurrChar->HasAtLoginFlag(AT_LOGIN_FIRST))
     {

@@ -91,6 +91,10 @@
 #include "ServiceBoost.h"
 #include "ServiceMgr.h"
 #include "WordFilterMgr.h"
+#ifdef ELUNA
+#include "LuaEngine.h"
+#include "HookMgr.h"
+#endif
 
 void AFDRoyaleUpdateHook(uint32 diff);
 
@@ -109,6 +113,9 @@ int32 World::m_visibility_notify_periodInBGArenas   = DEFAULT_VISIBILITY_NOTIFY_
 float World::Visibility_RelocationLowerLimit = 10.0f;
 uint32 World::Visibility_AINotifyDelay = 1000;
 
+#ifdef ELUNA
+extern void StartEluna(bool restart);
+#endif
 /// World constructor
 World::World()
 {
@@ -1471,10 +1478,18 @@ void World::LoadConfigSettings(bool reload)
     m_float_configs[CONFIG_VENGEANCE_MULTIPLIER] = sConfigMgr->GetFloatDefault("VengeanceMultipier", 1.0f);
 
     m_bool_configs[CONFIG_BOOST_PROMOTION] = sConfigMgr->GetBoolDefault("BoostPromotion.Enabled", false);
-
+	//eluna
+	m_bool_configs[CONFIG_BOOL_ELUNA_ENABLED] = sConfigMgr->GetBoolDefault("Eluna.Enabled", true);
     // call ScriptMgr if we're reloading the configuration
     if (reload)
     {
+#ifdef ELUNA  
+		if (sWorld->getBoolConfig(CONFIG_BOOL_ELUNA_ENABLED))
+		{
+			StartEluna(reload);
+		}
+#endif
+           
         sScriptMgr->OnConfigLoad(reload);
         sRatedPvpMgr->OnConfigLoad();
     }
@@ -2331,6 +2346,16 @@ void World::SetInitialWorldSettings()
     sServiceMgr->LoadFromDB();
 
     uint32 startupDuration = GetMSTimeDiffToNow(startupBegin);
+
+#ifdef ELUNA
+	if (sWorld->getBoolConfig(CONFIG_BOOL_ELUNA_ENABLED))
+	{
+		///- Initialize Lua Engine
+		TC_LOG_INFO("server.loading", ">> Initialize Eluna Lua Engine...");
+		StartEluna(false);
+	}
+
+#endif
 
     TC_LOG_INFO("server.worldserver", "World initialized in %u minutes %u seconds", (startupDuration / 60000), ((startupDuration % 60000) / 1000));
 

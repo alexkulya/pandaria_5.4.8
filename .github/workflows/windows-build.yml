@@ -2,7 +2,7 @@ name: windows-build
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, elunadev ]
     paths-ignore:
       - 'sql/**'
       

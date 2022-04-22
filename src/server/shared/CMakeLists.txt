@@ -67,6 +67,8 @@ set(shared_STAT_SRCS
 include_directories(
   ${CMAKE_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/dep/recastnavigation/Detour
+  ${CMAKE_SOURCE_DIR}/dep/recastnavigation/Detour/Include
+  ${CMAKE_SOURCE_DIR}/dep/recastnavigation/Recast
   ${CMAKE_SOURCE_DIR}/dep/SFMT
   ${CMAKE_SOURCE_DIR}/dep/sockets/include
   ${CMAKE_SOURCE_DIR}/dep/utf8cpp
@@ -82,6 +84,7 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/Packets
   ${CMAKE_CURRENT_SOURCE_DIR}/Threading
   ${CMAKE_CURRENT_SOURCE_DIR}/Utilities
+  
   ${CMAKE_SOURCE_DIR}/src/server/game/Entities/Object
   ${ACE_INCLUDE_DIR}
   ${MYSQL_INCLUDE_DIR}

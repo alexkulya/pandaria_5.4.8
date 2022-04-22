@@ -18,6 +18,7 @@
 #include "PreparedStatement.h"
 #include "MySQLConnection.h"
 #include "Log.h"
+#include "Util.h"
 
 PreparedStatement::PreparedStatement(uint32 index) :
 m_stmt(NULL),
@@ -208,7 +209,9 @@ m_bind(NULL)
     m_paramsSet.assign(m_paramCount, false);
     m_bind = new MYSQL_BIND[m_paramCount];
     memset(m_bind, 0, sizeof(MYSQL_BIND)*m_paramCount);
-
+#if MYSQL_VERSION_ID >= 80001
+    typedef bool my_bool;
+#endif
     /// "If set to 1, causes mysql_stmt_store_result() to update the metadata MYSQL_FIELD->max_length value."
     my_bool bool_tmp = 1;
     mysql_stmt_attr_set(stmt, STMT_ATTR_UPDATE_MAX_LENGTH, &bool_tmp);

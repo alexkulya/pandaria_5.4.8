@@ -24,3 +24,7 @@ endif(TOOLS)
 if (UPDATER)
   add_subdirectory(updater)
 endif()
+
+if ( ELUNA )
+  add_subdirectory(LuaEngine)
+endif(ELUNA)

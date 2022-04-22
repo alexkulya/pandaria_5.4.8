@@ -643,6 +643,40 @@ class ConditionScript : public ScriptObject
         virtual bool OnConditionCheck(Condition* /*condition*/, ConditionSourceInfo& /*sourceInfo*/) { return true; }
 };
 
+class VehicleScript : public ScriptObject
+{
+    protected:
+
+        VehicleScript(const char* name);
+
+    public:
+
+        bool IsDatabaseBound() const { return true; }
+
+        // Called after a vehicle is installed.
+        virtual void OnInstall(Vehicle* /*veh*/) { }
+
+        // Called after a vehicle is uninstalled.
+        virtual void OnUninstall(Vehicle* /*veh*/) { }
+
+        // Called when a vehicle resets.
+        virtual void OnReset(Vehicle* /*veh*/) { }
+
+        // Called after an accessory is installed in a vehicle.
+        virtual void OnInstallAccessory(Vehicle* /*veh*/, Creature* /*accessory*/) { }
+
+		virtual void BeforeAddPassenger(Vehicle* /*veh*/, Unit* /*passenger*/){}
+
+        // Called after a passenger is added to a vehicle.
+        virtual void OnAddPassenger(Vehicle* /*veh*/, Unit* /*passenger*/, int8 /*seatId*/) { }
+
+        // Called after a passenger is removed from a vehicle.
+        virtual void OnRemovePassenger(Vehicle* /*veh*/, Unit* /*passenger*/) { }
+
+        // Called when a CreatureAI object is needed for the creature.
+        virtual CreatureAI* GetAI(Creature* /*creature*/) const { return NULL; }
+};
+
 class DynamicObjectScript : public ScriptObject, public UpdatableScript<DynamicObject>
 {
     protected:
@@ -1115,8 +1149,17 @@ class ScriptMgr
 
         bool OnConditionCheck(Condition* condition, ConditionSourceInfo& sourceInfo);
 
-    public: /* DynamicObjectScript */
+    public: /* VehicleScript */
 
+        void OnInstall(Vehicle* veh);
+        void OnUninstall(Vehicle* veh);
+        void OnReset(Vehicle* veh);
+        void OnInstallAccessory(Vehicle* veh, Creature* accessory);
+		void BeforeAddPassenger(Vehicle* veh, Unit* passenger);
+        void OnAddPassenger(Vehicle* veh, Unit* passenger, int8 seatId);
+        void OnRemovePassenger(Vehicle* veh, Unit* passenger);
+
+    public: /* DynamicObjectScript */
         void OnDynamicObjectUpdate(DynamicObject* dynobj, uint32 diff);
 
     public: /* TransportScript */
