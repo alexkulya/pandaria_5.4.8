@@ -24,3 +24,5 @@ Read file [COPYING](COPYING.md)
 Read file [THANKS](THANKS.md)
 
 [![windows-build](https://github.com/Legends-of-Azeroth/Legends-of-Azeroth-Pandaria-5.4.8/actions/workflows/windows-build.yml/badge.svg?branch=master)](https://github.com/Legends-of-Azeroth/Legends-of-Azeroth-Pandaria-5.4.8/actions/workflows/windows-build.yml)
+
+ПО всем вопросам обращайтесь в дискорд или на наш форум: http://legendsemu.funbb.ru/
