@@ -3929,9 +3929,6 @@ Rate.Modw.InGame = 1
 #                    The path can be relative or absolute.
 #       Default:    "lua_scripts"
 #
-#   Notice: 
-#          1) use .reload config to reload lua script
-#          2) mop core is difference with wlk, lua from wlk core may need modify to fit this core.
 ###################################################################################################################
 
 Eluna.Enabled = 1
