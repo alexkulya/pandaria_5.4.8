@@ -334,7 +334,7 @@ void ReadLiquidTypeTableDBC()
         LiqType[dbc.getRecord(x).getUInt(0)] = dbc.getRecord(x).getUInt(3);
 
     SFileCloseFile(dbcFile);
-    printf("Done! (%lu LiqTypes loaded)\n", LiqType_count);
+    printf("Done! (%zu LiqTypes loaded)\n", LiqType_count);
 }
 
 //
