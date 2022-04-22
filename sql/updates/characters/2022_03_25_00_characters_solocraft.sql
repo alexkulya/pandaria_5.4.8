@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS `custom_solocraft_character_stats`;
 CREATE TABLE IF NOT EXISTS `custom_solocraft_character_stats` (
-  `GUID` tinyint(3) unsigned NOT NULL,
+  `GUID` int(10) UNSIGNED NOT NULL,
   `Difficulty` float NOT NULL,
   `GroupSize` int(11) NOT NULL,
   `SpellPower` int(10) unsigned NOT NULL DEFAULT "0",
