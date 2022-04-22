@@ -1483,13 +1483,6 @@ void World::LoadConfigSettings(bool reload)
     // call ScriptMgr if we're reloading the configuration
     if (reload)
     {
-#ifdef ELUNA  
-		if (sWorld->getBoolConfig(CONFIG_BOOL_ELUNA_ENABLED))
-		{
-			StartEluna(reload);
-		}
-#endif
-           
         sScriptMgr->OnConfigLoad(reload);
         sRatedPvpMgr->OnConfigLoad();
     }

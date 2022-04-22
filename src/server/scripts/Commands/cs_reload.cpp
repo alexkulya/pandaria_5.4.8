@@ -44,6 +44,11 @@ EndScriptData */
 #include "WardenCheckMgr.h"
 #include "WaypointManager.h"
 #include "WordFilterMgr.h"
+#ifdef ELUNA
+#include "LuaEngine.h"
+#include "HookMgr.h"
+extern void StartEluna(bool restart);
+#endif
 
 class reload_commandscript : public CommandScript
 {
@@ -340,6 +345,15 @@ public:
         sWorld->LoadConfigSettings(true);
         sMapMgr->InitializeVisibilityDistanceInfo();
         handler->SendGlobalGMSysMessage("World config settings reloaded.");
+
+#ifdef ELUNA  
+		if (sWorld->getBoolConfig(CONFIG_BOOL_ELUNA_ENABLED))
+		{
+			StartEluna(true);
+			handler->SendGlobalGMSysMessage("Eluna lua engine reloaded.");
+		}
+#endif
+
         return true;
     }
 

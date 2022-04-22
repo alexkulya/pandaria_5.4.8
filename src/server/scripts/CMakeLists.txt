@@ -86,6 +86,8 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/dep/g3dlite/include
   ${CMAKE_SOURCE_DIR}/dep/SFMT
   ${CMAKE_SOURCE_DIR}/dep/zlib
+  ${CMAKE_SOURCE_DIR}/dep/lualib
+  ${CMAKE_SOURCE_DIR}/src/LuaEngine 
   ${CMAKE_SOURCE_DIR}/src/server/shared
   ${CMAKE_SOURCE_DIR}/src/server/shared/Configuration
   ${CMAKE_SOURCE_DIR}/src/server/shared/Cryptography
@@ -185,6 +187,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src/server/game/Warden/Modules
   ${CMAKE_SOURCE_DIR}/src/server/game/Weather
   ${CMAKE_SOURCE_DIR}/src/server/game/World
+  ${CMAKE_CURRENT_SOURCE_DIR}/SharedPtrs
   ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders
   ${ACE_INCLUDE_DIR}
   ${MYSQL_INCLUDE_DIR}
@@ -201,8 +204,19 @@ if( USE_SCRIPTPCH AND MSVC )
   )
 endif()
 
-add_library(scripts STATIC ${scripts_STAT_SRCS} )
+add_library(scripts STATIC 
+${scripts_STAT_SRCS} 
+  ${lua_STAT_SRCS}
+  ${LuaEngine_STAT_SRCS}
+)
 add_dependencies(scripts revision.h)
+add_dependencies(scripts lua)
+if (ELUNA)
+target_link_libraries(scripts
+ lua
+ LuaEngine
+)
+endif()
 # Generate precompiled header
 if (USE_SCRIPTPCH)
   add_cxx_pch(scripts ${scripts_STAT_PCH_HDR} ${scripts_STAT_PCH_SRC})
