@@ -167,6 +167,7 @@ set(game_STAT_SRCS
   ${sources_Warden}
   ${sources_Weather}
   ${sources_World}
+  ${sources_Cfbg}
 )
 
 include_directories(
