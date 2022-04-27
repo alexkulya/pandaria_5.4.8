@@ -1,0 +1,25 @@
+#ifndef DEF_SCARLET_HALLS_H_
+#define DEF_SCARLET_HALLS_H_
+
+#define MAX_ENCOUNTERS 3
+
+enum Creatures
+{
+	BOSS_ARMSMASTER_HARLAN   = 58632,
+    BOSS_FLAMEWEAVER_KOEGLER   = 59150,
+    BOSS_HOUNDMASTER_BRAUN   = 59303,
+};
+
+enum Objects
+{
+    
+};
+
+enum Data
+{
+	DATA_HOUNDMASTER_BRAUN   = 1,
+    DATA_ARMSMASTER_HARLAN   = 2,
+    DATA_FLAMEWEAVER_KOEGLER   = 3,
+};
+
+#endif
