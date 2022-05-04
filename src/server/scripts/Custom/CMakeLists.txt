@@ -13,7 +13,7 @@ source_group(Custom FILES ${scripts_Custom})
 
 set(scripts_STAT_SRCS
   ${scripts_STAT_SRCS}
- 
+  ${scripts_Custom}
 )
 
 message("  -> Prepared: Custom")
