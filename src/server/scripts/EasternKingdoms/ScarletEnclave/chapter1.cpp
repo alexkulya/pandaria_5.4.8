@@ -323,7 +323,7 @@ public:
     }
 
 };
-/*
+
 enum EyeOfAcherusData
 {
     SPELL_EYE_VISUAL                        = 51892,
@@ -343,10 +343,10 @@ Position const EyeOFAcherusFallPoint = { 2361.21f, -5660.45f, 496.7444f, 0.0f };
 
 Position const EyeOfAcherusPath[] =
 {
-    { 2361.21f, -5660.45f, 496.744f },
-    { 2341.57f, -5672.8f,  538.394f },
-    { 1957.4f,  -5844.1f,  273.867f },
-    { 1758.01f, -5876.79f, 166.867f }
+    { 2361.21f,  -5660.45f,  496.744f  },
+    { 2341.571f, -5672.797f, 538.3942f },
+    { 1957.4f,   -5844.1f,   273.867f  },
+    { 1758.01f,  -5876.79f,  166.867f  }
 };
 std::size_t const EyeOfAcherusPathSize = std::extent<decltype(EyeOfAcherusPath)>::value;
 
@@ -441,7 +441,7 @@ struct npc_eye_of_acherus : public ScriptedAI
 private:
     EventMap _events;
 };
-*/
+
 /*######
 ## npc_death_knight_initiate
 ######*/
@@ -894,6 +894,49 @@ public:
 
 };
 
+class npc_scarlet_cannon : public CreatureScript
+{
+public:
+    npc_scarlet_cannon() : CreatureScript("npc_scarlet_cannon") { }
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_scarlet_cannonAI(creature);
+    }
+
+    struct npc_scarlet_cannonAI : public VehicleAI
+    {
+        npc_scarlet_cannonAI(Creature* creature) : VehicleAI(creature) { summonAttackers = 0; }
+
+        uint32 summonAttackers;
+        void PassengerBoarded(Unit* /*passenger*/, int8 /*seatId*/, bool apply) override
+        {
+            summonAttackers = apply ? 8000 : 0;
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            VehicleAI::UpdateAI(diff);
+
+            if (summonAttackers)
+            {
+                summonAttackers += diff;
+                if (summonAttackers >= 15000)
+                {
+                    for (uint8 i = 0; i < 15; ++i)
+                        if (Creature* summon = me->SummonCreature(28834 /*NPC_SCARLET_FLEET_DEFENDER*/, 2192.56f + irand(-10, 10), -6147.90f + irand(-10, 10), 5.2f, 4.7f, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 45000))
+                        {
+                            summon->SetHomePosition(me->GetHomePosition());
+                            summon->AI()->AttackStart(me);
+                        }
+
+                    summonAttackers = 1;
+                }
+            }
+        }
+    };
+};
+
 class npc_scarlet_ghoul : public CreatureScript
 {
 public:
@@ -1207,6 +1250,7 @@ void AddSC_the_scarlet_enclave_c1()
     new npc_dark_rider_of_acherus();
     new npc_ros_dark_rider();
     new npc_dkc1_gothik();
+    new npc_scarlet_cannon();
     new npc_scarlet_ghoul();
     new npc_scarlet_miner();
     new npc_scarlet_miner_cart();
