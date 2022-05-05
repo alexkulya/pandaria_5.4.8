@@ -32,6 +32,7 @@
 #    BATTLE PET SETTINGS
 #    BLACK MARKET SETTINGS
 #    PACKET SPOOF PROTECTION SETTINGS
+#    STARTING GUILD
 #
 ###################################################################################################
 
@@ -3939,3 +3940,31 @@ Eluna.TraceBack = false
 Eluna.ScriptPath = "lua_scripts"
 
 ###############################################################################
+###################################################################################################
+# STARTING GUILD
+#
+# These settings control the Starting Guild functionality
+#
+#    StartingGuild.Enable
+#        Description: Enables or Disables the Starting Guild functionality.
+#        Default:     0 - (Disabled)
+#                     1 - (Enabled)
+
+StartingGuild.Enable = 0
+
+#
+#    StartingGuild.GuildID.Alliance
+#        Description: The identifier (ID) of the Alliance Guild. It must be an integer number
+#        Default:     1
+
+StartingGuild.GuildID.Alliance = 1
+
+#
+#    StartingGuild.GuildID.Horde
+#        Description: The identifier (ID) of the Horde Guild. It must be an integer number
+#        Default:     1
+
+StartingGuild.GuildID.Horde = 2
+
+#
+###################################################################################################
