@@ -50,6 +50,8 @@ enum Spells
 
     NPC_APPLEBOUGH_A                        = 29547,
     NPC_SWEETBERRY_H                        = 29715,
+    NPC_SILVER_COVENANT_GUARDIAN_MAGE       = 29254,
+    NPC_SUNREAVER_GUARDIAN_MAGE             = 29255,
 
     ZONE_DALARAN                            = 4395
 };
@@ -91,7 +93,7 @@ struct npc_mageguard_dalaran : public ScriptedAI
 
         switch (me->GetEntry())
         {
-            case 29254:
+            case NPC_SILVER_COVENANT_GUARDIAN_MAGE:
                 if (player->GetTeam() == HORDE)
                 {
                     if (GetClosestCreatureWithEntry(me, NPC_APPLEBOUGH_A, 32.0f))
@@ -103,7 +105,7 @@ struct npc_mageguard_dalaran : public ScriptedAI
                         DoCast(who, SPELL_TRESPASSER_A);
                 }
                 break;
-            case 29255:
+            case NPC_SUNREAVER_GUARDIAN_MAGE:
                 if (player->GetTeam() == ALLIANCE)
                 {
                     if (GetClosestCreatureWithEntry(me, NPC_SWEETBERRY_H, 32.0f))
@@ -139,7 +141,7 @@ struct npc_minigob_manabonk : public ScriptedAI
     {
         playerGuid = ObjectGuid();
         me->SetVisible(false);
-        events.ScheduleEvent(EVENT_SELECT_TARGET, 1 * IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_SELECT_TARGET, 1s);
     }
 
     void GetPlayersInDalaran(std::vector<Player*>& playerList) const
@@ -173,8 +175,6 @@ struct npc_minigob_manabonk : public ScriptedAI
 
         while (uint32 eventId = events.ExecuteEvent())
         {
-            Position pos;
-
             switch (eventId)
             {
                 case EVENT_SELECT_TARGET:
@@ -197,20 +197,20 @@ struct npc_minigob_manabonk : public ScriptedAI
                         player->MovePositionToFirstCollision(pos, dist, angle);
                         me->NearTeleportTo(pos.GetPositionX(), pos.GetPositionY(), pos.GetPositionZ(), pos.GetOrientation());
                     }
-                    events.ScheduleEvent(EVENT_LAUGH_1, 2 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_LAUGH_1, 2s);
                     break;
                 }
                 case EVENT_LAUGH_1:
                     me->HandleEmoteCommand(EMOTE_ONESHOT_LAUGH_NO_SHEATHE);
-                    events.ScheduleEvent(EVENT_WANDER, 3 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_WANDER, 3s);
                     break;
                 case EVENT_WANDER:
                     me->GetMotionMaster()->MoveRandom(8);
-                    events.ScheduleEvent(EVENT_PAUSE, 1 * MINUTE);
+                    events.ScheduleEvent(EVENT_PAUSE, 1min);
                     break;
                 case EVENT_PAUSE:
                     me->GetMotionMaster()->MoveIdle();
-                    events.ScheduleEvent(EVENT_CAST, 2 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_CAST, 2s);
                     break;
                 case EVENT_CAST:
                     if (Player* player = me->GetMap()->GetPlayer(playerGuid))
@@ -221,15 +221,15 @@ struct npc_minigob_manabonk : public ScriptedAI
                     else
                         me->AddObjectToRemoveList();
 
-                    events.ScheduleEvent(EVENT_LAUGH_2, 8 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_LAUGH_2, 8s);
                     break;
                 case EVENT_LAUGH_2:
                     me->HandleEmoteCommand(EMOTE_ONESHOT_LAUGH_NO_SHEATHE);
-                    events.ScheduleEvent(EVENT_BLINK, 3 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_BLINK, 3s);
                     break;
                 case EVENT_BLINK:
                     DoCastSelf(SPELL_IMPROVED_BLINK);
-                    events.ScheduleEvent(EVENT_DESPAWN, 4 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_DESPAWN, 4s);
                     break;
                 case EVENT_DESPAWN:
                     me->AddObjectToRemoveList();
@@ -320,13 +320,8 @@ struct npc_archmage_landalock : public ScriptedAI
     {
         if (image->GetEntry() != NPC_ANUBREKHAN_IMAGE)
         {
-            image->GetMotionMaster()->MoveRotate(20000, ROTATE_DIRECTION_RIGHT); /// ???
+            image->GetMotionMaster()->MoveRotate(20000, ROTATE_DIRECTION_RIGHT);
         }
-
-        image->m_Events.AddLambdaEventAtOffset([image]()
-        {
-            image->CastSpell(image, 59123);
-        }, 500);
 
         _summonGUID = image->GetGUID();
     }

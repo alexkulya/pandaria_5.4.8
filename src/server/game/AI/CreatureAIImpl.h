@@ -20,6 +20,7 @@
 
 #include "Common.h"
 #include "Define.h"
+#include "Duration.h"
 #include "TemporarySummon.h"
 #include "CreatureAI.h"
 #include "SpellMgr.h"
@@ -344,7 +345,7 @@ class EventMap
         /**
          * @name Update
          * @brief Updates the timer of the event map.
-         * @param time Value to be added to time.
+         * @param time Value in ms to be added to time.
          */
         void Update(uint32 time)
         {
@@ -353,7 +354,7 @@ class EventMap
 
         /**
         * @name GetTimer
-        * @return Current timer value.
+        * @return Current timer in ms value.
         */
         uint32 GetTimer() const
         {
@@ -417,6 +418,19 @@ class EventMap
         * @name ScheduleEvent
         * @brief Creates new event entry in map.
         * @param eventId The id of the new event.
+        * @param time The time in milliseconds as std::chrono::duration until the event occurs.
+        * @param group The group which the event is associated to. Has to be between 1 and 8. 0 means it has no group.
+        * @param phase The phase in which the event can occur. Has to be between 1 and 8. 0 means it can occur in all phases.
+        */
+        void ScheduleEvent(uint32 eventId, Milliseconds const& time, uint32 group = 0, uint8 phase = 0)
+        {
+            ScheduleEvent(eventId, time.count(), group, phase);
+        }
+
+        /**
+        * @name ScheduleEvent
+        * @brief Creates new event entry in map.
+        * @param eventId The id of the new event.
         * @param time The time in milliseconds until the event occurs.
         * @param group The group which the event is associated to. Has to be between 1 and 8. 0 means it has no group.
         * @param phase The phase in which the event can occur. Has to be between 1 and 8. 0 means it can occur in all phases.
@@ -436,6 +450,19 @@ class EventMap
         * @name RescheduleEvent
         * @brief Cancels the given event and reschedules it.
         * @param eventId The id of the event.
+        * @param time The time in milliseconds as std::chrono::duration until the event occurs.
+        * @param group The group which the event is associated to. Has to be between 1 and 8. 0 means it has no group.
+        * @param phase The phase in which the event can occur. Has to be between 1 and 8. 0 means it can occur in all phases.
+        */
+        void RescheduleEvent(uint32 eventId, Milliseconds const& time, uint32 group = 0, uint8 phase = 0)
+        {
+            RescheduleEvent(eventId, time.count(), group, phase);
+        }
+
+        /**
+        * @name RescheduleEvent
+        * @brief Cancels the given event and reschedules it.
+        * @param eventId The id of the event.
         * @param time The time in milliseconds until the event occurs.
         * @param group The group which the event is associated to. Has to be between 1 and 8. 0 means it has no group.
         * @param phase The phase in which the event can occur. Has to be between 1 and 8. 0 means it can occur in all phases.
@@ -444,6 +471,16 @@ class EventMap
         {
             CancelEvent(eventId);
             ScheduleEvent(eventId, time, group, phase);
+        }
+
+        /**
+        * @name RepeatEvent
+        * @brief Repeats the mostly recently executed event.
+        * @param time Time until in milliseconds as std::chrono::duration the event occurs.
+        */
+        void RepeatEvent(Milliseconds const& time)
+        {
+            RepeatEvent(time.count());
         }
 
         /**
@@ -522,11 +559,32 @@ class EventMap
         /**
         * @name DelayEvents
         * @brief Delays all events in the map. If delay is greater than or equal internal timer, delay will be 0.
+        * @param delay Amount of delay in ms as std::chrono::duration.
+        */
+        void DelayEvents(Milliseconds const& delay)
+        {
+            DelayEvents(delay.count());
+        }
+
+        /**
+        * @name DelayEvents
+        * @brief Delays all events in the map. If delay is greater than or equal internal timer, delay will be 0.
         * @param delay Amount of delay.
         */
         void DelayEvents(uint32 delay)
         {
             _time = delay < _time ? _time - delay : 0;
+        }
+
+        /**
+        * @name DelayEvents
+        * @brief Delay all events of the same group.
+        * @param delay Amount of delay in ms as std::chrono::duration.
+        * @param group Group of the events.
+        */
+        void DelayEvents(Milliseconds const& delay, uint32 group)
+        {
+            DelayEvents(delay.count(), group);
         }
 
         /**
