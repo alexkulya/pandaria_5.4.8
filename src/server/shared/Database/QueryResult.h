@@ -26,7 +26,7 @@
   #include <winsock2.h>
 #endif
 #include <mysql.h>
-#include "Util.h"
+
 class ResultSet
 {
     public:
@@ -91,12 +91,7 @@ class PreparedResultSet
         MYSQL_STMT* m_stmt;
         MYSQL_RES* m_res;
 
-
-#if MYSQL_VERSION_ID >= 80001
-        typedef bool my_bool;
-#endif
-
-        my_bool* m_isNull;
+        bool* m_isNull;
         unsigned long* m_length;
 
         void FreeBindBuffer();
