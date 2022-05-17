@@ -513,11 +513,11 @@ class npc_wrathion : public CreatureScript
             if (creature->IsQuestGiver())
                 player->PrepareQuestMenu(creature->GetGUID());
 
-            /*if (player->GetQuestStatus(QUEST_LEGEND_IN_THE_MAKING) == QUEST_STATUS_INCOMPLETE)
+            if (player->GetQuestStatus(QUEST_LEGEND_IN_THE_MAKING) == QUEST_STATUS_INCOMPLETE)
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, WRATHION_GOSSIP, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            if (player->GetQuestStatus(QUEST_MEASURE_OF_THE_LEADER) == QUEST_STATUS_INCOMPLETE)
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, WRATHION_GOSSIP, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);*/
+            if (player->GetQuestStatus(QUEST_MEASURE_OF_THE_LEADER_A) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(QUEST_MEASURE_OF_THE_LEADER_H) == QUEST_STATUS_INCOMPLETE)
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, WRATHION_GOSSIP, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
 
             player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
             return true;
