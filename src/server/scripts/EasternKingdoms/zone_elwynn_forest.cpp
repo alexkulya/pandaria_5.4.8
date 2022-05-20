@@ -1,5 +1,5 @@
 /*
-* Copyright (C) 2022 MoPCore Reforged
+* This file is part of the Pandaria 5.4.8 Project. See THANKS file for Copyright information
 *
 * This program is free software; you can redistribute it and/or modify it
 * under the terms of the GNU General Public License as published by the
@@ -1012,7 +1012,7 @@ struct npc_hogger : public ScriptedAI
 {
     npc_hogger(Creature* creature) : ScriptedAI(creature)
     {
-        if (Creature* trigger_meat = me->FindNearestCreature(NPC_TRIGGER_MEAT, 30))
+        if (Creature* trigger_meat = me->FindNearestCreature(ElwynnForest::NPC_TRIGGER_MEAT, 30))
             trigger_meat_guid = trigger_meat->GetGUID();
     }
 
@@ -1027,32 +1027,34 @@ struct npc_hogger : public ScriptedAI
     void EnterCombat(Unit* /*who*/) override
     {
         if (urand(0, 9) < 3)
-            Talk(SAY_AGGRO);
-        events.ScheduleEvent(EVENT_CAST_VICIOUS_SLICE, 3000);
+            Talk(ElwynnForest::SAY_AGGRO);
+
+        events.ScheduleEvent(ElwynnForest::EVENT_CAST_VICIOUS_SLICE, 3 * TimeConstants::IN_MILLISECONDS);
     }
 
     void DamageTaken(Unit* attacker, uint32& damage) override
     {
         if (!phase && !HealthAbovePct(50))
         {
-            Talk(SAY_HELP);
-            me->CastSpell(me, SPELL_SUMMON_MINIONS, true);
+            Talk(ElwynnForest::SAY_HELP);
+            me->CastSpell(me, ElwynnForest::SPELL_SUMMON_MINIONS, true);
             me->AttackStop();
             me->SetReactState(REACT_PASSIVE);
-            phase = PHASE_EATING;
-            events.CancelEvent(EVENT_CAST_VICIOUS_SLICE);
-            events.ScheduleEvent(EVENT_HALF_HP_ONCE, 4000);
+            phase = ElwynnForest::PHASE_EATING;
+            events.CancelEvent(ElwynnForest::EVENT_CAST_VICIOUS_SLICE);
+            events.ScheduleEvent(ElwynnForest::EVENT_HALF_HP_ONCE, 4 * TimeConstants::IN_MILLISECONDS);
         }
-        else if (phase == PHASE_EATING && me->HasAura(SPELL_UPSET_STOMACH))
+        else if (phase == ElwynnForest::PHASE_EATING && me->HasAura(ElwynnForest::SPELL_UPSET_STOMACH))
         {
-            Talk(SAY_STUNNED);
-            phase = PHASE_EATING_ENDED;
-            events.CancelEvent(EVENT_CAST_BLOODY_STRIKE);
-            events.RescheduleEvent(EVENT_BACK_TO_FIGHT, 10000);
+            Talk(ElwynnForest::SAY_STUNNED);
+            phase = ElwynnForest::PHASE_EATING_ENDED;
+            events.CancelEvent(ElwynnForest::EVENT_CAST_BLOODY_STRIKE);
+            events.RescheduleEvent(ElwynnForest::EVENT_BACK_TO_FIGHT, 10 * TimeConstants::IN_MILLISECONDS);
         }
-        if (damage >= me->GetHealth() && phase != PHASE_FINAL)
+
+        if (damage >= me->GetHealth() && phase != ElwynnForest::PHASE_FINAL)
         {
-            Talk(SAY_NO_HURT);
+            Talk(ElwynnForest::SAY_NO_HURT);
             me->RemoveAllAuras();
             me->AttackStop();
             attacker->AttackStop();
@@ -1061,12 +1063,13 @@ struct npc_hogger : public ScriptedAI
             me->SetWalk(true);
             me->GetMotionMaster()->MovePoint(1, -10136.9f, 670.009f, 36.03682f);
             damage = me->GetHealth() - 1;
-            phase = PHASE_FINAL;
+            phase = ElwynnForest::PHASE_FINAL;
             events.Reset();
+
             if (Player* player = me->GetLootRecipient())
                 player->RewardPlayerAndGroupAtKill(me, false);
         }
-        else if (phase == PHASE_FINAL)
+        else if (phase == ElwynnForest::PHASE_FINAL)
         {
             attacker->AttackStop();
             damage = me->GetHealth() - 1;
@@ -1078,20 +1081,20 @@ struct npc_hogger : public ScriptedAI
         switch (waypoint_id)
         {
             case 0:
-                me->CastSpell(me, SPELL_EATING, true);
-                events.ScheduleEvent(EVENT_CAST_BLOODY_STRIKE, 0);
-                events.ScheduleEvent(EVENT_BACK_TO_FIGHT, 15000);
+                me->CastSpell(me, ElwynnForest::SPELL_EATING, true);
+                events.ScheduleEvent(ElwynnForest::EVENT_CAST_BLOODY_STRIKE, 0);
+                events.ScheduleEvent(ElwynnForest::EVENT_BACK_TO_FIGHT, 15 * TimeConstants::IN_MILLISECONDS);
                 break;
             case 1:
-                events.ScheduleEvent(EVENT_SUMMON_GUARDS, 1000);
+                events.ScheduleEvent(ElwynnForest::EVENT_SUMMON_GUARDS, 1 * TimeConstants::IN_MILLISECONDS);
                 break;
         }
     }
 
     void SetData(uint32 /*type*/, uint32 /*data*/) override
     {
-        me->CastSpell(me, SPELL_TELEPORT_VISUAL_ONLY, true);
-        me->DespawnOrUnsummon(1000);
+        me->CastSpell(me, ElwynnForest::SPELL_TELEPORT_VISUAL_ONLY, true);
+        me->DespawnOrUnsummon(1 * TimeConstants::IN_MILLISECONDS);
     }
 
     void UpdateAI(uint32 diff) override
@@ -1105,16 +1108,17 @@ struct npc_hogger : public ScriptedAI
         {
             switch (eventId)
             {
-                case EVENT_CAST_VICIOUS_SLICE:
-                    if (Unit* vict = me->GetVictim())
-                        me->CastSpell(vict, SPELL_VICIOUS_SLICE, false);
+                case ElwynnForest::EVENT_CAST_VICIOUS_SLICE:
+                    if (Unit* victim = me->GetVictim())
+                        me->CastSpell(victim, ElwynnForest::SPELL_VICIOUS_SLICE, false);
 
-                    events.ScheduleEvent(EVENT_CAST_VICIOUS_SLICE, 12000);
+                    events.ScheduleEvent(ElwynnForest::EVENT_CAST_VICIOUS_SLICE, 12 * TimeConstants::IN_MILLISECONDS);
                     break;
-                case EVENT_HALF_HP_ONCE:
+                case ElwynnForest::EVENT_HALF_HP_ONCE:
                 {
-                    Talk(SAY_EATING);
+                    Talk(ElwynnForest::SAY_EATING);
                     float trigger_x, trigger_y;
+
                     if (Creature* trigger_meat = ObjectAccessor::GetCreature(*me, trigger_meat_guid))
                     {
                         trigger_meat->GetPosition(trigger_x, trigger_y);
@@ -1126,43 +1130,45 @@ struct npc_hogger : public ScriptedAI
                     }
                     break;
                 }
-                case EVENT_CAST_BLOODY_STRIKE:
+                case ElwynnForest::EVENT_CAST_BLOODY_STRIKE:
                     if (Creature* meatTrigger = ObjectAccessor::GetCreature(*me, trigger_meat_guid))
-                        me->CastSpell(meatTrigger, SPELL_BLOODY_STRIKE, false);
+                        me->CastSpell(meatTrigger, ElwynnForest::SPELL_BLOODY_STRIKE, false);
 
-                    events.ScheduleEvent(EVENT_CAST_BLOODY_STRIKE, 3000);
+                    events.ScheduleEvent(ElwynnForest::EVENT_CAST_BLOODY_STRIKE, 3 * TimeConstants::IN_MILLISECONDS);
                     break;
-                case EVENT_BACK_TO_FIGHT:
+                case ElwynnForest::EVENT_BACK_TO_FIGHT:
                     me->SetReactState(REACT_AGGRESSIVE);
-                    phase = PHASE_EATING_ENDED;
-                    events.CancelEvent(EVENT_CAST_BLOODY_STRIKE);
-                    events.ScheduleEvent(EVENT_CAST_VICIOUS_SLICE, 3000);
+                    phase = ElwynnForest::PHASE_EATING_ENDED;
+                    events.CancelEvent(ElwynnForest::EVENT_CAST_BLOODY_STRIKE);
+                    events.ScheduleEvent(ElwynnForest::EVENT_CAST_VICIOUS_SLICE, 3 * TimeConstants::IN_MILLISECONDS);
                     break;
-                case EVENT_SUMMON_GUARDS:
-                    me->SummonCreature(NPC_JONATHAN, -10128.3f, 656.465f, 36.05443f, 2.045435f, TEMPSUMMON_MANUAL_DESPAWN);
-                    me->SummonCreature(NPC_DUMAS, -10132.9f, 653.561f, 36.05033f, 2.020999f, TEMPSUMMON_MANUAL_DESPAWN);
-                    me->SummonCreature(NPC_ANDROMATH, -10123.0f, 656.875f, 36.05113f, 1.971813f, TEMPSUMMON_MANUAL_DESPAWN);
-                    events.ScheduleEvent(EVENT_SUMMON_KIDS, 4000);
+                case ElwynnForest::EVENT_SUMMON_GUARDS:
+                    me->SummonCreature(ElwynnForest::NPC_JONATHAN, -10128.3f, 656.465f, 36.05443f, 2.045435f, TEMPSUMMON_MANUAL_DESPAWN);
+                    me->SummonCreature(ElwynnForest::NPC_DUMAS, -10132.9f, 653.561f, 36.05033f, 2.020999f, TEMPSUMMON_MANUAL_DESPAWN);
+                    me->SummonCreature(ElwynnForest::NPC_ANDROMATH, -10123.0f, 656.875f, 36.05113f, 1.971813f, TEMPSUMMON_MANUAL_DESPAWN);
+                    events.ScheduleEvent(ElwynnForest::EVENT_SUMMON_KIDS, 4 * TimeConstants::IN_MILLISECONDS);
                     break;
-                case EVENT_SUMMON_KIDS:
+                case ElwynnForest::EVENT_SUMMON_KIDS:
                 {
-                    if (Creature* ragamuffin1 = me->SummonCreature(NPC_RAGAMUFFIN, -10130.9f, 653.302f, 36.05013f, 1.652422f, TEMPSUMMON_TIMED_DESPAWN, 7500))
-                        ragamuffin1->AI()->SetData(0, 1);
+                    if (Creature* ragamuffin_1 = me->SummonCreature(ElwynnForest::NPC_RAGAMUFFIN, -10130.9f, 653.302f, 36.05013f, 1.652422f, TEMPSUMMON_TIMED_DESPAWN, 7500))
+                        ragamuffin_1->AI()->SetData(0, 1);
 
-                    if (Creature* ragamuffin2 = me->SummonCreature(NPC_RAGAMUFFIN, -10122.5f, 660.198f, 36.03663f, 2.837752f, TEMPSUMMON_TIMED_DESPAWN, 6500))
-                        ragamuffin2->AI()->SetData(0, 2);
+                    if (Creature* ragamuffin_2 = me->SummonCreature(ElwynnForest::NPC_RAGAMUFFIN, -10122.5f, 660.198f, 36.03663f, 2.837752f, TEMPSUMMON_TIMED_DESPAWN, 6500))
+                        ragamuffin_2->AI()->SetData(0, 2);
 
-                    events.ScheduleEvent(EVENT_SAY_GRR, 8500);
+                    events.ScheduleEvent(ElwynnForest::EVENT_SAY_GRR, 8 * TimeConstants::IN_MILLISECONDS + 500);
                     break;
                 }
-                case EVENT_SAY_GRR:
-                    Talk(SAY_GRR);
-                    if (Creature* jonathan = me->FindNearestCreature(NPC_JONATHAN, 10))
+                case ElwynnForest::EVENT_SAY_GRR:
+                    Talk(ElwynnForest::SAY_GRR);
+
+                    if (Creature* jonathan = me->FindNearestCreature(ElwynnForest::NPC_JONATHAN, 10))
                         me->SetFacingToObject(jonathan);
-                    events.ScheduleEvent(EVENT_SAY_NO, 15000);
+
+                    events.ScheduleEvent(ElwynnForest::EVENT_SAY_NO, 15 * TimeConstants::IN_MILLISECONDS);
                     break;
-                case EVENT_SAY_NO:
-                    Talk(SAY_NO);
+                case ElwynnForest::EVENT_SAY_NO:
+                    Talk(ElwynnForest::SAY_NO);
                     break;
             }
         }
@@ -1182,7 +1188,7 @@ struct npc_minion_of_hogger : public ScriptedAI
 
     void JustDied(Unit* /*killer*/) override
     {
-        DoCastAOE(SPELL_ADVENTURERS_RUSH);
+        DoCastAOE(ElwynnForest::SPELL_ADVENTURERS_RUSH);
     }
 
     void IsSummonedBy(Unit* summoner) override
