@@ -746,22 +746,22 @@ class npc_varian_wrynn_alliance_way_quest : public CreatureScript
                         Talk(SAY_SPECIAL_4);
                     });
 
-                    me->m_Events.Schedule(delay += 5000, 6, [this]()
+                    me->m_Events.Schedule(delay += 6500, 6, [this]()
                     {
                         Talk(SAY_SPECIAL_5);
                     });
 
-                    me->m_Events.Schedule(delay += 9000, 7, [this]()
+                    me->m_Events.Schedule(delay += 10000, 7, [this]()
                     {
                         Talk(SAY_SPECIAL_6);
                     });
 
-                    me->m_Events.Schedule(delay += 10000, 8, [this]()
+                    me->m_Events.Schedule(delay += 9000, 8, [this]()
                     {
                         Talk(SAY_SPECIAL_7);
                     });
 
-                    me->m_Events.Schedule(delay += 5000, 9, [this]()
+                    me->m_Events.Schedule(delay += 6000, 9, [this]()
                     {
                         Talk(SAY_SPECIAL_8);
                     });
@@ -786,7 +786,7 @@ class npc_varian_wrynn_alliance_way_quest : public CreatureScript
                         Talk(SAY_SPECIAL_12);
                     });
 
-                    me->m_Events.Schedule(delay += 14000, 14, [this]()
+                    me->m_Events.Schedule(delay += 13000, 14, [this]()
                     {
                         Talk(SAY_SPECIAL_13);
                     });
@@ -842,7 +842,7 @@ class npc_varian_wrynn_alliance_way_quest : public CreatureScript
                         Talk(SAY_SPECIAL_19);
                     });
 
-                    me->m_Events.Schedule(delay += 2300, 26, [this]()
+                    me->m_Events.Schedule(delay += 4000, 26, [this]()
                     {
                         Movement::MoveSplineInit init(me);
                         for (auto itr : VarianHomePath)
@@ -898,7 +898,7 @@ class npc_ayisa_jojo_alliance_way_quest : public CreatureScript
                 me->SetPhaseMask(2, true);
                 me->DespawnOrUnsummon(2 * MINUTE * IN_MILLISECONDS + 30 * IN_MILLISECONDS);
                 follow = true;
-
+                
                 if (summoner->ToPlayer() && summoner->ToPlayer()->GetQuestStatus(QUEST_ALLIANCE_WAY) == QUEST_STATUS_REWARDED)
                 {
                     DoAction(ACTION_AN_OLD_PIT_FIGHTER);
@@ -909,19 +909,33 @@ class npc_ayisa_jojo_alliance_way_quest : public CreatureScript
                 if (me->GetEntry() == NPC_AYISA_ALLIANCE_WAY)
                 {
                     delay = 0;
-                    me->m_Events.Schedule(delay += 23000, 1, [this]()
+                    me->m_Events.Schedule(delay += 300, 1, [this]()
+                    {
+                        follow = false;
+                    });
+                    
+                    me->m_Events.Schedule(delay += 6000, 2, [this]()
                     {
                         Talk(SAY_INTRO);
                     });
 
-                    me->m_Events.Schedule(delay += 25000, 1, [this]()
+                    me->m_Events.Schedule(delay += 46000, 3, [this]()
                     {
                         Talk(SAY_SPECIAL_1);
                     });
 
-                    me->m_Events.Schedule(delay += 53000, 1, [this]()
+                    me->m_Events.Schedule(delay += 51000, 4, [this]()
                     {
                         Talk(SAY_SPECIAL_2);
+                    });
+                }
+                
+                if (me->GetEntry() == NPC_JO_JO_ALLIANCE_WAY)
+                {
+                    delay = 0;
+                    me->m_Events.Schedule(delay += 600, 1, [this]()
+                    {
+                        follow = false;
                     });
                 }
             }
