@@ -131,6 +131,38 @@ class npc_tol_barad_battlemage : public CreatureScript
         }
 };
 
+// 85123 - Siege Cannon - selects random target
+class spell_siege_cannon : public SpellScriptLoader
+{
+public:
+    spell_siege_cannon() : SpellScriptLoader("spell_siege_cannon") { }
+
+    class spell_siege_cannon_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_siege_cannon_SpellScript);
+
+        void SelectRandomTarget(std::list<WorldObject*>& targets)
+        {
+            if (targets.empty())
+                return;
+
+            WorldObject* target = Trinity::Containers::SelectRandomContainerElement(targets);
+            targets.clear();
+            targets.push_back(target);
+        }
+
+        void Register() override
+        {
+            OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_siege_cannon_SpellScript::SelectRandomTarget, EFFECT_0, TARGET_UNIT_SRC_AREA_ENTRY);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_siege_cannon_SpellScript();
+    }
+};
+
 void AddSC_tol_barad()
 {
    new npc_tol_barad_battlemage();
