@@ -246,7 +246,7 @@ enum Powers
 
 #define MAX_POWERS_PER_CLASS            5
 
-num BattlePayDistribution
+enum BattlePayDistribution
 {
     // character boost
     CHARACTER_BOOST                     = 2,
