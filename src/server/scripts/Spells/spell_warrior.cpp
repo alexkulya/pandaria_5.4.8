@@ -332,7 +332,9 @@ class spell_warr_unbridled_wrath : public SpellScriptLoader
             {
 				if (GetCaster()->HasSpell(143268))
 					if (GetCaster()->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED))
-                return true;
+                                             return true;
+		                 return false;
+				
 				if (GetCaster()->HasSpell(143268))
 				       if (GetCaster()->HasAuraType(SPELL_AURA_MOD_ROOT))
 						   return true;
