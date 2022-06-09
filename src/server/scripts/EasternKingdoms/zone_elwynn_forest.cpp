@@ -383,16 +383,16 @@ struct npc_brother_paxton : public ScriptedAI
             switch(urand(ElwynnForest::BROTHER_PAXTON_HEAL_EVENT_01, ElwynnForest::BROTHER_PAXTON_HEAL_EVENT_04))
             {
                 case ElwynnForest::BROTHER_PAXTON_HEAL_EVENT_01:
-                    _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_01_STEP_01, uint32(0.5) * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_01_STEP_01, 500ms);
                     break;
                 case ElwynnForest::BROTHER_PAXTON_HEAL_EVENT_02:
-                    _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_02_STEP_01, uint32(0.5) * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_02_STEP_01, 500ms);
                     break;
                 case ElwynnForest::BROTHER_PAXTON_HEAL_EVENT_03:
-                    _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_03_STEP_01, uint32(0.5) * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_03_STEP_01, 500ms);
                     break;
                 case ElwynnForest::BROTHER_PAXTON_HEAL_EVENT_04:
-                    _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_04_STEP_01, uint32(0.5) * TimeConstants::IN_MILLISECONDS);
+                    _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_04_STEP_01, 500ms);
                     break;
             }
         }
@@ -416,84 +416,84 @@ struct npc_brother_paxton : public ScriptedAI
 
                 if (Creature* stormwind_infantry = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 6.0f))
                     stormwind_infantry->AI()->Talk(ElwynnForest::INFANTRY_HELP_YELL);
-                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_01_STEP_02, 1 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_01_STEP_02, 1s);
                 break;
             case ElwynnForest::HEAL_EVENT_01_STEP_02:
                 if (Creature* stormwind_infantry = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 6.0f))
                     me->SetFacingTo(me->GetAngle(stormwind_infantry));
-                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_01_STEP_03, 2 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_01_STEP_03, 2s);
                 break;
             case ElwynnForest::HEAL_EVENT_01_STEP_03:
                 Talk(ElwynnForest::BROTHER_PAXTON_TEXT);
-                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_01_STEP_04, 1 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_01_STEP_04, 1s);
                 break;
             case ElwynnForest::HEAL_EVENT_01_STEP_04:
                 if (Creature* stormwind_infantry = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 6.0f))
                     me->CastSpell(stormwind_infantry, ElwynnForest::SPELL_PENANCE);
-                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_RESET, 4 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_RESET, 4s);
                 break;
             case ElwynnForest::HEAL_EVENT_02_STEP_01:
                 me->SetReactState(ReactStates::REACT_PASSIVE);
 
                 if (Creature* stormwind_infantry = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 6.0f))
                     stormwind_infantry->AI()->Talk(ElwynnForest::INFANTRY_HELP_YELL);
-                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_02_STEP_02, 1 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_02_STEP_02, 1s);
                 break;
             case HEAL_EVENT_02_STEP_02:
                 if (Creature* stormwind_infantry = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 6.0f))
                     me->SetFacingTo(me->GetAngle(stormwind_infantry));
-                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_02_STEP_03, 2 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_02_STEP_03, 2s);
                 break;
             case ElwynnForest::HEAL_EVENT_02_STEP_03:
                 Talk(ElwynnForest::BROTHER_PAXTON_TEXT);
-                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_02_STEP_04, 1 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_02_STEP_04, 1s);
                 break;
             case ElwynnForest::HEAL_EVENT_02_STEP_04:
                 if (Creature* stormwind_infantry = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 6.0f))
                     me->CastSpell(stormwind_infantry, ElwynnForest::SPELL_FLASH_HEAL);
-                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_RESET, 4 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_RESET, 4s);
                 break;
             case ElwynnForest::HEAL_EVENT_03_STEP_01:
                 me->SetReactState(ReactStates::REACT_PASSIVE);
 
                 if (Creature* stormwind_infantry = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 6.0f))
                     stormwind_infantry->AI()->Talk(ElwynnForest::INFANTRY_HELP_YELL);
-                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_03_STEP_02, 1 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_03_STEP_02, 1s);
                 break;
             case ElwynnForest::HEAL_EVENT_03_STEP_02:
                 if (Creature* stormwind_infantry = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 6.0f))
                     me->SetFacingTo(me->GetAngle(stormwind_infantry));
-                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_03_STEP_03, 2 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_03_STEP_03, 2s);
                 break;
             case ElwynnForest::HEAL_EVENT_03_STEP_03:
                 Talk(ElwynnForest::BROTHER_PAXTON_TEXT);
-                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_03_STEP_04, 1 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_03_STEP_04, 1s);
                 break;
             case ElwynnForest::HEAL_EVENT_03_STEP_04:
                 if (Creature* stormwind_infantry = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 6.0f))
                     me->CastSpell(stormwind_infantry, ElwynnForest::SPELL_RENEW);
-                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_RESET, 4 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_RESET, 4s);
                 break;
             case ElwynnForest::HEAL_EVENT_04_STEP_01:
                 me->SetReactState(ReactStates::REACT_PASSIVE);
 
                 if (Creature* stormwind_infantry = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 6.0f))
                     stormwind_infantry->AI()->Talk(ElwynnForest::INFANTRY_HELP_YELL);
-                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_04_STEP_02, 1 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_04_STEP_02, 1s);
                 break;
             case ElwynnForest::HEAL_EVENT_04_STEP_02:
                 if (Creature* stormwind_infantry = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 6.0f))
                     me->SetFacingTo(me->GetAngle(stormwind_infantry));
-                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_04_STEP_03, 2 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_04_STEP_03, 2s);
                 break;
             case ElwynnForest::HEAL_EVENT_04_STEP_03:
                 Talk(ElwynnForest::BROTHER_PAXTON_TEXT);
-                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_04_STEP_04, 1 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_04_STEP_04, 1s);
                 break;
             case ElwynnForest::HEAL_EVENT_04_STEP_04:
                 if (Creature* stormwind_infantry = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 6.0f))
                     me->CastSpell(stormwind_infantry, ElwynnForest::SPELL_REVIVE);
-                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_RESET, 4 * TimeConstants::IN_MILLISECONDS);
+                _events.ScheduleEvent(ElwynnForest::HEAL_EVENT_RESET, 4s);
                 break;
             case ElwynnForest::HEAL_EVENT_RESET:
                 me->ClearInCombat();
@@ -746,22 +746,22 @@ class npc_varian_wrynn_alliance_way_quest : public CreatureScript
                         Talk(SAY_SPECIAL_4);
                     });
 
-                    me->m_Events.Schedule(delay += 5000, 6, [this]()
+                    me->m_Events.Schedule(delay += 6500, 6, [this]()
                     {
                         Talk(SAY_SPECIAL_5);
                     });
 
-                    me->m_Events.Schedule(delay += 9000, 7, [this]()
+                    me->m_Events.Schedule(delay += 10000, 7, [this]()
                     {
                         Talk(SAY_SPECIAL_6);
                     });
 
-                    me->m_Events.Schedule(delay += 10000, 8, [this]()
+                    me->m_Events.Schedule(delay += 9000, 8, [this]()
                     {
                         Talk(SAY_SPECIAL_7);
                     });
 
-                    me->m_Events.Schedule(delay += 5000, 9, [this]()
+                    me->m_Events.Schedule(delay += 6000, 9, [this]()
                     {
                         Talk(SAY_SPECIAL_8);
                     });
@@ -786,7 +786,7 @@ class npc_varian_wrynn_alliance_way_quest : public CreatureScript
                         Talk(SAY_SPECIAL_12);
                     });
 
-                    me->m_Events.Schedule(delay += 14000, 14, [this]()
+                    me->m_Events.Schedule(delay += 13000, 14, [this]()
                     {
                         Talk(SAY_SPECIAL_13);
                     });
@@ -842,7 +842,7 @@ class npc_varian_wrynn_alliance_way_quest : public CreatureScript
                         Talk(SAY_SPECIAL_19);
                     });
 
-                    me->m_Events.Schedule(delay += 2300, 26, [this]()
+                    me->m_Events.Schedule(delay += 4000, 26, [this]()
                     {
                         Movement::MoveSplineInit init(me);
                         for (auto itr : VarianHomePath)
@@ -909,19 +909,33 @@ class npc_ayisa_jojo_alliance_way_quest : public CreatureScript
                 if (me->GetEntry() == NPC_AYISA_ALLIANCE_WAY)
                 {
                     delay = 0;
-                    me->m_Events.Schedule(delay += 23000, 1, [this]()
+                    me->m_Events.Schedule(delay += 300, 1, [this]()
+                    {
+                        follow = false;
+                    });
+                    
+                    me->m_Events.Schedule(delay += 6000, 2, [this]()
                     {
                         Talk(SAY_INTRO);
                     });
 
-                    me->m_Events.Schedule(delay += 25000, 1, [this]()
+                    me->m_Events.Schedule(delay += 46000, 3, [this]()
                     {
                         Talk(SAY_SPECIAL_1);
                     });
 
-                    me->m_Events.Schedule(delay += 53000, 1, [this]()
+                    me->m_Events.Schedule(delay += 51000, 4, [this]()
                     {
                         Talk(SAY_SPECIAL_2);
+                    });
+                }
+                
+                if (me->GetEntry() == NPC_JO_JO_ALLIANCE_WAY)
+                {
+                    delay = 0;
+                    me->m_Events.Schedule(delay += 600, 1, [this]()
+                    {
+                        follow = false;
                     });
                 }
             }
@@ -1015,7 +1029,7 @@ struct npc_hogger : public ScriptedAI
         if (urand(0, 9) < 3)
             Talk(ElwynnForest::SAY_AGGRO);
 
-        events.ScheduleEvent(ElwynnForest::EVENT_CAST_VICIOUS_SLICE, 3 * TimeConstants::IN_MILLISECONDS);
+        events.ScheduleEvent(ElwynnForest::EVENT_CAST_VICIOUS_SLICE, 3s);
     }
 
     void DamageTaken(Unit* attacker, uint32& damage) override
@@ -1028,14 +1042,14 @@ struct npc_hogger : public ScriptedAI
             me->SetReactState(REACT_PASSIVE);
             phase = ElwynnForest::PHASE_EATING;
             events.CancelEvent(ElwynnForest::EVENT_CAST_VICIOUS_SLICE);
-            events.ScheduleEvent(ElwynnForest::EVENT_HALF_HP_ONCE, 4 * TimeConstants::IN_MILLISECONDS);
+            events.ScheduleEvent(ElwynnForest::EVENT_HALF_HP_ONCE, 4s);
         }
         else if (phase == ElwynnForest::PHASE_EATING && me->HasAura(ElwynnForest::SPELL_UPSET_STOMACH))
         {
             Talk(ElwynnForest::SAY_STUNNED);
             phase = ElwynnForest::PHASE_EATING_ENDED;
             events.CancelEvent(ElwynnForest::EVENT_CAST_BLOODY_STRIKE);
-            events.RescheduleEvent(ElwynnForest::EVENT_BACK_TO_FIGHT, 10 * TimeConstants::IN_MILLISECONDS);
+            events.RescheduleEvent(ElwynnForest::EVENT_BACK_TO_FIGHT, 10s);
         }
 
         if (damage >= me->GetHealth() && phase != ElwynnForest::PHASE_FINAL)
@@ -1069,10 +1083,10 @@ struct npc_hogger : public ScriptedAI
             case 0:
                 me->CastSpell(me, ElwynnForest::SPELL_EATING, true);
                 events.ScheduleEvent(ElwynnForest::EVENT_CAST_BLOODY_STRIKE, 0);
-                events.ScheduleEvent(ElwynnForest::EVENT_BACK_TO_FIGHT, 15 * TimeConstants::IN_MILLISECONDS);
+                events.ScheduleEvent(ElwynnForest::EVENT_BACK_TO_FIGHT, 15s);
                 break;
             case 1:
-                events.ScheduleEvent(ElwynnForest::EVENT_SUMMON_GUARDS, 1 * TimeConstants::IN_MILLISECONDS);
+                events.ScheduleEvent(ElwynnForest::EVENT_SUMMON_GUARDS, 1s);
                 break;
         }
     }
@@ -1098,7 +1112,7 @@ struct npc_hogger : public ScriptedAI
                     if (Unit* victim = me->GetVictim())
                         me->CastSpell(victim, ElwynnForest::SPELL_VICIOUS_SLICE, false);
 
-                    events.ScheduleEvent(ElwynnForest::EVENT_CAST_VICIOUS_SLICE, 12 * TimeConstants::IN_MILLISECONDS);
+                    events.ScheduleEvent(ElwynnForest::EVENT_CAST_VICIOUS_SLICE, 12s);
                     break;
                 case ElwynnForest::EVENT_HALF_HP_ONCE:
                 {
@@ -1120,19 +1134,19 @@ struct npc_hogger : public ScriptedAI
                     if (Creature* meatTrigger = ObjectAccessor::GetCreature(*me, trigger_meat_guid))
                         me->CastSpell(meatTrigger, ElwynnForest::SPELL_BLOODY_STRIKE, false);
 
-                    events.ScheduleEvent(ElwynnForest::EVENT_CAST_BLOODY_STRIKE, 3 * TimeConstants::IN_MILLISECONDS);
+                    events.ScheduleEvent(ElwynnForest::EVENT_CAST_BLOODY_STRIKE, 3s);
                     break;
                 case ElwynnForest::EVENT_BACK_TO_FIGHT:
                     me->SetReactState(REACT_AGGRESSIVE);
                     phase = ElwynnForest::PHASE_EATING_ENDED;
                     events.CancelEvent(ElwynnForest::EVENT_CAST_BLOODY_STRIKE);
-                    events.ScheduleEvent(ElwynnForest::EVENT_CAST_VICIOUS_SLICE, 3 * TimeConstants::IN_MILLISECONDS);
+                    events.ScheduleEvent(ElwynnForest::EVENT_CAST_VICIOUS_SLICE, 3s);
                     break;
                 case ElwynnForest::EVENT_SUMMON_GUARDS:
                     me->SummonCreature(ElwynnForest::NPC_JONATHAN, -10128.3f, 656.465f, 36.05443f, 2.045435f, TEMPSUMMON_MANUAL_DESPAWN);
                     me->SummonCreature(ElwynnForest::NPC_DUMAS, -10132.9f, 653.561f, 36.05033f, 2.020999f, TEMPSUMMON_MANUAL_DESPAWN);
                     me->SummonCreature(ElwynnForest::NPC_ANDROMATH, -10123.0f, 656.875f, 36.05113f, 1.971813f, TEMPSUMMON_MANUAL_DESPAWN);
-                    events.ScheduleEvent(ElwynnForest::EVENT_SUMMON_KIDS, 4 * TimeConstants::IN_MILLISECONDS);
+                    events.ScheduleEvent(ElwynnForest::EVENT_SUMMON_KIDS, 4s);
                     break;
                 case ElwynnForest::EVENT_SUMMON_KIDS:
                 {
@@ -1142,7 +1156,7 @@ struct npc_hogger : public ScriptedAI
                     if (Creature* ragamuffin_2 = me->SummonCreature(ElwynnForest::NPC_RAGAMUFFIN, -10122.5f, 660.198f, 36.03663f, 2.837752f, TEMPSUMMON_TIMED_DESPAWN, 6500))
                         ragamuffin_2->AI()->SetData(0, 2);
 
-                    events.ScheduleEvent(ElwynnForest::EVENT_SAY_GRR, 8 * TimeConstants::IN_MILLISECONDS + 500);
+                    events.ScheduleEvent(ElwynnForest::EVENT_SAY_GRR, 8s + 500ms);
                     break;
                 }
                 case ElwynnForest::EVENT_SAY_GRR:
@@ -1151,7 +1165,7 @@ struct npc_hogger : public ScriptedAI
                     if (Creature* jonathan = me->FindNearestCreature(ElwynnForest::NPC_JONATHAN, 10))
                         me->SetFacingToObject(jonathan);
 
-                    events.ScheduleEvent(ElwynnForest::EVENT_SAY_NO, 15 * TimeConstants::IN_MILLISECONDS);
+                    events.ScheduleEvent(ElwynnForest::EVENT_SAY_NO, 15s);
                     break;
                 case ElwynnForest::EVENT_SAY_NO:
                     Talk(ElwynnForest::SAY_NO);
