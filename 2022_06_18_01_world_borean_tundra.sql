@@ -62,7 +62,7 @@ INSERT INTO `waypoints` (`entry`, `pointid`, `position_x`, `position_y`, `positi
 (25220, 14, 2308.73, 5256.926, 11.50584, "Civilian Recruit"),
 (25220, 15, 2320.826, 5259.258, 11.25584, "Civilian Recruit");
 
-DELETE FROM `creature` WHERE `guid` IN (111468);
+DELETE FROM `creature` WHERE `guid` IN (111468, 98098, 98127, 98162, 98163, 95781, 95780, 95034, 96926);
 
 UPDATE `creature_template` SET `AIName` = "SmartAI" WHERE `entry` IN (24959, 25220, 25307);
 DELETE FROM `smart_scripts` WHERE `source_type` = 0 AND `entryorguid` IN (-298790, -298791);
