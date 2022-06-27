@@ -1903,15 +1903,14 @@ void Player::Update(uint32 p_time)
         else
             m_zoneUpdateTimer -= p_time;
     }
-	
-	    if (m_timeSyncTimer > 0)
+
+    if (m_timeSyncTimer > 0)
     {
         if (p_time >= m_timeSyncTimer)
             SendTimeSync();
         else
             m_timeSyncTimer -= p_time;
     }
-
 
     if (IsAlive() || m_runes)
     {
@@ -7370,6 +7369,7 @@ uint32 Player::TeamForRace(uint8 race)
         {
             case 1: return HORDE;
             case 7: return ALLIANCE;
+            case 42: return PANDAREN_NEUTRAL;
         }
         TC_LOG_ERROR("entities.player", "Race (%u) has wrong teamid (%u) in DBC: wrong DBC files?", uint32(race), rEntry->TeamID);
     }
@@ -11734,18 +11734,18 @@ bool Player::IsValidPos(uint8 bag, uint8 slot, bool explicit_pos)
 
 uint64 Player::GetDonateTokens() const
 {
-	PreparedStatement* stmt = FusionCMSDatabase.GetPreparedStatement(FUSION_SEL_BATTLEPAY_COINS);
-	stmt->setUInt32(0, GetSession()->GetAccountId());
+    PreparedStatement* stmt = FusionCMSDatabase.GetPreparedStatement(FUSION_SEL_BATTLEPAY_COINS);
+    stmt->setUInt32(0, GetSession()->GetAccountId());
 
-	PreparedQueryResult result_don = FusionCMSDatabase.Query(stmt);
+    PreparedQueryResult result_don = FusionCMSDatabase.Query(stmt);
 
-	if (!result_don)
-		return 0;
+    if (!result_don)
+        return 0;
 
-	Field* fields = result_don->Fetch();
-	uint64 balans = fields[0].GetUInt32();
+    Field* fields = result_don->Fetch();
+    uint64 balans = fields[0].GetUInt32();
 
-	return balans;
+    return balans;
 }
 
 void Player::DestroyDonateTokenCount(uint64 count)
@@ -11759,7 +11759,7 @@ void Player::DestroyDonateTokenCount(uint64 count)
 void Player::AddDonateTokenCount(uint64 count)
 {
     // add coins
-	PreparedStatement* stmt = FusionCMSDatabase.GetPreparedStatement(FUSION_UPD_BATTLEPAY_INCREMENT_COINS);
+    PreparedStatement* stmt = FusionCMSDatabase.GetPreparedStatement(FUSION_UPD_BATTLEPAY_INCREMENT_COINS);
     stmt->setUInt32(0, count);
     stmt->setUInt32(1, GetSession()->GetAccountId());    
     FusionCMSDatabase.Query(stmt);
@@ -11782,9 +11782,9 @@ void Player::SendBattlePayMessage(std::string const& n)
 
 void Player::SendBattlePayMessage(std::string const& n, std::ostringstream const& data)
 {
-	std::ostringstream msg;
-	msg << n << " | " << data.str() << " | ";
-	ChatHandler(this).SendSysMessage(msg.str().c_str());
+    std::ostringstream msg;
+    msg << n << " | " << data.str() << " | ";
+    ChatHandler(this).SendSysMessage(msg.str().c_str());
 }
 
 bool Player::HasItemCount(uint32 item, uint32 count, bool inBankAlso) const
@@ -16006,8 +16006,8 @@ void Player::PrepareGossipMenu(WorldObject* source, uint32 menuId /*= 0*/, bool 
                 case GOSSIP_OPTION_VENDOR:
                 {
                     //VendorItemData const* vendorItems = creature->GetVendorItems();
-					VendorItemData const* vendorItems = itr->second.ActionMenuId ? sObjectMgr->GetNpcVendorItemList(itr->second.ActionMenuId) : creature->GetVendorItems();
-					if (!itr->second.ActionMenuId && (!vendorItems || vendorItems->Empty()))
+                    VendorItemData const* vendorItems = itr->second.ActionMenuId ? sObjectMgr->GetNpcVendorItemList(itr->second.ActionMenuId) : creature->GetVendorItems();
+                    if (!itr->second.ActionMenuId && (!vendorItems || vendorItems->Empty()))
                     {
                         TC_LOG_ERROR("sql.sql", "Creature %s (Entry: %u GUID: %u DB GUID: %u) has UNIT_NPC_FLAG_VENDOR set but has an empty trading item list.", creature->GetName().c_str(), creature->GetEntry(), creature->GetGUIDLow(), creature->GetDBTableGUIDLow());
                         canTalk = false;
@@ -16208,7 +16208,7 @@ void Player::OnGossipSelect(WorldObject* source, uint32 gossipListId, uint32 men
         case GOSSIP_OPTION_VENDOR:
         case GOSSIP_OPTION_ARMORER:
             //GetSession()->SendListInventory(guid);
-		    GetSession()->SendListInventory(guid, menuItemData->GossipActionMenuId);
+            GetSession()->SendListInventory(guid, menuItemData->GossipActionMenuId);
             break;
         case GOSSIP_OPTION_STABLEPET:
             GetSession()->SendPetList(guid, PET_SLOT_ACTIVE_FIRST, PET_SLOT_STABLE_LAST);
@@ -24234,7 +24234,7 @@ bool Player::BuyCurrencyFromVendorSlot(uint64 vendorGuid, uint32 vendorSlot, uin
     }
 
     uint32 currentVendor = GetSession()->GetCurrentVendor();
-	VendorItemData const* vItems = currentVendor ? sObjectMgr->GetNpcVendorItemList(currentVendor) : creature->GetVendorItems();
+    VendorItemData const* vItems = currentVendor ? sObjectMgr->GetNpcVendorItemList(currentVendor) : creature->GetVendorItems();
     if (!vItems || vItems->Empty())
     {
         SendBuyError(BUY_ERR_CANT_FIND_ITEM, creature, currency, 0);
@@ -24399,7 +24399,7 @@ bool Player::BuyItemFromVendorSlot(uint64 vendorguid, uint32 vendorslot, uint32 
     }
 
     uint32 currentVendor = GetSession()->GetCurrentVendor();
-	VendorItemData const* vItems = currentVendor ? sObjectMgr->GetNpcVendorItemList(currentVendor) : creature->GetVendorItems();
+    VendorItemData const* vItems = currentVendor ? sObjectMgr->GetNpcVendorItemList(currentVendor) : creature->GetVendorItems();
     if (!vItems || vItems->Empty())
     {
         SendEquipError(EQUIP_ERR_ITEM_NOT_FOUND, NULL, NULL, 0);

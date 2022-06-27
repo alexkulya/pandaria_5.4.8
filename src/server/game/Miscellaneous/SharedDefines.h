@@ -885,6 +885,7 @@ enum Team
 {
     HORDE               = 67,
     ALLIANCE            = 469,
+    PANDAREN_NEUTRAL    = 1249,                              // Pandaren is neutral
     //TEAM_STEAMWHEEDLE_CARTEL = 169,                       // not used in code
     //TEAM_ALLIANCE_FORCES     = 891,
     //TEAM_HORDE_FORCES        = 892,

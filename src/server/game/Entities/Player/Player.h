@@ -1751,8 +1751,8 @@ class Player : public Unit, public GridObject<Player>
     {
         SetByteValue(PLAYER_FIELD_REST_STATE, 2, count);
     }
-	//BattlePay
-	uint64 GetDonateTokens() const;
+    //BattlePay
+    uint64 GetDonateTokens() const;
     void DestroyDonateTokenCount(uint64 count);
     void AddDonateTokenCount(uint64 count);
     bool HasItemCount(uint32 item, uint32 count = 1, bool inBankAlso = false) const;
@@ -2454,9 +2454,9 @@ private:
     void StartPvPOffTimer();
     void StopPvPOffTimer();
 public:
-	//Message BattlePay
-	void SendBattlePayMessage(std::string const& n);
-	void SendBattlePayMessage(std::string const& n, std::ostringstream const& data);
+    //Message BattlePay
+    void SendBattlePayMessage(std::string const& n);
+    void SendBattlePayMessage(std::string const& n, std::ostringstream const& data);
     // Actaul method to (completely) disables PvP
     void DisablePvP();
     // After something changed, the player hit/healed another player with enabled pvp, or toggled button in UI, or zone changed
@@ -3776,8 +3776,8 @@ protected:
     EnchantDurationList m_enchantDuration;
     ItemDurationList m_itemDuration;
     time_t m_lastSoulboundTradeItemsUpdateTime = 0;
-	
-	void ResetTimeSync();
+
+    void ResetTimeSync();
     void SendTimeSync();
 
     ResurrectionData* _resurrectionData;
@@ -3864,7 +3864,7 @@ protected:
     ResearchProjectMap _researchProjects;
     ResearchHistoryMap _researchHistory;
 
-	//WorldFilter
+    //WorldFilter
     std::string m_sentMsgCache;
 
     private:
@@ -3942,8 +3942,8 @@ protected:
     Expansions m_championingExpansion = EXPANSION_CLASSIC;
 
     std::queue<uint32> m_timeSyncQueue;
-	
-	uint32 m_timeSyncTimer;
+
+    uint32 m_timeSyncTimer;
     uint32 m_timeSyncClient;
     uint32 m_timeSyncServer;
 
