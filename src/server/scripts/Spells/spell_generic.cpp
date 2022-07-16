@@ -263,6 +263,7 @@ enum AnimalBloodPoolSpell
     SPELL_SPAWN_BLOOD_POOL  = 63471
 };
 
+// 46221 - Animal Blood
 class spell_gen_animal_blood : public SpellScriptLoader
 {
     public:
@@ -303,6 +304,39 @@ class spell_gen_animal_blood : public SpellScriptLoader
         AuraScript* GetAuraScript() const override
         {
             return new spell_gen_animal_blood_AuraScript();
+        }
+};
+
+// 63471 -Spawn Blood Pool
+class spell_spawn_blood_pool : public SpellScriptLoader
+{
+    public:
+        spell_spawn_blood_pool() : SpellScriptLoader("spell_spawn_blood_pool") { }
+
+        class spell_spawn_blood_pool_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_spawn_blood_pool_SpellScript);
+
+            void SetDest(SpellDestination& dest)
+            {
+                Unit* caster = GetCaster();
+                LiquidData liquidStatus;
+                ZLiquidStatus status = caster->GetMap()->getLiquidStatus(caster->GetPositionX(), caster->GetPositionY(), caster->GetPositionZ(), MAP_ALL_LIQUIDS, &liquidStatus);
+
+                Position summonPos = caster->GetPosition();
+                summonPos.m_positionZ = liquidStatus.level;
+                dest.Relocate(summonPos);
+            }
+
+            void Register() override
+            {
+                OnDestinationTargetSelect += SpellDestinationTargetSelectFn(spell_spawn_blood_pool_SpellScript::SetDest, EFFECT_0, TARGET_DEST_CASTER);
+            }
+        };
+
+        SpellScript* GetSpellScript() const override
+        {
+            return new spell_spawn_blood_pool_SpellScript();
         }
 };
 
@@ -4851,6 +4885,7 @@ void AddSC_generic_spell_scripts()
     new spell_gen_alchemist_stone();
     new spell_gen_allow_cast_from_item_only();
     new spell_gen_animal_blood();
+    new spell_spawn_blood_pool();
     new spell_gen_aura_of_anger();
     new spell_gen_aura_service_uniform();
     new spell_gen_av_drekthar_presence();
