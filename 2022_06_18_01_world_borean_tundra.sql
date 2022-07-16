@@ -107,3 +107,49 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 (25220*100+01, 9, 3, 0, 0, 0, 100, 0, 0, 0, 0, 0, 71, 0, 0, 2178, 143, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Civilian Recruit - On Script - Equip Items"),
 (25220*100+01, 9, 4, 0, 0, 0, 100, 0, 2000, 2000, 0, 0, 65, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Civilian Recruit - On Script - Resume WP"),
 (25220*100+01, 9, 5, 0, 0, 0, 100, 0, 4000, 5000, 0, 0, 1, 3, 0, 0, 0, 0, 0, 19, 25222, 0, 0, 0, 0, 0, 0, "Civilian Recruit - On Script - Say Text Line 3 (Creature ID: 25222)");
+
+UPDATE `creature_template` SET `AIName` = "SmartAI" WHERE `entry` = 25353;
+DELETE FROM `smart_scripts` WHERE `entryorguid` = 25353 AND `source_type` = 0;
+INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`link`,`event_type`,`event_phase_mask`,`event_chance`,`event_flags`,`event_param1`,`event_param2`,`event_param3`,`event_param4`,`action_type`,`action_param1`,`action_param2`,`action_param3`,`action_param4`,`action_param5`,`action_param6`,`target_type`,`target_param1`,`target_param2`,`target_param3`,`target_x`,`target_y`,`target_z`,`target_o`,`comment`) VALUES
+(25353,0,0,0,0,0,100,0,0,1000,12500,15500,11,50658,0,0,0,0,0,2,0,0,0,0,0,0,0,"Beryl Treasure Hunter - In Combat - Cast 'Focus Beam'"),
+(25353,0,1,0,1,0,45,0,5000,9000,17000,25000,11,45465,0,0,0,0,0,19,24862,30,0,0,0,0,0,"Beryl Treasure Hunter - Out of Combat - Cast 'Mage Hunter Channel' (30 Yards, 45%)");
+
+UPDATE `creature` SET `position_x` = 3678.509, `position_y` = 5556.959, `position_z` = 36.48103, `wander_distance` = 0, `movement_type` = 2 WHERE `guid` = 117085;
+UPDATE `creature` SET `position_x` = 3698.606, `position_y` = 5644.752, `position_z` = 32.65677,`wander_distance` = 0, `movement_type` = 2 WHERE `guid` = 117088;
+
+DELETE FROM `creature_addon` WHERE `guid` IN (117085, 117088);
+INSERT INTO `creature_addon` (`guid`, `path_id`, `bytes2`) VALUES
+(117085, 117085, 4097),
+(117088, 117088, 4097);
+
+DELETE FROM `waypoint_data` WHERE `id` IN (117085, 117088);
+INSERT INTO `waypoint_data` (`id`,`point`,`position_x`,`position_y`,`position_z`,`orientation`,`delay`,`move_flag`,`entry`) VALUES
+(117085,1,3678.509,5556.959,36.48103,0,0,0,25353),
+(117085,2,3682.517,5550.923,37.99441,0,0,0,25353),
+(117085,3,3689.306,5530.786,39.61467,0,0,0,25353),
+(117085,4,3686.503,5544.43,38.4622,0,0,0,25353),
+(117085,5,3681.308,5552.52,37.47173,0,0,0,25353),
+(117085,6,3677.611,5560.268,35.5416,0,0,0,25353),
+(117085,7,3674.737,5581.151,33.85956,0,0,0,25353),
+(117085,8,3674.337,5585.246,33.17018,0,0,0,25353),
+(117085,9,3661.345,5606.211,33.81847,0,0,0,25353),
+(117085,10,3661.504,5605.975,33.30478,0,0,0,25353),
+(117085,11,3665.062,5602.188,32.98964,0,0,0,25353),
+(117085,12,3674.476,5575.263,34.28698,0,0,0,25353),
+(117085,13,3678.494,5556.907,36.42469,0,0,0,25353),
+
+(117088,1,3698.606,5644.752,32.65677,0,0,0,25353),
+(117088,2,3697.268,5631.37,32.9726,0,0,0,25353),
+(117088,3,3702.939,5621.756,32.79647,0,0,0,25353),
+(117088,4,3708.281,5615.634,33.0902,0,0,0,25353),
+(117088,5,3726.173,5620.37,35.27538,0,0,0,25353),
+(117088,6,3733.535,5625.63,37.4737,0,0,0,25353),
+(117088,7,3744.036,5632.596,40.98317,0,0,0,25353),
+(117088,8,3737.524,5628.688,38.697,0,0,0,25353),
+(117088,9,3727.71,5621.5,36.11063,0,0,0,25353),
+(117088,10,3720.685,5616.866,34.38205,0,0,0,25353),
+(117088,11,3709.406,5615.639,33.05304,0,0,0,25353),
+(117088,12,3707.971,5615.73,33.03096,0,0,0,25353),
+(117088,13,3702.638,5622.214,33.01111,0,0,0,25353),
+(117088,14,3697.227,5631.682,32.9135,0,0,0,25353),
+(117088,15,3698.606,5644.752,32.65677,0,0,0,25353);
