@@ -153,3 +153,7 @@ INSERT INTO `waypoint_data` (`id`,`point`,`position_x`,`position_y`,`position_z`
 (117088,13,3702.638,5622.214,33.01111,0,0,0,25353),
 (117088,14,3697.227,5631.682,32.9135,0,0,0,25353),
 (117088,15,3698.606,5644.752,32.65677,0,0,0,25353);
+
+DELETE FROM `spell_script_names` WHERE `ScriptName` = "spell_spawn_blood_pool";
+INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES
+(63471, "spell_spawn_blood_pool");
