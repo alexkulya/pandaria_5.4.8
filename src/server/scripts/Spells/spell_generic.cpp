@@ -42,449 +42,374 @@
 #include "Vehicle.h"
 #include "CreatureTextMgr.h"
 
-class spell_gen_absorb0_hitlimit1 : public SpellScriptLoader
+class spell_gen_absorb0_hitlimit1 : public AuraScript
 {
-    public:
-        spell_gen_absorb0_hitlimit1() : SpellScriptLoader("spell_gen_absorb0_hitlimit1") { }
+    PrepareAuraScript(spell_gen_absorb0_hitlimit1);
 
-        class spell_gen_absorb0_hitlimit1_AuraScript : public AuraScript
-        {
-            PrepareAuraScript(spell_gen_absorb0_hitlimit1_AuraScript);
+    uint32 limit;
 
-            uint32 limit;
+    bool Load() override
+    {
+        // Max absorb stored in 1 dummy effect
+        limit = GetSpellInfo()->Effects[EFFECT_1].CalcValue();
+        return true;
+    }
 
-            bool Load() override
-            {
-                // Max absorb stored in 1 dummy effect
-                limit = GetSpellInfo()->Effects[EFFECT_1].CalcValue();
-                return true;
-            }
+    void Absorb(AuraEffect* /*aurEff*/, DamageInfo& /*dmgInfo*/, uint32& absorbAmount)
+    {
+        absorbAmount = std::min(limit, absorbAmount);
+    }
 
-            void Absorb(AuraEffect* /*aurEff*/, DamageInfo& /*dmgInfo*/, uint32& absorbAmount)
-            {
-                absorbAmount = std::min(limit, absorbAmount);
-            }
-
-            void Register() override
-            {
-                OnEffectAbsorb += AuraEffectAbsorbFn(spell_gen_absorb0_hitlimit1_AuraScript::Absorb, EFFECT_0);
-            }
-        };
-
-        AuraScript* GetAuraScript() const override
-        {
-            return new spell_gen_absorb0_hitlimit1_AuraScript();
-        }
+    void Register() override
+    {
+        OnEffectAbsorb += AuraEffectAbsorbFn(spell_gen_absorb0_hitlimit1::Absorb, EFFECT_0);
+    }
 };
 
 // 28764 - Adaptive Warding (Frostfire Regalia Set)
 enum AdaptiveWarding
 {
-    SPELL_GEN_ADAPTIVE_WARDING_FIRE     = 28765,
-    SPELL_GEN_ADAPTIVE_WARDING_NATURE   = 28768,
-    SPELL_GEN_ADAPTIVE_WARDING_FROST    = 28766,
-    SPELL_GEN_ADAPTIVE_WARDING_SHADOW   = 28769,
-    SPELL_GEN_ADAPTIVE_WARDING_ARCANE   = 28770
+    SPELL_GEN_ADAPTIVE_WARDING_FIRE         = 28765,
+    SPELL_GEN_ADAPTIVE_WARDING_NATURE       = 28768,
+    SPELL_GEN_ADAPTIVE_WARDING_FROST        = 28766,
+    SPELL_GEN_ADAPTIVE_WARDING_SHADOW       = 28769,
+    SPELL_GEN_ADAPTIVE_WARDING_ARCANE       = 28770
 };
 
-class spell_gen_adaptive_warding : public SpellScriptLoader
+class spell_gen_adaptive_warding : public AuraScript
 {
-    public:
-        spell_gen_adaptive_warding() : SpellScriptLoader("spell_gen_adaptive_warding") { }
+    PrepareAuraScript(spell_gen_adaptive_warding);
 
-        class spell_gen_adaptive_warding_AuraScript : public AuraScript
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        if (!sSpellMgr->GetSpellInfo(SPELL_GEN_ADAPTIVE_WARDING_FIRE) ||
+            !sSpellMgr->GetSpellInfo(SPELL_GEN_ADAPTIVE_WARDING_NATURE) ||
+            !sSpellMgr->GetSpellInfo(SPELL_GEN_ADAPTIVE_WARDING_FROST) ||
+            !sSpellMgr->GetSpellInfo(SPELL_GEN_ADAPTIVE_WARDING_SHADOW) ||
+            !sSpellMgr->GetSpellInfo(SPELL_GEN_ADAPTIVE_WARDING_ARCANE))
+            return false;
+        return true;
+    }
+
+    bool CheckProc(ProcEventInfo& eventInfo)
+    {
+        if (eventInfo.GetDamageInfo()->GetSpellInfo()) // eventInfo.GetSpellInfo()
+            return false;
+
+        // find Mage Armor
+        if (!GetTarget()->GetAuraEffect(SPELL_AURA_MOD_MANA_REGEN_INTERRUPT, SPELLFAMILY_MAGE, flag128{ 0x10000000 }))
+            return false;
+
+        switch (GetFirstSchoolInMask(eventInfo.GetSchoolMask()))
         {
-            PrepareAuraScript(spell_gen_adaptive_warding_AuraScript);
-
-            bool Validate(SpellInfo const* /*spellInfo*/) override
-            {
-                if (!sSpellMgr->GetSpellInfo(SPELL_GEN_ADAPTIVE_WARDING_FIRE) ||
-                    !sSpellMgr->GetSpellInfo(SPELL_GEN_ADAPTIVE_WARDING_NATURE) ||
-                    !sSpellMgr->GetSpellInfo(SPELL_GEN_ADAPTIVE_WARDING_FROST) ||
-                    !sSpellMgr->GetSpellInfo(SPELL_GEN_ADAPTIVE_WARDING_SHADOW) ||
-                    !sSpellMgr->GetSpellInfo(SPELL_GEN_ADAPTIVE_WARDING_ARCANE))
-                    return false;
-                return true;
-            }
-
-            bool CheckProc(ProcEventInfo& eventInfo)
-            {
-                if (eventInfo.GetDamageInfo()->GetSpellInfo()) // eventInfo.GetSpellInfo()
-                    return false;
-
-                // find Mage Armor
-                if (!GetTarget()->GetAuraEffect(SPELL_AURA_MOD_MANA_REGEN_INTERRUPT, SPELLFAMILY_MAGE, flag128{ 0x10000000 }))
-                    return false;
-
-                switch (GetFirstSchoolInMask(eventInfo.GetSchoolMask()))
-                {
-                    case SPELL_SCHOOL_NORMAL:
-                    case SPELL_SCHOOL_HOLY:
-                        return false;
-                    default:
-                        break;
-                }
-                return true;
-            }
-
-            void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
-            {
-                PreventDefaultAction();
-
-                uint32 spellId = 0;
-                switch (GetFirstSchoolInMask(eventInfo.GetSchoolMask()))
-                {
-                    case SPELL_SCHOOL_FIRE:
-                        spellId = SPELL_GEN_ADAPTIVE_WARDING_FIRE;
-                        break;
-                    case SPELL_SCHOOL_NATURE:
-                        spellId = SPELL_GEN_ADAPTIVE_WARDING_NATURE;
-                        break;
-                    case SPELL_SCHOOL_FROST:
-                        spellId = SPELL_GEN_ADAPTIVE_WARDING_FROST;
-                        break;
-                    case SPELL_SCHOOL_SHADOW:
-                        spellId = SPELL_GEN_ADAPTIVE_WARDING_SHADOW;
-                        break;
-                    case SPELL_SCHOOL_ARCANE:
-                        spellId = SPELL_GEN_ADAPTIVE_WARDING_ARCANE;
-                        break;
-                    default:
-                        return;
-                }
-                GetTarget()->CastSpell(GetTarget(), spellId, true, NULL, aurEff);
-            }
-
-            void Register() override
-            {
-                DoCheckProc += AuraCheckProcFn(spell_gen_adaptive_warding_AuraScript::CheckProc);
-                OnEffectProc += AuraEffectProcFn(spell_gen_adaptive_warding_AuraScript::HandleProc, EFFECT_0, SPELL_AURA_DUMMY);
-            }
-        };
-
-        AuraScript* GetAuraScript() const override
-        {
-            return new spell_gen_adaptive_warding_AuraScript();
+            case SPELL_SCHOOL_NORMAL:
+            case SPELL_SCHOOL_HOLY:
+                return false;
+            default:
+                break;
         }
+        return true;
+    }
+
+    void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+    {
+        PreventDefaultAction();
+
+        uint32 spellId = 0;
+        switch (GetFirstSchoolInMask(eventInfo.GetSchoolMask()))
+        {
+            case SPELL_SCHOOL_FIRE:
+                spellId = SPELL_GEN_ADAPTIVE_WARDING_FIRE;
+                break;
+            case SPELL_SCHOOL_NATURE:
+                spellId = SPELL_GEN_ADAPTIVE_WARDING_NATURE;
+                break;
+            case SPELL_SCHOOL_FROST:
+                spellId = SPELL_GEN_ADAPTIVE_WARDING_FROST;
+                break;
+            case SPELL_SCHOOL_SHADOW:
+                spellId = SPELL_GEN_ADAPTIVE_WARDING_SHADOW;
+                break;
+            case SPELL_SCHOOL_ARCANE:
+                spellId = SPELL_GEN_ADAPTIVE_WARDING_ARCANE;
+                break;
+            default:
+                return;
+        }
+        GetTarget()->CastSpell(GetTarget(), spellId, true, NULL, aurEff);
+    }
+
+    void Register() override
+    {
+        DoCheckProc += AuraCheckProcFn(spell_gen_adaptive_warding::CheckProc);
+        OnEffectProc += AuraEffectProcFn(spell_gen_adaptive_warding::HandleProc, EFFECT_0, SPELL_AURA_DUMMY);
+    }
 };
 
 enum AlchemistStone
 {
-    ALECHEMIST_STONE_HEAL      = 21399,
-    ALECHEMIST_STONE_MANA      = 21400,
+    ALECHEMIST_STONE_HEAL                   = 21399,
+    ALECHEMIST_STONE_MANA                   = 21400
 };
 
 // 17619 - Alchemist Stone
-class spell_gen_alchemist_stone : public SpellScriptLoader
+class spell_gen_alchemist_stone : public AuraScript
 {
-    public:
-        spell_gen_alchemist_stone() : SpellScriptLoader("spell_gen_alchemist_stone") { }
+    PrepareAuraScript(spell_gen_alchemist_stone);
 
-        class spell_gen_alchemist_stone_AuraScript : public AuraScript
-        {
-            PrepareAuraScript(spell_gen_alchemist_stone_AuraScript);
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        if (!sSpellMgr->GetSpellInfo(ALECHEMIST_STONE_HEAL) ||
+            !sSpellMgr->GetSpellInfo(ALECHEMIST_STONE_MANA))
+            return false;
+        return true;
+    }
 
-            bool Validate(SpellInfo const* /*spellInfo*/) override
-            {
-                if (!sSpellMgr->GetSpellInfo(ALECHEMIST_STONE_HEAL) ||
-                    !sSpellMgr->GetSpellInfo(ALECHEMIST_STONE_MANA))
-                    return false;
-                return true;
-            }
+    bool CheckProc(ProcEventInfo& eventInfo)
+    {
+        return eventInfo.GetDamageInfo()->GetSpellInfo()->SpellFamilyName == SPELLFAMILY_POTION;
+    }
 
-            bool CheckProc(ProcEventInfo& eventInfo)
-            {
-                return eventInfo.GetDamageInfo()->GetSpellInfo()->SpellFamilyName == SPELLFAMILY_POTION;
-            }
+    void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+    {
+        PreventDefaultAction();
 
-            void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
-            {
-                PreventDefaultAction();
+        uint32 spellId = 0;
+        int32 bp = int32(eventInfo.GetDamageInfo()->GetDamage() * 0.4f);
 
-                uint32 spellId = 0;
-                int32 bp = int32(eventInfo.GetDamageInfo()->GetDamage() * 0.4f);
+        if (eventInfo.GetDamageInfo()->GetSpellInfo()->HasEffect(SPELL_EFFECT_HEAL))
+            spellId = ALECHEMIST_STONE_HEAL;
+        else if (eventInfo.GetDamageInfo()->GetSpellInfo()->HasEffect(SPELL_EFFECT_ENERGIZE))
+            spellId = ALECHEMIST_STONE_MANA;
 
-                if (eventInfo.GetDamageInfo()->GetSpellInfo()->HasEffect(SPELL_EFFECT_HEAL))
-                    spellId = ALECHEMIST_STONE_HEAL;
-                else if (eventInfo.GetDamageInfo()->GetSpellInfo()->HasEffect(SPELL_EFFECT_ENERGIZE))
-                    spellId = ALECHEMIST_STONE_MANA;
+        if (!spellId)
+            return;
 
-                if (!spellId)
-                    return;
-
-                GetTarget()->CastCustomSpell(spellId, SPELLVALUE_BASE_POINT0, bp, GetTarget(), true, NULL, aurEff);
-            }
+        GetTarget()->CastCustomSpell(spellId, SPELLVALUE_BASE_POINT0, bp, GetTarget(), true, NULL, aurEff);
+    }
 
 
-            void Register() override
-            {
-                DoCheckProc += AuraCheckProcFn(spell_gen_alchemist_stone_AuraScript::CheckProc);
-                OnEffectProc += AuraEffectProcFn(spell_gen_alchemist_stone_AuraScript::HandleProc, EFFECT_0, SPELL_AURA_DUMMY);
-            }
-        };
-
-        AuraScript* GetAuraScript() const override
-        {
-            return new spell_gen_alchemist_stone_AuraScript();
-        }
+    void Register() override
+    {
+        DoCheckProc += AuraCheckProcFn(spell_gen_alchemist_stone::CheckProc);
+        OnEffectProc += AuraEffectProcFn(spell_gen_alchemist_stone::HandleProc, EFFECT_0, SPELL_AURA_DUMMY);
+    }
 };
 
-class spell_gen_allow_cast_from_item_only : public SpellScriptLoader
+class spell_gen_allow_cast_from_item_only : public SpellScript
 {
-    public:
-        spell_gen_allow_cast_from_item_only() : SpellScriptLoader("spell_gen_allow_cast_from_item_only") { }
+    PrepareSpellScript(spell_gen_allow_cast_from_item_only);
 
-        class spell_gen_allow_cast_from_item_only_SpellScript : public SpellScript
-        {
-            PrepareSpellScript(spell_gen_allow_cast_from_item_only_SpellScript);
+    SpellCastResult CheckRequirement()
+    {
+        if (!GetCastItem())
+            return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
+        return SPELL_CAST_OK;
+    }
 
-            SpellCastResult CheckRequirement()
-            {
-                if (!GetCastItem())
-                    return SPELL_FAILED_CANT_DO_THAT_RIGHT_NOW;
-                return SPELL_CAST_OK;
-            }
-
-            void Register() override
-            {
-                OnCheckCast += SpellCheckCastFn(spell_gen_allow_cast_from_item_only_SpellScript::CheckRequirement);
-            }
-        };
-
-        SpellScript* GetSpellScript() const override
-        {
-            return new spell_gen_allow_cast_from_item_only_SpellScript();
-        }
+    void Register() override
+    {
+        OnCheckCast += SpellCheckCastFn(spell_gen_allow_cast_from_item_only::CheckRequirement);
+    }
 };
 
 enum AnimalBloodPoolSpell
 {
-    SPELL_ANIMAL_BLOOD      = 46221,
-    SPELL_SPAWN_BLOOD_POOL  = 63471
+    SPELL_ANIMAL_BLOOD                      = 46221,
+    SPELL_SPAWN_BLOOD_POOL                  = 63471
 };
 
-class spell_gen_animal_blood : public SpellScriptLoader
+// 46221 - Animal Blood
+class spell_gen_animal_blood : public AuraScript
 {
-    public:
-        spell_gen_animal_blood() : SpellScriptLoader("spell_gen_animal_blood") { }
+    PrepareAuraScript(spell_gen_animal_blood);
 
-        class spell_gen_animal_blood_AuraScript : public AuraScript
-        {
-            PrepareAuraScript(spell_gen_animal_blood_AuraScript);
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        if (!sSpellMgr->GetSpellInfo(SPELL_SPAWN_BLOOD_POOL))
+            return false;
+        return true;
+    }
 
-            bool Validate(SpellInfo const* /*spellInfo*/) override
-            {
-                if (!sSpellMgr->GetSpellInfo(SPELL_SPAWN_BLOOD_POOL))
-                    return false;
-                return true;
-            }
+    void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        // Remove all auras with spell id 46221, except the one currently being applied
+        while (Aura* aur = GetUnitOwner()->GetOwnedAura(SPELL_ANIMAL_BLOOD, 0, 0, 0, GetAura()))
+            GetUnitOwner()->RemoveOwnedAura(aur);
+    }
 
-            void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-            {
-                // Remove all auras with spell id 46221, except the one currently being applied
-                while (Aura* aur = GetUnitOwner()->GetOwnedAura(SPELL_ANIMAL_BLOOD, 0, 0, 0, GetAura()))
-                    GetUnitOwner()->RemoveOwnedAura(aur);
-            }
+    void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        if (Unit* owner = GetUnitOwner())
+            if (owner->IsInWater())
+                owner->CastSpell(owner, SPELL_SPAWN_BLOOD_POOL, true);
+    }
 
-            void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-            {
-                if (Unit* owner = GetUnitOwner())
-                    if (owner->IsInWater())
-                        owner->CastSpell(owner, SPELL_SPAWN_BLOOD_POOL, true);
-            }
+    void Register() override
+    {
+        AfterEffectApply += AuraEffectRemoveFn(spell_gen_animal_blood::OnApply, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL, AURA_EFFECT_HANDLE_REAL);
+        AfterEffectRemove += AuraEffectRemoveFn(spell_gen_animal_blood::OnRemove, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL, AURA_EFFECT_HANDLE_REAL);
+    }
+};
 
-            void Register() override
-            {
-                AfterEffectApply += AuraEffectRemoveFn(spell_gen_animal_blood_AuraScript::OnApply, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL, AURA_EFFECT_HANDLE_REAL);
-                AfterEffectRemove += AuraEffectRemoveFn(spell_gen_animal_blood_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL, AURA_EFFECT_HANDLE_REAL);
-            }
-        };
+// 63471 -Spawn Blood Pool
+class spell_spawn_blood_pool : public SpellScript
+{
+    PrepareSpellScript(spell_spawn_blood_pool);
 
-        AuraScript* GetAuraScript() const override
-        {
-            return new spell_gen_animal_blood_AuraScript();
-        }
+    void SetDest(SpellDestination& dest)
+    {
+        Unit* caster = GetCaster();
+        LiquidData liquidStatus;
+        ZLiquidStatus status = caster->GetMap()->getLiquidStatus(caster->GetPositionX(), caster->GetPositionY(), caster->GetPositionZ(), MAP_ALL_LIQUIDS, &liquidStatus);
+
+        Position summonPos = caster->GetPosition();
+        summonPos.m_positionZ = liquidStatus.level;
+        dest.Relocate(summonPos);
+    }
+
+    void Register() override
+    {
+        OnDestinationTargetSelect += SpellDestinationTargetSelectFn(spell_spawn_blood_pool::SetDest, EFFECT_0, TARGET_DEST_CASTER);
+    }
 };
 
 // 41337 Aura of Anger
-class spell_gen_aura_of_anger : public SpellScriptLoader
+class spell_gen_aura_of_anger : public AuraScript
 {
-    public:
-        spell_gen_aura_of_anger() : SpellScriptLoader("spell_gen_aura_of_anger") { }
+    PrepareAuraScript(spell_gen_aura_of_anger);
 
-        class spell_gen_aura_of_anger_AuraScript : public AuraScript
-        {
-            PrepareAuraScript(spell_gen_aura_of_anger_AuraScript);
+    void HandleEffectPeriodicUpdate(AuraEffect* aurEff)
+    {
+        if (AuraEffect* aurEff1 = aurEff->GetBase()->GetEffect(EFFECT_1))
+            aurEff1->ChangeAmount(aurEff1->GetAmount() + 5);
 
-            void HandleEffectPeriodicUpdate(AuraEffect* aurEff)
-            {
-                if (AuraEffect* aurEff1 = aurEff->GetBase()->GetEffect(EFFECT_1))
-                    aurEff1->ChangeAmount(aurEff1->GetAmount() + 5);
-                aurEff->SetAmount(100 * aurEff->GetTickNumber());
-            }
+        aurEff->SetAmount(100 * aurEff->GetTickNumber());
+    }
 
-            void Register() override
-            {
-                OnEffectUpdatePeriodic += AuraEffectUpdatePeriodicFn(spell_gen_aura_of_anger_AuraScript::HandleEffectPeriodicUpdate, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE);
-            }
-        };
-
-        AuraScript* GetAuraScript() const override
-        {
-            return new spell_gen_aura_of_anger_AuraScript();
-        }
+    void Register() override
+    {
+        OnEffectUpdatePeriodic += AuraEffectUpdatePeriodicFn(spell_gen_aura_of_anger::HandleEffectPeriodicUpdate, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE);
+    }
 };
 
 enum ServiceUniform
 {
     // Spells
-    SPELL_SERVICE_UNIFORM       = 71450,
-
+    SPELL_SERVICE_UNIFORM                   = 71450,
     // Models
-    MODEL_GOBLIN_MALE           = 31002,
-    MODEL_GOBLIN_FEMALE         = 31003
+    MODEL_GOBLIN_MALE                       = 31002,
+    MODEL_GOBLIN_FEMALE                     = 31003
 };
 
-class spell_gen_aura_service_uniform : public SpellScriptLoader
+class spell_gen_aura_service_uniform : public AuraScript
 {
-    public:
-        spell_gen_aura_service_uniform() : SpellScriptLoader("spell_gen_aura_service_uniform") { }
+    PrepareAuraScript(spell_gen_aura_service_uniform);
 
-        class spell_gen_aura_service_uniform_AuraScript : public AuraScript
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        if (!sSpellMgr->GetSpellInfo(SPELL_SERVICE_UNIFORM))
+            return false;
+        return true;
+    }
+
+    void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        // Apply model goblin
+        Unit* target = GetTarget();
+
+        if (target->GetTypeId() == TYPEID_PLAYER)
         {
-            PrepareAuraScript(spell_gen_aura_service_uniform_AuraScript);
+            if (target->getGender() == GENDER_MALE)
+                target->SetDisplayId(MODEL_GOBLIN_MALE);
+            else
+                target->SetDisplayId(MODEL_GOBLIN_FEMALE);
+        }
+    }
 
-            bool Validate(SpellInfo const* /*spellInfo*/) override
-            {
-                if (!sSpellMgr->GetSpellInfo(SPELL_SERVICE_UNIFORM))
-                    return false;
+    void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        Unit* target = GetTarget();
+        if (target->GetTypeId() == TYPEID_PLAYER)
+            target->RestoreDisplayId();
+    }
+
+    void Register() override
+    {
+        AfterEffectApply += AuraEffectRemoveFn(spell_gen_aura_service_uniform::OnApply, EFFECT_0, SPELL_AURA_TRANSFORM, AURA_EFFECT_HANDLE_REAL);
+        AfterEffectRemove += AuraEffectRemoveFn(spell_gen_aura_service_uniform::OnRemove, EFFECT_0, SPELL_AURA_TRANSFORM, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+
+class spell_gen_av_drekthar_presence : public AuraScript
+{
+    PrepareAuraScript(spell_gen_av_drekthar_presence);
+
+    bool CheckAreaTarget(Unit* target)
+    {
+        switch (target->GetEntry())
+        {
+            // alliance
+            case 14762: // Dun Baldar North Marshal
+            case 14763: // Dun Baldar South Marshal
+            case 14764: // Icewing Marshal
+            case 14765: // Stonehearth Marshal
+            case 11948: // Vandar Stormspike
+            // horde
+            case 14772: // East Frostwolf Warmaster
+            case 14776: // Tower Point Warmaster
+            case 14773: // Iceblood Warmaster
+            case 14777: // West Frostwolf Warmaster
+            case 11946: // Drek'thar
                 return true;
-            }
-
-            void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-            {
-                // Apply model goblin
-                Unit* target = GetTarget();
-                if (target->GetTypeId() == TYPEID_PLAYER)
-                {
-                    if (target->getGender() == GENDER_MALE)
-                        target->SetDisplayId(MODEL_GOBLIN_MALE);
-                    else
-                        target->SetDisplayId(MODEL_GOBLIN_FEMALE);
-                }
-            }
-
-            void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-            {
-                Unit* target = GetTarget();
-                if (target->GetTypeId() == TYPEID_PLAYER)
-                    target->RestoreDisplayId();
-            }
-
-            void Register() override
-            {
-                AfterEffectApply += AuraEffectRemoveFn(spell_gen_aura_service_uniform_AuraScript::OnApply, EFFECT_0, SPELL_AURA_TRANSFORM, AURA_EFFECT_HANDLE_REAL);
-                AfterEffectRemove += AuraEffectRemoveFn(spell_gen_aura_service_uniform_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_TRANSFORM, AURA_EFFECT_HANDLE_REAL);
-            }
-        };
-
-        AuraScript* GetAuraScript() const override
-        {
-            return new spell_gen_aura_service_uniform_AuraScript();
+            default:
+                return false;
         }
-};
+    }
 
-class spell_gen_av_drekthar_presence : public SpellScriptLoader
-{
-    public:
-        spell_gen_av_drekthar_presence() : SpellScriptLoader("spell_gen_av_drekthar_presence") { }
-
-        class spell_gen_av_drekthar_presence_AuraScript : public AuraScript
-        {
-            PrepareAuraScript(spell_gen_av_drekthar_presence_AuraScript);
-
-            bool CheckAreaTarget(Unit* target)
-            {
-                switch (target->GetEntry())
-                {
-                    // alliance
-                    case 14762: // Dun Baldar North Marshal
-                    case 14763: // Dun Baldar South Marshal
-                    case 14764: // Icewing Marshal
-                    case 14765: // Stonehearth Marshal
-                    case 11948: // Vandar Stormspike
-                    // horde
-                    case 14772: // East Frostwolf Warmaster
-                    case 14776: // Tower Point Warmaster
-                    case 14773: // Iceblood Warmaster
-                    case 14777: // West Frostwolf Warmaster
-                    case 11946: // Drek'thar
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-
-            void Register() override
-            {
-                DoCheckAreaTarget += AuraCheckAreaTargetFn(spell_gen_av_drekthar_presence_AuraScript::CheckAreaTarget);
-            }
-        };
-
-        AuraScript* GetAuraScript() const override
-        {
-            return new spell_gen_av_drekthar_presence_AuraScript();
-        }
+    void Register() override
+    {
+        DoCheckAreaTarget += AuraCheckAreaTargetFn(spell_gen_av_drekthar_presence::CheckAreaTarget);
+    }
 };
 
 enum GenericBandage
 {
-    SPELL_RECENTLY_BANDAGED     = 11196
+    SPELL_RECENTLY_BANDAGED                 = 11196
 };
 
-class spell_gen_bandage : public SpellScriptLoader
+class spell_gen_bandage : public SpellScript
 {
-    public:
-        spell_gen_bandage() : SpellScriptLoader("spell_gen_bandage") { }
+    PrepareSpellScript(spell_gen_bandage);
 
-        class spell_gen_bandage_SpellScript : public SpellScript
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        if (!sSpellMgr->GetSpellInfo(SPELL_RECENTLY_BANDAGED))
+            return false;
+        return true;
+    }
+
+    SpellCastResult CheckCast()
+    {
+        if (Unit* target = GetExplTargetUnit())
         {
-            PrepareSpellScript(spell_gen_bandage_SpellScript);
-
-            bool Validate(SpellInfo const* /*spellInfo*/) override
-            {
-                if (!sSpellMgr->GetSpellInfo(SPELL_RECENTLY_BANDAGED))
-                    return false;
-                return true;
-            }
-
-            SpellCastResult CheckCast()
-            {
-                if (Unit* target = GetExplTargetUnit())
-                {
-                    if (target->HasAura(SPELL_RECENTLY_BANDAGED))
-                        return SPELL_FAILED_TARGET_AURASTATE;
-                }
-                return SPELL_CAST_OK;
-            }
-
-            void HandleScript()
-            {
-                if (Unit* target = GetHitUnit())
-                    GetCaster()->CastSpell(target, SPELL_RECENTLY_BANDAGED, true);
-            }
-
-            void Register() override
-            {
-                OnCheckCast += SpellCheckCastFn(spell_gen_bandage_SpellScript::CheckCast);
-                AfterHit += SpellHitFn(spell_gen_bandage_SpellScript::HandleScript);
-            }
-        };
-
-        SpellScript* GetSpellScript() const override
-        {
-            return new spell_gen_bandage_SpellScript();
+            if (target->HasAura(SPELL_RECENTLY_BANDAGED))
+                return SPELL_FAILED_TARGET_AURASTATE;
         }
+        return SPELL_CAST_OK;
+    }
+
+    void HandleScript()
+    {
+        if (Unit* target = GetHitUnit())
+            GetCaster()->CastSpell(target, SPELL_RECENTLY_BANDAGED, true);
+    }
+
+    void Register() override
+    {
+        OnCheckCast += SpellCheckCastFn(spell_gen_bandage::CheckCast);
+        AfterHit += SpellHitFn(spell_gen_bandage::HandleScript);
+    }
 };
 
 enum Bonked
@@ -548,12 +473,12 @@ class spell_gen_bonked : public SpellScript
 
 enum BreakShieldSpells
 {
-    SPELL_BREAK_SHIELD_DAMAGE_2K                 = 62626,
-    SPELL_BREAK_SHIELD_DAMAGE_10K                = 64590,
+    SPELL_BREAK_SHIELD_DAMAGE_2K                      = 62626,
+    SPELL_BREAK_SHIELD_DAMAGE_10K                     = 64590,
 
-    SPELL_BREAK_SHIELD_TRIGGER_FACTION_MOUNTS    = 62575, // Also on ToC5 mounts
-    SPELL_BREAK_SHIELD_TRIGGER_CAMPAING_WARHORSE = 64595,
-    SPELL_BREAK_SHIELD_TRIGGER_UNK               = 66480
+    SPELL_BREAK_SHIELD_TRIGGER_FACTION_MOUNTS         = 62575, // Also on ToC5 mounts
+    SPELL_BREAK_SHIELD_TRIGGER_CAMPAING_WARHORSE      = 64595,
+    SPELL_BREAK_SHIELD_TRIGGER_UNK                    = 66480
 };
 
 class spell_gen_break_shield: public SpellScriptLoader
@@ -633,207 +558,154 @@ class spell_gen_break_shield: public SpellScriptLoader
 };
 
 // 46394 Brutallus Burn
-class spell_gen_burn_brutallus : public SpellScriptLoader
+class spell_gen_burn_brutallus : public AuraScript
 {
-    public:
-        spell_gen_burn_brutallus() : SpellScriptLoader("spell_gen_burn_brutallus") { }
+    PrepareAuraScript(spell_gen_burn_brutallus);
 
-        class spell_gen_burn_brutallus_AuraScript : public AuraScript
-        {
-            PrepareAuraScript(spell_gen_burn_brutallus_AuraScript);
+    void HandleEffectPeriodicUpdate(AuraEffect* aurEff)
+    {
+        if (aurEff->GetTickNumber() % 11 == 0)
+            aurEff->SetAmount(aurEff->GetAmount() * 2);
+    }
 
-            void HandleEffectPeriodicUpdate(AuraEffect* aurEff)
-            {
-                if (aurEff->GetTickNumber() % 11 == 0)
-                    aurEff->SetAmount(aurEff->GetAmount() * 2);
-            }
-
-            void Register() override
-            {
-                OnEffectUpdatePeriodic += AuraEffectUpdatePeriodicFn(spell_gen_burn_brutallus_AuraScript::HandleEffectPeriodicUpdate, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE);
-            }
-        };
-
-        AuraScript* GetAuraScript() const override
-        {
-            return new spell_gen_burn_brutallus_AuraScript();
-        }
+    void Register() override
+    {
+        OnEffectUpdatePeriodic += AuraEffectUpdatePeriodicFn(spell_gen_burn_brutallus::HandleEffectPeriodicUpdate, EFFECT_0, SPELL_AURA_PERIODIC_DAMAGE);
+    }
 };
 
 enum CannibalizeSpells
 {
-    SPELL_CANNIBALIZE_TRIGGERED = 20578
+    SPELL_CANNIBALIZE_TRIGGERED             = 20578
 };
 
-class spell_gen_cannibalize : public SpellScriptLoader
+class spell_gen_cannibalize : public SpellScript
 {
-    public:
-        spell_gen_cannibalize() : SpellScriptLoader("spell_gen_cannibalize") { }
+    PrepareSpellScript(spell_gen_cannibalize);
 
-        class spell_gen_cannibalize_SpellScript : public SpellScript
-        {
-            PrepareSpellScript(spell_gen_cannibalize_SpellScript);
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        if (!sSpellMgr->GetSpellInfo(SPELL_CANNIBALIZE_TRIGGERED))
+            return false;
+        return true;
+    }
 
-            bool Validate(SpellInfo const* /*spellInfo*/) override
-            {
-                if (!sSpellMgr->GetSpellInfo(SPELL_CANNIBALIZE_TRIGGERED))
-                    return false;
-                return true;
-            }
+    SpellCastResult CheckIfCorpseNear()
+    {
+        Unit* caster = GetCaster();
+        float max_range = GetSpellInfo()->GetMaxRange(false);
+        WorldObject* result = NULL;
+        // search for nearby enemy corpse in range
+        Trinity::AnyDeadUnitSpellTargetInRangeCheck check(caster, max_range, GetSpellInfo(), TARGET_CHECK_ENEMY);
+        Trinity::WorldObjectSearcher<Trinity::AnyDeadUnitSpellTargetInRangeCheck> searcher(caster, result, check);
+        caster->GetMap()->VisitFirstFound(caster->m_positionX, caster->m_positionY, max_range, searcher);
 
-            SpellCastResult CheckIfCorpseNear()
-            {
-                Unit* caster = GetCaster();
-                float max_range = GetSpellInfo()->GetMaxRange(false);
-                WorldObject* result = NULL;
-                // search for nearby enemy corpse in range
-                Trinity::AnyDeadUnitSpellTargetInRangeCheck check(caster, max_range, GetSpellInfo(), TARGET_CHECK_ENEMY);
-                Trinity::WorldObjectSearcher<Trinity::AnyDeadUnitSpellTargetInRangeCheck> searcher(caster, result, check);
-                caster->GetMap()->VisitFirstFound(caster->m_positionX, caster->m_positionY, max_range, searcher);
-                if (!result)
-                    return SPELL_FAILED_NO_EDIBLE_CORPSES;
-                return SPELL_CAST_OK;
-            }
+        if (!result)
+            return SPELL_FAILED_NO_EDIBLE_CORPSES;
+        return SPELL_CAST_OK;
+    }
 
-            void HandleDummy(SpellEffIndex /*effIndex*/)
-            {
-                GetCaster()->CastSpell(GetCaster(), SPELL_CANNIBALIZE_TRIGGERED, false);
-            }
+    void HandleDummy(SpellEffIndex /*effIndex*/)
+    {
+        GetCaster()->CastSpell(GetCaster(), SPELL_CANNIBALIZE_TRIGGERED, false);
+    }
 
-            void Register() override
-            {
-                OnEffectHit += SpellEffectFn(spell_gen_cannibalize_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
-                OnCheckCast += SpellCheckCastFn(spell_gen_cannibalize_SpellScript::CheckIfCorpseNear);
-            }
-        };
-
-        SpellScript* GetSpellScript() const override
-        {
-            return new spell_gen_cannibalize_SpellScript();
-        }
+    void Register() override
+    {
+        OnEffectHit += SpellEffectFn(spell_gen_cannibalize::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+        OnCheckCast += SpellCheckCastFn(spell_gen_cannibalize::CheckIfCorpseNear);
+    }
 };
 
 enum ChaosBlast
 {
-    SPELL_CHAOS_BLAST   = 37675
+    SPELL_CHAOS_BLAST                       = 37675
 };
 
-class spell_gen_chaos_blast : public SpellScriptLoader
+class spell_gen_chaos_blast : public SpellScript
 {
-    public:
-        spell_gen_chaos_blast() : SpellScriptLoader("spell_gen_chaos_blast") { }
+    PrepareSpellScript(spell_gen_chaos_blast)
 
-        class spell_gen_chaos_blast_SpellScript : public SpellScript
-        {
-            PrepareSpellScript(spell_gen_chaos_blast_SpellScript)
+    bool Validate(SpellInfo const* /*spellInfo*/) override
+    {
+        if (!sSpellMgr->GetSpellInfo(SPELL_CHAOS_BLAST))
+            return false;
+        return true;
+    }
+    void HandleDummy(SpellEffIndex /* effIndex */)
+    {
+        int32 basepoints0 = 100;
+        Unit* caster = GetCaster();
 
-            bool Validate(SpellInfo const* /*spellInfo*/) override
-            {
-                if (!sSpellMgr->GetSpellInfo(SPELL_CHAOS_BLAST))
-                    return false;
-                return true;
-            }
-            void HandleDummy(SpellEffIndex /* effIndex */)
-            {
-                int32 basepoints0 = 100;
-                Unit* caster = GetCaster();
-                if (Unit* target = GetHitUnit())
-                    caster->CastCustomSpell(target, SPELL_CHAOS_BLAST, &basepoints0, NULL, NULL, true);
-            }
+        if (Unit* target = GetHitUnit())
+            caster->CastCustomSpell(target, SPELL_CHAOS_BLAST, &basepoints0, NULL, NULL, true);
+    }
 
-            void Register() override
-            {
-                OnEffectHitTarget += SpellEffectFn(spell_gen_chaos_blast_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
-            }
-        };
-
-        SpellScript* GetSpellScript() const override
-        {
-            return new spell_gen_chaos_blast_SpellScript();
-        }
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_gen_chaos_blast::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+    }
 };
 
 enum Clone
 {
-    SPELL_NIGHTMARE_FIGMENT_MIRROR_IMAGE        = 57528
+    SPELL_NIGHTMARE_FIGMENT_MIRROR_IMAGE    = 57528
 };
 
-class spell_gen_clone : public SpellScriptLoader
+class spell_gen_clone : public SpellScript
 {
-    public:
-        spell_gen_clone() : SpellScriptLoader("spell_gen_clone") { }
+    PrepareSpellScript(spell_gen_clone);
 
-        class spell_gen_clone_SpellScript : public SpellScript
+    void HandleScriptEffect(SpellEffIndex effIndex)
+    {
+        PreventHitDefaultEffect(effIndex);
+        GetCaster()->CastSpell(GetHitUnit(), GetEffectValue(), true);
+    }
+
+    void Register() override
+    {
+        if (m_scriptSpellId == SPELL_NIGHTMARE_FIGMENT_MIRROR_IMAGE)
         {
-            PrepareSpellScript(spell_gen_clone_SpellScript);
-
-            void HandleScriptEffect(SpellEffIndex effIndex)
-            {
-                PreventHitDefaultEffect(effIndex);
-                GetCaster()->CastSpell(GetHitUnit(), GetEffectValue(), true);
-            }
-
-            void Register() override
-            {
-                if (m_scriptSpellId == SPELL_NIGHTMARE_FIGMENT_MIRROR_IMAGE)
-                {
-                    OnEffectHitTarget += SpellEffectFn(spell_gen_clone_SpellScript::HandleScriptEffect, EFFECT_1, SPELL_EFFECT_DUMMY);
-                    OnEffectHitTarget += SpellEffectFn(spell_gen_clone_SpellScript::HandleScriptEffect, EFFECT_2, SPELL_EFFECT_DUMMY);
-                }
-                else
-                {
-                    OnEffectHitTarget += SpellEffectFn(spell_gen_clone_SpellScript::HandleScriptEffect, EFFECT_1, SPELL_EFFECT_SCRIPT_EFFECT);
-                    OnEffectHitTarget += SpellEffectFn(spell_gen_clone_SpellScript::HandleScriptEffect, EFFECT_2, SPELL_EFFECT_SCRIPT_EFFECT);
-                }
-            }
-        };
-
-        SpellScript* GetSpellScript() const override
-        {
-            return new spell_gen_clone_SpellScript();
+            OnEffectHitTarget += SpellEffectFn(spell_gen_clone::HandleScriptEffect, EFFECT_1, SPELL_EFFECT_DUMMY);
+            OnEffectHitTarget += SpellEffectFn(spell_gen_clone::HandleScriptEffect, EFFECT_2, SPELL_EFFECT_DUMMY);
         }
+        else
+        {
+            OnEffectHitTarget += SpellEffectFn(spell_gen_clone::HandleScriptEffect, EFFECT_1, SPELL_EFFECT_SCRIPT_EFFECT);
+            OnEffectHitTarget += SpellEffectFn(spell_gen_clone::HandleScriptEffect, EFFECT_2, SPELL_EFFECT_SCRIPT_EFFECT);
+        }
+    }
 };
 
 enum CloneWeaponSpells
 {
-    SPELL_COPY_WEAPON_AURA       = 41054,
-    SPELL_COPY_WEAPON_2_AURA     = 63418,
-    SPELL_COPY_WEAPON_3_AURA     = 69893,
+    SPELL_COPY_WEAPON_AURA                  = 41054,
+    SPELL_COPY_WEAPON_2_AURA                = 63418,
+    SPELL_COPY_WEAPON_3_AURA                = 69893,
 
-    SPELL_COPY_OFFHAND_AURA      = 45205,
-    SPELL_COPY_OFFHAND_2_AURA    = 69896,
+    SPELL_COPY_OFFHAND_AURA                 = 45205,
+    SPELL_COPY_OFFHAND_2_AURA               = 69896,
 
-    SPELL_COPY_RANGED_AURA       = 57594
+    SPELL_COPY_RANGED_AURA                  = 57594
 };
 
-class spell_gen_clone_weapon : public SpellScriptLoader
+class spell_gen_clone_weapon : public SpellScript
 {
-    public:
-        spell_gen_clone_weapon() : SpellScriptLoader("spell_gen_clone_weapon") { }
+    PrepareSpellScript(spell_gen_clone_weapon);
 
-        class spell_gen_clone_weapon_SpellScript : public SpellScript
-        {
-            PrepareSpellScript(spell_gen_clone_weapon_SpellScript);
+    void HandleScriptEffect(SpellEffIndex effIndex)
+    {
+        PreventHitDefaultEffect(effIndex);
+        Unit* caster = GetCaster();
 
-            void HandleScriptEffect(SpellEffIndex effIndex)
-            {
-                PreventHitDefaultEffect(effIndex);
-                Unit* caster = GetCaster();
+        if (Unit* target = GetHitUnit())
+            caster->CastSpell(target, GetEffectValue(), true);
+    }
 
-                if (Unit* target = GetHitUnit())
-                    caster->CastSpell(target, GetEffectValue(), true);
-            }
-
-            void Register() override
-            {
-                OnEffectHitTarget += SpellEffectFn(spell_gen_clone_weapon_SpellScript::HandleScriptEffect, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
-            }
-        };
-
-        SpellScript* GetSpellScript() const override
-        {
-            return new spell_gen_clone_weapon_SpellScript();
-        }
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_gen_clone_weapon::HandleScriptEffect, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
+    }
 };
 
 class spell_gen_clone_weapon_aura : public SpellScriptLoader
@@ -4846,23 +4718,24 @@ class spell_gen_deserter : public SpellScript
 
 void AddSC_generic_spell_scripts()
 {
-    new spell_gen_absorb0_hitlimit1();
-    new spell_gen_adaptive_warding();
-    new spell_gen_alchemist_stone();
-    new spell_gen_allow_cast_from_item_only();
-    new spell_gen_animal_blood();
-    new spell_gen_aura_of_anger();
-    new spell_gen_aura_service_uniform();
-    new spell_gen_av_drekthar_presence();
-    new spell_gen_bandage();
+    new aura_script<spell_gen_absorb0_hitlimit1>("spell_gen_absorb0_hitlimit1");
+    new aura_script<spell_gen_adaptive_warding>("spell_gen_adaptive_warding");
+    new aura_script<spell_gen_alchemist_stone>("spell_gen_alchemist_stone");
+    new spell_script<spell_gen_allow_cast_from_item_only>("spell_gen_allow_cast_from_item_only");
+    new aura_script<spell_gen_animal_blood>("spell_gen_animal_blood");
+    new spell_script<spell_spawn_blood_pool>("spell_spawn_blood_pool");
+    new aura_script<spell_gen_aura_of_anger>("spell_gen_aura_of_anger");
+    new aura_script<spell_gen_aura_service_uniform>("spell_gen_aura_service_uniform");
+    new aura_script<spell_gen_av_drekthar_presence>("spell_gen_av_drekthar_presence");
+    new spell_script<spell_gen_bandage>("spell_gen_bandage");
     new spell_script<spell_gen_bonked>("spell_gen_bonked");
     new spell_gen_break_shield("spell_gen_break_shield");
     new spell_gen_break_shield("spell_gen_tournament_counterattack");
-    new spell_gen_burn_brutallus();
-    new spell_gen_cannibalize();
-    new spell_gen_chaos_blast();
-    new spell_gen_clone();
-    new spell_gen_clone_weapon();
+    new aura_script<spell_gen_burn_brutallus>("spell_gen_burn_brutallus");
+    new spell_script<spell_gen_cannibalize>("spell_gen_cannibalize");
+    new spell_script<spell_gen_chaos_blast>("spell_gen_chaos_blast");
+    new spell_script<spell_gen_clone>("spell_gen_clone");
+    new spell_script<spell_gen_clone_weapon>("spell_gen_clone_weapon");
     new spell_gen_clone_weapon_aura();
     new spell_gen_count_pct_from_max_hp("spell_gen_default_count_pct_from_max_hp");
     new spell_gen_count_pct_from_max_hp("spell_gen_50pct_count_pct_from_max_hp", 50);
