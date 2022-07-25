@@ -402,7 +402,8 @@ bool AuthSocket::_HandleLogonChallenge()
             Field* fields = res2->Fetch();
 
             // If the IP is 'locked', check that the player comes indeed from the correct IP address
-            if (fields[2].GetUInt8() == 1)                  // if ip is locked
+            bool locked = false;
+			if (fields[2].GetUInt8() == 1)                  // if ip is locked
             {
                 TC_LOG_DEBUG("server.authserver", "[AuthChallenge] Account '%s' is locked to IP - '%s'", _login.c_str(), fields[4].GetCString());
                 TC_LOG_DEBUG("server.authserver", "[AuthChallenge] Player address is '%s'", ip_address.c_str());
@@ -411,14 +412,21 @@ bool AuthSocket::_HandleLogonChallenge()
                 {
                     TC_LOG_DEBUG("server.authserver", "[AuthChallenge] Account IP differs");
                     pkt << uint8(WOW_FAIL_LOCKED_ENFORCED);
+					locked = true;
                 }
                 else
+				{
                     TC_LOG_DEBUG("server.authserver", "[AuthChallenge] Account IP matches");
+					
+				}
+					
             }
-            else
+            if (!locked)
             {
                 TC_LOG_DEBUG("server.authserver", "[AuthChallenge] Account '%s' is not locked to ip", _login.c_str());
-
+				
+				
+				{
                 //set expired bans to inactive
                 LoginDatabase.DirectExecute(LoginDatabase.GetPreparedStatement(LOGIN_UPD_EXPIRED_ACCOUNT_BANS));
 
@@ -519,7 +527,8 @@ bool AuthSocket::_HandleLogonChallenge()
                     TC_LOG_DEBUG("server.authserver", "'%s:%d' [AuthChallenge] account %s is using '%c%c%c%c' locale (%u)", socket().getRemoteAddress().c_str(), socket().getRemotePort(),
                             _login.c_str (), ch->country[3], ch->country[2], ch->country[1], ch->country[0], GetLocaleByName(_localizationName)
                         );
-                }
+					} 
+                } 
             }
         }
         else                                                //no account
