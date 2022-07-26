@@ -22,71 +22,71 @@
 #include "Vehicle.h"
 #include "CombatAI.h"
 
-enum eCreatureSpells
+enum KrasarangWildsCreatureSpells
 {
-    SPELL_GRAPPLING_HOOK           = 125623,
-    SPELL_VANISH                   = 125632,
-    SPELL_VICIOUS_REND             = 125624,
-    SPELL_TORMENTORS_SLASH         = 128954,
-    SPELL_ANCIENT_POISON           = 111826,
-    SPELL_PRESS_THE_ATTACK         = 135522,
-    SPELL_DARK_MENDING             = 16588,
-    SPELL_RUNE_OF_SUFFERING        = 128964,
-    SPELL_OVERWHELMING_SADNESS     = 119556,
-    SPELL_THROW_DYNAMITE           = 133895,
-    SPELL_SCUTTLE                  = 117380,
-    SPELL_VICE_CLAW                = 117372,
-    SPELL_RAGE_OF_ELDERS           = 129427,
-    SPELL_BLOODTHIRSTY             = 135544,
-    SPELL_DECAPITATE               = 135549,
-    SPELL_ZIN_SPIN                 = 118823,
-    SPELL_THICK_SHELL              = 118142,
-    SPELL_HAMMER_OF_WRATH          = 79971,
-    SPELL_CONSECRATION             = 79966,
-    SPELL_AVENGERS_SHIELD          = 79965,
-    SPELL_MOGU_RUNE_WARD           = 126068, // cosmetic?
-    SPELL_MIGHT_MAKES_RIGHT        = 118986,
-    SPELL_COMMANDERS_MIGHT         = 118982,
-    SPELL_ENRAGE                   = 129016,
-    SPELL_LEAP_OF_VICTORY          = 129017,
-    SPELL_SHOCKWAVE                = 129018,
-    SPELL_SUNDEN_ARMOR             = 11971,
-    SPELL_RECLAIM_STRENGTH         = 118906,
-    SPELL_ANCIENT_RUNE_OF_STRIKING = 129031,
-    SPELL_SAVAGE_STRIKES           = 119569,
-    SPELL_CALL_OF_DESPAIR          = 114849,
-    SPELL_CALL_OF_DESPAIR_EFF      = 114850,
-    SPELL_GLOOM_WHIRL              = 130288,
-    SPELL_LANGUOR                  = 129793,
-    SPELL_WAVE_OF_DESPAIR          = 130153,
-    SPELL_GIFT_OF_CHI_JI           = 129929,
-    SPELL_BEAK_STAB                = 129081,
-    SPELL_HEALING_SONG_OF_SINGER   = 131990,
-    SPELL_GIFT_OF_CHI_JI_VOID      = 129926,
-    SPELL_GIFT_OF_CHI_JI_EFF       = 129929,
-    SPELL_BLESSING_OF_CHI_JI       = 129929,
-    SPELL_WRATH_OF_CHI_JI          = 129917,
-    SPELL_ALLIANCE_BANNER_VISUAL   = 136126,
-    SPELL_MEET_THE_SCOUT_GARROSH   = 134089,
-    SPELL_HORDE_BANNER_VISUAL      = 136127,
-    SPELL_CANNONBALL_SPIN          = 135154,
-    SPELL_TWINBRAID_KILLCREDIT     = 135493, // this npc u could kill in raid
-    SPELL_EXPLOSIVES_PLUNGER       = 135292,
-    SPELL_CHAINGUN                 = 135417,
-    SPELL_CHAINGUN_EFF             = 135469,
-    SPELL_BLOODHILT_KILLCREDIT     = 135785,
-    SPELL_BLOODTHIRSTY_STRIKE      = 135396,
-    SPELL_BLOODY_KNIVES            = 135343,
-    SPELL_COUP_DE_GRACE            = 135397,
-    SPELL_BRUTAL_CHARGE_EFF        = 135427,
-    SPELL_BRUTAL_CHARGE            = 135421,
-    SPELL_SUMMON_BROJAI            = 110553,
-    SPELL_EARTH_SPIKE              = 80117,
+    SPELL_GRAPPLING_HOOK                    = 125623,
+    SPELL_VANISH                            = 125632,
+    SPELL_VICIOUS_REND                      = 125624,
+    SPELL_TORMENTORS_SLASH                  = 128954,
+    SPELL_ANCIENT_POISON                    = 111826,
+    SPELL_PRESS_THE_ATTACK                  = 135522,
+    SPELL_DARK_MENDING                      = 16588,
+    SPELL_RUNE_OF_SUFFERING                 = 128964,
+    SPELL_OVERWHELMING_SADNESS              = 119556,
+    SPELL_THROW_DYNAMITE                    = 133895,
+    SPELL_SCUTTLE                           = 117380,
+    SPELL_VICE_CLAW                         = 117372,
+    SPELL_RAGE_OF_ELDERS                    = 129427,
+    SPELL_BLOODTHIRSTY                      = 135544,
+    SPELL_DECAPITATE                        = 135549,
+    SPELL_ZIN_SPIN                          = 118823,
+    SPELL_THICK_SHELL                       = 118142,
+    SPELL_HAMMER_OF_WRATH                   = 79971,
+    SPELL_CONSECRATION                      = 79966,
+    SPELL_AVENGERS_SHIELD                   = 79965,
+    SPELL_MOGU_RUNE_WARD                    = 126068, // cosmetic?
+    SPELL_MIGHT_MAKES_RIGHT                 = 118986,
+    SPELL_COMMANDERS_MIGHT                  = 118982,
+    SPELL_ENRAGE                            = 129016,
+    SPELL_LEAP_OF_VICTORY                   = 129017,
+    SPELL_SHOCKWAVE                         = 129018,
+    SPELL_SUNDEN_ARMOR                      = 11971,
+    SPELL_RECLAIM_STRENGTH                  = 118906,
+    SPELL_ANCIENT_RUNE_OF_STRIKING          = 129031,
+    SPELL_SAVAGE_STRIKES                    = 119569,
+    SPELL_CALL_OF_DESPAIR                   = 114849,
+    SPELL_CALL_OF_DESPAIR_EFF               = 114850,
+    SPELL_GLOOM_WHIRL                       = 130288,
+    SPELL_LANGUOR                           = 129793,
+    SPELL_WAVE_OF_DESPAIR                   = 130153,
+    SPELL_GIFT_OF_CHI_JI                    = 129929,
+    SPELL_BEAK_STAB                         = 129081,
+    SPELL_HEALING_SONG_OF_SINGER            = 131990,
+    SPELL_GIFT_OF_CHI_JI_VOID               = 129926,
+    SPELL_GIFT_OF_CHI_JI_EFF                = 129929,
+    SPELL_BLESSING_OF_CHI_JI                = 129929,
+    SPELL_WRATH_OF_CHI_JI                   = 129917,
+    SPELL_ALLIANCE_BANNER_VISUAL            = 136126,
+    SPELL_MEET_THE_SCOUT_GARROSH            = 134089,
+    SPELL_HORDE_BANNER_VISUAL               = 136127,
+    SPELL_CANNONBALL_SPIN                   = 135154,
+    SPELL_TWINBRAID_KILLCREDIT              = 135493, // this npc u could kill in raid
+    SPELL_EXPLOSIVES_PLUNGER                = 135292,
+    SPELL_CHAINGUN                          = 135417,
+    SPELL_CHAINGUN_EFF                      = 135469,
+    SPELL_BLOODHILT_KILLCREDIT              = 135785,
+    SPELL_BLOODTHIRSTY_STRIKE               = 135396,
+    SPELL_BLOODY_KNIVES                     = 135343,
+    SPELL_COUP_DE_GRACE                     = 135397,
+    SPELL_BRUTAL_CHARGE_EFF                 = 135427,
+    SPELL_BRUTAL_CHARGE                     = 135421,
+    SPELL_SUMMON_BROJAI                     = 110553,
+    SPELL_EARTH_SPIKE                       = 80117
 };
 
-enum eCreatureEvents
+enum KrasarangWildsCreatureEvents
 {
-    EVENT_GRAPPLING_HOOK = 1,
+    EVENT_GRAPPLING_HOOK                    = 1,
     EVENT_VANISH,
     EVENT_VICIOUS_REND,
     EVENT_TORMENTORS_SLASH,
@@ -125,46 +125,46 @@ enum eCreatureEvents
     EVENT_COUP_DE_GRACE,
     EVENT_BLOODY_KNIVES,
     EVENT_BLOODTHIRSTY_STRIKE,
-    EVENT_EARTH_SPIKE,
+    EVENT_EARTH_SPIKE
 };
 
-enum eCreatures
+enum KrasarangWildsCreatures
 {
-    NPC_KRASARI_RUNEKEEPER          = 65598,
-    NPC_KRASARI_TORMENTOR           = 58377,
-    NPC_BUNNY_DLA                   = 55626,
-    NPC_ECHO_OF_DESPAIR             = 59687,
-    NPC_STUDENT_OF_CHI_JI           = 60601,
-    NPC_CHILD_OF_CHI_JI             = 60616,
-    NPC_LANDING_BOAT                = 68515,
-    NPC_KING_VARIAN_WRYNN           = 68514,
-    NPC_7TH_LEGION_CHAMPION         = 68960,
-    NPC_HILDA_HORNSWAGGLE           = 68519,
-    NPC_SCOUT_LYNNA                 = 68311,
-    NPC_KING_VARIAN_STATIC          = 68392,
-    NPC_7TH_LEGION_CHAMPION_STATIC  = 68399,
-    NPC_HORDE_RAIDER                = 68332,
-    NPC_HILDA_STATIC                = 68312,
-    NPC_MARSHAL_TROTEMAN            = 68331,
-    NPC_KORKRON_BODYGUARD_STATIC    = 68072,
-    NPC_GARROSH_HELLSCREAM_STATIC   = 67867,
-    NPC_BLOOD_GUARD_GROTASH         = 67927,
-    NPC_GRIZZLE_GEARSLIP            = 67926,
-    NPC_ALLIANCE_SENTINEL           = 67900,
-    NPC_WRATHION_NAVAL_FLEET_CREDIT = 64681,
-    NPC_LANDING_BOAT_HORDE          = 68087,
-    NPC_SCOUT_ROKLA                 = 67812,
-    NPC_GARROSH_HELLSCREAM          = 68088,
-    NPC_HORDE_ADDITIONAL_BOAT       = 69072,
-    NPC_HORDE_BODYGUARD             = 69073,
-    NPC_GROUNDBREAKER_BROJAI        = 58224,
-    NPC_SUNWALKER_DEZCO_QUEST       = 58666,
-    NPC_LOREKEEPER_VAELDRIN         = 58975,
-    NPC_LYALIA                      = 58976,
-    NPC_KOR_BLOODTUSK               = 58670,
+    NPC_KRASARI_RUNEKEEPER                  = 65598,
+    NPC_KRASARI_TORMENTOR                   = 58377,
+    NPC_BUNNY_DLA                           = 55626,
+    NPC_ECHO_OF_DESPAIR                     = 59687,
+    NPC_STUDENT_OF_CHI_JI                   = 60601,
+    NPC_CHILD_OF_CHI_JI                     = 60616,
+    NPC_LANDING_BOAT                        = 68515,
+    NPC_KING_VARIAN_WRYNN                   = 68514,
+    NPC_7TH_LEGION_CHAMPION                 = 68960,
+    NPC_HILDA_HORNSWAGGLE                   = 68519,
+    NPC_SCOUT_LYNNA                         = 68311,
+    NPC_KING_VARIAN_STATIC                  = 68392,
+    NPC_7TH_LEGION_CHAMPION_STATIC          = 68399,
+    NPC_HORDE_RAIDER                        = 68332,
+    NPC_HILDA_STATIC                        = 68312,
+    NPC_MARSHAL_TROTEMAN                    = 68331,
+    NPC_KORKRON_BODYGUARD_STATIC            = 68072,
+    NPC_GARROSH_HELLSCREAM_STATIC           = 67867,
+    NPC_BLOOD_GUARD_GROTASH                 = 67927,
+    NPC_GRIZZLE_GEARSLIP                    = 67926,
+    NPC_ALLIANCE_SENTINEL                   = 67900,
+    NPC_WRATHION_NAVAL_FLEET_CREDIT         = 64681,
+    NPC_LANDING_BOAT_HORDE                  = 68087,
+    NPC_SCOUT_ROKLA                         = 67812,
+    NPC_GARROSH_HELLSCREAM                  = 68088,
+    NPC_HORDE_ADDITIONAL_BOAT               = 69072,
+    NPC_HORDE_BODYGUARD                     = 69073,
+    NPC_GROUNDBREAKER_BROJAI                = 58224,
+    NPC_SUNWALKER_DEZCO_QUEST               = 58666,
+    NPC_LOREKEEPER_VAELDRIN                 = 58975,
+    NPC_LYALIA                              = 58976,
+    NPC_KOR_BLOODTUSK                       = 58670
 };
 
-enum eYells
+enum KrasarangWildsTexts
 {
     TALK_INTRO,
     TALK_SPECIAL_1,
@@ -172,17 +172,17 @@ enum eYells
     TALK_SPECIAL_3,
     TALK_SPECIAL_4,
     TALK_SPECIAL_5,
-    TALK_SPECIAL_6,
+    TALK_SPECIAL_6
 };
 
-enum eQuests
+enum KrasarangWildsQuests
 {
-    QUEST_KING_AMONG_MEN        = 32247,
-    QUEST_MEET_THE_SCOUT_H      = 32249,
-    QUEST_MIGHT_OF_THE_WARCHIEF = 32250,
-    QUEST_INCOMING              = 31483,
-    QUEST_THE_LORD_RECLAIMER    = 30359,
-    QUEST_FOR_FAMILY            = 30174,
+    QUEST_KING_AMONG_MEN                    = 32247,
+    QUEST_MEET_THE_SCOUT_H                  = 32249,
+    QUEST_MIGHT_OF_THE_WARCHIEF             = 32250,
+    QUEST_INCOMING                          = 31483,
+    QUEST_THE_LORD_RECLAIMER                = 30359,
+    QUEST_FOR_FAMILY                        = 30174
 };
 
 const Position boatPath[7]=
@@ -218,9 +218,9 @@ class npc_arness_the_scale : public CreatureScript
             {
                 events.Reset();
 
-                events.ScheduleEvent(EVENT_GRAPPLING_HOOK,  40000);
-                events.ScheduleEvent(EVENT_VANISH,          20000);
-                events.ScheduleEvent(EVENT_VICIOUS_REND,    15000);
+                events.ScheduleEvent(EVENT_GRAPPLING_HOOK, 40s);
+                events.ScheduleEvent(EVENT_VANISH, 20s);
+                events.ScheduleEvent(EVENT_VICIOUS_REND, 15s);
             }
 
             void JustDied(Unit* /*killer*/) override { }
@@ -242,16 +242,16 @@ class npc_arness_the_scale : public CreatureScript
                         case EVENT_GRAPPLING_HOOK:
                             if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
                                 me->CastSpell(target, SPELL_GRAPPLING_HOOK, false);
-                            events.ScheduleEvent(EVENT_GRAPPLING_HOOK,      10000);
+                            events.ScheduleEvent(EVENT_GRAPPLING_HOOK, 10s);
                             break;
                         case EVENT_VANISH:
                             me->CastSpell(me, SPELL_VANISH, false);
-                            events.ScheduleEvent(EVENT_VANISH, 20000);
+                            events.ScheduleEvent(EVENT_VANISH, 20s);
                             break;
                         case EVENT_VICIOUS_REND:
                             if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
                                 me->CastSpell(target, SPELL_VICIOUS_REND, false);
-                            events.ScheduleEvent(EVENT_VICIOUS_REND, 15000);
+                            events.ScheduleEvent(EVENT_VICIOUS_REND, 15s);
                             break;
                         default:
                             break;
@@ -268,20 +268,24 @@ class npc_arness_the_scale : public CreatureScript
         }
 };
 
-
-enum eTorikEthisSpells
+enum TorikEthisSpells
 {
-    SPELL_BLADE_FURY    = 125370,
-    SPELL_TORNADO       = 125398,
-    SPELL_TORNADO_DMG   = 131693,
-    SPELL_WINDSONG      = 125373,
+    SPELL_BLADE_FURY                        = 125370,
+    SPELL_TORNADO                           = 125398,
+    SPELL_TORNADO_DMG                       = 131693,
+    SPELL_WINDSONG                          = 125373
 };
 
-enum eTorikEthisEvents
+enum TorikEthisEvents
 {
-    EVENT_BLADE_FURY    = 1,
-    EVENT_TORNADO       = 2,
-    EVENT_WINDSONG      = 3,
+    EVENT_BLADE_FURY                        = 1,
+    EVENT_TORNADO                           = 2,
+    EVENT_WINDSONG                          = 3
+};
+
+enum TorikEthisCreatures
+{
+    NPC_ENTRY_TORNADO                       = 64267
 };
 
 class npc_torik_ethis : public CreatureScript
@@ -299,16 +303,16 @@ class npc_torik_ethis : public CreatureScript
             {
                 events.Reset();
 
-                events.ScheduleEvent(EVENT_BLADE_FURY,       8000);
-                events.ScheduleEvent(EVENT_TORNADO,         40000);
-                events.ScheduleEvent(EVENT_WINDSONG,        32000);
+                events.ScheduleEvent(EVENT_BLADE_FURY, 8s);
+                events.ScheduleEvent(EVENT_TORNADO, 40s);
+                events.ScheduleEvent(EVENT_WINDSONG, 32s);
             }
 
             void JustDied(Unit* /*killer*/) override { }
 
             void JustSummoned(Creature* summon) override
             {
-                if (summon->GetEntry() == 64267)
+                if (summon->GetEntry() == NPC_ENTRY_TORNADO)
                 {
                     summon->AddAura(SPELL_TORNADO_DMG, summon);
                     summon->SetReactState(REACT_PASSIVE);
@@ -333,19 +337,18 @@ class npc_torik_ethis : public CreatureScript
                         case EVENT_BLADE_FURY:
                             if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
                                 me->CastSpell(target, SPELL_BLADE_FURY, false);
-                            events.ScheduleEvent(EVENT_BLADE_FURY,      8000);
+                            events.ScheduleEvent(EVENT_BLADE_FURY, 8s);
                             break;
                         case EVENT_TORNADO:
                             if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
                                 me->CastSpell(target, SPELL_TORNADO, false);
-                            events.ScheduleEvent(EVENT_TORNADO, 40000);
+                            events.ScheduleEvent(EVENT_TORNADO, 40s);
                             break;
                         case EVENT_WINDSONG:
                             if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
                                 me->CastSpell(target, SPELL_WINDSONG, false);
-                            events.ScheduleEvent(EVENT_WINDSONG, 32000);
+                            events.ScheduleEvent(EVENT_WINDSONG, 32s);
                             break;
-
                         default:
                             break;
                     }
@@ -361,21 +364,21 @@ class npc_torik_ethis : public CreatureScript
         }
 };
 
-enum eGoKanSpells
+enum GoKanSpells
 {
-    SPELL_BELLOWING_RAGE     = 124297,
-    SPELL_RUSHING_CHARGE     = 124302,
-    SPELL_YAUNGOL_STOMP      = 124289
+    SPELL_BELLOWING_RAGE                    = 124297,
+    SPELL_RUSHING_CHARGE                    = 124302,
+    SPELL_YAUNGOL_STOMP                     = 124289
 };
 
-enum eGoKanEvents
+enum GoKanEvents
 {
-    EVENT_BELLOWING_RAGE     = 1,
-    EVENT_RUSHING_CHARGE     = 2,
-    EVENT_YAUNGOL_STOMP      = 3,
+    EVENT_BELLOWING_RAGE                    = 1,
+    EVENT_RUSHING_CHARGE                    = 2,
+    EVENT_YAUNGOL_STOMP                     = 3
 };
 
-#define GO_KAN_SAY_1        "Feel the strength of the Yaungol!"
+#define GO_KAN_SAY_1 "Feel the strength of the Yaungol!"
 
 class npc_go_kan : public CreatureScript
 {
@@ -392,9 +395,9 @@ class npc_go_kan : public CreatureScript
             {
                 me->SetStandState(UNIT_STAND_STATE_SIT);
                 events.Reset();
-                events.ScheduleEvent(EVENT_BELLOWING_RAGE,       8000);
-                events.ScheduleEvent(EVENT_RUSHING_CHARGE,      17000);
-                events.ScheduleEvent(EVENT_YAUNGOL_STOMP,       25000);
+                events.ScheduleEvent(EVENT_BELLOWING_RAGE, 8s);
+                events.ScheduleEvent(EVENT_RUSHING_CHARGE, 17s);
+                events.ScheduleEvent(EVENT_YAUNGOL_STOMP, 25s);
             }
 
             void JustDied(Unit* /*killer*/) override { }
@@ -421,17 +424,17 @@ class npc_go_kan : public CreatureScript
                         case EVENT_BELLOWING_RAGE:
                             if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
                                 me->CastSpell(target, SPELL_BELLOWING_RAGE, false);
-                            events.ScheduleEvent(EVENT_BELLOWING_RAGE,      50000);
+                            events.ScheduleEvent(EVENT_BELLOWING_RAGE, 50s);
                             break;
                         case EVENT_RUSHING_CHARGE:
                             if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
                                 me->CastSpell(target, SPELL_RUSHING_CHARGE, false);
-                            events.ScheduleEvent(EVENT_RUSHING_CHARGE, 40000);
+                            events.ScheduleEvent(EVENT_RUSHING_CHARGE, 40s);
                             break;
                         case EVENT_YAUNGOL_STOMP:
                             if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
                                 me->CastSpell(target, SPELL_YAUNGOL_STOMP, false);
-                            events.ScheduleEvent(EVENT_YAUNGOL_STOMP, 65000);
+                            events.ScheduleEvent(EVENT_YAUNGOL_STOMP, 1min + 5s);
                             break;
 
                         default:
@@ -447,6 +450,28 @@ class npc_go_kan : public CreatureScript
         {
             return new npc_go_kanAI(creature);
         }
+};
+
+enum DespondentWardenOfZhuSpells
+{
+    SPELL_DESPAIR                           = 108450,
+    SPELL_APPLY_MASK                        = 110169
+};
+
+enum DespondentWardenOfZhuTexts
+{
+    DESPONDENT_WARDEN_OF_ZHU_TEXT_01        = 0,
+    DESPONDENT_WARDEN_OF_ZHU_TEXT_02        = 1
+};
+
+enum DespondentWardenOfZhuCreatures
+{
+    NPC_ENTRY_MANIFESTATION_OF_DESPAIR      = 58312
+};
+
+enum DespondentWardenOfZhuMisc
+{
+    QUEST_APPLY_DIRECTLY_TO_THE_FOREHEAD    = 30089
 };
 
 class npc_despondent_warden_of_zhu : public CreatureScript
@@ -471,7 +496,7 @@ class npc_despondent_warden_of_zhu : public CreatureScript
 
             void Reset() override
             {
-                me->CastSpell(me, 108450, true);
+                me->CastSpell(me, SPELL_DESPAIR, true);
                 playerGUID = 0;
                 talkTimer = 0;
                 auraRecastTimer = 0;
@@ -484,9 +509,9 @@ class npc_despondent_warden_of_zhu : public CreatureScript
 
                 if (auto player = who->ToPlayer())
                 {
-                    if (player->GetQuestStatus(30089) == QUEST_STATUS_INCOMPLETE)
+                    if (player->GetQuestStatus(QUEST_APPLY_DIRECTLY_TO_THE_FOREHEAD) == QUEST_STATUS_INCOMPLETE)
                     {
-                        Talk(0);
+                        Talk(DESPONDENT_WARDEN_OF_ZHU_TEXT_01);
                         talkTimer = 20000;
                     }
                 }
@@ -504,7 +529,7 @@ class npc_despondent_warden_of_zhu : public CreatureScript
                 if (auraRecastTimer != 0)
                     if (auraRecastTimer <= diff)
                     {
-                        me->CastSpell(me, 108450, true);
+                        me->CastSpell(me, SPELL_DESPAIR, true);
                         auraRecastTimer = 0;
                     }
                     else auraRecastTimer -= diff;
@@ -515,11 +540,12 @@ class npc_despondent_warden_of_zhu : public CreatureScript
                 if (auraRecastTimer)
                     return;
 
-                if (spell->Id == 110169 && caster->GetTypeId() == TYPEID_PLAYER)
+                if (spell->Id == SPELL_APPLY_MASK && caster->GetTypeId() == TYPEID_PLAYER)
                 {
                     Position pos;
                     me->GetPosition(&pos);
-                    if (auto summon = me->SummonCreature(58312, pos, TEMPSUMMON_TIMED_DESPAWN, 120 * IN_MILLISECONDS))
+
+                    if (auto summon = me->SummonCreature(NPC_ENTRY_MANIFESTATION_OF_DESPAIR, pos, TEMPSUMMON_TIMED_DESPAWN, 120 * IN_MILLISECONDS))
                         summon->AI()->AttackStart(caster);
 
                     auraRecastTimer = 10000;
@@ -534,7 +560,8 @@ class npc_despondent_warden_of_zhu : public CreatureScript
                     player->KilledMonsterCredit(58238);
                     me->DespawnOrUnsummon(5000);
                 }
-                Talk(1);
+
+                Talk(DESPONDENT_WARDEN_OF_ZHU_TEXT_02);
             }
         };
 
@@ -585,7 +612,7 @@ struct krasarang_casterAI : public ScriptedAI
     {
         if (me->HasUnitState(UNIT_STATE_CASTING))
         {
-            events.RescheduleEvent(eventId, urand(1 * IN_MILLISECONDS, 2 * IN_MILLISECONDS));
+            events.RescheduleEvent(eventId, randtime(1s, 2s));
             return true;
         }
 
@@ -638,13 +665,13 @@ struct npc_krasari_tormentor : public ScriptedAI
     {
         events.Reset();
         targetGUID = 0;
-        delay      = 0;
+        delay = 0;
     }
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_ANCIENT_POISON, 3 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_TORMENTORS_SLASH, 8.5 * IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_ANCIENT_POISON, 3s);
+        events.ScheduleEvent(EVENT_TORMENTORS_SLASH, 8s + 500ms);
     }
 
     void UpdateAI(uint32 diff) override
@@ -673,13 +700,13 @@ struct npc_krasari_tormentor : public ScriptedAI
                             me->RemoveChanneledCast(targetGUID);
                         });
                     }
-                    events.ScheduleEvent(EVENT_TORMENTORS_SLASH, urand(10 * IN_MILLISECONDS, 19 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_TORMENTORS_SLASH, randtime(10s, 19s));
                     break;
                 case EVENT_ANCIENT_POISON:
                     if (Unit* target = me->GetVictim())
                         DoCast(target, SPELL_ANCIENT_POISON);
 
-                    events.ScheduleEvent(EVENT_ANCIENT_POISON, urand(9 * IN_MILLISECONDS, 13.5 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_ANCIENT_POISON, randtime(9s, 13s + 500ms));
                     break;
             }
         }
@@ -706,9 +733,9 @@ struct npc_krasari_runekeeper : public krasarang_casterAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_ANCIENT_POISON, 3 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_RUNE_OF_SUFFERING, 6.5 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_DARK_MENDING, 13 * IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_ANCIENT_POISON, 3s);
+        events.ScheduleEvent(EVENT_RUNE_OF_SUFFERING, 6s + 500ms);
+        events.ScheduleEvent(EVENT_DARK_MENDING, 13s);
     }
 
     void UpdateAI(uint32 diff) override
@@ -732,7 +759,7 @@ struct npc_krasari_runekeeper : public krasarang_casterAI
                     if (Unit* target = me->GetVictim())
                         DoCast(target, SPELL_ANCIENT_POISON);
 
-                    events.ScheduleEvent(EVENT_ANCIENT_POISON, urand(9 * IN_MILLISECONDS, 13.5 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_ANCIENT_POISON, randtime(9s, 13s + 500ms));
                     break;
                 case EVENT_RUNE_OF_SUFFERING:
                     if (HandleRescheduleEventsIfCastAny(eventId))
@@ -741,7 +768,7 @@ struct npc_krasari_runekeeper : public krasarang_casterAI
                     if (Unit* target = me->GetVictim())
                         DoCast(target, SPELL_RUNE_OF_SUFFERING);
 
-                    events.ScheduleEvent(EVENT_RUNE_OF_SUFFERING, urand(15.5 * IN_MILLISECONDS, 25 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_RUNE_OF_SUFFERING, randtime(15s + 500ms, 25s));
                     break;
                 case EVENT_DARK_MENDING:
                     if (HandleRescheduleEventsIfCastAny(eventId))
@@ -750,7 +777,7 @@ struct npc_krasari_runekeeper : public krasarang_casterAI
                     if (Unit* target = ObjectAccessor::GetUnit(*me, GetLowestFriendlyGUID()))
                         DoCast(target, SPELL_DARK_MENDING);
 
-                    events.ScheduleEvent(EVENT_DARK_MENDING, urand(13 * IN_MILLISECONDS, 21 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_DARK_MENDING, randtime(13s, 21s));
                     break;
             }
         }
@@ -773,7 +800,7 @@ struct npc_weeping_horror : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_OVERWHELMING_SADNESS, urand(3.5 * IN_MILLISECONDS, 6 * IN_MILLISECONDS));
+        events.ScheduleEvent(EVENT_OVERWHELMING_SADNESS, randtime(3s + 500ms, 6s));
     }
 
     void UpdateAI(uint32 diff) override
@@ -793,7 +820,7 @@ struct npc_weeping_horror : public ScriptedAI
                 if (Unit* target = me->GetVictim())
                     DoCast(target, SPELL_OVERWHELMING_SADNESS);
 
-                events.ScheduleEvent(EVENT_OVERWHELMING_SADNESS, urand(6.5 * IN_MILLISECONDS, 7.5 * IN_MILLISECONDS));
+                events.ScheduleEvent(EVENT_OVERWHELMING_SADNESS, randtime(6s + 500ms, 7s + 500ms));
             }
             break;
         }
@@ -816,7 +843,7 @@ struct npc_bilgewater_sapper : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_THROW_DYNAMITE, urand(3.5 * IN_MILLISECONDS, 6 * IN_MILLISECONDS));
+        events.ScheduleEvent(EVENT_THROW_DYNAMITE, randtime(3s + 500ms, 6s));
     }
 
     void UpdateAI(uint32 diff) override
@@ -836,7 +863,7 @@ struct npc_bilgewater_sapper : public ScriptedAI
                 if (Unit* target = me->GetVictim())
                     DoCast(target, SPELL_THROW_DYNAMITE);
 
-                events.ScheduleEvent(EVENT_THROW_DYNAMITE, urand(6.5 * IN_MILLISECONDS, 14 * IN_MILLISECONDS));
+                events.ScheduleEvent(EVENT_THROW_DYNAMITE, randtime(6s + 500ms, 14s));
             }
             break;
         }
@@ -861,8 +888,8 @@ struct npc_viceclaw_scuttler : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_RAGE_OF_ELDERS, 3 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_VICE_CLAW, urand(5.5 * IN_MILLISECONDS, 12 * IN_MILLISECONDS));
+        events.ScheduleEvent(EVENT_RAGE_OF_ELDERS, 3s);
+        events.ScheduleEvent(EVENT_VICE_CLAW, randtime(5s + 500ms, 12s));
     }
 
     void DamageTaken(Unit* attacker, uint32& damage) override
@@ -890,13 +917,13 @@ struct npc_viceclaw_scuttler : public ScriptedAI
             {
                 case EVENT_RAGE_OF_ELDERS:
                     DoCast(me, SPELL_RAGE_OF_ELDERS);
-                    events.ScheduleEvent(EVENT_RAGE_OF_ELDERS, 14.5 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_RAGE_OF_ELDERS, 14s + 500ms);
                     break;
                 case EVENT_VICE_CLAW:
                     if (Unit* target = me->GetVictim())
                         DoCast(target, SPELL_VICE_CLAW);
 
-                    events.ScheduleEvent(EVENT_VICE_CLAW, urand(10.5 * IN_MILLISECONDS, 17 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_VICE_CLAW, randtime(10s + 500ms, 17s));
                     break;
             }
         }
@@ -920,7 +947,7 @@ struct npc_dominance_grunt : public ScriptedAI
     void EnterCombat(Unit* /*who*/) override
     {
         DoCast(me, SPELL_BLOODTHIRSTY);
-        events.ScheduleEvent(EVENT_DECAPITATE, urand(4.5 * IN_MILLISECONDS, 11.5 * IN_MILLISECONDS));
+        events.ScheduleEvent(EVENT_DECAPITATE, randtime(4s + 500ms, 11s + 500ms));
     }
 
     void UpdateAI(uint32 diff) override
@@ -937,7 +964,7 @@ struct npc_dominance_grunt : public ScriptedAI
                 if (Unit* target = me->GetVictim())
                     DoCast(target, SPELL_DECAPITATE);
 
-                events.ScheduleEvent(EVENT_DECAPITATE, urand(4.5 * IN_MILLISECONDS, 11.5 * IN_MILLISECONDS));
+                events.ScheduleEvent(EVENT_DECAPITATE, randtime(4s + 500ms, 11s + 500ms));
             }
             break;
         }
@@ -962,7 +989,7 @@ struct npc_elder_seadragon : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_ZIN_SPIN, urand(8.5 * IN_MILLISECONDS, 11.5 * IN_MILLISECONDS));
+        events.ScheduleEvent(EVENT_ZIN_SPIN, randtime(8s + 500ms, 11s + 500ms));
     }
 
     void DamageTaken(Unit* attacker, uint32& damage) override
@@ -987,7 +1014,7 @@ struct npc_elder_seadragon : public ScriptedAI
             {
                 DoCast(me, SPELL_ZIN_SPIN);
                 me->ClearUnitState(UNIT_STATE_CASTING);
-                events.ScheduleEvent(EVENT_ZIN_SPIN, urand(13.5 * IN_MILLISECONDS, 18 * IN_MILLISECONDS));
+                events.ScheduleEvent(EVENT_ZIN_SPIN, randtime(13s + 500ms, 18s));
             }
             break;
         }
@@ -1010,9 +1037,9 @@ struct npc_sunwalker_scout : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_CONSECRATION, 3 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_AVENGERS_SHIELD, 12 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_HAMMER_OF_WRATH, urand(4.5 * IN_MILLISECONDS, 12 * IN_MILLISECONDS));
+        events.ScheduleEvent(EVENT_CONSECRATION, 3s);
+        events.ScheduleEvent(EVENT_AVENGERS_SHIELD, 12s);
+        events.ScheduleEvent(EVENT_HAMMER_OF_WRATH, randtime(4s + 500ms, 12s));
     }
 
     void UpdateAI(uint32 diff) override
@@ -1031,19 +1058,19 @@ struct npc_sunwalker_scout : public ScriptedAI
             {
                 case EVENT_CONSECRATION:
                     DoCast(me, SPELL_CONSECRATION);
-                    events.ScheduleEvent(EVENT_CONSECRATION, 11 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_CONSECRATION, 11s);
                     break;
                 case EVENT_AVENGERS_SHIELD:
                     if (Unit* target = me->GetVictim())
                         DoCast(target, SPELL_AVENGERS_SHIELD);
 
-                    events.ScheduleEvent(EVENT_AVENGERS_SHIELD, 12.5 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_AVENGERS_SHIELD, 12s + 500ms);
                     break;
                 case EVENT_HAMMER_OF_WRATH:
                     if (Unit* target = me->GetVictim())
                         DoCast(target, SPELL_HAMMER_OF_WRATH);
 
-                    events.ScheduleEvent(EVENT_HAMMER_OF_WRATH, urand(4.5 * IN_MILLISECONDS, 12 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_HAMMER_OF_WRATH, randtime(4s + 500ms, 12s));
                     break;
             }
         }
@@ -1069,7 +1096,7 @@ struct npc_dojani_dominator : public ScriptedAI
     void EnterCombat(Unit* /*who*/) override
     {
         DoCast(me, SPELL_MOGU_RUNE_WARD);
-        events.ScheduleEvent(EVENT_MIGHT_MAKES_RIGHT, urand(8.5 * IN_MILLISECONDS, 11.5 * IN_MILLISECONDS));
+        events.ScheduleEvent(EVENT_MIGHT_MAKES_RIGHT, randtime(8s + 500ms, 11s + 500ms));
     }
 
     void DamageTaken(Unit* attacker, uint32& damage) override
@@ -1095,7 +1122,7 @@ struct npc_dojani_dominator : public ScriptedAI
                 if (Unit* target = me->GetVictim())
                     DoCast(target, SPELL_MIGHT_MAKES_RIGHT);
 
-                events.ScheduleEvent(EVENT_MIGHT_MAKES_RIGHT, urand(13.5 * IN_MILLISECONDS, 18 * IN_MILLISECONDS));
+                events.ScheduleEvent(EVENT_MIGHT_MAKES_RIGHT, randtime(13s + 500ms, 18s));
             }
             break;
         }
@@ -1120,8 +1147,8 @@ struct npc_dojani_enforcer : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_SHOCKWAVE, 4.5 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_LEAP_OF_VICTORY, urand(8.5 * IN_MILLISECONDS, 18 * IN_MILLISECONDS));
+        events.ScheduleEvent(EVENT_SHOCKWAVE, 4s + 500ms);
+        events.ScheduleEvent(EVENT_LEAP_OF_VICTORY, randtime(8s + 500ms, 18s));
     }
 
     void DamageTaken(Unit* attacker, uint32& damage) override
@@ -1148,11 +1175,11 @@ struct npc_dojani_enforcer : public ScriptedAI
                     if (Unit* target = SelectTarget(SELECT_TARGET_FARTHEST))
                         DoCast(target, SPELL_LEAP_OF_VICTORY);
 
-                    events.ScheduleEvent(EVENT_LEAP_OF_VICTORY, urand(8.5 * IN_MILLISECONDS, 18 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_LEAP_OF_VICTORY, randtime(8s + 500ms, 18s));
                     break;
                 case EVENT_SHOCKWAVE:
                     DoCast(me, SPELL_SHOCKWAVE);
-                    events.ScheduleEvent(EVENT_SHOCKWAVE, 12 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_SHOCKWAVE, 12s);
                     break;
             }
         }
@@ -1175,7 +1202,7 @@ struct npc_dojani_surveyor : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_SUNDEN_ARMOR, urand(4.5 * IN_MILLISECONDS, 13 * IN_MILLISECONDS));
+        events.ScheduleEvent(EVENT_SUNDEN_ARMOR, randtime(4s + 500ms, 13s));
     }
 
     void UpdateAI(uint32 diff) override
@@ -1192,7 +1219,7 @@ struct npc_dojani_surveyor : public ScriptedAI
                 if (Unit* target = me->GetVictim())
                     DoCast(target, SPELL_SUNDEN_ARMOR);
 
-                events.ScheduleEvent(EVENT_SUNDEN_ARMOR, urand(8.5 * IN_MILLISECONDS, 19.5 * IN_MILLISECONDS));
+                events.ScheduleEvent(EVENT_SUNDEN_ARMOR, randtime(8s + 500ms, 19s + 500ms));
             }
             break;
         }
@@ -1215,8 +1242,8 @@ struct npc_dojani_reclaimer : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_RECLAIM_STRENGTH, 6.5 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_ANCIENT_RUNE_OF_STRIKING, 1.5 * IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_RECLAIM_STRENGTH, 6s + 500ms);
+        events.ScheduleEvent(EVENT_ANCIENT_RUNE_OF_STRIKING, 1s + 500ms);
     }
 
     void UpdateAI(uint32 diff) override
@@ -1234,11 +1261,11 @@ struct npc_dojani_reclaimer : public ScriptedAI
                     if (Unit* target = me->GetVictim())
                         DoCast(target, SPELL_RECLAIM_STRENGTH);
 
-                    events.ScheduleEvent(EVENT_RECLAIM_STRENGTH, urand(13.5 * IN_MILLISECONDS, 23 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_RECLAIM_STRENGTH, randtime(13s + 500ms, 23s));
                     break;
                 case EVENT_ANCIENT_RUNE_OF_STRIKING:
                     me->CastSpell(me->GetPositionX() + frand(-7.0f, 7.0f), me->GetPositionY() + frand(-10.0f, 10.0f), me->GetPositionZ(), SPELL_ANCIENT_RUNE_OF_STRIKING, true);
-                    events.ScheduleEvent(EVENT_ANCIENT_RUNE_OF_STRIKING, urand(10.5 * IN_MILLISECONDS, 20 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_ANCIENT_RUNE_OF_STRIKING, randtime(10s + 500ms, 20s));
                     break;
             }
         }
@@ -1261,7 +1288,7 @@ struct npc_riverblade_slayer : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_SAVAGE_STRIKES, urand(4.5 * IN_MILLISECONDS, 13 * IN_MILLISECONDS));
+        events.ScheduleEvent(EVENT_SAVAGE_STRIKES, randtime(4s + 500ms, 13s));
     }
 
     void UpdateAI(uint32 diff) override
@@ -1278,7 +1305,7 @@ struct npc_riverblade_slayer : public ScriptedAI
                 if (Unit* target = me->GetVictim())
                     DoCast(target, SPELL_SAVAGE_STRIKES);
 
-                events.ScheduleEvent(EVENT_SAVAGE_STRIKES, urand(8.5 * IN_MILLISECONDS, 19.5 * IN_MILLISECONDS));
+                events.ScheduleEvent(EVENT_SAVAGE_STRIKES, randtime(8s + 500ms, 19s + 500ms));
             }
             break;
         }
@@ -1304,8 +1331,8 @@ struct npc_sha_of_despair : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_CALL_OF_DESPAIR, urand(8 * IN_MILLISECONDS, 20 * IN_MILLISECONDS));
-        events.ScheduleEvent(EVENT_GLOOM_WHIRL, 13 * IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_CALL_OF_DESPAIR, randtime(8s, 20s));
+        events.ScheduleEvent(EVENT_GLOOM_WHIRL, 13s);
     }
 
     void JustSummoned(Creature* summon) override
@@ -1337,11 +1364,11 @@ struct npc_sha_of_despair : public ScriptedAI
             {
                 case EVENT_CALL_OF_DESPAIR:
                     DoCast(me, SPELL_CALL_OF_DESPAIR);
-                    events.ScheduleEvent(EVENT_CALL_OF_DESPAIR, urand(18 * IN_MILLISECONDS, 36 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_CALL_OF_DESPAIR, randtime(18s, 36s));
                     break;
                 case EVENT_GLOOM_WHIRL:
                     DoCast(me, SPELL_GLOOM_WHIRL);
-                    events.ScheduleEvent(EVENT_GLOOM_WHIRL, 19 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_GLOOM_WHIRL, 19s);
                     break;
             }
         }
@@ -1365,7 +1392,7 @@ struct npc_echo_of_despair : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_LANGUOR, urand(4.5 * IN_MILLISECONDS, 17 * IN_MILLISECONDS));
+        events.ScheduleEvent(EVENT_LANGUOR, randtime(4s + 500ms, 17s));
     }
 
     void UpdateAI(uint32 diff) override
@@ -1382,7 +1409,7 @@ struct npc_echo_of_despair : public ScriptedAI
                 if (Unit* target = me->GetVictim())
                     DoCast(target, SPELL_LANGUOR);
 
-                events.ScheduleEvent(EVENT_LANGUOR, urand(8.5 * IN_MILLISECONDS, 19.5 * IN_MILLISECONDS));
+                events.ScheduleEvent(EVENT_LANGUOR, randtime(8s + 500ms, 19s + 500ms));
             }
             break;
         }
@@ -1405,8 +1432,8 @@ struct npc_source_of_despair : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_LANGUOR, urand(4.5 * IN_MILLISECONDS, 17 * IN_MILLISECONDS));
-        events.ScheduleEvent(EVENT_WAVE_OF_DESPAIR, 10 * IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_LANGUOR, randtime(4s + 500ms, 17s));
+        events.ScheduleEvent(EVENT_WAVE_OF_DESPAIR, 10s);
     }
 
     void UpdateAI(uint32 diff) override
@@ -1424,11 +1451,11 @@ struct npc_source_of_despair : public ScriptedAI
                     if (Unit* target = me->GetVictim())
                         DoCast(target, SPELL_LANGUOR);
 
-                    events.ScheduleEvent(EVENT_LANGUOR, urand(8.5 * IN_MILLISECONDS, 19.5 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_LANGUOR, randtime(8s + 500ms, 19s + 500ms));
                     break;
                 case EVENT_WAVE_OF_DESPAIR:
                     DoCast(me, SPELL_WAVE_OF_DESPAIR);
-                    events.ScheduleEvent(EVENT_WAVE_OF_DESPAIR, 10 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_WAVE_OF_DESPAIR, 10s);
                     break;
             }
         }
@@ -1450,14 +1477,14 @@ struct npc_child_of_chi_ji_krasarang : public krasarang_casterAI
     {
         events.Reset();
         targetGUID = 0;
-        delay      = 0;
+        delay = 0;
     }
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_HEALING_SONG, 15 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_BEAK_STAB, urand(8.5 * IN_MILLISECONDS, 14 * IN_MILLISECONDS));
-        events.ScheduleEvent(EVENT_GIFT_OF_CHI_JI, 4 * IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_HEALING_SONG, 15s);
+        events.ScheduleEvent(EVENT_BEAK_STAB, randtime(8s + 500ms, 14s));
+        events.ScheduleEvent(EVENT_GIFT_OF_CHI_JI, 4s);
     }
 
     void UpdateAI(uint32 diff) override
@@ -1476,7 +1503,7 @@ struct npc_child_of_chi_ji_krasarang : public krasarang_casterAI
                         break;
 
                     DoCast(me, SPELL_HEALING_SONG_OF_SINGER);
-                    events.ScheduleEvent(EVENT_HEALING_SONG, urand(15 * IN_MILLISECONDS, 25 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_HEALING_SONG, randtime(15s, 25s));
                     break;
                 case EVENT_BEAK_STAB:
                     if (HandleRescheduleEventsIfCastAny(eventId))
@@ -1493,14 +1520,14 @@ struct npc_child_of_chi_ji_krasarang : public krasarang_casterAI
                             me->RemoveChanneledCast(targetGUID);
                         });
                     }
-                    events.ScheduleEvent(EVENT_BEAK_STAB, urand(14.5 * IN_MILLISECONDS, 19.5 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_BEAK_STAB, randtime(14s + 500ms, 19s + 500ms));
                     break;
                 case EVENT_GIFT_OF_CHI_JI:
                     if (HandleRescheduleEventsIfCastAny(eventId))
                         break;
 
                     DoCast(me, SPELL_GIFT_OF_CHI_JI);
-                    events.ScheduleEvent(EVENT_GIFT_OF_CHI_JI, 13.5 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_GIFT_OF_CHI_JI, 13s + 500ms);
                     break;
             }
         }
@@ -1523,9 +1550,9 @@ struct npc_student_of_chi_ji : public krasarang_casterAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_BLESSING_OF_CHI_JI, 15 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_WRATH_OF_CHI_JI, urand(4.5 * IN_MILLISECONDS, 15 * IN_MILLISECONDS));
-        events.ScheduleEvent(EVENT_GIFT_OF_CHI_JI, 4 * IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_BLESSING_OF_CHI_JI, 15s);
+        events.ScheduleEvent(EVENT_WRATH_OF_CHI_JI, randtime(4s + 500ms, 15s));
+        events.ScheduleEvent(EVENT_GIFT_OF_CHI_JI, 4s);
     }
 
     void UpdateAI(uint32 diff) override
@@ -1546,7 +1573,7 @@ struct npc_student_of_chi_ji : public krasarang_casterAI
                     if (Unit* target = ObjectAccessor::GetUnit(*me, GetLowestFriendlyGUID()))
                         DoCast(target, SPELL_BLESSING_OF_CHI_JI);
 
-                    events.ScheduleEvent(EVENT_BLESSING_OF_CHI_JI, urand(15 * IN_MILLISECONDS, 20 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_BLESSING_OF_CHI_JI, randtime(15s, 20s));
                     break;
                 case EVENT_WRATH_OF_CHI_JI:
                     if (HandleRescheduleEventsIfCastAny(eventId))
@@ -1555,14 +1582,14 @@ struct npc_student_of_chi_ji : public krasarang_casterAI
                     if (Unit* target = me->GetVictim())
                         DoCast(target, SPELL_WRATH_OF_CHI_JI);
 
-                    events.ScheduleEvent(EVENT_WRATH_OF_CHI_JI, urand(4.5 * IN_MILLISECONDS, 15 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_WRATH_OF_CHI_JI, randtime(4s + 500ms, 15s));
                     break;
                 case EVENT_GIFT_OF_CHI_JI:
                     if (HandleRescheduleEventsIfCastAny(eventId))
                         break;
 
                     DoCast(me, SPELL_GIFT_OF_CHI_JI);
-                    events.ScheduleEvent(EVENT_GIFT_OF_CHI_JI, 13.5 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_GIFT_OF_CHI_JI, 13s + 500ms);
                     break;
             }
         }
@@ -1852,9 +1879,9 @@ struct npc_high_marshal_twinbraid : public customCreatureAI
     void EnterCombat(Unit* /*who*/) override
     {
         Talk(TALK_SPECIAL_1);
-        events.ScheduleEvent(EVENT_CANNONBALL_SPIN, urand(8.5 * IN_MILLISECONDS, 19 * IN_MILLISECONDS));
-        events.ScheduleEvent(EVENT_CHAINGUN, 25 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_EXPLOSIVES_PLUNGER, urand(15 * IN_MILLISECONDS, 20 * IN_MILLISECONDS));
+        events.ScheduleEvent(EVENT_CANNONBALL_SPIN, randtime(8s + 500ms, 19s));
+        events.ScheduleEvent(EVENT_CHAINGUN, 25s);
+        events.ScheduleEvent(EVENT_EXPLOSIVES_PLUNGER, randtime(15s, 20s));
     }
 
     void JustDied(Unit* /*killer*/) override 
@@ -1900,10 +1927,10 @@ struct npc_warlord_bloodhilt : public customCreatureAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_COUP_DE_GRACE, urand(3.5 * IN_MILLISECONDS, 8 * IN_MILLISECONDS));
-        events.ScheduleEvent(EVENT_BLOODY_KNIVES, 12 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_BLOODTHIRSTY_STRIKE, urand(19 * IN_MILLISECONDS, 35 * IN_MILLISECONDS));
-        events.ScheduleEvent(EVENT_BRUTAL_CHARGE, 17 * IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_COUP_DE_GRACE, randtime(3s + 500ms, 8s));
+        events.ScheduleEvent(EVENT_BLOODY_KNIVES, 12s);
+        events.ScheduleEvent(EVENT_BLOODTHIRSTY_STRIKE, randtime(19s, 35s));
+        events.ScheduleEvent(EVENT_BRUTAL_CHARGE, 17s);
     }
 
     void JustDied(Unit* /*killer*/) override
@@ -2078,6 +2105,12 @@ class sat_gift_of_chi_ji : public IAreaTriggerAura
     }
 };
 
+enum StoneplowEnvoySpells
+{
+    SPELL_PERMANENT_FEIGN_DEATH_STUN        = 108806,
+    SPELL_REVIVE_STONEPLOW_ENVOY            = 111446
+};
+
 struct npc_stoneplow_envoy : public ScriptedAI
 {
     npc_stoneplow_envoy(Creature* creature) : ScriptedAI(creature) { }
@@ -2086,7 +2119,7 @@ struct npc_stoneplow_envoy : public ScriptedAI
     {
         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_29);
         me->SetFlag(UNIT_FIELD_FLAGS2, UNIT_FLAG2_FEIGN_DEATH);
-        me->CastSpell(me, 108806);
+        me->CastSpell(me, SPELL_PERMANENT_FEIGN_DEATH_STUN);
         me->setRegeneratingHealth(false);
         me->SetHealth(46087);
         script_timer = 0, player_guid = 0;
@@ -2094,11 +2127,11 @@ struct npc_stoneplow_envoy : public ScriptedAI
 
     void SpellHit(Unit* caster, const SpellInfo* spell) override
     {
-        if (spell->Id == 111446 && me->HasAura(108806))
+        if (spell->Id == SPELL_REVIVE_STONEPLOW_ENVOY && me->HasAura(SPELL_PERMANENT_FEIGN_DEATH_STUN))
         {
             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_UNK_29);
             me->RemoveFlag(UNIT_FIELD_FLAGS2, UNIT_FLAG2_FEIGN_DEATH);
-            me->RemoveAurasDueToSpell(108806);
+            me->RemoveAurasDueToSpell(SPELL_PERMANENT_FEIGN_DEATH_STUN);
             script_timer = 500;
             if (Player* player = caster->ToPlayer())
             {
@@ -2136,6 +2169,20 @@ private:
     uint32 script_timer;
 };
 
+enum NahassaSpells
+{
+    SPELL_NAHASSA_INJURED_ANIM              = 116342,
+    SPELL_DYING                             = 116348,
+    SPELL_JAW_SNAP                          = 118990,
+    SPELL_FEVERISH_DEATHBITE                = 116343
+};
+
+enum NahassaEvents
+{
+    EVENT_01                                = 1,
+    EVENT_02                                = 2
+};
+
 struct npc_nahassa : public ScriptedAI
 {
     npc_nahassa(Creature* creature) : ScriptedAI(creature)
@@ -2146,8 +2193,8 @@ struct npc_nahassa : public ScriptedAI
 
     void JustRespawned() override
     {
-        DoCast(116342);
-        DoCast(116348);
+        DoCast(SPELL_NAHASSA_INJURED_ANIM);
+        DoCast(SPELL_DYING);
         me->SetHealth(429970);
         me->ResetPlayerDamageReq();
     }
@@ -2159,10 +2206,10 @@ struct npc_nahassa : public ScriptedAI
 
     void EnterCombat(Unit* who) override
     {
-        me->RemoveAurasDueToSpell(116342);
-        me->RemoveAurasDueToSpell(116348);
-        events.ScheduleEvent(1, 0);
-        events.ScheduleEvent(2, 5000);
+        me->RemoveAurasDueToSpell(SPELL_NAHASSA_INJURED_ANIM);
+        me->RemoveAurasDueToSpell(SPELL_DYING);
+        events.ScheduleEvent(EVENT_01, 0ms);
+        events.ScheduleEvent(EVENT_02, 5s);
     }
 
     void UpdateAI(uint32 diff) override
@@ -2176,13 +2223,13 @@ struct npc_nahassa : public ScriptedAI
         {
             switch (eventId)
             {
-                case 1:
-                    DoCastVictim(118990);
-                    events.ScheduleEvent(1, urand(10000, 14000));
+                case EVENT_01:
+                    DoCastVictim(SPELL_JAW_SNAP);
+                    events.ScheduleEvent(EVENT_01, randtime(10s, 14s));
                     break;
-                case 2:
-                    DoCastVictim(116343);
-                    events.ScheduleEvent(2, urand(13000, 20000));
+                case EVENT_02:
+                    DoCastVictim(SPELL_FEVERISH_DEATHBITE);
+                    events.ScheduleEvent(EVENT_02, randtime(13s, 20s));
                     break;
             }
         }
@@ -2299,7 +2346,7 @@ struct npc_groundbreaker_brojai : public customCreatureAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_EARTH_SPIKE, urand(3.5 * IN_MILLISECONDS, 12 * IN_MILLISECONDS));
+        events.ScheduleEvent(EVENT_EARTH_SPIKE, randtime(3s + 500ms, 12s));
     }
 
     void JustDied(Unit* /*killer*/) override
@@ -2411,9 +2458,10 @@ struct npc_lorewalker_cho_wanderers_festival : public ScriptedAI
     }
 };
 
-enum q30585
+enum MysteriousWhirlpoolData
 {
-    NPC_NARJON = 59689,
+    NPC_ENTRY_NARJON                        = 59689,
+    NARJON_TEX_01                           = 0
 };
 
 class go_mysterious_whirlpool : public GameObjectScript
@@ -2423,15 +2471,16 @@ class go_mysterious_whirlpool : public GameObjectScript
 
         bool OnGossipHello(Player* player, GameObject* go) override
         {
-            if (go->FindNearestCreature(NPC_NARJON, 100.0f, true))
+            if (go->FindNearestCreature(NPC_ENTRY_NARJON, 100.0f, true))
                 return false;
 
             uint64 guid = player->GetGUID();
-            if (Creature* narjon = player->SummonCreature(NPC_NARJON, { -1126.79f, 1368.609f, 18.94868f, 5.59949f }))
+
+            if (Creature* narjon = player->SummonCreature(NPC_ENTRY_NARJON, { -1126.79f, 1368.609f, 18.94868f, 5.59949f }))
             {
                 narjon->SetDisableGravity(true);
                 narjon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
-                narjon->AI()->Talk(0);
+                narjon->AI()->Talk(NARJON_TEX_01);
                 narjon->m_Events.Schedule(5000, [narjon, go]
                 {
                     narjon->GetMotionMaster()->MovePoint(1, { -1100.35f, 1347.089f, 18.97906f });
@@ -2452,11 +2501,12 @@ class go_mysterious_whirlpool : public GameObjectScript
 };
 
 // http://www.wowhead.com/quest=30274/the-arcanic-oubliette
-enum QUEST_THE_ARCANIC_OUBLIETTE
+enum QuestTheArcanicOublietteData
 {
-    QUESTID_THE_ARCANIC_OUBLIETTE = 30274,
-    SPELL_ARCANIC_OUBLIETTE       = 113119,
-    NPC_KANG_BRAMBLESTAFF         = 56114
+    QUESTID_THE_ARCANIC_OUBLIETTE           = 30274,
+    SPELL_ARCANIC_OUBLIETTE                 = 113119,
+    NPC_KANG_BRAMBLESTAFF                   = 56114,
+    KANG_BRAMBLESTAFF_TEXT_TO_PLAYER        = 0
 };
 
 class at_the_arcanic_oubliette : public AreaTriggerScript
@@ -2469,17 +2519,33 @@ class at_the_arcanic_oubliette : public AreaTriggerScript
             if (!player->isDead() && player->GetQuestStatus(QUESTID_THE_ARCANIC_OUBLIETTE) == QUEST_STATUS_INCOMPLETE)
             {
                 player->CastSpell(player, SPELL_ARCANIC_OUBLIETTE, true);
+
                 if (Creature* kang_bramblestaff = player->FindNearestCreature(NPC_KANG_BRAMBLESTAFF, 20.0f))
-                    kang_bramblestaff->AI()->Talk(0, player);
+                    kang_bramblestaff->AI()->Talk(KANG_BRAMBLESTAFF_TEXT_TO_PLAYER, player);
             }
             return false;
         }
 };
 
-enum Events
+enum FrenziedReefSharkTexts
 {
-    EVENT_DECREASE_POWER   = 1,
-    EVENT_CHECK_POWER      = 2,
+    TEXT_01                                 = 0
+};
+
+enum FrenziedReefSharkSpells
+{
+    SPELL_SHARK_RIDE_GRIP_AURA              = 116668
+};
+
+enum FrenziedReefSharkEvents
+{
+    EVENT_DECREASE_POWER                    = 1,
+    EVENT_CHECK_POWER                       = 2
+};
+
+enum FrenziedReefSharkMisc
+{
+    QUEST_JUMPING_THE_SHARK                 = 30753
 };
 
 // Frenzied Reef Shark - 60408
@@ -2498,13 +2564,13 @@ struct npc_frenzied_reef_shark : public VehicleAI
         me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
     }
 
-
     void PassengerBoarded(Unit* who, int8 /*seatId*/, bool apply) override
     {
         if (!apply)
         {
             if (Player* passenger = who->ToPlayer())
-                passenger->RemoveAura(116668);
+                passenger->RemoveAura(SPELL_SHARK_RIDE_GRIP_AURA);
+
             me->DespawnOrUnsummon(1);
             VehicleAI::Reset();
         }
@@ -2517,15 +2583,16 @@ struct npc_frenzied_reef_shark : public VehicleAI
         if (clicker->GetTypeId() != TYPEID_PLAYER)
             return;
 
-        if (clicker->ToPlayer()->GetQuestStatus(30753) != QUEST_STATUS_INCOMPLETE)
+        if (clicker->ToPlayer()->GetQuestStatus(QUEST_JUMPING_THE_SHARK) != QUEST_STATUS_INCOMPLETE)
             return;
 
         if (me->GetVehicleKit() && me->GetVehicleKit()->HasEmptySeat(0) && !clicker->IsOnVehicle())
         {
-            if (clicker->HasAura(116668))
-                clicker->RemoveAura(116668);
+            if (clicker->HasAura(SPELL_SHARK_RIDE_GRIP_AURA))
+                clicker->RemoveAura(SPELL_SHARK_RIDE_GRIP_AURA);
+
             clicker->EnterVehicle(me, 0);
-            clicker->CastSpell(clicker, 116668, true);
+            clicker->CastSpell(clicker, SPELL_SHARK_RIDE_GRIP_AURA, true);
             clicker->SetPower(POWER_ALTERNATE_POWER, 50);
             me->GetMotionMaster()->MovePoint(0, { -1455.209f, -256.231f, -1.524521f, 4.992734f });
             me->m_Events.Schedule(4000, [this]()
@@ -2536,11 +2603,11 @@ struct npc_frenzied_reef_shark : public VehicleAI
             {
                 if (me->GetVehicleKit() && !me->GetVehicleKit()->HasEmptySeat(0))
                     if (Player* passenger = me->GetVehicleKit()->GetPassenger(0)->ToPlayer())
-                        Talk(0, passenger);
+                        Talk(TEXT_01, passenger);
                 me->GetMotionMaster()->MovePath(me->GetEntry(), true);
             });
-            events.ScheduleEvent(EVENT_DECREASE_POWER, 3 * IN_MILLISECONDS);
-            events.ScheduleEvent(EVENT_CHECK_POWER, 3 * IN_MILLISECONDS);
+            events.ScheduleEvent(EVENT_DECREASE_POWER, 3s);
+            events.ScheduleEvent(EVENT_CHECK_POWER, 3s);
         }
     }
 
@@ -2548,7 +2615,7 @@ struct npc_frenzied_reef_shark : public VehicleAI
     {
         if (me->GetVehicleKit() && !me->GetVehicleKit()->HasEmptySeat(0))
             if (Player* passenger = me->GetVehicleKit()->GetPassenger(0)->ToPlayer())
-                passenger->RemoveAura(116668);
+                passenger->RemoveAura(SPELL_SHARK_RIDE_GRIP_AURA);
     }
 
     void UpdateAI(uint32 diff) override
@@ -2568,20 +2635,20 @@ struct npc_frenzied_reef_shark : public VehicleAI
                     if (Player* passenger = me->GetVehicleKit()->GetPassenger(0)->ToPlayer())
                         if (int32 power = passenger->GetPower(POWER_ALTERNATE_POWER))
                             passenger->SetPower(POWER_ALTERNATE_POWER, power - 5);
-                    events.ScheduleEvent(EVENT_DECREASE_POWER, 3 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_DECREASE_POWER, 3s);
                     break;
                 case EVENT_CHECK_POWER:
                     if (Player* passenger = me->GetVehicleKit()->GetPassenger(0)->ToPlayer())
                     {
                         if (passenger->GetPower(POWER_ALTERNATE_POWER) <= 0)
                         {
-                            passenger->RemoveAura(116668);
+                            passenger->RemoveAura(SPELL_SHARK_RIDE_GRIP_AURA);
                             me->DespawnOrUnsummon();
                             VehicleAI::Reset();
                             return;
                         }
                     }
-                    events.ScheduleEvent(EVENT_CHECK_POWER, 3 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_CHECK_POWER, 3s);
                     break;
             }
         }
@@ -2619,6 +2686,34 @@ Position waterPos[17] =
 
 Position brojaiPos = { -1132.637f, 527.422f, 59.307f, 4.680599f };
 
+enum NaLekTexts
+{
+    NA_LEK_TEXT_01                          = 0,
+    GROUNDBREAKER_BROJAI_TEXT_01            = 0,
+    GROUNDBREAKER_BROJAI_TEXT_02            = 1,
+    KANG_BRAMBLESTAFF_TEXT_01               = 0
+};
+
+enum NaLekSpells
+{
+    SPELL_MOGU_RUNE_PRISON                  = 129039,
+    SPELL_COSMETIC_TELEPORT_EFFECT          = 52096,
+    SPELL_DISPERSE                          = 129042,
+    SPELL_DISPERSE_2                        = 129043
+};
+
+enum NaLekCreatures
+{
+    NPC_ENTRY_GROUNDBREAKER_BROJAI          = 58606,
+    NPC_ENTRY_SLEEPING_GUARDIAN             = 58419,
+    NPC_ENTRY_KANG_BRAMBLESTAFF             = 58206
+};
+
+enum NaLekObjects
+{
+    OBJECT_WATER_OF_YOUTH                   = 210229
+};
+
 // Na Lek - 55597
 struct npc_na_lek : public ScriptedAI
 {
@@ -2633,7 +2728,7 @@ struct npc_na_lek : public ScriptedAI
     void sGossipSelect(Player* player, uint32 /*sender*/, uint32 /*action*/) override
     {
         player->CLOSE_GOSSIP_MENU();
-        me->RemoveAura(129039);
+        me->RemoveAura(SPELL_MOGU_RUNE_PRISON);
         me->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
 
         uint64 guid = player->GetGUID();
@@ -2643,24 +2738,25 @@ struct npc_na_lek : public ScriptedAI
         });
         me->m_Events.Schedule(5000, [this]()
         {
-            if (Creature* brojai = me->SummonCreature(58606, brojaiPos))
-                brojai->CastSpell(brojai, 52096, true);
+            if (Creature* brojai = me->SummonCreature(NPC_ENTRY_GROUNDBREAKER_BROJAI, brojaiPos))
+                brojai->CastSpell(brojai, SPELL_COSMETIC_TELEPORT_EFFECT, true);
         });
         me->m_Events.Schedule(10000, [this, guid]()
         {
             if (Player* player = sObjectAccessor->GetPlayer(*me, guid))
-                if (Creature* brojai = me->FindNearestCreature(58606, 50.0f))
-                    brojai->AI()->Talk(0, player);
+                if (Creature* brojai = me->FindNearestCreature(NPC_ENTRY_GROUNDBREAKER_BROJAI, 50.0f))
+                    brojai->AI()->Talk(GROUNDBREAKER_BROJAI_TEXT_01, player);
         });
         me->m_Events.Schedule(17000, [this]()
         {
-            if (Creature* brojai = me->FindNearestCreature(58606, 50.0f))
-                brojai->AI()->Talk(1);
+            if (Creature* brojai = me->FindNearestCreature(NPC_ENTRY_GROUNDBREAKER_BROJAI, 50.0f))
+                brojai->AI()->Talk(GROUNDBREAKER_BROJAI_TEXT_02);
         });
         me->m_Events.Schedule(18000, [this, guid]()
         {
-            if (Creature* brojai = me->FindNearestCreature(58606, 50.0f))
+            if (Creature* brojai = me->FindNearestCreature(NPC_ENTRY_GROUNDBREAKER_BROJAI, 50.0f))
                 brojai->DespawnOrUnsummon();
+
             if (Player* player = sObjectAccessor->GetPlayer(*me, guid))
             {
                 for (auto&& guid : summons)
@@ -2684,18 +2780,19 @@ struct npc_na_lek : public ScriptedAI
 
     void Reset() override
     {
-        me->CastSpell(me, 129039, true);
+        me->CastSpell(me, SPELL_MOGU_RUNE_PRISON, true);
         me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
         counter = 0;
         summons.DespawnAll();
+
         for (uint32 i = 0; i < 4; i++)
-            me->SummonCreature(58419, guardiansPos[i]);
+            me->SummonCreature(NPC_ENTRY_SLEEPING_GUARDIAN, guardiansPos[i]);
     }
 
     void JustSummoned(Creature* summon) override
     {
         summons.Summon(summon);
-        if (summon->GetEntry() == 58419)
+        if (summon->GetEntry() == NPC_ENTRY_SLEEPING_GUARDIAN)
         {
             summon->SetStandState(UNIT_STAND_STATE_SIT);
             summon->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
@@ -2705,25 +2802,59 @@ struct npc_na_lek : public ScriptedAI
     void SummonedCreatureDies(Creature* /*summon*/, Unit* /*killer*/) override
     {
         counter++;
+
         if (counter >= 4)
         {
             me->m_Events.KillAllEvents(true);
-            me->CastSpell(me, 129042);
+            me->CastSpell(me, SPELL_DISPERSE);
             summons.DespawnAll();
+
             for (uint32 i = 0; i < 10; i++)
-                me->CastSpell(me, 129043);
-            Talk(0);
+                me->CastSpell(me, SPELL_DISPERSE_2);
+
+            Talk(NA_LEK_TEXT_01);
+
             for (uint32 i = 0; i < 17; i++)
-                if (GameObject* water = me->SummonGameObject(210229, waterPos[i].GetPositionX(), waterPos[i].GetPositionY(), waterPos[i].GetPositionZ(), waterPos[i].GetOrientation(), { }, 10 * IN_MILLISECONDS))
+                if (GameObject* water = me->SummonGameObject(OBJECT_WATER_OF_YOUTH, waterPos[i].GetPositionX(), waterPos[i].GetPositionY(), waterPos[i].GetPositionZ(), waterPos[i].GetOrientation(), { }, 10 * IN_MILLISECONDS))
                     water->ForcedDespawn(30000);
             me->m_Events.Schedule(4000, [this]()
             {
-                if (Creature* kang = me->FindNearestCreature(58206, 50.0f))
-                    kang->AI()->Talk(0);
+                if (Creature* kang = me->FindNearestCreature(NPC_ENTRY_KANG_BRAMBLESTAFF, 50.0f))
+                    kang->AI()->Talk(KANG_BRAMBLESTAFF_TEXT_01);
             });
             me->DespawnOrUnsummon(6000);
         }
     }
+};
+
+enum Data
+{
+    SPELL_SUMMON_TAK_TAK_S_KITE_C           = 135364,
+    SPELL_SUMMON_FENNIE_S_KITE_L            = 135395,
+
+    NPC_ENTRY_TAK_TAK_S_KITE                = 68720,
+    NPC_ENTRY_FENNIE_S_KITE                 = 68748,
+    NPC_ENTRY_TAK_TAK                       = 68718,
+    NPC_ENTRY_FENNIE_HORNSWAGGLE            = 68740,
+
+    TEXT_01_H                               = 0,
+    TEXT_02_H                               = 1,
+    TEXT_03_H                               = 2,
+    TEXT_04_H                               = 3,
+    TEXT_05_H                               = 4,
+    TEXT_06_H                               = 5,
+
+    TEXT_01_A                               = 0,
+    TEXT_02_A                               = 1,
+    TEXT_03_A                               = 2,
+    TEXT_04_A                               = 3,
+    TEXT_05_A                               = 4,
+    TEXT_06_A                               = 5,
+    TEXT_07_A                               = 6,
+    TEXT_08_A                               = 7,
+    TEXT_09_A                               = 8,
+    TEXT_10_A                               = 9,
+    TEXT_11_A                               = 10
 };
 
 struct npc_the_bell_peaks_start : public ScriptedAI
@@ -2733,13 +2864,15 @@ struct npc_the_bell_peaks_start : public ScriptedAI
     void sGossipSelect(Player* player, uint32 /*sender*/, uint32 /*action*/) override
     {
         player->CLOSE_GOSSIP_MENU();
-        player->CastSpell(player, player->GetTeamId() == TEAM_HORDE ? 135364 : 135395);
-        Creature* kite = GetClosestCreatureWithEntry(me, player->GetTeamId() == TEAM_HORDE ? 68720 : 68748, 50.0f, true);
+        player->CastSpell(player, player->GetTeamId() == TEAM_HORDE ? SPELL_SUMMON_TAK_TAK_S_KITE_C : SPELL_SUMMON_FENNIE_S_KITE_L);
+        Creature* kite = GetClosestCreatureWithEntry(me, player->GetTeamId() == TEAM_HORDE ? NPC_ENTRY_TAK_TAK_S_KITE : NPC_ENTRY_FENNIE_S_KITE, 50.0f, true);
+
         if (!kite)
             return;
 
-        Creature* starter = kite->SummonCreature(player->GetTeamId() == TEAM_HORDE ? 68718 : 68740, kite->GetPosition(), TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 420000);
+        Creature* starter = kite->SummonCreature(player->GetTeamId() == TEAM_HORDE ? NPC_ENTRY_TAK_TAK : NPC_ENTRY_FENNIE_HORNSWAGGLE, kite->GetPosition(), TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, 420 * IN_MILLISECONDS);
         uint64 guid = player->GetGUID();
+
         if (starter)
         {
             player->EnterVehicle(kite, 0);
@@ -2751,15 +2884,16 @@ struct npc_the_bell_peaks_start : public ScriptedAI
             kite->GetMotionMaster()->MovePath(kite->GetEntry(), false);
 
             uint32 delay = 0;
+
             if (player->GetTeamId() == TEAM_HORDE)
             {
-                kite->m_Events.Schedule(delay += 1000,  [starter]() { starter->AI()->Talk(0); });
-                kite->m_Events.Schedule(delay += 15000, [starter]() { starter->AI()->Talk(1); });
-                kite->m_Events.Schedule(delay += 20000, [starter]() { starter->AI()->Talk(2); });
-                kite->m_Events.Schedule(delay += 20000, [starter]() { starter->AI()->Talk(3); });
-                kite->m_Events.Schedule(delay += 95000, [starter]() { starter->AI()->Talk(4); });
-                kite->m_Events.Schedule(delay += 5000,  [starter]() { starter->AI()->Talk(5); });
-                kite->m_Events.Schedule(delay += 30000, [starter, guid, kite]()
+                kite->m_Events.Schedule(delay += 1 * IN_MILLISECONDS,  [starter]() { starter->AI()->Talk(TEXT_01_H); });
+                kite->m_Events.Schedule(delay += 15 * IN_MILLISECONDS, [starter]() { starter->AI()->Talk(TEXT_02_H); });
+                kite->m_Events.Schedule(delay += 20 * IN_MILLISECONDS, [starter]() { starter->AI()->Talk(TEXT_03_H); });
+                kite->m_Events.Schedule(delay += 20 * IN_MILLISECONDS, [starter]() { starter->AI()->Talk(TEXT_04_H); });
+                kite->m_Events.Schedule(delay += 95 * IN_MILLISECONDS, [starter]() { starter->AI()->Talk(TEXT_05_H); });
+                kite->m_Events.Schedule(delay += 5 * IN_MILLISECONDS,  [starter]() { starter->AI()->Talk(TEXT_06_H); });
+                kite->m_Events.Schedule(delay += 30 * IN_MILLISECONDS, [starter, guid, kite]()
                 {
                     if (Player* player = sObjectAccessor->GetPlayer(*starter, guid))
                         player->KilledMonsterCredit(68726);
@@ -2767,18 +2901,18 @@ struct npc_the_bell_peaks_start : public ScriptedAI
             }
             else
             {
-                kite->m_Events.Schedule(delay += 2000,  [starter]() { starter->AI()->Talk(0); });
-                kite->m_Events.Schedule(delay += 15000, [starter]() { starter->AI()->Talk(1); });
-                kite->m_Events.Schedule(delay += 15000, [starter]() { starter->AI()->Talk(2); });
-                kite->m_Events.Schedule(delay += 15000, [starter]() { starter->AI()->Talk(3); });
-                kite->m_Events.Schedule(delay += 15000, [starter]() { starter->AI()->Talk(4); });
-                kite->m_Events.Schedule(delay += 15000, [starter]() { starter->AI()->Talk(5); });
-                kite->m_Events.Schedule(delay += 15000, [starter]() { starter->AI()->Talk(6); });
-                kite->m_Events.Schedule(delay += 20000, [starter]() { starter->AI()->Talk(7); });
-                kite->m_Events.Schedule(delay += 60000, [starter]() { starter->AI()->Talk(8); });
-                kite->m_Events.Schedule(delay += 5000,  [starter]() { starter->AI()->Talk(9); });
-                kite->m_Events.Schedule(delay += 7000,  [starter]() { starter->AI()->Talk(10); });
-                kite->m_Events.Schedule(delay += 5000,  [starter, guid, kite]()
+                kite->m_Events.Schedule(delay += 2 * IN_MILLISECONDS,  [starter]() { starter->AI()->Talk(TEXT_01_A); });
+                kite->m_Events.Schedule(delay += 15 * IN_MILLISECONDS, [starter]() { starter->AI()->Talk(TEXT_02_A); });
+                kite->m_Events.Schedule(delay += 15 * IN_MILLISECONDS, [starter]() { starter->AI()->Talk(TEXT_03_A); });
+                kite->m_Events.Schedule(delay += 15 * IN_MILLISECONDS, [starter]() { starter->AI()->Talk(TEXT_04_A); });
+                kite->m_Events.Schedule(delay += 15 * IN_MILLISECONDS, [starter]() { starter->AI()->Talk(TEXT_05_A); });
+                kite->m_Events.Schedule(delay += 15 * IN_MILLISECONDS, [starter]() { starter->AI()->Talk(TEXT_06_A); });
+                kite->m_Events.Schedule(delay += 15 * IN_MILLISECONDS, [starter]() { starter->AI()->Talk(TEXT_07_A); });
+                kite->m_Events.Schedule(delay += 20 * IN_MILLISECONDS, [starter]() { starter->AI()->Talk(TEXT_08_A); });
+                kite->m_Events.Schedule(delay += 60 * IN_MILLISECONDS, [starter]() { starter->AI()->Talk(TEXT_09_A); });
+                kite->m_Events.Schedule(delay += 5 * IN_MILLISECONDS,  [starter]() { starter->AI()->Talk(TEXT_10_A); });
+                kite->m_Events.Schedule(delay += 7 * IN_MILLISECONDS,  [starter]() { starter->AI()->Talk(TEXT_11_A); });
+                kite->m_Events.Schedule(delay += 5 * IN_MILLISECONDS,  [starter, guid, kite]()
                 {
                     if (Player* player = sObjectAccessor->GetPlayer(*starter, guid))
                         player->KilledMonsterCredit(68748);
@@ -2786,6 +2920,27 @@ struct npc_the_bell_peaks_start : public ScriptedAI
             }
         }
     }
+};
+
+enum LorekeeperVaeldrinData
+{
+    QUEST_THE_WATERS_OF_YOUTH               = 30445,
+    QUEST_IMMORTALITY                       = 30348,
+    SPELL_TRANSFER_LIFE                     = 111849,
+    NPC_ENTRY_LOREKEEPER_VAELDRIN           = 58745,
+    NPC_ENTRY_LOREKEEPER_VAELDRIN_NEW       = 58970,
+    NPC_ENTRY_LYALIA_T                      = 58735,
+    NPC_ENTRY_LYALIA                        = 58821,
+    NPC_ENTRY_LYALIA_NEW                    = 58833,
+    TEXT_LOREKEEPER_VAELDRIN_01             = 0,
+    TEXT_LOREKEEPER_VAELDRIN_02             = 1,
+    TEXT_LOREKEEPER_VAELDRIN_03             = 2,
+    TEXT_LYALIA_01                          = 0,
+    TEXT_LOREKEEPER_VAELDRIN_NEW_01         = 0,
+    TEXT_LOREKEEPER_VAELDRIN_NEW_02         = 1,
+    TEXT_LOREKEEPER_VAELDRIN_NEW_03         = 2,
+    TEXT_LOREKEEPER_VAELDRIN_NEW_04         = 3,
+    TEXT_LYALIA_NEW_01                      = 0,
 };
 
 // Lorekeeper Vaeldrin 58745
@@ -2808,17 +2963,19 @@ struct npc_lorekeeper_vaeldrin : public ScriptedAI
         {
             me->SetVisible(true);
             me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
-            if (Creature* lyalia = me->FindNearestCreature(58821, 50.0f))
+
+            if (Creature* lyalia = me->FindNearestCreature(NPC_ENTRY_LYALIA, 50.0f))
             {
                 lyalia->SetVisible(true);
                 lyalia->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
             }
         };
 
-        if (quest->GetQuestId() == 30348 && me->GetAreaId() == 6009)
+        if (quest->GetQuestId() == QUEST_IMMORTALITY && me->GetAreaId() == 6009)
         {
             me->SetVisible(false);
-            Creature* vaeldrinNew = player->SummonCreature(58745, me->GetPosition());
+            Creature* vaeldrinNew = player->SummonCreature(NPC_ENTRY_LOREKEEPER_VAELDRIN, me->GetPosition());
+
             if (!vaeldrinNew)
             {
                 reset();
@@ -2829,7 +2986,7 @@ struct npc_lorekeeper_vaeldrin : public ScriptedAI
             vaeldrinNew->HandleEmoteStateCommand(EMOTE_ONESHOT_NONE);
             vaeldrinNew->m_Events.Schedule(delay +=2000, [vaeldrinNew]
             {
-                vaeldrinNew->AI()->Talk(0);
+                vaeldrinNew->AI()->Talk(TEXT_LOREKEEPER_VAELDRIN_01);
             });
             vaeldrinNew->m_Events.Schedule(delay += 5000, [vaeldrinNew]
             {
@@ -2846,12 +3003,12 @@ struct npc_lorekeeper_vaeldrin : public ScriptedAI
             });
             vaeldrinNew->m_Events.Schedule(delay += 5000, [vaeldrinNew]
             {
-                if (Creature* lyalia = vaeldrinNew->FindNearestCreature(58735, 50.0f))
-                    lyalia->AI()->Talk(0);
+                if (Creature* lyalia = vaeldrinNew->FindNearestCreature(NPC_ENTRY_LYALIA_T, 50.0f))
+                    lyalia->AI()->Talk(TEXT_LYALIA_01);
             });
             vaeldrinNew->m_Events.Schedule(delay += 2000, [vaeldrinNew]
             {
-                vaeldrinNew->AI()->Talk(1);
+                vaeldrinNew->AI()->Talk(TEXT_LOREKEEPER_VAELDRIN_02);
             });
             vaeldrinNew->m_Events.Schedule(delay += 8000, [vaeldrinNew, playerGuid]
             {
@@ -2860,7 +3017,7 @@ struct npc_lorekeeper_vaeldrin : public ScriptedAI
             });
             vaeldrinNew->m_Events.Schedule(delay += 2000, [vaeldrinNew]
             {
-                vaeldrinNew->AI()->Talk(2);
+                vaeldrinNew->AI()->Talk(TEXT_LOREKEEPER_VAELDRIN_03);
                 vaeldrinNew->SetStandState(UNIT_STAND_STATE_STAND);
             });
             vaeldrinNew->m_Events.Schedule(delay += 2000, [vaeldrinNew, reset]
@@ -2872,12 +3029,13 @@ struct npc_lorekeeper_vaeldrin : public ScriptedAI
         }
 
         // todo: add phasing
-        if (quest->GetQuestId() == 30445 && me->GetAreaId() == 6016)
+        if (quest->GetQuestId() == QUEST_THE_WATERS_OF_YOUTH && me->GetAreaId() == 6016)
         {
             me->SetVisible(false);
             me->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
 
-            Creature* lyalia = me->FindNearestCreature(58821, 50.0f);
+            Creature* lyalia = me->FindNearestCreature(NPC_ENTRY_LYALIA, 50.0f);
+
             if (!lyalia)
             {
                 reset();
@@ -2886,8 +3044,9 @@ struct npc_lorekeeper_vaeldrin : public ScriptedAI
             lyalia->SetVisible(false);
             lyalia->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
 
-            Creature* vaeldrinNew = me->SummonCreature(58970, me->GetPosition());
-            Creature* lyaliaNew = me->SummonCreature(58833, lyalia->GetPosition());
+            Creature* vaeldrinNew = me->SummonCreature(NPC_ENTRY_LOREKEEPER_VAELDRIN_NEW, me->GetPosition());
+            Creature* lyaliaNew = me->SummonCreature(NPC_ENTRY_LYALIA_NEW, lyalia->GetPosition());
+
             if (!vaeldrinNew || !lyaliaNew)
             {
                 reset();
@@ -2895,22 +3054,22 @@ struct npc_lorekeeper_vaeldrin : public ScriptedAI
             }
 
             vaeldrinNew->SetFacingTo(me->GetAngle(lyaliaNew));
-            vaeldrinNew->AI()->Talk(0);
+            vaeldrinNew->AI()->Talk(TEXT_LOREKEEPER_VAELDRIN_NEW_01);
             vaeldrinNew->m_Events.Schedule(delay += 5000, [vaeldrinNew]
             {
                 vaeldrinNew->SetStandState(UNIT_STAND_STATE_KNEEL);
             });
             vaeldrinNew->m_Events.Schedule(delay += 3000, [vaeldrinNew]
             {
-                vaeldrinNew->AI()->Talk(1);
+                vaeldrinNew->AI()->Talk(TEXT_LOREKEEPER_VAELDRIN_NEW_02);
             });
             vaeldrinNew->m_Events.Schedule(delay += 5000, [vaeldrinNew]
             {
-                vaeldrinNew->AI()->Talk(2);
+                vaeldrinNew->AI()->Talk(TEXT_LOREKEEPER_VAELDRIN_NEW_03);
             });
             vaeldrinNew->m_Events.Schedule(delay += 3000, [vaeldrinNew]
             {
-                vaeldrinNew->AI()->Talk(3);
+                vaeldrinNew->AI()->Talk(TEXT_LOREKEEPER_VAELDRIN_NEW_04);
                 vaeldrinNew->SetStandState(UNIT_STAND_STATE_STAND);
             });
             vaeldrinNew->m_Events.Schedule(delay += 1000, [vaeldrinNew]
@@ -2919,7 +3078,7 @@ struct npc_lorekeeper_vaeldrin : public ScriptedAI
             });
             vaeldrinNew->m_Events.Schedule(delay += 5000, [vaeldrinNew, lyaliaNew]
             {
-                vaeldrinNew->CastSpell(lyaliaNew, 111849);
+                vaeldrinNew->CastSpell(lyaliaNew, SPELL_TRANSFER_LIFE);
             });
             vaeldrinNew->m_Events.Schedule(delay += 7000, [vaeldrinNew, lyaliaNew]
             {
@@ -2927,8 +3086,9 @@ struct npc_lorekeeper_vaeldrin : public ScriptedAI
             });
             vaeldrinNew->m_Events.Schedule(delay += 2000, [vaeldrinNew, lyaliaNew, playerGuid]
             {
-                lyaliaNew->AI()->Talk(0);
+                lyaliaNew->AI()->Talk(TEXT_LYALIA_NEW_01);
                 vaeldrinNew->setDeathState(JUST_DIED);
+
                 if (Player* player = sObjectAccessor->GetPlayer(*vaeldrinNew, playerGuid))
                     player->KilledMonsterCredit(58970);
             });

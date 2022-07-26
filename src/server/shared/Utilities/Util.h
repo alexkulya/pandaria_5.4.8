@@ -19,6 +19,7 @@
 #define _UTIL_H
 
 #include "Common.h"
+#include "Duration.h"
 #include "Errors.h"
 
 #include <algorithm>
@@ -84,6 +85,9 @@ uint32 urand(uint32 min, uint32 max);
 
 /* Return a random number in the range 0 .. RAND32_MAX. */
 int32 rand32();
+
+/* Return a random time in the range min..max (up to millisecond precision). */
+Milliseconds randtime(Milliseconds const& min, Milliseconds const& max);
 
 /* Return a random number in the range min..max */
 float frand(float min, float max);
