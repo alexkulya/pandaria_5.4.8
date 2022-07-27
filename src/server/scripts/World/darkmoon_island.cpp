@@ -140,11 +140,11 @@ struct npc_darkmoon_moonfang : public customCreatureAI
 
     void EnterCombat(Unit* who) override
     {
-        events.ScheduleEvent(EVENT_MOONFANG_CURSE, 19.5 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_FANGS_OF_THE_MOON, 8.5 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_MOONFANG_TEARS, 11 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_CALL_THE_PACK, 25 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_LEAP_FOR_THE_KILL, 15 * IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_MOONFANG_CURSE, 19s + 500ms);
+        events.ScheduleEvent(EVENT_FANGS_OF_THE_MOON, 8s + 500ms);
+        events.ScheduleEvent(EVENT_MOONFANG_TEARS, 11s);
+        events.ScheduleEvent(EVENT_CALL_THE_PACK, 25s);
+        events.ScheduleEvent(EVENT_LEAP_FOR_THE_KILL, 15s);
     }
 
     void EnterEvadeMode() override
