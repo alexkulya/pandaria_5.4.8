@@ -17,6 +17,7 @@
 
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
+#include "ScriptedEscortAI.h"
 #include "PassiveAI.h"
 
 enum Gilneas
@@ -108,7 +109,23 @@ enum Gilneas
 
     CHILDREN_TEXT_ID                        = 0,
 
-    GO_DOOR_TO_THE_BASEMENT                 = 196411
+    GO_DOOR_TO_THE_BASEMENT                 = 196411,
+
+    SPELL_CATCH_CAT                         = 68743,
+    SPELL_LUCIUS_SHOOT                      = 41440,
+
+    NPC_WAHL                                = 36458,
+    NPC_WAHL_WORGEN                         = 36852,
+    NPC_LUCIUS_THE_CRUEL                    = 36461,
+
+    SAY_THIS_CAT_IS_MINE                    = 0,
+    YELL_DONT_MESS                          = 0,
+
+    ACTION_SUMMON_LUCIUS                    = 1,
+    ACTION_CHANCE_DESPAWN                   = 2,
+    ACTION_CONTINUE_SCENE                   = 3,
+
+    POINT_CATCH_CHANCE                      = 4
 };
 
 Position const runt2SummonJumpPos = { -1671.915f, 1446.734f, 52.28712f };
@@ -506,7 +523,7 @@ struct npc_gilneas_city_guard_gate : public ScriptedAI
     void Reset() override
     {
         if (me->GetDistance2d(-1430.47f, 1345.55f) < 10.0f)
-            m_events.ScheduleEvent(EVENT_START_TALK_WITH_CITIZEN, 10 * IN_MILLISECONDS, 30 * IN_MILLISECONDS);
+            m_events.ScheduleEvent(EVENT_START_TALK_WITH_CITIZEN, randtime(10s, 30s));
     }
 
     void UpdateAI(uint32 diff) override
@@ -526,7 +543,7 @@ struct npc_gilneas_city_guard_gate : public ScriptedAI
                     if (Creature* npc = ObjectAccessor::GetCreature(*me, m_citizenGUID))
                         npc->HandleEmoteCommand(m_emote);
 
-                    m_events.ScheduleEvent(EVENT_TALK_WITH_CITIZEN_1, 2 * IN_MILLISECONDS + 200, 3 * IN_MILLISECONDS);
+                    m_events.ScheduleEvent(EVENT_TALK_WITH_CITIZEN_1, randtime(2s + 200ms, 3s));
                     break;
                 }
                 case EVENT_TALK_WITH_CITIZEN_1:
@@ -534,13 +551,13 @@ struct npc_gilneas_city_guard_gate : public ScriptedAI
                     if (Creature* npc = ObjectAccessor::GetCreature(*me, m_citizenGUID))
                         npc->AI()->Talk(m_say);
 
-                    m_events.ScheduleEvent(EVENT_TALK_WITH_CITIZEN_2, 5 * IN_MILLISECONDS);
+                    m_events.ScheduleEvent(EVENT_TALK_WITH_CITIZEN_2, 5s);
                     break;
                 }
                 case EVENT_TALK_WITH_CITIZEN_2:
                 {
                     Talk(m_say);
-                    m_events.ScheduleEvent(EVENT_TALK_WITH_CITIZEN_3, 5 * IN_MILLISECONDS);
+                    m_events.ScheduleEvent(EVENT_TALK_WITH_CITIZEN_3, 5s);
                     break;
                 }
                 case EVENT_TALK_WITH_CITIZEN_3:
@@ -548,7 +565,7 @@ struct npc_gilneas_city_guard_gate : public ScriptedAI
                     if (Creature* npc = ObjectAccessor::GetCreature(*me, m_citizenGUID))
                         npc->HandleEmoteCommand(EMOTE_STATE_NONE);
 
-                    m_events.ScheduleEvent(EVENT_START_TALK_WITH_CITIZEN, 5 * IN_MILLISECONDS, 30 * IN_MILLISECONDS);
+                    m_events.ScheduleEvent(EVENT_START_TALK_WITH_CITIZEN, randtime(5s, 30s));
                     break;
                 }
             }
@@ -593,7 +610,7 @@ struct npc_prince_liam_greymane : public ScriptedAI
 
     void Reset() override
     {
-        _events.RescheduleEvent(EVENT_START_DIALOG, 1 * IN_MILLISECONDS);
+        _events.RescheduleEvent(EVENT_START_DIALOG, 1s);
     }
 
     void UpdateAI(uint32 diff) override
@@ -606,20 +623,20 @@ struct npc_prince_liam_greymane : public ScriptedAI
             {
                 case EVENT_START_DIALOG:
                 {
-                    _events.ScheduleEvent(EVENT_RESET_DIALOG, 2 * MINUTE * IN_MILLISECONDS);
-                    _events.ScheduleEvent(EVENT_START_TALK_TO_GUARD, 1 * IN_MILLISECONDS);
+                    _events.ScheduleEvent(EVENT_RESET_DIALOG, 2min);
+                    _events.ScheduleEvent(EVENT_START_TALK_TO_GUARD, 1s);
                     break;
                 }
                 case EVENT_START_TALK_TO_GUARD:
                 {
                     Talk(PRINCE_LIAM_GREYMANE_TEXT_00);
-                    _events.ScheduleEvent(EVENT_TALK_TO_GUARD_1, 15 * IN_MILLISECONDS);
+                    _events.ScheduleEvent(EVENT_TALK_TO_GUARD_1, 15s);
                     break;
                 }
                 case EVENT_TALK_TO_GUARD_1:
                 {
                     Talk(PRINCE_LIAM_GREYMANE_TEXT_01);
-                    _events.ScheduleEvent(EVENT_TALK_TO_GUARD_2, 18 * IN_MILLISECONDS);
+                    _events.ScheduleEvent(EVENT_TALK_TO_GUARD_2, 18s);
                     break;
                 }
                 case EVENT_TALK_TO_GUARD_2:
@@ -666,7 +683,7 @@ struct npc_worgen_runt : public ScriptedAI
     {
         me->setActive(true);
         _events.SetPhase(PHASE_ROOF);
-        _events.ScheduleEvent(EVENT_FORCE_DESPAWN, 70 * IN_MILLISECONDS, 0, PHASE_ROOF);
+        _events.ScheduleEvent(EVENT_FORCE_DESPAWN, 1min + 10s, 0, PHASE_ROOF);
         _playerGuid = summoner->GetGUID();
 
         if (me->GetEntry() == NPC_WORGEN_RUNT_2)
@@ -765,7 +782,7 @@ struct npc_worgen_runt : public ScriptedAI
         if (type == EFFECT_MOTION_TYPE && pointId == _wayPointCounter && !_jumped)
         {
             _jumped = true;
-            _events.ScheduleEvent(EVENT_JUMP_TO_PRISON, 1 * IN_MILLISECONDS);
+            _events.ScheduleEvent(EVENT_JUMP_TO_PRISON, 1s);
         }
     }
 
@@ -786,7 +803,7 @@ struct npc_worgen_runt : public ScriptedAI
                 case EVENT_JUMP_TO_PRISON:
                     me->GetMotionMaster()->MoveJump(worgenRuntJumpPos[_worgenID], 16.0f, _worgenID < WORGEN_ID_CATHEDRAL_1 ? 19.2911f : frand(3.945607f, 4.852813f));
                     me->SetHomePosition(worgenRuntJumpPos[_worgenID]);
-                    _events.ScheduleEvent(EVENT_AGGRO_PLAYER, 2 * IN_MILLISECONDS);
+                    _events.ScheduleEvent(EVENT_AGGRO_PLAYER, 2s);
                     break;
                 case EVENT_AGGRO_PLAYER:
                     if (Unit* player = ObjectAccessor::GetPlayer(*me, _playerGuid))
@@ -922,7 +939,7 @@ struct npc_josiah_avery_worgen_form : public PassiveAI
         me->m_Events.AddLambdaEventAtOffset([this, summoner]()
         {
             me->SetFacingToObject(summoner);
-            _events.ScheduleEvent(EVENT_COSMETIC_ATTACK, 500);
+            _events.ScheduleEvent(EVENT_COSMETIC_ATTACK, 500ms);
         }, 200);
     }
 
@@ -960,12 +977,12 @@ struct npc_josiah_avery_worgen_form : public PassiveAI
                             if (Creature* labTrigger = lorna->FindNearestCreature(NPC_GENERIC_TRIGGER_LAB, 5.0f, true))
                                 labTrigger->CastSpell(player, SPELL_PULL_TO);
 
-                        _events.ScheduleEvent(EVENT_JUMP_TO_PLAYER, 1 * IN_MILLISECONDS);
+                        _events.ScheduleEvent(EVENT_JUMP_TO_PLAYER, 1s);
                     }
                     break;
                 case EVENT_JUMP_TO_PLAYER:
                     me->GetMotionMaster()->MoveJump(josiahJumpPos, 10.0f, 14.18636f);
-                    _events.ScheduleEvent(EVENT_SHOOT_JOSIAH, 1 * IN_MILLISECONDS + 200);
+                    _events.ScheduleEvent(EVENT_SHOOT_JOSIAH, 1s + 200ms);
                     break;
                 case EVENT_SHOOT_JOSIAH:
                     if (Creature* lorna = me->FindNearestCreature(NPC_LORNA_CROWLEY, 30.0f, true))
@@ -1038,7 +1055,7 @@ class npc_gilneas_children : public CreatureScript
                 me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
 
                 if (me->GetEntry() == NPC_CYNTHIA)
-                    events.ScheduleEvent(EVENT_CRY, 1000);
+                    events.ScheduleEvent(EVENT_CRY, 1s);
             }
 
             void SpellHit(Unit* caster, const SpellInfo* spell)
@@ -1052,7 +1069,7 @@ class npc_gilneas_children : public CreatureScript
                         player->Say(PlayerText[_playerSayId], LANG_UNIVERSAL);
                         player->KilledMonsterCredit(me->GetEntry(), 0);
                         me->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
-                        events.ScheduleEvent(EVENT_TALK_TO_PLAYER, 3500);
+                        events.ScheduleEvent(EVENT_TALK_TO_PLAYER, 3s + 500ms);
                     }
                 }
             }
@@ -1072,7 +1089,7 @@ class npc_gilneas_children : public CreatureScript
                             if (Player* player = ObjectAccessor::GetPlayer(*me, playerGUID))
                                 Talk(CHILDREN_TEXT_ID, player);
 
-                            events.ScheduleEvent(EVENT_START_RUN, 5000);
+                            events.ScheduleEvent(EVENT_START_RUN, 5s);
                         }
                         break;
                         case EVENT_START_RUN:
@@ -1102,10 +1119,10 @@ class npc_gilneas_children : public CreatureScript
                                 if (door->GetGoState() == GO_STATE_READY)
                                 {
                                     door->UseDoorOrButton();
-                                    events.ScheduleEvent(EVENT_RESUME_RUN, 2000);
+                                    events.ScheduleEvent(EVENT_RESUME_RUN, 2s);
                                 }
                                 else
-                                    events.ScheduleEvent(EVENT_RESUME_RUN, 0);
+                                    events.ScheduleEvent(EVENT_RESUME_RUN, 0ms);
                             }
                         }
                         break;
@@ -1115,12 +1132,256 @@ class npc_gilneas_children : public CreatureScript
                             break;
                         case EVENT_CRY:
                             me->HandleEmoteCommand(EMOTE_ONESHOT_CRY);
-                            events.ScheduleEvent(EVENT_CRY, urand(1000, 1500));
+                            events.ScheduleEvent(EVENT_CRY, randtime(1s, 1s + 500ms));
                             break;
                     }
                 }
             }
         };
+};
+
+class npc_wahl : public CreatureScript
+{
+public:
+    npc_wahl(const char *ScriptName) : CreatureScript(ScriptName) { }
+
+    struct npc_wahlAI : public npc_escortAI
+    {
+        npc_wahlAI(Creature* creature) : npc_escortAI(creature)
+        {
+            creature->SetReactState(REACT_PASSIVE);
+            creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC || UNIT_FLAG_IMMUNE_TO_NPC);
+        }
+
+        void DoAction(int32 const action) override
+        {
+            if (action == ACTION_CONTINUE_SCENE)
+            {
+                me->m_Events.AddLambdaEventAtOffset([this]()
+                {
+                    SetEscortPaused(false);
+                }, 4000);
+            }
+        }
+
+        void WaypointReached(uint32 point)
+        {
+            if (point == 1)
+                if (me->IsSummon())
+                    if (Unit* summoner = me->ToTempSummon()->GetSummoner())
+                    {
+                        SetEscortPaused(true);
+                        me->SetDisplayId(NPC_WAHL_WORGEN);
+                        Talk(YELL_DONT_MESS);
+                        me->SetReactState(REACT_AGGRESSIVE);
+                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC || UNIT_FLAG_IMMUNE_TO_NPC);
+
+                        me->m_Events.AddLambdaEventAtOffset([this, summoner]()
+                        {
+                            AttackStart(summoner);
+                        }, 800);
+                    }
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            npc_escortAI::UpdateAI(diff);
+        }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_wahlAI(creature);
+    }
+};
+
+class npc_lucius_the_cruel : public CreatureScript
+{
+public:
+    npc_lucius_the_cruel(const char *ScriptName) : CreatureScript(ScriptName) { }
+
+    struct npc_lucius_the_cruelAI : public ScriptedAI
+    {
+        npc_lucius_the_cruelAI(Creature* creature) : ScriptedAI(creature)
+        {
+            SetCombatMovement(false);
+            Catch = false;
+            Summon = false;
+            uiCatchTimer = 1000;
+            uiShootTimer = 500;
+            uiPlayerGUID = 0;
+            uiSummonTimer = 1500;
+            me->SetReactState(REACT_PASSIVE);
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC || UNIT_FLAG_IMMUNE_TO_NPC);
+        }
+
+        uint64 uiPlayerGUID;
+        uint32 uiCatchTimer;
+        uint32 uiShootTimer;
+        uint32 uiSummonTimer;
+        bool Catch;
+        bool Summon;
+
+        void EnterEvadeMode() override
+        {
+            me->DespawnOrUnsummon();
+        }
+
+        void JustDied(Unit* /*killer*/) override
+        {
+            if (Creature* wahl = me->FindNearestCreature(NPC_WAHL, 30.f))
+                wahl->AI()->DoAction(ACTION_CONTINUE_SCENE);
+        }
+
+        void MovementInform(uint32 type, uint32 id) override
+        {
+            if (type != POINT_MOTION_TYPE)
+                return;
+
+            if (id == POINT_CATCH_CHANCE)
+            {
+                me->HandleEmoteCommand(EMOTE_ONESHOT_KNEEL);
+
+                if (me->IsSummon())
+                    if (Unit* summoner = me->ToTempSummon()->GetSummoner())
+                        if (Creature* chance = summoner->ToCreature())
+                        {
+                            me->m_Events.AddLambdaEventAtOffset([this, chance]()
+                            {
+                                Catch = true;
+                                Summon = true;
+                                chance->AI()->DoAction(ACTION_CHANCE_DESPAWN);
+                            }, 4000);
+                        }
+            }
+        }
+
+        void DoAction(int32 const action) override
+        {
+            if (action == ACTION_SUMMON_LUCIUS)
+            {
+                me->GetMotionMaster()->MovePoint(POINT_CATCH_CHANCE, -2106.372f, 2331.106f, 7.360674f);
+
+                me->m_Events.AddLambdaEventAtOffset([this]()
+                {
+                    Talk(SAY_THIS_CAT_IS_MINE);
+                }, 1000);
+            }
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            if (Catch)
+            {
+                if (uiCatchTimer <= diff)
+                {
+                    Catch = false;
+                    uiCatchTimer = 1000;
+                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC || UNIT_FLAG_IMMUNE_TO_NPC);
+                    me->SetReactState(REACT_AGGRESSIVE);
+
+                    if (Player* player = Unit::GetPlayer(*me, uiPlayerGUID))
+                        AttackStart(player);
+                }
+                else
+                    uiCatchTimer -= diff;
+            }
+
+            if (Summon)
+            {
+                if (uiSummonTimer <= diff)
+                {
+                    Summon = false;
+                    uiSummonTimer = 1500;
+
+                    if (Creature* wahl = me->SummonCreature(NPC_WAHL, -2098.366f, 2352.075f, 7.160643f))
+                    {
+                        if (npc_escortAI* npc_escort = CAST_AI(npc_wahl::npc_wahlAI, wahl->AI()))
+                        {
+                            npc_escort->AddWaypoint(0, -2106.54f, 2342.69f, 6.93668f);
+                            npc_escort->AddWaypoint(1, -2106.12f, 2334.90f, 7.36691f);
+                            npc_escort->AddWaypoint(2, -2117.80f, 2357.15f, 5.88139f);
+                            npc_escort->AddWaypoint(3, -2111.46f, 2366.22f, 7.17151f);
+                            npc_escort->Start(false, true);
+                        }
+                    }
+                }
+                else
+                    uiSummonTimer -= diff;
+            }
+
+            if (!UpdateVictim())
+                return;
+
+            if (uiShootTimer <= diff)
+            {
+                uiShootTimer = 1000;
+
+                if (me->GetDistance(me->GetVictim()) > 2.0f)
+                    DoCastVictim(SPELL_LUCIUS_SHOOT);
+            }
+            else
+                uiShootTimer -= diff;
+
+            DoMeleeAttackIfReady();
+        }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_lucius_the_cruelAI(creature);
+    }
+};
+
+struct npc_chance_the_cat : public ScriptedAI
+{
+    npc_chance_the_cat(Creature* creature) : ScriptedAI(creature)
+    {
+        Despawn = false;
+        uiDespawnTimer = 500;
+    }
+
+    uint32 uiDespawnTimer;
+    bool Despawn;
+
+    void DoAction(int32 const action) override
+    {
+        if (action == ACTION_CHANCE_DESPAWN)
+            Despawn = true;
+    }
+
+    void SpellHit(Unit* caster, const SpellInfo* spell) override
+    {
+        if (spell->Id == SPELL_CATCH_CAT && caster->GetTypeId() == TYPEID_PLAYER)
+        {
+            me->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+
+            if (Creature* lucius = me->SummonCreature(NPC_LUCIUS_THE_CRUEL, -2111.533f, 2329.95f, 7.390349f))
+            {
+                lucius->AI()->DoAction(ACTION_SUMMON_LUCIUS);
+                CAST_AI(npc_lucius_the_cruel::npc_lucius_the_cruelAI, lucius->AI())->uiPlayerGUID = caster->GetGUID();
+            }
+        }
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (Despawn)
+        {
+            if (uiDespawnTimer <= diff)
+            {
+                uiDespawnTimer = 500;
+                Despawn = false;
+                me->DespawnOrUnsummon();
+            }
+            else
+                uiDespawnTimer -= diff;
+        }
+    }
 };
 
 void AddSC_gilneas()
@@ -1136,4 +1397,7 @@ void AddSC_gilneas()
     new npc_gilneas_children("npc_james", SPELL_SAVE_JAMES, PLAYER_SAY_JAMES);
     new npc_gilneas_children("npc_ashley", SPELL_SAVE_ASHLEY, PLAYER_SAY_ASHLEY);
     new npc_gilneas_children("npc_cynthia", SPELL_SAVE_CYNTHIA, PLAYER_SAY_CYNTHIA);
+    new npc_wahl("npc_wahl");
+    new npc_lucius_the_cruel("npc_lucius_the_cruel");
+    new creature_script<npc_chance_the_cat>("npc_chance_the_cat");
 }
