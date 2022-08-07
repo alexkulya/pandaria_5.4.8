@@ -216,7 +216,7 @@ bool GameObject::Create(uint32 guidlow, uint32 name_id, Map* map, uint32 phaseMa
         return false;
     }
 
-    if (goinfo->type == GAMEOBJECT_TYPE_TRANSPORT)
+    if (goinfo->type == GAMEOBJECT_TYPE_TRANSPORT && goinfo->entry != 216666)
     {
         TC_LOG_ERROR("sql.sql", "Gameobject (GUID: %u Entry: %u) not created: gameobject type GAMEOBJECT_TYPE_TRANSPORT cannot be manually created.", guidlow, name_id);
         return false;
