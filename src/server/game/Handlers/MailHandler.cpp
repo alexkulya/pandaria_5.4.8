@@ -126,7 +126,7 @@ void WorldSession::HandleSendMail(WorldPacket& recvData)
         return;
     }
 
-	// check msg to bad word
+    // check msg to bad word
     if (sWorld->getBoolConfig(CONFIG_WORD_FILTER_ENABLE))
     {
         std::string badWord = sWordFilterMgr->FindBadWord(subject, true);

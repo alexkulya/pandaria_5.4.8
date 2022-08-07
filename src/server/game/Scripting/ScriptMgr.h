@@ -795,7 +795,7 @@ class PlayerScript : public UnitScript
         // Called when a player changes to a new map (after moving to new map)
         virtual void OnMapChanged(Player* /*player*/) { }
 
-		virtual void OnUpdate(Player* /*player*/, uint32 /*diff*/) { }
+        virtual void OnUpdate(Player* /*player*/, uint32 /*diff*/) { }
 
         // Called when a player selects an option in a player gossip window
         virtual void OnGossipSelect(Player* /*player*/, uint32 /*menu_id*/, uint32 /*sender*/, uint32 /*action*/) { }
@@ -1167,7 +1167,7 @@ class ScriptMgr
         void OnPlayerSave(Player* player);
         void OnPlayerBindToInstance(Player* player, Difficulty difficulty, uint32 mapid, bool permanent);
         void OnPlayerUpdateZone(Player* player, uint32 newZone, uint32 newArea);
-		void OnUpdate(Player* player, uint32 diff);
+        void OnUpdate(Player* player, uint32 diff);
         void OnGossipSelect(Player* player, uint32 menu_id, uint32 sender, uint32 action);
         void OnGossipSelectCode(Player* player, uint32 menu_id, uint32 sender, uint32 action, const char* code);
 

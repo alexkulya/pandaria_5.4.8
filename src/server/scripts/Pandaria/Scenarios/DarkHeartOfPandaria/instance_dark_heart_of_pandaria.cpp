@@ -225,7 +225,7 @@ class instance_dark_heart_of_pandaria : public InstanceMapScript
                         {
                             SendScenarioProgressUpdate(CriteriaProgressData(CRITERIA_DEFEAT_ECHO_OF_YSHAARJ, 1, GetScenarioGUID(), time(NULL), 0, 0));
                             DoFinishLFGDungeon(instance->GetDifficulty() == SCENARIO_DIFFICULTY_HEROIC ? 624 : 647);
-							DoFinishLFGDungeon(instance->GetDifficulty() == SCENARIO_DIFFICULTY_NORMAL ? 624 : 647);
+                            DoFinishLFGDungeon(instance->GetDifficulty() == SCENARIO_DIFFICULTY_NORMAL ? 624 : 647);
 
                             // Interaction Scene
                             if (Creature* norushen = instance->GetCreature(GetData64(NPC_NORUSHEN)))

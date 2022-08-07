@@ -114,31 +114,31 @@ class AuraEffect
         float GetPeriodicCrit() const { return m_periodicCrit; }
         void SetPeriodicCrit(float val) { m_periodicCrit = val; }
 
-		struct FixedPeriodic
-		{
-			void SetCriticalChance(float value) { bCrit = true; fx_crit_chance = value; }
-			float GetCriticalChance() const { return fx_crit_chance; }
-			bool HasCritChance() const { return bCrit; }
+        struct FixedPeriodic
+        {
+            void SetCriticalChance(float value) { bCrit = true; fx_crit_chance = value; }
+            float GetCriticalChance() const { return fx_crit_chance; }
+            bool HasCritChance() const { return bCrit; }
 
-			void SetFixedDamage(int32 value) { bDamage = true; fx_fixed_damage = value; }
-			void SetFixedTotalDamage(int32 value) { fx_fixed_total_damage = value; }
-			int32 GetFixedDamage() const { return fx_fixed_damage; }
-			int32 GetFixedTotalDamage() const { return fx_fixed_total_damage; }
-			bool HasDamage() const { return bDamage; }
+            void SetFixedDamage(int32 value) { bDamage = true; fx_fixed_damage = value; }
+            void SetFixedTotalDamage(int32 value) { fx_fixed_total_damage = value; }
+            int32 GetFixedDamage() const { return fx_fixed_damage; }
+            int32 GetFixedTotalDamage() const { return fx_fixed_total_damage; }
+            bool HasDamage() const { return bDamage; }
 
-		private:
-			float fx_crit_chance = 0.0f;
-			int32 fx_fixed_damage = 0;
-			int32 fx_fixed_total_damage = 0;
-			bool bCrit = false;
-			bool bDamage = false;
-		};
+        private:
+            float fx_crit_chance = 0.0f;
+            int32 fx_fixed_damage = 0;
+            int32 fx_fixed_total_damage = 0;
+            bool bCrit = false;
+            bool bDamage = false;
+        };
 
-		bool HasFixedDamageInfo() { return hasFixedPeriodic; }
-		FixedPeriodic& GetFixedDamageInfo() { return m_fixed_periodic; }
+        bool HasFixedDamageInfo() { return hasFixedPeriodic; }
+        FixedPeriodic& GetFixedDamageInfo() { return m_fixed_periodic; }
 
-		FixedPeriodic m_fixed_periodic;
-		bool hasFixedPeriodic;
+        FixedPeriodic m_fixed_periodic;
+        bool hasFixedPeriodic;
 
     private:
         Aura* const m_base;

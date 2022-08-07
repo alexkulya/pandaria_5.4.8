@@ -28,7 +28,7 @@
 
 enum miscData
 {
-	SPELL_GUARD_AREATRIGGER                     = 134909,
+    SPELL_GUARD_AREATRIGGER                     = 134909,
     SPELL_BRAWLERS_PURSE                        = 134565, // reward for each boss (bonus roll type)
     SPELL_U_ARE_NOT_UR_FICKING_LEGPLATES_ACHIEV = 134548,
     SPELL_THROW_ROTTEN_APPLE                    = 135445,
@@ -1475,7 +1475,7 @@ Position AlianceArenaGeodata()
 
 Position HordeArenaGeodata()
 {
-	return { HordeCenterOfRectangle.GetPositionX() + frand(-19.5f, 19.5f), HordeCenterOfRectangle.GetPositionY() + frand(-18.0f, 18.0f), HordeCenterOfRectangle.GetPositionZ(), HordeCenterOfRectangle.GetOrientation() };
+    return { HordeCenterOfRectangle.GetPositionX() + frand(-19.5f, 19.5f), HordeCenterOfRectangle.GetPositionY() + frand(-18.0f, 18.0f), HordeCenterOfRectangle.GetPositionZ(), HordeCenterOfRectangle.GetOrientation() };
 }
 
 // Volatile Flame 68379
@@ -4734,270 +4734,270 @@ class npc_brawlers_guild_card_traider : public CreatureScript
 // Join to Arena 132633
 class spell_brawlers_guild_join_to_arena : public AuraScript
 {
-	PrepareAuraScript(spell_brawlers_guild_join_to_arena);
+    PrepareAuraScript(spell_brawlers_guild_join_to_arena);
 
-	void OnAuraEffectApply(AuraEffect const* aurEff, AuraEffectHandleModes mode)
-	{
-		if (Player* owner = GetOwner()->ToPlayer())
-		{
-			switch (owner->GetTeam())
-			{
-			    case ALLIANCE:
-			    	owner->ToPlayer()->TeleportTo(owner->GetMapId(), ArenaGizmoPos.GetPositionX(), ArenaGizmoPos.GetPositionY(), ArenaGizmoPos.GetPositionZ(), ArenaGizmoPos.GetOrientation(), TELE_TO_NOT_UNSUMMON_PET);
-			    	break;
-			    case HORDE:
-			    	owner->ToPlayer()->TeleportTo(owner->GetMapId(), RingOfValor.GetPositionX(), RingOfValor.GetPositionY(), RingOfValor.GetPositionZ(), RingOfValor.GetOrientation(), TELE_TO_NOT_UNSUMMON_PET);
-			    	break;
-			}
-		}
-	}
+    void OnAuraEffectApply(AuraEffect const* aurEff, AuraEffectHandleModes mode)
+    {
+        if (Player* owner = GetOwner()->ToPlayer())
+        {
+            switch (owner->GetTeam())
+            {
+                case ALLIANCE:
+                    owner->ToPlayer()->TeleportTo(owner->GetMapId(), ArenaGizmoPos.GetPositionX(), ArenaGizmoPos.GetPositionY(), ArenaGizmoPos.GetPositionZ(), ArenaGizmoPos.GetOrientation(), TELE_TO_NOT_UNSUMMON_PET);
+                    break;
+                case HORDE:
+                    owner->ToPlayer()->TeleportTo(owner->GetMapId(), RingOfValor.GetPositionX(), RingOfValor.GetPositionY(), RingOfValor.GetPositionZ(), RingOfValor.GetOrientation(), TELE_TO_NOT_UNSUMMON_PET);
+                    break;
+            }
+        }
+    }
 
-	void Register() override
-	{
-		OnEffectApply += AuraEffectApplyFn(spell_brawlers_guild_join_to_arena::OnAuraEffectApply, EFFECT_0, SPELL_AURA_426, AURA_EFFECT_HANDLE_REAL);
-	}
+    void Register() override
+    {
+        OnEffectApply += AuraEffectApplyFn(spell_brawlers_guild_join_to_arena::OnAuraEffectApply, EFFECT_0, SPELL_AURA_426, AURA_EFFECT_HANDLE_REAL);
+    }
 };
 
 // FireLine 133607
 class spell_brawlers_guild_fire_line : public SpellScript
 {
-	PrepareSpellScript(spell_brawlers_guild_fire_line);
+    PrepareSpellScript(spell_brawlers_guild_fire_line);
 
-	void HandleAfterCast()
-	{
-		if (Creature* caster = GetCaster()->ToCreature())
-			if (caster->GetEntry() == NPC_VIAN_THE_VOLATILE)
-				caster->AI()->DoAction(ACTION_VIAN_REMOVE_FIRELINE);
-	}
+    void HandleAfterCast()
+    {
+        if (Creature* caster = GetCaster()->ToCreature())
+            if (caster->GetEntry() == NPC_VIAN_THE_VOLATILE)
+                caster->AI()->DoAction(ACTION_VIAN_REMOVE_FIRELINE);
+    }
 
-	void Register() override
-	{
-		AfterCast += SpellCastFn(spell_brawlers_guild_fire_line::HandleAfterCast);
-	}
+    void Register() override
+    {
+        AfterCast += SpellCastFn(spell_brawlers_guild_fire_line::HandleAfterCast);
+    }
 };
 
 // Lumbering Charge 134527
 class spell_brawlers_guild_lumbering_charge : public AuraScript
 {
-	PrepareAuraScript(spell_brawlers_guild_lumbering_charge);
+    PrepareAuraScript(spell_brawlers_guild_lumbering_charge);
 
-	void OnAuraEffectRemove(AuraEffect const* aurEff, AuraEffectHandleModes mode)
-	{
-		if (GetCaster() && GetCaster()->ToCreature())
-			if (uint32 lumberingLow = GetCaster()->ToCreature()->AI()->GetData(TYPE_LUMBERING))
-				if (Unit* lumbering = ObjectAccessor::GetUnit(*GetCaster(), MAKE_NEW_GUID(lumberingLow, NPC_LUMBERING_CHARGE_TARGET, HIGHGUID_UNIT)))
-					GetCaster()->GetMotionMaster()->MoveCharge(lumbering->GetPositionX(), lumbering->GetPositionY(), lumbering->GetPositionZ(), 20.0f, EVENT_CHARGE);
-	}
+    void OnAuraEffectRemove(AuraEffect const* aurEff, AuraEffectHandleModes mode)
+    {
+        if (GetCaster() && GetCaster()->ToCreature())
+            if (uint32 lumberingLow = GetCaster()->ToCreature()->AI()->GetData(TYPE_LUMBERING))
+                if (Unit* lumbering = ObjectAccessor::GetUnit(*GetCaster(), MAKE_NEW_GUID(lumberingLow, NPC_LUMBERING_CHARGE_TARGET, HIGHGUID_UNIT)))
+                    GetCaster()->GetMotionMaster()->MoveCharge(lumbering->GetPositionX(), lumbering->GetPositionY(), lumbering->GetPositionZ(), 20.0f, EVENT_CHARGE);
+    }
 
-	void Register() override
-	{
-		OnEffectRemove += AuraEffectRemoveFn(spell_brawlers_guild_lumbering_charge::OnAuraEffectRemove, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL, AURA_EFFECT_HANDLE_REAL);
-	}
+    void Register() override
+    {
+        OnEffectRemove += AuraEffectRemoveFn(spell_brawlers_guild_lumbering_charge::OnAuraEffectRemove, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL, AURA_EFFECT_HANDLE_REAL);
+    }
 };
 
 // Twister Aura 132668
 class spell_brawlers_guild_twister_aura : public SpellScript
 {
-	PrepareSpellScript(spell_brawlers_guild_twister_aura);
+    PrepareSpellScript(spell_brawlers_guild_twister_aura);
 
-	void HandleEffectHit(SpellEffIndex /*effIndex*/)
-	{
-		if (Unit* caster = GetCaster())
-			if (Creature* kirrawk = caster->FindNearestCreature(NPC_KIRRAWK, 100.0f, true))
-				kirrawk->AI()->DoAction(ACTION_TWISTER);
-	}
+    void HandleEffectHit(SpellEffIndex /*effIndex*/)
+    {
+        if (Unit* caster = GetCaster())
+            if (Creature* kirrawk = caster->FindNearestCreature(NPC_KIRRAWK, 100.0f, true))
+                kirrawk->AI()->DoAction(ACTION_TWISTER);
+    }
 
-	void Register() override
-	{
-		OnEffectHitTarget += SpellEffectFn(spell_brawlers_guild_twister_aura::HandleEffectHit, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
-	}
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_brawlers_guild_twister_aura::HandleEffectHit, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+    }
 };
 
 // Goblin Land Mines 133219
 class spell_brawlers_guild_goblin_land_mines : public SpellScript
 {
-	PrepareSpellScript(spell_brawlers_guild_goblin_land_mines);
+    PrepareSpellScript(spell_brawlers_guild_goblin_land_mines);
 
-	void HandleEffectHit(SpellEffIndex /*effIndex*/)
-	{
-		if (Unit* caster = GetCaster())
-		{
-			x = 0.0f; y = 0.0f;
-			// make symob C spawn (simply 3pi/4 to -pi/4)
-			for (uint8 i = 0; i < 6; i++)
-			{
-				GetPositionWithDistInOrientation(caster, 2.0f, Position::NormalizeOrientation(caster->GetOrientation() + (M_PI / 4)*i), x, y);
-				caster->CastSpell(x, y, caster->GetPositionZ(), SPELL_GOBLIN_LAND_MINE_MISSLE, true);
-			}
-		}
-	}
+    void HandleEffectHit(SpellEffIndex /*effIndex*/)
+    {
+        if (Unit* caster = GetCaster())
+        {
+            x = 0.0f; y = 0.0f;
+            // make symob C spawn (simply 3pi/4 to -pi/4)
+            for (uint8 i = 0; i < 6; i++)
+            {
+                GetPositionWithDistInOrientation(caster, 2.0f, Position::NormalizeOrientation(caster->GetOrientation() + (M_PI / 4)*i), x, y);
+                caster->CastSpell(x, y, caster->GetPositionZ(), SPELL_GOBLIN_LAND_MINE_MISSLE, true);
+            }
+        }
+    }
 
     private:
-		float x, y;
+        float x, y;
 
-	void Register() override
-	{
-		OnEffectHitTarget += SpellEffectFn(spell_brawlers_guild_goblin_land_mines::HandleEffectHit, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
-	}
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_brawlers_guild_goblin_land_mines::HandleEffectHit, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
+    }
 };
 
 // Devastating Thrust 134777
 class spell_brawlers_guild_devastating_thrust : public SpellScript
 {
-	PrepareSpellScript(spell_brawlers_guild_devastating_thrust);
+    PrepareSpellScript(spell_brawlers_guild_devastating_thrust);
 
-	void HandleAfterCast()
-	{
-		if (Creature* caster = GetCaster()->ToCreature())
-			caster->AI()->DoAction(ACTION_DEVASTATING_THRUST);
-	}
+    void HandleAfterCast()
+    {
+        if (Creature* caster = GetCaster()->ToCreature())
+            caster->AI()->DoAction(ACTION_DEVASTATING_THRUST);
+    }
 
-	void Register() override
-	{
-		AfterCast += SpellCastFn(spell_brawlers_guild_devastating_thrust::HandleAfterCast);
-	}
+    void Register() override
+    {
+        AfterCast += SpellCastFn(spell_brawlers_guild_devastating_thrust::HandleAfterCast);
+    }
 };
 
 // Illusionist 133119, 133290
 class spell_brawlers_guild_illusionist : public SpellScript
 {
-	PrepareSpellScript(spell_brawlers_guild_illusionist);
+    PrepareSpellScript(spell_brawlers_guild_illusionist);
 
-	void SelectTargets(SpellDestination& dest)
-	{
-		dest.Relocate(GetCaster()->GetMap()->GetId() == 1043 ? HordeArenaGeodata() : AlianceArenaGeodata());
-	}
+    void SelectTargets(SpellDestination& dest)
+    {
+        dest.Relocate(GetCaster()->GetMap()->GetId() == 1043 ? HordeArenaGeodata() : AlianceArenaGeodata());
+    }
 
-	void Register() override
-	{
-		OnDestinationTargetSelect += SpellDestinationTargetSelectFn(spell_brawlers_guild_illusionist::SelectTargets, EFFECT_0, TARGET_DEST_DEST_RANDOM);
-	}
+    void Register() override
+    {
+        OnDestinationTargetSelect += SpellDestinationTargetSelectFn(spell_brawlers_guild_illusionist::SelectTargets, EFFECT_0, TARGET_DEST_DEST_RANDOM);
+    }
 };
 
 // Rain Dance 124860
 class spell_brawlers_guild_rain_dance : public SpellScript
 {
-	PrepareSpellScript(spell_brawlers_guild_rain_dance);
+    PrepareSpellScript(spell_brawlers_guild_rain_dance);
 
-	void SelectTargets(SpellDestination& dest)
-	{
-		dest.Relocate(GetCaster()->GetMap()->GetId() == 1043 ? HordeArenaGeodata() : AlianceArenaGeodata());
-	}
+    void SelectTargets(SpellDestination& dest)
+    {
+        dest.Relocate(GetCaster()->GetMap()->GetId() == 1043 ? HordeArenaGeodata() : AlianceArenaGeodata());
+    }
 
-	void Register() override
-	{
-		OnDestinationTargetSelect += SpellDestinationTargetSelectFn(spell_brawlers_guild_rain_dance::SelectTargets, EFFECT_0, TARGET_DEST_CASTER_RANDOM);
-		OnDestinationTargetSelect += SpellDestinationTargetSelectFn(spell_brawlers_guild_rain_dance::SelectTargets, EFFECT_2, TARGET_DEST_CASTER_RANDOM);
-		OnDestinationTargetSelect += SpellDestinationTargetSelectFn(spell_brawlers_guild_rain_dance::SelectTargets, EFFECT_3, TARGET_DEST_CASTER_RANDOM);
-	}
+    void Register() override
+    {
+        OnDestinationTargetSelect += SpellDestinationTargetSelectFn(spell_brawlers_guild_rain_dance::SelectTargets, EFFECT_0, TARGET_DEST_CASTER_RANDOM);
+        OnDestinationTargetSelect += SpellDestinationTargetSelectFn(spell_brawlers_guild_rain_dance::SelectTargets, EFFECT_2, TARGET_DEST_CASTER_RANDOM);
+        OnDestinationTargetSelect += SpellDestinationTargetSelectFn(spell_brawlers_guild_rain_dance::SelectTargets, EFFECT_3, TARGET_DEST_CASTER_RANDOM);
+    }
 };
 
 // Fallen kin 134789
 class spell_brawlers_guild_fallen_kin : public SpellScript
 {
-	PrepareSpellScript(spell_brawlers_guild_fallen_kin);
+    PrepareSpellScript(spell_brawlers_guild_fallen_kin);
 
-	void HandleEffectHit(SpellEffIndex effIndex)
-	{
-		if (Unit* target = GetHitUnit())
-			if (target->GetAura(SPELL_FALLEN_KIN) && target->GetAura(SPELL_FALLEN_KIN)->GetStackAmount() > 4)
-				target->CastSpell(target, SPELL_FEATHERED_FURY, true);
-	}
+    void HandleEffectHit(SpellEffIndex effIndex)
+    {
+        if (Unit* target = GetHitUnit())
+            if (target->GetAura(SPELL_FALLEN_KIN) && target->GetAura(SPELL_FALLEN_KIN)->GetStackAmount() > 4)
+                target->CastSpell(target, SPELL_FEATHERED_FURY, true);
+    }
 
-	void Register() override
-	{
-		OnEffectHitTarget += SpellEffectFn(spell_brawlers_guild_fallen_kin::HandleEffectHit, EFFECT_0, SPELL_EFFECT_APPLY_AURA);
-	}
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_brawlers_guild_fallen_kin::HandleEffectHit, EFFECT_0, SPELL_EFFECT_APPLY_AURA);
+    }
 };
 
 // Emergency Teleport 133162
 class spell_brawlers_guild_emergency_teleport : public SpellScript
 {
-	PrepareSpellScript(spell_brawlers_guild_emergency_teleport);
+    PrepareSpellScript(spell_brawlers_guild_emergency_teleport);
 
-	void HandleEffectHit(SpellEffIndex effIndex)
-	{
-		PreventDefaultEffect(effIndex);
+    void HandleEffectHit(SpellEffIndex effIndex)
+    {
+        PreventDefaultEffect(effIndex);
 
-		if (Unit* caster = GetCaster())
-		{
-			if (Creature* sGenerator = caster->FindNearestCreature(NPC_SHIELD_GENERATOR, 100.0f, true))
-			{
-				caster->GetMotionMaster()->MoveJump(sGenerator->GetPositionX(), sGenerator->GetPositionY(), sGenerator->GetPositionZ(), 45.0f, 10.0f, EVENT_JUMP);
-				sGenerator->CastSpell(sGenerator, SPELL_SHIELD_GENERATOR_ACTIVATION, false);
-			}
-		}
-	}
+        if (Unit* caster = GetCaster())
+        {
+            if (Creature* sGenerator = caster->FindNearestCreature(NPC_SHIELD_GENERATOR, 100.0f, true))
+            {
+                caster->GetMotionMaster()->MoveJump(sGenerator->GetPositionX(), sGenerator->GetPositionY(), sGenerator->GetPositionZ(), 45.0f, 10.0f, EVENT_JUMP);
+                sGenerator->CastSpell(sGenerator, SPELL_SHIELD_GENERATOR_ACTIVATION, false);
+            }
+        }
+    }
 
-	void Register() override
-	{
-		OnEffectHitTarget += SpellEffectFn(spell_brawlers_guild_emergency_teleport::HandleEffectHit, EFFECT_0, SPELL_EFFECT_TELEPORT_UNITS);
-	}
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_brawlers_guild_emergency_teleport::HandleEffectHit, EFFECT_0, SPELL_EFFECT_TELEPORT_UNITS);
+    }
 };
 
 // Energy Shielding 133154
 class spell_brawlers_guild_energy_shielding : public AuraScript
 {
-	PrepareAuraScript(spell_brawlers_guild_energy_shielding);
+    PrepareAuraScript(spell_brawlers_guild_energy_shielding);
 
-	void OnAuraEffectRemove(AuraEffect const* aurEff, AuraEffectHandleModes mode)
-	{
-		if (Creature* owner = GetOwner()->ToCreature())
-		{
-			owner->RemoveAurasDueToSpell(SPELL_SHIELD_GENERATOR_ACTIVATION);
+    void OnAuraEffectRemove(AuraEffect const* aurEff, AuraEffectHandleModes mode)
+    {
+        if (Creature* owner = GetOwner()->ToCreature())
+        {
+            owner->RemoveAurasDueToSpell(SPELL_SHIELD_GENERATOR_ACTIVATION);
             owner->RemoveAllAreasTrigger();
-		}
-	}
+        }
+    }
 
-	void Register() override
-	{
-		OnEffectRemove += AuraEffectRemoveFn(spell_brawlers_guild_energy_shielding::OnAuraEffectRemove, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL, AURA_EFFECT_HANDLE_REAL);
-	}
+    void Register() override
+    {
+        OnEffectRemove += AuraEffectRemoveFn(spell_brawlers_guild_energy_shielding::OnAuraEffectRemove, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL, AURA_EFFECT_HANDLE_REAL);
+    }
 };
 
 // Goblin Rocket Barrage 133212
 class spell_brawlers_guild_goblin_rocket_barrage : public AuraScript
 {
-	PrepareAuraScript(spell_brawlers_guild_goblin_rocket_barrage);
+    PrepareAuraScript(spell_brawlers_guild_goblin_rocket_barrage);
 
-	void OnTrigger(AuraEffect const* /*aurEff*/)
-	{
-		if (Unit* owner = GetOwner()->ToUnit())
-			if (uint64 targetGUID = owner->GetTarget())
-				if (Unit* target = ObjectAccessor::GetUnit(*owner, targetGUID))
-					owner->CastSpell(target, SPELL_GOBLIN_ROCKET_BARRAGE_MISSLE, true);
-	}
+    void OnTrigger(AuraEffect const* /*aurEff*/)
+    {
+        if (Unit* owner = GetOwner()->ToUnit())
+            if (uint64 targetGUID = owner->GetTarget())
+                if (Unit* target = ObjectAccessor::GetUnit(*owner, targetGUID))
+                    owner->CastSpell(target, SPELL_GOBLIN_ROCKET_BARRAGE_MISSLE, true);
+    }
 
-	void Register() override
-	{
-		OnEffectPeriodic += AuraEffectPeriodicFn(spell_brawlers_guild_goblin_rocket_barrage::OnTrigger, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL);
-	}
+    void Register() override
+    {
+        OnEffectPeriodic += AuraEffectPeriodicFn(spell_brawlers_guild_goblin_rocket_barrage::OnTrigger, EFFECT_0, SPELL_AURA_PERIODIC_TRIGGER_SPELL);
+    }
 };
 
 // Conjure Unstable Mines 133015
 class spell_brawlers_guild_conjure_unstable_mines : public AuraScript
 {
-	PrepareAuraScript(spell_brawlers_guild_conjure_unstable_mines);
+    PrepareAuraScript(spell_brawlers_guild_conjure_unstable_mines);
 
-	void OnTrigger(AuraEffect const* /*aurEff*/)
-	{
-		if (Unit* owner = GetOwner()->ToUnit())
-		{
-			if (TempSummon* mine = owner->SummonCreature(NPC_BATTLE_MINE, *owner, TEMPSUMMON_MANUAL_DESPAWN))
-			{
-				GetPositionWithDistInOrientation(owner, 4.5f, owner->GetOrientation(), x, y);
-				mine->GetMotionMaster()->MovePoint(0, x, y, owner->GetPositionZ() + 3.5f);
-			}
-		}
-	}
+    void OnTrigger(AuraEffect const* /*aurEff*/)
+    {
+        if (Unit* owner = GetOwner()->ToUnit())
+        {
+            if (TempSummon* mine = owner->SummonCreature(NPC_BATTLE_MINE, *owner, TEMPSUMMON_MANUAL_DESPAWN))
+            {
+                GetPositionWithDistInOrientation(owner, 4.5f, owner->GetOrientation(), x, y);
+                mine->GetMotionMaster()->MovePoint(0, x, y, owner->GetPositionZ() + 3.5f);
+            }
+        }
+    }
 
     private:
-		float x, y;
+        float x, y;
 
-	void Register() override
-	{
-		OnEffectPeriodic += AuraEffectPeriodicFn(spell_brawlers_guild_conjure_unstable_mines::OnTrigger, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
-	}
+    void Register() override
+    {
+        OnEffectPeriodic += AuraEffectPeriodicFn(spell_brawlers_guild_conjure_unstable_mines::OnTrigger, EFFECT_0, SPELL_AURA_PERIODIC_DUMMY);
+    }
 };
 
 // We should select mines between battletron and player, it`ll work like ur spell missle throw her (nice logic)
@@ -5019,31 +5019,31 @@ class UnstableMinesProcPredicate : public std::binary_function<Unit*, Unit*, boo
 // Protected by Unstable Mines 133018
 class spell_brawlers_guild_protected_by_unstable_mines : public AuraScript
 {
-	PrepareAuraScript(spell_brawlers_guild_protected_by_unstable_mines);
+    PrepareAuraScript(spell_brawlers_guild_protected_by_unstable_mines);
 
-	void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
-	{
-		if (Unit* caster = GetCaster())
-		{
-			if (Unit* target = caster->GetVictim())
-			{
-				std::list<Creature*> MinesInRange;
-				GetCreatureListWithEntryInGrid(MinesInRange, caster, NPC_BATTLE_MINE, 20.0f);
-				MinesInRange.remove_if(UnstableMinesProcPredicate(caster, target));
+    void OnProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
+    {
+        if (Unit* caster = GetCaster())
+        {
+            if (Unit* target = caster->GetVictim())
+            {
+                std::list<Creature*> MinesInRange;
+                GetCreatureListWithEntryInGrid(MinesInRange, caster, NPC_BATTLE_MINE, 20.0f);
+                MinesInRange.remove_if(UnstableMinesProcPredicate(caster, target));
 
                 if (MinesInRange.empty())
                     return;
 
                 if (Creature* Mine = *MinesInRange.begin())
                     Mine->AI()->JustDied(target);
-			}
-		}
-	}
+            }
+        }
+    }
 
-	void Register() override
-	{
-		OnEffectProc += AuraEffectProcFn(spell_brawlers_guild_protected_by_unstable_mines::OnProc, EFFECT_0, SPELL_AURA_PROC_TRIGGER_SPELL);
-	}
+    void Register() override
+    {
+        OnEffectProc += AuraEffectProcFn(spell_brawlers_guild_protected_by_unstable_mines::OnProc, EFFECT_0, SPELL_AURA_PROC_TRIGGER_SPELL);
+    }
 };
 
 // Ring of Valor - Teleport In 132629

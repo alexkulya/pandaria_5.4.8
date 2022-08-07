@@ -116,7 +116,7 @@ void WorldSession::HandlePetitionBuyOpcode(WorldPacket& recvData)
         return;
     }
 
-	if (sObjectMgr->IsReservedName(name) || !ObjectMgr::IsValidCharterName(name)  ||
+    if (sObjectMgr->IsReservedName(name) || !ObjectMgr::IsValidCharterName(name)  ||
         (sWorld->getBoolConfig(CONFIG_WORD_FILTER_ENABLE) && !sWordFilterMgr->FindBadWord(name).empty()))
     {
         Guild::SendCommandResult(this, GUILD_COMMAND_CREATE, ERR_GUILD_NAME_INVALID, name);
@@ -497,7 +497,7 @@ void WorldSession::HandlePetitionRenameOpcode(WorldPacket& recvData)
         return;
     }
 
-	if (sObjectMgr->IsReservedName(newName) || !ObjectMgr::IsValidCharterName(newName) ||
+    if (sObjectMgr->IsReservedName(newName) || !ObjectMgr::IsValidCharterName(newName) ||
         (sWorld->getBoolConfig(CONFIG_WORD_FILTER_ENABLE) && !sWordFilterMgr->FindBadWord(newName).empty()))
     {
         Guild::SendCommandResult(this, GUILD_COMMAND_CREATE, ERR_GUILD_NAME_INVALID, newName);

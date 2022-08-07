@@ -323,7 +323,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket& recvData)
             if (group->IsLogging())
                 group->LogChat(ChatMsg(type), sender->GetGUID(), msg);
 
-	/// filtering of bad words
+    /// filtering of bad words
     if(sWorld->getBoolConfig(CONFIG_WORD_FILTER_ENABLE))
     {
         sender->m_sentMsgCache.append(msg);

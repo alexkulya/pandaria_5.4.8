@@ -284,7 +284,7 @@ class BattlePayMgr
         BattlePayMgr();
         ~BattlePayMgr();
 
-		void SendPointsBalance(WorldSession* session);
+        void SendPointsBalance(WorldSession* session);
         void UpdatePointsBalance(WorldSession* session, uint64 points);
         bool HasPointsBalance(WorldSession* session, uint64 points);
         void Update(uint32 diff);

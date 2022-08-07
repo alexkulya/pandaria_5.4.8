@@ -753,26 +753,26 @@ void Map::Update(const uint32 t_diff)
 
 void Map::RemovePlayerFromMap(Player* player, bool remove)
 {
-	// Before leaving map, update zone/area for stats
-	player->UpdateZone(MAP_INVALID_ZONE, 0);
-	sScriptMgr->OnPlayerLeaveMap(this, player);
+    // Before leaving map, update zone/area for stats
+    player->UpdateZone(MAP_INVALID_ZONE, 0);
+    sScriptMgr->OnPlayerLeaveMap(this, player);
 
-	player->CombatStop();
+    player->CombatStop();
 
-	bool const inWorld = player->IsInWorld();
-	player->RemoveFromWorld();
-	SendRemoveTransports(player);
+    bool const inWorld = player->IsInWorld();
+    player->RemoveFromWorld();
+    SendRemoveTransports(player);
 
-	if (!inWorld) // if was in world, RemoveFromWorld() called DestroyForNearbyPlayers()
-		player->DestroyForNearbyPlayers(); // previous player->UpdateObjectVisibility(true)
+    if (!inWorld) // if was in world, RemoveFromWorld() called DestroyForNearbyPlayers()
+        player->DestroyForNearbyPlayers(); // previous player->UpdateObjectVisibility(true)
 
-	if (player->IsInGrid())
-		player->RemoveFromGrid();
-	else
-		ASSERT(remove); //maybe deleted in logoutplayer when player is not in a map
+    if (player->IsInGrid())
+        player->RemoveFromGrid();
+    else
+        ASSERT(remove); //maybe deleted in logoutplayer when player is not in a map
 
-	if (remove)
-		DeleteFromWorld(player);
+    if (remove)
+        DeleteFromWorld(player);
 }
 
 

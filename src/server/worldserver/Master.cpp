@@ -473,14 +473,14 @@ bool Master::_StartDB()
     }
 
     ///- Get FusionCMS database info from configuration file
-	dbString = sConfigMgr->GetStringDefault("FusionCMSDatabaseInfo", "");
+    dbString = sConfigMgr->GetStringDefault("FusionCMSDatabaseInfo", "");
     if (dbString.empty())
     {
         TC_LOG_ERROR("server.worldserver", "FusionCMS database not specified in configuration file");
         return false;
     }
 
-	asyncThreads = uint8(sConfigMgr->GetIntDefault("FusionCMSDatabase.WorkerThreads", 1));
+    asyncThreads = uint8(sConfigMgr->GetIntDefault("FusionCMSDatabase.WorkerThreads", 1));
     if (asyncThreads < 1 || asyncThreads > 32)
     {
         TC_LOG_ERROR("server.worldserver", "FusionCMS database: invalid number of worker threads specified. "
@@ -488,7 +488,7 @@ bool Master::_StartDB()
         return false;
     }
 
-	synchThreads = uint8(sConfigMgr->GetIntDefault("FusionCMSDatabase.SynchThreads", 1));
+    synchThreads = uint8(sConfigMgr->GetIntDefault("FusionCMSDatabase.SynchThreads", 1));
     ///- Initialize the FusionCMS database
     if (!FusionCMSDatabase.Open(dbString, asyncThreads, synchThreads))
     {

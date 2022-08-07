@@ -869,8 +869,8 @@ float AuraEffect::CalculateAmount(Unit* caster, bool recalculate)
                 Unit* target = GetBase()->GetUnitOwner();
 
 
-				if (GetAuraType() == SPELL_AURA_PERIODIC_HEAL)
-					amount = caster->SpellHealingBonusDone(target, GetSpellInfo(), GetEffIndex(), amount, DOT, GetBase()->GetStackAmount());
+                if (GetAuraType() == SPELL_AURA_PERIODIC_HEAL)
+                    amount = caster->SpellHealingBonusDone(target, GetSpellInfo(), GetEffIndex(), amount, DOT, GetBase()->GetStackAmount());
                 else
                     amount = caster->SpellDamageBonusDone(target, GetSpellInfo(), GetEffIndex(), amount, DOT, GetBase()->GetStackAmount());
 

@@ -908,7 +908,7 @@ void World::LoadConfigSettings(bool reload)
     m_int_configs[CONFIG_CHATFLOOD_MESSAGE_DELAY] = sConfigMgr->GetIntDefault("ChatFlood.MessageDelay", 1);
     m_int_configs[CONFIG_CHATFLOOD_MUTE_TIME]     = sConfigMgr->GetIntDefault("ChatFlood.MuteTime", 10);
 
-	m_int_configs[CONFIG_WORD_FILTER_MUTE_DURATION] = sConfigMgr->GetIntDefault("WordFilter.MuteDuration", 30000);
+    m_int_configs[CONFIG_WORD_FILTER_MUTE_DURATION] = sConfigMgr->GetIntDefault("WordFilter.MuteDuration", 30000);
     m_bool_configs[CONFIG_WORD_FILTER_ENABLE]       = sConfigMgr->GetBoolDefault("WordFilter.Enable", true);
 
     m_bool_configs[CONFIG_EVENT_ANNOUNCE] = sConfigMgr->GetIntDefault("Event.Announce", false);
@@ -1122,7 +1122,7 @@ void World::LoadConfigSettings(bool reload)
 
     m_bool_configs[CONFIG_EXECUTED_SERVICES_LOG] = sConfigMgr->GetBoolDefault("ExecutedServices.Log.Enabled", true);
 
-	// custom balance system
+    // custom balance system
     m_float_configs[CONFIGSPECMAGEARCANE] = sConfigMgr->GetFloatDefault("CONFIGSPECMAGEARCANE", 100.0f);
     m_float_configs[CONFIGSPECMAGEFIRE] = sConfigMgr->GetFloatDefault("CONFIGSPECMAGEFIRE", 100.0f);
     m_float_configs[CONFIGSPECMAGEFROST] = sConfigMgr->GetFloatDefault("CONFIGSPECMAGEFROST", 100.0f);
@@ -1756,10 +1756,10 @@ void World::SetInitialWorldSettings()
     sObjectMgr->SetDBCLocaleIndex(GetDefaultDbcLocale());        // Get once for all the locale index of DBC language (console/broadcasts)
     TC_LOG_INFO("server.loading", ">> Localization strings loaded in %u ms", GetMSTimeDiffToNow(oldMSTime));
 
-	TC_LOG_INFO("server.loading", "Loading Letter Analogs...");
+    TC_LOG_INFO("server.loading", "Loading Letter Analogs...");
     sWordFilterMgr->LoadLetterAnalogs();
 
-	TC_LOG_INFO("server.loading", "Loading Bad Words...");
+    TC_LOG_INFO("server.loading", "Loading Bad Words...");
     sWordFilterMgr->LoadBadWords();
 
     TC_LOG_INFO("server.loading", "Loading Page Texts...");

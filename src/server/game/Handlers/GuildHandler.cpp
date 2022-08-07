@@ -30,7 +30,7 @@
 
  // Cleanup bad characters
 void cleanStr(std::string &str) {
-	str.erase(remove(str.begin(), str.end(), '|'), str.end());
+    str.erase(remove(str.begin(), str.end(), '|'), str.end());
 }
 
 
@@ -267,12 +267,12 @@ void WorldSession::HandleGuildMOTDOpcode(WorldPacket& recvPacket)
     std::string motd = recvPacket.ReadString(motdLength);
     TC_LOG_DEBUG("guild", "CMSG_GUILD_MOTD [%s]: MOTD: %s", GetPlayerInfo().c_str(), motd.c_str());
 
-	// Check for overflow
-	if (motd.length() > 128)
-		return;
+    // Check for overflow
+    if (motd.length() > 128)
+        return;
 
-	// Cleanup bad characters
-	cleanStr(motd);
+    // Cleanup bad characters
+    cleanStr(motd);
 
     if (Guild* guild = GetPlayer()->GetGuild())
         guild->HandleSetMOTD(this, motd);
@@ -348,12 +348,12 @@ void WorldSession::HandleGuildAddRankOpcode(WorldPacket& recvPacket)
     uint32 length = recvPacket.ReadBits(7);
     std::string rankName = recvPacket.ReadString(length);
 
-	// Check for overflow
-	if (rankName.length() > 15)
-		return;
+    // Check for overflow
+    if (rankName.length() > 15)
+        return;
 
-	// Cleanup bad characters
-	cleanStr(rankName);
+    // Cleanup bad characters
+    cleanStr(rankName);
 
     TC_LOG_DEBUG("guild", "CMSG_GUILD_ADD_RANK [%s]: Rank: %s", GetPlayerInfo().c_str(), rankName.c_str());
 
@@ -386,12 +386,12 @@ void WorldSession::HandleGuildChangeInfoTextOpcode(WorldPacket& recvPacket)
     uint32 length = recvPacket.ReadBits(11);
     std::string info = recvPacket.ReadString(length);
 
-	// Check for overflow
-	if (info.length() > 500)
-		return;
+    // Check for overflow
+    if (info.length() > 500)
+        return;
 
-	// Cleanup bad characters
-	cleanStr(info);
+    // Cleanup bad characters
+    cleanStr(info);
 
     TC_LOG_DEBUG("guild", "CMSG_GUILD_INFO_TEXT [%s]: %s", GetPlayerInfo().c_str(), info.c_str());
 
@@ -763,12 +763,12 @@ void WorldSession::HandleGuildBankUpdateTab(WorldPacket& recvPacket)
     TC_LOG_DEBUG("guild", "CMSG_GUILD_BANK_UPDATE_TAB [%s]: Go: [" UI64FMTD "], TabId: %u, Name: %s, Icon: %s",
         GetPlayerInfo().c_str(), (uint64)guid, tabId, name.c_str(), icon.c_str());
 
-	// Check for overflow
-	if (name.length() > 16 || icon.length() > 128)
-		return;
+    // Check for overflow
+    if (name.length() > 16 || icon.length() > 128)
+        return;
 
-	// Cleanup bad characters
-	cleanStr(name);
+    // Cleanup bad characters
+    cleanStr(name);
 
     if (!name.empty() && !icon.empty())
         if (GetPlayer()->GetGameObjectIfCanInteractWith(guid, GAMEOBJECT_TYPE_GUILD_BANK))

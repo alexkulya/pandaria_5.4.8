@@ -163,7 +163,7 @@ public:
             { "creature_loot_currency",         SEC_ADMINISTRATOR,  true,   &HandleReloadCreatureLootCurrency,              },
             { "gocollision",                    SEC_ADMINISTRATOR,  true,   &HandleReloadGOCollisionCommand,                },
             { "battlepay",                      SEC_ADMINISTRATOR,  true,   &HandleReloadBattlePayCommand,                  },
-			{ "bad_word",                     SEC_ADMINISTRATOR, true,  &HandleReloadBadWordCommand,                   },
+            { "bad_word",                     SEC_ADMINISTRATOR, true,  &HandleReloadBadWordCommand,                   },
         };
         static std::vector<ChatCommand> commandTable =
         {
@@ -206,11 +206,11 @@ public:
         HandleReloadVehicleTemplateAccessoryCommand(handler, "");
 
         HandleReloadAutobroadcastCommand(handler, "");
-		HandleReloadBadWordCommand(handler, "");
+        HandleReloadBadWordCommand(handler, "");
         return true;
     }
 
-	static bool HandleReloadBadWordCommand(ChatHandler* handler, const char* /*args*/)
+    static bool HandleReloadBadWordCommand(ChatHandler* handler, const char* /*args*/)
     {
         TC_LOG_INFO("misc", "Re-Loading Bad Words...");
         sWordFilterMgr->LoadBadWords();

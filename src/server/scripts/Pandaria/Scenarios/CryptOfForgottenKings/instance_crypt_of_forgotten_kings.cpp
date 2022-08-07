@@ -223,7 +223,7 @@ class instance_crypt_of_forgotten_kings : public InstanceMapScript
                         if (chapterThree == DONE)
                         {
                             DoFinishLFGDungeon(instance->GetDifficulty() == SCENARIO_DIFFICULTY_HEROIC ? 648 : 504);
-							DoFinishLFGDungeon(instance->GetDifficulty() == SCENARIO_DIFFICULTY_NORMAL ? 648 : 504);
+                            DoFinishLFGDungeon(instance->GetDifficulty() == SCENARIO_DIFFICULTY_NORMAL ? 648 : 504);
                             SendScenarioProgressUpdate(CriteriaProgressData(CRITERIA_ABOMINATION_SLAIN, 1, GetScenarioGUID(), time(NULL), 0, 0));
                         }
                         break;

@@ -414,7 +414,7 @@ class boss_garrosh_hellscream : public CreatureScript
                 me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_HEALING_PCT, true);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_PACIFIED);
             }
-			EventMap RealmEvents;
+            EventMap RealmEvents;
             bool wRiderGates;
             bool sPhase;
             bool inRealm;

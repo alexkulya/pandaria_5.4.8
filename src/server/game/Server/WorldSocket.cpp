@@ -251,8 +251,8 @@ int WorldSocket::open (void *a)
     if (peer().get_remote_addr(remote_addr) == -1)
     {
         TC_LOG_ERROR("network", "WorldSocket::open: peer().get_remote_addr errno = %s", ACE_OS::strerror (errno));
-		return -1;
-		CloseSocket();
+        return -1;
+        CloseSocket();
     }
 
     m_Address = remote_addr.get_host_addr();
@@ -810,7 +810,7 @@ int WorldSocket::ProcessIncoming(WorldPacket* new_pct)
                 {
                     TC_LOG_ERROR("network.opcode", "ProcessIncoming: Client not authed opcode = %u", GetRemoteAddress().c_str(),uint32(opcode));
                     return -1;
-					CloseSocket();
+                    CloseSocket();
                 }
 
                 // prevent invalid memory access/crash with custom opcodes

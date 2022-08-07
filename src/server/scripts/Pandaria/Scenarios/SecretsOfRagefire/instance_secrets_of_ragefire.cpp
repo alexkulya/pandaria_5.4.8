@@ -243,7 +243,7 @@ class instance_secrets_of_ragefire : public InstanceMapScript
                             grit->AI()->DoAction(ACTION_GOB_SQUAD_DEFENDED);
 
                         DoFinishLFGDungeon(instance->GetDifficulty() == SCENARIO_DIFFICULTY_HEROIC ? 625 : 649);
-						DoFinishLFGDungeon(instance->GetDifficulty() == SCENARIO_DIFFICULTY_NORMAL ? 625 : 649);
+                        DoFinishLFGDungeon(instance->GetDifficulty() == SCENARIO_DIFFICULTY_NORMAL ? 625 : 649);
                         break;
                     case PROTDRAKES_DATA:
                         // Announce

@@ -30,7 +30,7 @@ class ARC4
         void Init(uint8 const* seed);
         void UpdateData(int len, uint8 *data);
     private:
-		EVP_CIPHER_CTX * m_ctx = EVP_CIPHER_CTX_new();
+        EVP_CIPHER_CTX * m_ctx = EVP_CIPHER_CTX_new();
 };
 
 #endif

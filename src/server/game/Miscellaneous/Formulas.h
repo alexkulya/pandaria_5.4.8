@@ -185,8 +185,8 @@ namespace Trinity
                         gain *= 2;
                 }
 
-				if (((Creature*)u)->GetCreatureTemplate()->rank == CREATURE_WEAK)
-				gain *= 0.3; // weak creatures should grant 0.3 experience.
+                if (((Creature*)u)->GetCreatureTemplate()->rank == CREATURE_WEAK)
+                gain *= 0.3; // weak creatures should grant 0.3 experience.
             }
 
             sScriptMgr->OnGainCalculation(gain, player, u);

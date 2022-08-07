@@ -124,7 +124,7 @@ class instance_brewing_storm : public InstanceMapScript
 
                         SendScenarioProgressUpdate(CriteriaProgressData(CRITERIA_BORAKHULA_DEFEAT, 1, GetScenarioGUID(), time(NULL), 0, 0));
                         DoFinishLFGDungeon(instance->GetDifficulty() == SCENARIO_DIFFICULTY_HEROIC ? 639 : 517);
-						DoFinishLFGDungeon(instance->GetDifficulty() == SCENARIO_DIFFICULTY_NORMAL ? 639 : 517);
+                        DoFinishLFGDungeon(instance->GetDifficulty() == SCENARIO_DIFFICULTY_NORMAL ? 639 : 517);
                         break;
                 }
 

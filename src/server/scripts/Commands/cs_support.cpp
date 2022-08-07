@@ -3319,9 +3319,9 @@ public:
         for (uint32 i = PVP_SLOT_ARENA_2v2; i < PVP_SLOT_MAX; ++i)
         {
             if (auto info = RatedPvpMgr::Instance()->GetInfo(RatedPvpSlot(i), guid))
-			{
-				handler->PSendSysMessage("Slot %s (%u): Rating - %u, Rank - %u, SeasonGames - %u, SeasonWins - %u.", SlotToString(i).c_str(), i, info->Rating, info->Rank, info->SeasonGames, info->SeasonWins);
-			}
+            {
+                handler->PSendSysMessage("Slot %s (%u): Rating - %u, Rank - %u, SeasonGames - %u, SeasonWins - %u.", SlotToString(i).c_str(), i, info->Rating, info->Rank, info->SeasonGames, info->SeasonWins);
+            }
             else
                 handler->PSendSysMessage("No PvP info for slot %s (%u).", SlotToString(i).c_str(), i);
         }

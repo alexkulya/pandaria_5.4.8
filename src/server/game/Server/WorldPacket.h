@@ -66,13 +66,13 @@ class WorldPacket : public ByteBuffer
             m_rcvdOpcodeNumber = 0;
             _compressionStream = nullptr;
         }
-		
+        
 
     protected:
         Opcodes m_opcode;
         uint16 m_rcvdOpcodeNumber;
         void Compress(void* dst, uint32 *dst_size, const void* src, int src_size);
         z_stream_s* _compressionStream = nullptr;
-		
+        
 };
 #endif

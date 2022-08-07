@@ -200,7 +200,7 @@ class npc_voljin_ancient_enemy : public CreatureScript
         EVENT_SHADOW_SHOCK          = 3,
 
         SAY_INTRO1                   = 0,
-		SAY_INTRO2                   = 1,
+        SAY_INTRO2                   = 1,
         SAY_BRAZIERS                = 2,
         SAY_OUTRO_1                 = 3,
         SAY_OUTRO_2                 = 4,
@@ -215,7 +215,7 @@ class npc_voljin_ancient_enemy : public CreatureScript
         {
             EventInProgress = false;
             events.Reset();
-			me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+            me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
         }
 
         void AttackStart(Unit * who)
@@ -290,7 +290,7 @@ public:
         if(player->GetQuestStatus(QUEST_ANCIENT_ENEMY) == QUEST_STATUS_INCOMPLETE)
         {
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, VOLJIN_GOSSIP, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
-            player->SEND_GOSSIP_MENU(GOSSIP_VOLJIN, creature->GetGUID());			
+            player->SEND_GOSSIP_MENU(GOSSIP_VOLJIN, creature->GetGUID());            
         }
         return true;
     }
@@ -298,11 +298,11 @@ public:
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
     {
         player->PlayerTalkClass->ClearMenus();
-		player->CLOSE_GOSSIP_MENU();
+        player->CLOSE_GOSSIP_MENU();
         if (action == GOSSIP_ACTION_INFO_DEF+1)
             creature->AI()->DoAction(1);
-		player->KilledMonsterCredit(NPC_VOLJIN);
-		creature->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+        player->KilledMonsterCredit(NPC_VOLJIN);
+        creature->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
         return true;
     }
 
@@ -359,16 +359,16 @@ class npc_zarjira : public CreatureScript
             }
         }
 
-		void JustDied(Unit* killer) override
+        void JustDied(Unit* killer) override
         {
             for(int i=0;i<=2;++i)
                 if(Creature * creature = me->FindNearestCreature(npcId[i], 30.0f))
                     creature->AI()->EnterEvadeMode();
 
-			std::list<Player*> playerList;
-			GetPlayerListInGrid(playerList, me, 50.0f);
-			for (auto&& player : playerList)
-				player->KilledMonsterCredit(NPC_ZARJIRA, 0);
+            std::list<Player*> playerList;
+            GetPlayerListInGrid(playerList, me, 50.0f);
+            for (auto&& player : playerList)
+                player->KilledMonsterCredit(NPC_ZARJIRA, 0);
         }
 
         void EnterCombat(Unit *)
@@ -430,15 +430,15 @@ class npc_zarjira : public CreatureScript
                     break;
                 case EVENT_FIRES:
                     {
-					    if (Creature* ancientenemy = me->FindNearestCreature(38225, 100.0f, true))
-						    ancientenemy->AI()->Talk(SAY_INTRO, me);
+                        if (Creature* ancientenemy = me->FindNearestCreature(38225, 100.0f, true))
+                            ancientenemy->AI()->Talk(SAY_INTRO, me);
                         std::list<Creature*> cList;
                         me->GetCreatureListWithEntryInGrid(cList, NPC_FIRE_OF_THE_SEAS, 30.0f);
                         for(std::list<Creature*>::const_iterator i = cList.begin(); i != cList.end(); ++i)
                         {
                             (*i)->CastSpell((*i), SPELL_FIRES, true);
                             (*i)->CastSpell(me, SPELL_FIRES_BEAM, true);
-							(*i)->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);							
+                            (*i)->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);                            
                         }
                         events.ScheduleEvent(EVENT_FIRES, urand(60000, 80000));
                     }
@@ -505,7 +505,7 @@ void AddSC_azshara()
 {
     new creature_script<npc_azshara_awol_grunt>("npc_azshara_awol_grunt");
     new spell_script<spell_azshara_chewing_out>("spell_azshara_chewing_out");
-	new npc_voljin_ancient_enemy();
+    new npc_voljin_ancient_enemy();
     new npc_zarjira();
     new npc_fire_of_the_seas();
 }
