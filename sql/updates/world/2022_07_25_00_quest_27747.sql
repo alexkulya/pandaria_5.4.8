@@ -1,0 +1,1 @@
+UPDATE `gameobject_template` SET `Data0` = 0, `ScriptName` = 'gob_thundermar_ale_keg' WHERE `entry` = 206195;
