@@ -640,12 +640,12 @@ class boss_immerseus : public CreatureScript
 
                                 if (Unit* target = me->GetVictim())
                                     targetGUID = target->GetGUID();
-								
-								scheduler  // Should wait a few seconds on the postision before casting spell 
-									.Schedule(Milliseconds(2000), [this](TaskContext context)
-								{
-									DoCast(me, SPELL_SWIRL_SPRAY, true);
-								});
+                                
+                                scheduler  // Should wait a few seconds on the postision before casting spell 
+                                    .Schedule(Milliseconds(2000), [this](TaskContext context)
+                                {
+                                    DoCast(me, SPELL_SWIRL_SPRAY, true);
+                                });
 
                                 float x, y;
                                 float sOri = Position::NormalizeOrientation(frand(0.0f, 2 * M_PI));

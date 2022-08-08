@@ -249,16 +249,16 @@ const std::map<uint32, std::array<uint32, 6>> invWaveType =
 
 const std::map<uint32, std::array<uint32, 6>> invWaveTypeFlex =
 {
-	{ 1, { NPC_GALAKRAS_DRAGONMAW_FLAGBEARER,   NPC_GALAKRAS_DRAGONMAW_GRUNT,        0 ,        NPC_GALAKRAS_DRAGONMAW_BONECRUSHER, 0,  0 } },
-	{ 2, { NPC_DRAGONMAW_FLAMESLINGER,          NPC_DRAGONMAW_FLAMESLINGER,          0,        NPC_GALAKRAS_DRAGONMAW_GRUNT,       0,   NPC_GALAKRAS_DRAGONMAW_TIDAL_SHAMAN } },
-	{ 3, { NPC_KORGRA_THE_SNAKE,                NPC_GALAKRAS_DRAGONMAW_EBON_STALKER, 0, 0,                                  0,                                   0 } },
-	{ 4, { NPC_GALAKRAS_DRAGONMAW_PROTO_DRAKE,  NPC_GALAKRAS_DRAGONMAW_PROTO_DRAKE,  0,                                   0,                                  0,                                   0 } },
-	{ 5, { NPC_HIGH_ENFORCER_THRANOK,           NPC_GALAKRAS_DRAGONMAW_FLAGBEARER,   0,        NPC_GALAKRAS_DRAGONMAW_TIDAL_SHAMAN,                  0,                 0 } },
-	{ 6, { NPC_GALAKRAS_DRAGONMAW_BONECRUSHER,  NPC_GALAKRAS_DRAGONMAW_FLAGBEARER,   0,        0,                                  0,                                   0 } },
-	{ 7, { NPC_GALAKRAS_DRAGONMAW_GRUNT,        NPC_GALAKRAS_DRAGONMAW_FLAGBEARER,   NPC_DRAGONMAW_FLAMESLINGER,          0,         NPC_GALAKRAS_DRAGONMAW_TIDAL_SHAMAN, 0 } },
-	{ 8, { NPC_GALAKRAS_DRAGONMAW_TIDAL_SHAMAN, NPC_GALAKRAS_DRAGONMAW_FLAGBEARER,   NPC_GALAKRAS_DRAGONMAW_GRUNT,        0, 0,                                   0 } },
-	{ 9, { NPC_GALAKRAS_DRAGONMAW_PROTO_DRAKE,  NPC_GALAKRAS_DRAGONMAW_PROTO_DRAKE,  0,                                   0,                                  0,                                   0 } },
-	// This is for the Flex Raid Up to < 15 players - On Flex we do not have the same amount of mobs spawan
+    { 1, { NPC_GALAKRAS_DRAGONMAW_FLAGBEARER,   NPC_GALAKRAS_DRAGONMAW_GRUNT,        0 ,        NPC_GALAKRAS_DRAGONMAW_BONECRUSHER, 0,  0 } },
+    { 2, { NPC_DRAGONMAW_FLAMESLINGER,          NPC_DRAGONMAW_FLAMESLINGER,          0,        NPC_GALAKRAS_DRAGONMAW_GRUNT,       0,   NPC_GALAKRAS_DRAGONMAW_TIDAL_SHAMAN } },
+    { 3, { NPC_KORGRA_THE_SNAKE,                NPC_GALAKRAS_DRAGONMAW_EBON_STALKER, 0, 0,                                  0,                                   0 } },
+    { 4, { NPC_GALAKRAS_DRAGONMAW_PROTO_DRAKE,  NPC_GALAKRAS_DRAGONMAW_PROTO_DRAKE,  0,                                   0,                                  0,                                   0 } },
+    { 5, { NPC_HIGH_ENFORCER_THRANOK,           NPC_GALAKRAS_DRAGONMAW_FLAGBEARER,   0,        NPC_GALAKRAS_DRAGONMAW_TIDAL_SHAMAN,                  0,                 0 } },
+    { 6, { NPC_GALAKRAS_DRAGONMAW_BONECRUSHER,  NPC_GALAKRAS_DRAGONMAW_FLAGBEARER,   0,        0,                                  0,                                   0 } },
+    { 7, { NPC_GALAKRAS_DRAGONMAW_GRUNT,        NPC_GALAKRAS_DRAGONMAW_FLAGBEARER,   NPC_DRAGONMAW_FLAMESLINGER,          0,         NPC_GALAKRAS_DRAGONMAW_TIDAL_SHAMAN, 0 } },
+    { 8, { NPC_GALAKRAS_DRAGONMAW_TIDAL_SHAMAN, NPC_GALAKRAS_DRAGONMAW_FLAGBEARER,   NPC_GALAKRAS_DRAGONMAW_GRUNT,        0, 0,                                   0 } },
+    { 9, { NPC_GALAKRAS_DRAGONMAW_PROTO_DRAKE,  NPC_GALAKRAS_DRAGONMAW_PROTO_DRAKE,  0,                                   0,                                  0,                                   0 } },
+    // This is for the Flex Raid Up to < 15 players - On Flex we do not have the same amount of mobs spawan
 };
 
 class boss_galakras : public CreatureScript
@@ -790,41 +790,41 @@ class boss_galakras : public CreatureScript
                                 waveCounter = 6;
 
                             auto key = invWaveType.find(waveCounter);
-							auto keyflex = invWaveTypeFlex.find(waveCounter);
+                            auto keyflex = invWaveTypeFlex.find(waveCounter);
 
-							if (instance && instance->GetData(DATA_FLEX) && instance->instance->GetPlayersCountExceptGMs() < 15) // If we have less than 15 players on flex, use flex script
-							{
-									if (Creature* zaela = ObjectAccessor::GetCreature(*me, instance ? instance->GetData64(NPC_ZAELA) : 0))
-										zaela->AI()->Talk(urand(TALK_SPECIAL_4, TALK_SPECIAL_5));
-								for (uint8 i = 0; i < 6; i++)
-									if (keyflex->second[i])
-										me->SummonCreature(keyflex->second[i], galakrasWavePoint[i], TEMPSUMMON_MANUAL_DESPAWN);
-							}
-							else 
-								if (instance && !instance->GetData(DATA_FLEX)) // If we are in instance and not flex raid, use normal script
-								{
-									if (key->first != 4 && key->first != 9) // not announce dragons
-										if (Creature* zaela = ObjectAccessor::GetCreature(*me, instance ? instance->GetData64(NPC_ZAELA) : 0))
-											zaela->AI()->Talk(urand(TALK_SPECIAL_4, TALK_SPECIAL_5));
-									for (uint8 i = 0; i < 6; i++)
-										if (key->second[i])
-											me->SummonCreature(key->second[i], galakrasWavePoint[i], TEMPSUMMON_MANUAL_DESPAWN);
-								}
-							else 
-									if (instance && instance->GetData(DATA_FLEX) && instance->instance->GetPlayersCountExceptGMs() > 15) // If We are in Flex and Have more than 15 players we use normal spawns
-									{
-										if (key->first != 4 && key->first != 9) // not announce dragons
-											if (Creature* zaela = ObjectAccessor::GetCreature(*me, instance ? instance->GetData64(NPC_ZAELA) : 0))
-												zaela->AI()->Talk(urand(TALK_SPECIAL_4, TALK_SPECIAL_5));
-										for (uint8 i = 0; i < 6; i++)
-											if (key->second[i])
-												me->SummonCreature(key->second[i], galakrasWavePoint[i], TEMPSUMMON_MANUAL_DESPAWN);
-									}
-						if (instance && !instance->GetData(DATA_FLEX))
+                            if (instance && instance->GetData(DATA_FLEX) && instance->instance->GetPlayersCountExceptGMs() < 15) // If we have less than 15 players on flex, use flex script
+                            {
+                                    if (Creature* zaela = ObjectAccessor::GetCreature(*me, instance ? instance->GetData64(NPC_ZAELA) : 0))
+                                        zaela->AI()->Talk(urand(TALK_SPECIAL_4, TALK_SPECIAL_5));
+                                for (uint8 i = 0; i < 6; i++)
+                                    if (keyflex->second[i])
+                                        me->SummonCreature(keyflex->second[i], galakrasWavePoint[i], TEMPSUMMON_MANUAL_DESPAWN);
+                            }
+                            else 
+                                if (instance && !instance->GetData(DATA_FLEX)) // If we are in instance and not flex raid, use normal script
+                                {
+                                    if (key->first != 4 && key->first != 9) // not announce dragons
+                                        if (Creature* zaela = ObjectAccessor::GetCreature(*me, instance ? instance->GetData64(NPC_ZAELA) : 0))
+                                            zaela->AI()->Talk(urand(TALK_SPECIAL_4, TALK_SPECIAL_5));
+                                    for (uint8 i = 0; i < 6; i++)
+                                        if (key->second[i])
+                                            me->SummonCreature(key->second[i], galakrasWavePoint[i], TEMPSUMMON_MANUAL_DESPAWN);
+                                }
+                            else 
+                                    if (instance && instance->GetData(DATA_FLEX) && instance->instance->GetPlayersCountExceptGMs() > 15) // If We are in Flex and Have more than 15 players we use normal spawns
+                                    {
+                                        if (key->first != 4 && key->first != 9) // not announce dragons
+                                            if (Creature* zaela = ObjectAccessor::GetCreature(*me, instance ? instance->GetData64(NPC_ZAELA) : 0))
+                                                zaela->AI()->Talk(urand(TALK_SPECIAL_4, TALK_SPECIAL_5));
+                                        for (uint8 i = 0; i < 6; i++)
+                                            if (key->second[i])
+                                                me->SummonCreature(key->second[i], galakrasWavePoint[i], TEMPSUMMON_MANUAL_DESPAWN);
+                                    }
+                        if (instance && !instance->GetData(DATA_FLEX))
                             berserkerEvents.ScheduleEvent(EVENT_NEXT_WAVE, 60 * IN_MILLISECONDS); 
-							else
-								if (instance && instance->GetData(DATA_FLEX) && instance->instance->GetPlayersCountExceptGMs() < 26)
-									berserkerEvents.ScheduleEvent(EVENT_NEXT_WAVE, 50 * IN_MILLISECONDS); // Wave in Flex Have -10 Seconds cause we have less mobs
+                            else
+                                if (instance && instance->GetData(DATA_FLEX) && instance->instance->GetPlayersCountExceptGMs() < 26)
+                                    berserkerEvents.ScheduleEvent(EVENT_NEXT_WAVE, 50 * IN_MILLISECONDS); // Wave in Flex Have -10 Seconds cause we have less mobs
 
                             break;
                         }

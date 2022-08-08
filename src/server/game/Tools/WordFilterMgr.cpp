@@ -88,7 +88,7 @@ void WordFilterMgr::LoadLetterAnalogs()
     QueryResult result = WorldDatabase.Query("SELECT letter, analogs FROM letter_analogs");
     if (!result)
     {
-		TC_LOG_INFO("misc", ">> Loaded 0 letter analogs. DB table `letter_analogs` is empty!");
+        TC_LOG_INFO("misc", ">> Loaded 0 letter analogs. DB table `letter_analogs` is empty!");
         return;
     }
 
@@ -106,7 +106,7 @@ void WordFilterMgr::LoadLetterAnalogs()
     }
     while (result->NextRow());
 
-	TC_LOG_INFO("misc", ">> Loaded %u letter analogs in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_INFO("misc", ">> Loaded %u letter analogs in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
 
@@ -120,7 +120,7 @@ void WordFilterMgr::LoadBadWords()
     QueryResult result = WorldDatabase.Query("SELECT bad_word FROM bad_word");
     if (!result)
     {
-		TC_LOG_INFO("misc", ">> Loaded 0 bad words. DB table `bad_word` is empty!");
+        TC_LOG_INFO("misc", ">> Loaded 0 bad words. DB table `bad_word` is empty!");
         return;
     }
 
@@ -139,7 +139,7 @@ void WordFilterMgr::LoadBadWords()
     result = WorldDatabase.Query("SELECT bad_word FROM bad_word_mail");
     if (!result)
     {
-		TC_LOG_INFO("misc", ">> Loaded 0 bad words. DB table `bad_word_mail` is empty!");
+        TC_LOG_INFO("misc", ">> Loaded 0 bad words. DB table `bad_word_mail` is empty!");
         return;
     }
 
@@ -154,14 +154,14 @@ void WordFilterMgr::LoadBadWords()
     }
     while (result->NextRow());
 
-	TC_LOG_INFO("misc", ">> Loaded %u bad words in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_INFO("misc", ">> Loaded %u bad words in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
 inline void WordFilterMgr::ConvertLettersToAnalogs(std::string& text)
 {
     // todo: to change to STL algorithms (for optimize).
     for (std::string::iterator sit = text.begin(); sit != text.end(); ++sit)
-		for (LetterAnalogMap::const_iterator mit = m_letterAnalogs.begin(); mit != m_letterAnalogs.end(); ++mit)
+        for (LetterAnalogMap::const_iterator mit = m_letterAnalogs.begin(); mit != m_letterAnalogs.end(); ++mit)
             if (mit->second.find(*sit) != std::string::npos)
             {
                 *sit = mit->first;
@@ -172,7 +172,7 @@ inline void WordFilterMgr::ConvertLettersToAnalogs(std::string& text)
 std::string WordFilterMgr::FindBadWord(const std::string& text, bool mail)
 {
     std::string _text = text;
-	
+    
     if (_text.empty() || m_badWords.empty())
         return "";
 
@@ -180,8 +180,8 @@ std::string WordFilterMgr::FindBadWord(const std::string& text, bool mail)
     ConvertLettersToAnalogs(_text);
 
     for (BadWordMap::const_iterator it = m_badWords.begin(); it != m_badWords.end(); ++it)
-	    if (_text.find(it->first) != std::string::npos)
-		    return it->second;
+        if (_text.find(it->first) != std::string::npos)
+            return it->second;
 
     if(mail)
     {
@@ -193,21 +193,21 @@ std::string WordFilterMgr::FindBadWord(const std::string& text, bool mail)
     // At ~5 times slower.
     for (BadWordMap::const_iterator it = m_badWords.begin(); it != m_badWords.end(); ++it)
     {
-		if (it->second.size() <= 3)
-		{
-			if (_text.find(it->first) != std::string::npos)
+        if (it->second.size() <= 3)
+        {
+            if (_text.find(it->first) != std::string::npos)
                 return it->second;
-		}
-		else if (it->second.size() <= 7)
-		{
-			if(FindWordInSequence(_text, it->first, 1))
+        }
+        else if (it->second.size() <= 7)
+        {
+            if(FindWordInSequence(_text, it->first, 1))
                 return it->second;
-		}
-		else
-		{
-			if(FindWordInSequence(_text, it->first, 2))
+        }
+        else
+        {
+            if(FindWordInSequence(_text, it->first, 2))
                 return it->second;
-		}
+        }
     }
     */
 
@@ -259,7 +259,7 @@ bool WordFilterMgr::AddBadWordMail(const std::string& badWord, bool toDB)
 bool WordFilterMgr::RemoveBadWord(const std::string& badWord, bool fromDB)
 {
     std::string _badWord = badWord;
-	
+    
     NormalizeWord(_badWord);
 
     std::string convertedBadWord = _badWord;

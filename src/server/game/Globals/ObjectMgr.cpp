@@ -7030,21 +7030,21 @@ std::string ObjectMgr::GeneratePetName(uint32 entry)
 
 uint32 ObjectMgr::GeneratePetNumber()
 {
-	if (_hiPetNumber >= 0xFFFFFFFE)
-	{
-		TC_LOG_ERROR("misc", "_hiPetNumber Id overflow!! Can't continue, shutting down server. ");
-		World::StopNow(ERROR_EXIT_CODE);
-	}
+    if (_hiPetNumber >= 0xFFFFFFFE)
+    {
+        TC_LOG_ERROR("misc", "_hiPetNumber Id overflow!! Can't continue, shutting down server. ");
+        World::StopNow(ERROR_EXIT_CODE);
+    }
     return ++_hiPetNumber;
 }
 
 uint64 ObjectMgr::GenerateVoidStorageItemId()
 {
-	if (_voidItemId >= uint64(0xFFFFFFFFFFFFFFFELL))
-	{
-		TC_LOG_ERROR("misc", "VoidStorageItem Id overflow!! Can't continue, shutting down server. ");
-		World::StopNow(ERROR_EXIT_CODE);
-	}
+    if (_voidItemId >= uint64(0xFFFFFFFFFFFFFFFELL))
+    {
+        TC_LOG_ERROR("misc", "VoidStorageItem Id overflow!! Can't continue, shutting down server. ");
+        World::StopNow(ERROR_EXIT_CODE);
+    }
     return ++_voidItemId;
 }
 
@@ -8998,7 +8998,7 @@ bool ObjectMgr::RemoveVendorItem(uint32 entry, uint32 item, uint8 type, bool per
 
 bool ObjectMgr::IsVendorItemValid(uint32 vendor_entry, uint32 id, int32 maxcount, uint32 incrtime, uint32 ExtendedCost, uint8 type, Player* player, std::set<uint32>* skip_vendors, uint32 ORnpcflag) const
 {
-	/*
+    /*
     CreatureTemplate const* cInfo = sObjectMgr->GetCreatureTemplate(vendor_entry);
     if (!cInfo)
     {
@@ -9023,7 +9023,7 @@ bool ObjectMgr::IsVendorItemValid(uint32 vendor_entry, uint32 id, int32 maxcount
         }
         return false;
     }
-	*/
+    */
     if ((type == ITEM_VENDOR_TYPE_ITEM && !sObjectMgr->GetItemTemplate(id)) ||
         (type == ITEM_VENDOR_TYPE_CURRENCY && !sCurrencyTypesStore.LookupEntry(id)))
     {

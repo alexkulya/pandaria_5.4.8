@@ -222,10 +222,10 @@ void AuthSocket::OnClose(void)
 void AuthSocket::OnRead()
 {
 #define MAX_AUTH_LOGON_CHALLENGES_IN_A_ROW 3
-	uint32 challengesInARow = 0;
+    uint32 challengesInARow = 0;
 
 #define MAX_AUTH_GET_REALM_LIST 10
-	uint32 challengesInARowRealmList = 0;
+    uint32 challengesInARowRealmList = 0;
 
     uint8 _cmd;
     while (1)
@@ -243,15 +243,15 @@ void AuthSocket::OnRead()
                 return;
             }
         }
-		else if (_cmd == REALM_LIST) {
-			challengesInARowRealmList++;
-			if (challengesInARowRealmList == MAX_AUTH_GET_REALM_LIST)
-			{
-				TC_LOG_WARN("server.authserver", "Got %u REALMLIST in a row from '%s', possible ongoing DoS", challengesInARowRealmList, socket().getRemoteAddress().c_str());
-				socket().shutdown();
-				return;
-			}
-		}
+        else if (_cmd == REALM_LIST) {
+            challengesInARowRealmList++;
+            if (challengesInARowRealmList == MAX_AUTH_GET_REALM_LIST)
+            {
+                TC_LOG_WARN("server.authserver", "Got %u REALMLIST in a row from '%s', possible ongoing DoS", challengesInARowRealmList, socket().getRemoteAddress().c_str());
+                socket().shutdown();
+                return;
+            }
+        }
 
         size_t i;
 
@@ -402,6 +402,7 @@ bool AuthSocket::_HandleLogonChallenge()
             Field* fields = res2->Fetch();
 
             // If the IP is 'locked', check that the player comes indeed from the correct IP address
+            bool locked = false;
             if (fields[2].GetUInt8() == 1)                  // if ip is locked
             {
                 TC_LOG_DEBUG("server.authserver", "[AuthChallenge] Account '%s' is locked to IP - '%s'", _login.c_str(), fields[4].GetCString());
@@ -411,14 +412,21 @@ bool AuthSocket::_HandleLogonChallenge()
                 {
                     TC_LOG_DEBUG("server.authserver", "[AuthChallenge] Account IP differs");
                     pkt << uint8(WOW_FAIL_LOCKED_ENFORCED);
+                    locked = true;
                 }
                 else
+                {
                     TC_LOG_DEBUG("server.authserver", "[AuthChallenge] Account IP matches");
+                    
+                }
+                    
             }
-            else
+            if (!locked)
             {
                 TC_LOG_DEBUG("server.authserver", "[AuthChallenge] Account '%s' is not locked to ip", _login.c_str());
-
+                
+                
+                {
                 //set expired bans to inactive
                 LoginDatabase.DirectExecute(LoginDatabase.GetPreparedStatement(LOGIN_UPD_EXPIRED_ACCOUNT_BANS));
 
@@ -519,7 +527,8 @@ bool AuthSocket::_HandleLogonChallenge()
                     TC_LOG_DEBUG("server.authserver", "'%s:%d' [AuthChallenge] account %s is using '%c%c%c%c' locale (%u)", socket().getRemoteAddress().c_str(), socket().getRemotePort(),
                             _login.c_str (), ch->country[3], ch->country[2], ch->country[1], ch->country[0], GetLocaleByName(_localizationName)
                         );
-                }
+                    } 
+                } 
             }
         }
         else                                                //no account

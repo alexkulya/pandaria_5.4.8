@@ -192,10 +192,10 @@ class boss_trollgore : public CreatureScript
                 {
                     Talk(SAY_CONSUME);
                     DoCast(SPELL_CONSUME);
-					if (GetDifficulty() == DUNGEON_DIFFICULTY_HEROIC)
-						DoCast(SPELL_CONSUME_AURA_H);
-					else
-						DoCast(SPELL_CONSUME_AURA);
+                    if (GetDifficulty() == DUNGEON_DIFFICULTY_HEROIC)
+                        DoCast(SPELL_CONSUME_AURA_H);
+                    else
+                        DoCast(SPELL_CONSUME_AURA);
                     uiConsumeTimer = 15 * IN_MILLISECONDS;
                 } else uiConsumeTimer -= diff;
 

@@ -245,7 +245,7 @@ class instance_blood_in_the_snow : public InstanceMapScript
                                 varian->AI()->DoAction(ACTION_LAST_STAND);
 
                             DoFinishLFGDungeon(instance->GetDifficulty() == SCENARIO_DIFFICULTY_HEROIC ? 637 : 646);
-							DoFinishLFGDungeon(instance->GetDifficulty() == SCENARIO_DIFFICULTY_NORMAL ? 637 : 646);
+                            DoFinishLFGDungeon(instance->GetDifficulty() == SCENARIO_DIFFICULTY_NORMAL ? 637 : 646);
                         }
                         break;
                     case DATA_SHIMMERWEED:

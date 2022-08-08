@@ -738,7 +738,7 @@ struct customCreatureAI : public ScriptedAI
                     DoCast(target, spell_id);
                 break;
         }
-		me->_AddCreatureSpellCooldown(spell_id, time(nullptr) + 2000 / IN_MILLISECONDS); // we need to add GCD  and does account for creatures with many executes.
+        me->_AddCreatureSpellCooldown(spell_id, time(nullptr) + 2000 / IN_MILLISECONDS); // we need to add GCD  and does account for creatures with many executes.
         if (repeat)
             events.ScheduleEvent(event_id, repeat);
     }

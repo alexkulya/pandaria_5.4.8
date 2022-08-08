@@ -524,87 +524,87 @@ class spell_monk_item_s12_4p_mistweaver : public SpellScriptLoader
 // 122783 - Diffuse Magic
 class spell_monk_diffuse_magic : public SpellScript
 {
-	PrepareSpellScript(spell_monk_diffuse_magic);
+    PrepareSpellScript(spell_monk_diffuse_magic);
 
-	void HandleCast()
-	{
-		Unit* monk = GetCaster();
-		std::multimap<uint32, uint64> toBeRemoved;
-		auto& auraList = monk->GetAppliedAuras();
+    void HandleCast()
+    {
+        Unit* monk = GetCaster();
+        std::multimap<uint32, uint64> toBeRemoved;
+        auto& auraList = monk->GetAppliedAuras();
 
-		auto markToDispel = [&]()
-		{
-			for (auto&& it : auraList)
-			{
-				Aura* aura = it.second->GetBase();
-				if (!(aura->GetSpellInfo()->GetDispelMask() & (1 << DISPEL_MAGIC)))
-					continue;
+        auto markToDispel = [&]()
+        {
+            for (auto&& it : auraList)
+            {
+                Aura* aura = it.second->GetBase();
+                if (!(aura->GetSpellInfo()->GetDispelMask() & (1 << DISPEL_MAGIC)))
+                    continue;
 
-				if (aura->GetSpellInfo()->IsPositive() || aura->IsPassive() || aura->IsRemoved())
-					continue;
+                if (aura->GetSpellInfo()->IsPositive() || aura->IsPassive() || aura->IsRemoved())
+                    continue;
 
-				Unit* caster = aura->GetCaster();
-				if (!caster || caster->GetGUID() == monk->GetGUID())
-					continue;
+                Unit* caster = aura->GetCaster();
+                if (!caster || caster->GetGUID() == monk->GetGUID())
+                    continue;
 
-				if (!caster->IsWithinDist(monk, 40.0f))
-					continue;
+                if (!caster->IsWithinDist(monk, 40.0f))
+                    continue;
 
-				if (aura->GetSpellInfo()->HasAttribute(SPELL_ATTR0_UNAFFECTED_BY_INVULNERABILITY))
-					continue;
+                if (aura->GetSpellInfo()->HasAttribute(SPELL_ATTR0_UNAFFECTED_BY_INVULNERABILITY))
+                    continue;
 
-				// Don't apply auras here, it may cause invalidation of the auraList because of fucking scripts, which probably shouldn't work.
-				toBeRemoved.emplace(aura->GetSpellInfo()->Id, caster->GetGUID());
-			}
-		};
+                // Don't apply auras here, it may cause invalidation of the auraList because of fucking scripts, which probably shouldn't work.
+                toBeRemoved.emplace(aura->GetSpellInfo()->Id, caster->GetGUID());
+            }
+        };
 
-		// Some shit here.
-		// Seems what after dispel effects must be dispelled too, but not transfered to caster, like silence after Unstable Affliction dispel.
-		// So, call this here and another time after actual dispel (and also dispel).
-		markToDispel();
+        // Some shit here.
+        // Seems what after dispel effects must be dispelled too, but not transfered to caster, like silence after Unstable Affliction dispel.
+        // So, call this here and another time after actual dispel (and also dispel).
+        markToDispel();
 
-		for (auto&& it : toBeRemoved)
-		{
-			Aura* aura = monk->GetAura(it.first, it.second);
-			if (!aura)       // Possible if it was removed with something else
-				continue;
+        for (auto&& it : toBeRemoved)
+        {
+            Aura* aura = monk->GetAura(it.first, it.second);
+            if (!aura)       // Possible if it was removed with something else
+                continue;
 
-			Unit* caster = aura->GetCaster();
-			if (!caster)    // Possible?
-				continue;
+            Unit* caster = aura->GetCaster();
+            if (!caster)    // Possible?
+                continue;
 
-			if (!aura->GetSpellInfo()->HasAttribute(SPELL_ATTR1_CANT_BE_REFLECTED))
-			{
-				if (Aura* addedAura = caster->AddAura(aura->GetSpellInfo()->Id, caster))
-				{
-					AuraData data;
-					aura->SaveParameters(data);
-					addedAura->LoadParameters(data);
-					addedAura->SetMaxDuration(addedAura->GetDuration());
-				}
-			}
+            if (!aura->GetSpellInfo()->HasAttribute(SPELL_ATTR1_CANT_BE_REFLECTED))
+            {
+                if (Aura* addedAura = caster->AddAura(aura->GetSpellInfo()->Id, caster))
+                {
+                    AuraData data;
+                    aura->SaveParameters(data);
+                    addedAura->LoadParameters(data);
+                    addedAura->SetMaxDuration(addedAura->GetDuration());
+                }
+            }
 
-			uint32 charges = aura->GetSpellInfo()->HasAttribute(SPELL_ATTR7_DISPEL_CHARGES) ? aura->GetCharges() : aura->GetStackAmount();
-			monk->RemoveAurasDueToSpellByDispel(aura->GetId(), GetSpellInfo()->Id, aura->GetCasterGUID(), monk, charges);
-		}
+            uint32 charges = aura->GetSpellInfo()->HasAttribute(SPELL_ATTR7_DISPEL_CHARGES) ? aura->GetCharges() : aura->GetStackAmount();
+            monk->RemoveAurasDueToSpellByDispel(aura->GetId(), GetSpellInfo()->Id, aura->GetCasterGUID(), monk, charges);
+        }
 
-		toBeRemoved.clear();
-		markToDispel();
+        toBeRemoved.clear();
+        markToDispel();
 
-		for (auto&& it : toBeRemoved)
-		{
-			if (Aura* aura = monk->GetAura(it.first, it.second))
-			{
-				uint32 charges = aura->GetSpellInfo()->HasAttribute(SPELL_ATTR7_DISPEL_CHARGES) ? aura->GetCharges() : aura->GetStackAmount();
-				monk->RemoveAurasDueToSpellByDispel(aura->GetId(), GetSpellInfo()->Id, aura->GetCasterGUID(), monk, charges);
-			}
-		}
-	}
+        for (auto&& it : toBeRemoved)
+        {
+            if (Aura* aura = monk->GetAura(it.first, it.second))
+            {
+                uint32 charges = aura->GetSpellInfo()->HasAttribute(SPELL_ATTR7_DISPEL_CHARGES) ? aura->GetCharges() : aura->GetStackAmount();
+                monk->RemoveAurasDueToSpellByDispel(aura->GetId(), GetSpellInfo()->Id, aura->GetCasterGUID(), monk, charges);
+            }
+        }
+    }
 
-	void Register() override
-	{
-		OnCast += SpellCastFn(spell_monk_diffuse_magic::HandleCast);
-	}
+    void Register() override
+    {
+        OnCast += SpellCastFn(spell_monk_diffuse_magic::HandleCast);
+    }
 };
 
 
@@ -1440,8 +1440,8 @@ class spell_monk_s_e_f_aura : public AuraScript
                 return true;
             case 115098: // Chi Wave
                 return true;
-			case 113656: // Fists of Fury
-				return true;
+            case 113656: // Fists of Fury
+                return true;
             default:
                 break;
         }
@@ -5165,7 +5165,7 @@ void AddSC_monk_spell_scripts()
     new spell_script<spell_monk_transcendence_transfer>("spell_monk_transcendence_transfer");
     new spell_script<spell_monk_transcendence>("spell_monk_transcendence");
     new spell_monk_item_s12_4p_mistweaver();
-	new spell_script<spell_monk_diffuse_magic>("spell_monk_diffuse_magic");
+    new spell_script<spell_monk_diffuse_magic>("spell_monk_diffuse_magic");
     new spell_script<spell_monk_zen_flight_check>("spell_monk_zen_flight_check");
     new aura_script<aura_monk_glyph_of_zen_flight>("aura_monk_glyph_of_zen_flight");
     new aura_script<spell_monk_touch_of_karma>("spell_monk_touch_of_karma");

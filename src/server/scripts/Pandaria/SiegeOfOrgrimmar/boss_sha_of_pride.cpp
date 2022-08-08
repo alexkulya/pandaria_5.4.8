@@ -1053,11 +1053,11 @@ class spell_sha_of_pride_swelling_pride : public SpellScript
 
                 if (power > 99 && !itr->HasAura(SPELL_OVERCOME_CHARMED)) // Overcome Charm
                     caster->CastSpell(itr, SPELL_OVERCOME_CHARMED, true);
-				
-				if (!itr->HasAura(SPELL_OVERCOME_CHARMED))
-				    itr->SetUInt64Value(UNIT_FIELD_CHARMED_BY, 71734);
+                
+                if (!itr->HasAura(SPELL_OVERCOME_CHARMED))
+                    itr->SetUInt64Value(UNIT_FIELD_CHARMED_BY, 71734);
 
-					
+                    
 
                 // Gain Power after effect
                 if (!itr->HasAura(SPELL_GIFT_OF_THE_TITANS_DPS) && !itr->HasAura(SPELL_GIFT_OF_THE_TITANS_HEAL))

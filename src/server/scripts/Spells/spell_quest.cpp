@@ -2547,6 +2547,6 @@ void AddSC_quest_spell_scripts()
     new spell_script<spell_q32683_q32726_ghostly_skeleton_key>("spell_q32683_q32726_ghostly_skeleton_key");
     new spell_script<spell_q12414_hand_over_reins>("spell_q12414_hand_over_reins");
     new aura_script<spell_cooking_for_kunzen_bonfire>("spell_cooking_for_kunzen_bonfire");
-	new spell_q30050_resuscitate();
-	new spell_q31112_ping_bunny();
+    new spell_q30050_resuscitate();
+    new spell_q31112_ping_bunny();
 }

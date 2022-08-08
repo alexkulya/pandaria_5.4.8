@@ -131,8 +131,8 @@ enum eEvents
     EVENT_END_OF_PHASE_3            = 12,
     EVENT_RADIATING_ENERGIES        = 13,
     EVENT_LAUNCH_COSMIC_SPARK       = 14,
-	EVENT_CATASTROPHIC           = 15,
-	EVENT_CATASTROPHIC_01              = 16,
+    EVENT_CATASTROPHIC           = 15,
+    EVENT_CATASTROPHIC_01              = 16,
 };
 
 enum elegonActions
@@ -141,7 +141,7 @@ enum elegonActions
     ACTION_SPAWN_ENERGY_CHARGES     = 2,
     ACTION_DESPAWN_ENERGY_CHARGES   = 3,
     ACTION_EMPYREAL_FOCUS_KILLED    = 4,
-	ACTION_3 = 5
+    ACTION_3 = 5
 };
 
 enum eMovementPoints
@@ -232,12 +232,12 @@ enum AchievementWorldStates
 // Set values in reset of mob_empyreal_focus
 uint64 empyrealFocus[6] =
 {
-	0, // South-West
-	0, // North-West
-	0, // South
-	0, // North
-	0, // South-East
-	0  // North-East
+    0, // South-West
+    0, // North-West
+    0, // South
+    0, // North
+    0, // South-East
+    0  // North-East
 };
 // Elegon - 60410
 class boss_elegon : public CreatureScript
@@ -467,7 +467,7 @@ class boss_elegon : public CreatureScript
 
                         break;
                     }
-					case ACTION_3:
+                    case ACTION_3:
                         events.ScheduleEvent(EVENT_CATASTROPHIC, 1000);
                         break;
                     default:
@@ -844,14 +844,14 @@ class boss_elegon : public CreatureScript
                         case EVENT_ENRAGE_HARD:
                         {
                             me->CastSpell(me, SPELL_BERSERK, true);
-							events.ScheduleEvent(EVENT_CATASTROPHIC_01, 5000);
+                            events.ScheduleEvent(EVENT_CATASTROPHIC_01, 5000);
                             Talk(TALK_ENRAGE_HARD);
                             break;
                         }
-						case EVENT_CATASTROPHIC:
+                        case EVENT_CATASTROPHIC:
                              DoCast(127341);
                             break;
-						case EVENT_CATASTROPHIC_01:
+                        case EVENT_CATASTROPHIC_01:
                              DoCast(132256);
                             break;
                         default:
@@ -917,28 +917,28 @@ class npc_empyreal_focus : public CreatureScript
             EventMap events;
             bool activationDone;
             InstanceScript* instance;
-			uint64 targetfocusGUID;
-			uint16 CheckTimer;
-			bool active;
+            uint64 targetfocusGUID;
+            uint16 CheckTimer;
+            bool active;
 
             void Reset() override
             {
                 events.Reset();
-				CheckTimer = 1000;
+                CheckTimer = 1000;
                 activationDone = false;
-				active = false;
+                active = false;
 
                 me->SetReactState(REACT_PASSIVE);
                 me->AddAura(SPELL_FOCUS_INACTIVE, me);
-				me->RemoveAurasDueToSpell(132257);
+                me->RemoveAurasDueToSpell(132257);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
             }
 
-			void SpellHit(Unit* caster, SpellInfo const* spell)
-			{
-				if (spell->Id == 116598)
-					targetfocusGUID = caster->GetGUID();
-			}
+            void SpellHit(Unit* caster, SpellInfo const* spell)
+            {
+                if (spell->Id == 116598)
+                    targetfocusGUID = caster->GetGUID();
+            }
 
             void DoAction(int32 actionId) override
             {
@@ -994,12 +994,12 @@ class npc_empyreal_focus : public CreatureScript
                     damage = 0;
 
                     activationDone = false;
-					active = true;
+                    active = true;
                     me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
                     //me->RemoveAurasDueToSpell(SPELL_FOCUS_ACTIVATE_STATE);
                     me->RemoveAurasDueToSpell(SPELL_FOCUS_LIGHT_WALL_VISUAL);
                     me->RemoveAurasDueToSpell(SPELL_FOCUS_LIGHT_CASTBAR);
-					DoCast(me, 132257, true);
+                    DoCast(me, 132257, true);
                     me->SetHealth(me->GetMaxHealth());
 
                     if (AreaTrigger* lightningWall = me->GetAreaTrigger(SPELL_FOCUS_LIGHT_AREATRIGGER))
@@ -1016,34 +1016,34 @@ class npc_empyreal_focus : public CreatureScript
                 }
             }
 
-			void DeactivateFocus()
-			{
-				Creature* focus = me->GetCreature(*me, targetfocusGUID);
-				if (!focus)
-					return;
+            void DeactivateFocus()
+            {
+                Creature* focus = me->GetCreature(*me, targetfocusGUID);
+                if (!focus)
+                    return;
 
-				if (me->HasAura(132257) && focus->HasAura(132257))
-				{
-					active = false;
-					focus->RemoveAurasDueToSpell(132257);
-					me->RemoveAurasDueToSpell(132257);
-					focus->RemoveAurasDueToSpell(SPELL_FOCUS_ACTIVATE_STATE);
-					me->RemoveAurasDueToSpell(SPELL_FOCUS_ACTIVATE_STATE);
-				}
-			}
+                if (me->HasAura(132257) && focus->HasAura(132257))
+                {
+                    active = false;
+                    focus->RemoveAurasDueToSpell(132257);
+                    me->RemoveAurasDueToSpell(132257);
+                    focus->RemoveAurasDueToSpell(SPELL_FOCUS_ACTIVATE_STATE);
+                    me->RemoveAurasDueToSpell(SPELL_FOCUS_ACTIVATE_STATE);
+                }
+            }
 
             void UpdateAI(uint32 diff) override
             {
                 events.Update(diff);
 
-				if (CheckTimer <= diff)
-				{
-					if (active)
-					    DeactivateFocus();
-					CheckTimer = 1000;
-				}
-				else
-					CheckTimer -= diff;
+                if (CheckTimer <= diff)
+                {
+                    if (active)
+                        DeactivateFocus();
+                    CheckTimer = 1000;
+                }
+                else
+                    CheckTimer -= diff;
 
                 switch (events.ExecuteEvent())
                 {
@@ -1052,74 +1052,74 @@ class npc_empyreal_focus : public CreatureScript
                         events.ScheduleEvent(EVENT_APPEAR_WALL_OF_LIGHTNING, 3000);
                         break;
                     case EVENT_APPEAR_WALL_OF_LIGHTNING:
-					{
-						me->CastSpell(me, SPELL_FOCUS_LIGHT_AREATRIGGER, true);						
-						me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+                    {
+                        me->CastSpell(me, SPELL_FOCUS_LIGHT_AREATRIGGER, true);                        
+                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
 
-						Position pos;
-						me->GetPosition(&pos);
-						for (int i = 0; i < 6; i++)
-						{
-							if (pos.GetPositionX() - empyrealFocusPosition[i].GetPositionX() <= 4.0f &&
-								pos.GetPositionX() - empyrealFocusPosition[i].GetPositionX() >= -4.0f &&
-								pos.GetPositionY() - empyrealFocusPosition[i].GetPositionY() <= 4.0f &&
-								pos.GetPositionY() - empyrealFocusPosition[i].GetPositionY() >= -4.0f)
-							{
-								switch (i)
-								{
-								case 0:
-									empyrealFocus[1] = me->GetGUID();//����
-									break;
-								case 1:
-									empyrealFocus[3] = me->GetGUID();//����
-									break;
-								case 2:
-									empyrealFocus[5] = me->GetGUID();//����
-									break;
-								case 3:
-									empyrealFocus[4] = me->GetGUID();//����
-									break;
-								case 4:
-									empyrealFocus[2] = me->GetGUID();//�ϱ�
-									break;
-								case 5:
-									empyrealFocus[0] = me->GetGUID();  //����
-									break;
-								}
+                        Position pos;
+                        me->GetPosition(&pos);
+                        for (int i = 0; i < 6; i++)
+                        {
+                            if (pos.GetPositionX() - empyrealFocusPosition[i].GetPositionX() <= 4.0f &&
+                                pos.GetPositionX() - empyrealFocusPosition[i].GetPositionX() >= -4.0f &&
+                                pos.GetPositionY() - empyrealFocusPosition[i].GetPositionY() <= 4.0f &&
+                                pos.GetPositionY() - empyrealFocusPosition[i].GetPositionY() >= -4.0f)
+                            {
+                                switch (i)
+                                {
+                                case 0:
+                                    empyrealFocus[1] = me->GetGUID();//����
+                                    break;
+                                case 1:
+                                    empyrealFocus[3] = me->GetGUID();//����
+                                    break;
+                                case 2:
+                                    empyrealFocus[5] = me->GetGUID();//����
+                                    break;
+                                case 3:
+                                    empyrealFocus[4] = me->GetGUID();//����
+                                    break;
+                                case 4:
+                                    empyrealFocus[2] = me->GetGUID();//�ϱ�
+                                    break;
+                                case 5:
+                                    empyrealFocus[0] = me->GetGUID();  //����
+                                    break;
+                                }
 
-								break;
-							}
-						}		
+                                break;
+                            }
+                        }        
 
-						if (Creature* elegon = instance->instance->GetCreature(instance->GetData64(NPC_ELEGON)))
-						{
-							if (Creature* empyrealfocus = instance->instance->GetCreature(empyrealFocus[0]))
-							{
-								if (Creature* empyrealfocus05 = instance->instance->GetCreature(empyrealFocus[5]))
-								{
-									empyrealfocus->CastSpell(empyrealfocus05, 116598, true);
-									empyrealfocus05->CastSpell(empyrealfocus, 116598, true);
-								}
-							}
-							if (Creature* empyrealfocus01 = instance->instance->GetCreature(empyrealFocus[1]))
-							{
-								if (Creature* empyrealfocus04 = instance->instance->GetCreature(empyrealFocus[4]))
-								{
-									empyrealfocus01->CastSpell(empyrealfocus04, 116598, true);
-									empyrealfocus04->CastSpell(empyrealfocus01, 116598, true);
-								}
-							}
-							if (Creature* empyrealfocus02 = instance->instance->GetCreature(empyrealFocus[2]))
-							{
-								if (Creature* empyrealfocus03 = instance->instance->GetCreature(empyrealFocus[3]))
-								{
-									empyrealfocus02->CastSpell(empyrealfocus03, 116598, true);
-									empyrealfocus03->CastSpell(empyrealfocus02, 116598, true);
-								}
-							}
-						}						
-						
-					}
+                        if (Creature* elegon = instance->instance->GetCreature(instance->GetData64(NPC_ELEGON)))
+                        {
+                            if (Creature* empyrealfocus = instance->instance->GetCreature(empyrealFocus[0]))
+                            {
+                                if (Creature* empyrealfocus05 = instance->instance->GetCreature(empyrealFocus[5]))
+                                {
+                                    empyrealfocus->CastSpell(empyrealfocus05, 116598, true);
+                                    empyrealfocus05->CastSpell(empyrealfocus, 116598, true);
+                                }
+                            }
+                            if (Creature* empyrealfocus01 = instance->instance->GetCreature(empyrealFocus[1]))
+                            {
+                                if (Creature* empyrealfocus04 = instance->instance->GetCreature(empyrealFocus[4]))
+                                {
+                                    empyrealfocus01->CastSpell(empyrealfocus04, 116598, true);
+                                    empyrealfocus04->CastSpell(empyrealfocus01, 116598, true);
+                                }
+                            }
+                            if (Creature* empyrealfocus02 = instance->instance->GetCreature(empyrealFocus[2]))
+                            {
+                                if (Creature* empyrealfocus03 = instance->instance->GetCreature(empyrealFocus[3]))
+                                {
+                                    empyrealfocus02->CastSpell(empyrealfocus03, 116598, true);
+                                    empyrealfocus03->CastSpell(empyrealfocus02, 116598, true);
+                                }
+                            }
+                        }                        
+                        
+                    }
                         break;
                     default:
                         break;
@@ -2204,50 +2204,50 @@ class sat_mv_energy_conduit : public IAreaTriggerAura
 class spell_stability_flux : public SpellScriptLoader
 {
 public:
-	spell_stability_flux() : SpellScriptLoader("spell_stability_flux") { }
+    spell_stability_flux() : SpellScriptLoader("spell_stability_flux") { }
 
-	class spell_stability_flux_SpellScript : public SpellScript
-	{
-		PrepareSpellScript(spell_stability_flux_SpellScript);
+    class spell_stability_flux_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_stability_flux_SpellScript);
 
-		void RecalculateDamage(SpellEffIndex /*effIndex*/)
-		{
-			if (Unit* target = GetHitUnit())
-			{
-				if (!GetCaster()->GetInstanceScript()->instance->IsHeroic())
-					SetHitDamage(GetHitDamage());
-				else
-				{
-					InstanceScript* instance = GetCaster()->GetInstanceScript();
-					if (Creature* elegon = instance->instance->GetCreature(instance->GetData64(NPC_ELEGON)))
-						if (elegon->GetExactDist2d(GetCaster()) < 42.7f)
-						{
-							if (target->HasAura(117878))
-								SetHitDamage(GetHitDamage());								
-							else
-								SetHitDamage(0);
-						}
-						else
-						{
-							if (target->HasAura(117878))
-								SetHitDamage(0);
-							else
-								SetHitDamage(GetHitDamage());
-						}
-				}
-			}
-		}
+        void RecalculateDamage(SpellEffIndex /*effIndex*/)
+        {
+            if (Unit* target = GetHitUnit())
+            {
+                if (!GetCaster()->GetInstanceScript()->instance->IsHeroic())
+                    SetHitDamage(GetHitDamage());
+                else
+                {
+                    InstanceScript* instance = GetCaster()->GetInstanceScript();
+                    if (Creature* elegon = instance->instance->GetCreature(instance->GetData64(NPC_ELEGON)))
+                        if (elegon->GetExactDist2d(GetCaster()) < 42.7f)
+                        {
+                            if (target->HasAura(117878))
+                                SetHitDamage(GetHitDamage());                                
+                            else
+                                SetHitDamage(0);
+                        }
+                        else
+                        {
+                            if (target->HasAura(117878))
+                                SetHitDamage(0);
+                            else
+                                SetHitDamage(GetHitDamage());
+                        }
+                }
+            }
+        }
 
-		void Register() override
-		{
-			OnEffectHitTarget += SpellEffectFn(spell_stability_flux_SpellScript::RecalculateDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
-		}
-	};
+        void Register() override
+        {
+            OnEffectHitTarget += SpellEffectFn(spell_stability_flux_SpellScript::RecalculateDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+        }
+    };
 
-	SpellScript* GetSpellScript() const override
-	{
-		return new spell_stability_flux_SpellScript();
-	}
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_stability_flux_SpellScript();
+    }
 };
 
 void AddSC_boss_elegon()
@@ -2268,7 +2268,7 @@ void AddSC_boss_elegon()
     new spell_core_checker();
     new spell_grasping_energy_tendrils();
     new spell_unstable_energy();
-	new spell_stability_flux();
+    new spell_stability_flux();
     new spell_script<spell_destabilizing_energies>("spell_destabilizing_energies");
     new spell_script<spell_total_annihilation>("spell_total_annihilation");
     new spell_script<spell_total_annihilation_eff>("spell_total_annihilation_eff");

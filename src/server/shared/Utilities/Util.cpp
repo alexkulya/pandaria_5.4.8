@@ -322,30 +322,30 @@ void utf8truncate(std::string& utf8str, size_t len)
 
 bool Utf8toWStr(char const* utf8str, size_t csize, wchar_t* wstr, size_t& wsize)
 {
-	try
-	{
-		size_t len = utf8::distance(utf8str, utf8str + csize);
-		if (len > wsize)
-		{
-			if (wsize > 0)
-				wstr[0] = L'\0';
-			wsize = 0;
-			return false;
-		}
+    try
+    {
+        size_t len = utf8::distance(utf8str, utf8str + csize);
+        if (len > wsize)
+        {
+            if (wsize > 0)
+                wstr[0] = L'\0';
+            wsize = 0;
+            return false;
+        }
 
-		wsize = len;
-		utf8::utf8to16(utf8str, utf8str + csize, wstr);
-		wstr[len] = L'\0';
-	}
-	catch (std::exception)
-	{
-		if (wsize > 0)
-			wstr[0] = L'\0';
-		wsize = 0;
-		return false;
-	}
+        wsize = len;
+        utf8::utf8to16(utf8str, utf8str + csize, wstr);
+        wstr[len] = L'\0';
+    }
+    catch (std::exception)
+    {
+        if (wsize > 0)
+            wstr[0] = L'\0';
+        wsize = 0;
+        return false;
+    }
 
-	return true;
+    return true;
 }
 
 bool Utf8toWStr(const std::string& utf8str, std::wstring& wstr)
@@ -414,51 +414,51 @@ typedef wchar_t const* const* wstrlist;
 
 std::wstring GetMainPartOfName(std::wstring const& wname, uint32 declension)
 {
-	// supported only Cyrillic cases
-	if (wname.empty() || !isCyrillicCharacter(wname[0]) || declension > 5)
-		return wname;
+    // supported only Cyrillic cases
+    if (wname.empty() || !isCyrillicCharacter(wname[0]) || declension > 5)
+        return wname;
 
-	// Important: end length must be <= MAX_INTERNAL_PLAYER_NAME-MAX_PLAYER_NAME (3 currently)
-	static std::wstring const a_End = { wchar_t(0x0430), wchar_t(0x0000) };
-	static std::wstring const o_End = { wchar_t(0x043E), wchar_t(0x0000) };
-	static std::wstring const ya_End = { wchar_t(0x044F), wchar_t(0x0000) };
-	static std::wstring const ie_End = { wchar_t(0x0435), wchar_t(0x0000) };
-	static std::wstring const i_End = { wchar_t(0x0438), wchar_t(0x0000) };
-	static std::wstring const yeru_End = { wchar_t(0x044B), wchar_t(0x0000) };
-	static std::wstring const u_End = { wchar_t(0x0443), wchar_t(0x0000) };
-	static std::wstring const yu_End = { wchar_t(0x044E), wchar_t(0x0000) };
-	static std::wstring const oj_End = { wchar_t(0x043E), wchar_t(0x0439), wchar_t(0x0000) };
-	static std::wstring const ie_j_End = { wchar_t(0x0435), wchar_t(0x0439), wchar_t(0x0000) };
-	static std::wstring const io_j_End = { wchar_t(0x0451), wchar_t(0x0439), wchar_t(0x0000) };
-	static std::wstring const o_m_End = { wchar_t(0x043E), wchar_t(0x043C), wchar_t(0x0000) };
-	static std::wstring const io_m_End = { wchar_t(0x0451), wchar_t(0x043C), wchar_t(0x0000) };
-	static std::wstring const ie_m_End = { wchar_t(0x0435), wchar_t(0x043C), wchar_t(0x0000) };
-	static std::wstring const soft_End = { wchar_t(0x044C), wchar_t(0x0000) };
-	static std::wstring const j_End = { wchar_t(0x0439), wchar_t(0x0000) };
+    // Important: end length must be <= MAX_INTERNAL_PLAYER_NAME-MAX_PLAYER_NAME (3 currently)
+    static std::wstring const a_End = { wchar_t(0x0430), wchar_t(0x0000) };
+    static std::wstring const o_End = { wchar_t(0x043E), wchar_t(0x0000) };
+    static std::wstring const ya_End = { wchar_t(0x044F), wchar_t(0x0000) };
+    static std::wstring const ie_End = { wchar_t(0x0435), wchar_t(0x0000) };
+    static std::wstring const i_End = { wchar_t(0x0438), wchar_t(0x0000) };
+    static std::wstring const yeru_End = { wchar_t(0x044B), wchar_t(0x0000) };
+    static std::wstring const u_End = { wchar_t(0x0443), wchar_t(0x0000) };
+    static std::wstring const yu_End = { wchar_t(0x044E), wchar_t(0x0000) };
+    static std::wstring const oj_End = { wchar_t(0x043E), wchar_t(0x0439), wchar_t(0x0000) };
+    static std::wstring const ie_j_End = { wchar_t(0x0435), wchar_t(0x0439), wchar_t(0x0000) };
+    static std::wstring const io_j_End = { wchar_t(0x0451), wchar_t(0x0439), wchar_t(0x0000) };
+    static std::wstring const o_m_End = { wchar_t(0x043E), wchar_t(0x043C), wchar_t(0x0000) };
+    static std::wstring const io_m_End = { wchar_t(0x0451), wchar_t(0x043C), wchar_t(0x0000) };
+    static std::wstring const ie_m_End = { wchar_t(0x0435), wchar_t(0x043C), wchar_t(0x0000) };
+    static std::wstring const soft_End = { wchar_t(0x044C), wchar_t(0x0000) };
+    static std::wstring const j_End = { wchar_t(0x0439), wchar_t(0x0000) };
 
-	static std::array<std::array<std::wstring const*, 7>, 6> const dropEnds = { {
-		{ &a_End,  &o_End,    &ya_End,   &ie_End,  &soft_End, &j_End,    nullptr },
-		{ &a_End,  &ya_End,   &yeru_End, &i_End,   nullptr,   nullptr,   nullptr },
-		{ &ie_End, &u_End,    &yu_End,   &i_End,   nullptr,   nullptr,   nullptr },
-		{ &u_End,  &yu_End,   &o_End,    &ie_End,  &soft_End, &ya_End,   &a_End  },
-		{ &oj_End, &io_j_End, &ie_j_End, &o_m_End, &io_m_End, &ie_m_End, &yu_End },
-		{ &ie_End, &i_End,    nullptr,   nullptr,  nullptr,   nullptr,   nullptr }
-	} };
+    static std::array<std::array<std::wstring const*, 7>, 6> const dropEnds = { {
+        { &a_End,  &o_End,    &ya_End,   &ie_End,  &soft_End, &j_End,    nullptr },
+        { &a_End,  &ya_End,   &yeru_End, &i_End,   nullptr,   nullptr,   nullptr },
+        { &ie_End, &u_End,    &yu_End,   &i_End,   nullptr,   nullptr,   nullptr },
+        { &u_End,  &yu_End,   &o_End,    &ie_End,  &soft_End, &ya_End,   &a_End  },
+        { &oj_End, &io_j_End, &ie_j_End, &o_m_End, &io_m_End, &ie_m_End, &yu_End },
+        { &ie_End, &i_End,    nullptr,   nullptr,  nullptr,   nullptr,   nullptr }
+    } };
 
-	std::size_t const thisLen = wname.length();
-	std::array<std::wstring const*, 7> const& endings = dropEnds[declension];
-	for (auto itr = endings.begin(), end = endings.end(); (itr != end) && *itr; ++itr)
-	{
-		std::wstring const& ending = **itr;
-		std::size_t const endLen = ending.length();
-		if (!(endLen <= thisLen))
-			continue;
+    std::size_t const thisLen = wname.length();
+    std::array<std::wstring const*, 7> const& endings = dropEnds[declension];
+    for (auto itr = endings.begin(), end = endings.end(); (itr != end) && *itr; ++itr)
+    {
+        std::wstring const& ending = **itr;
+        std::size_t const endLen = ending.length();
+        if (!(endLen <= thisLen))
+            continue;
 
-		if (wname.substr(thisLen - endLen, thisLen) == ending)
-			return wname.substr(0, thisLen - endLen);
-	}
+        if (wname.substr(thisLen - endLen, thisLen) == ending)
+            return wname.substr(0, thisLen - endLen);
+    }
 
-	return wname;
+    return wname;
 }
 
 

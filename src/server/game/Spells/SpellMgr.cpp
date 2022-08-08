@@ -7615,9 +7615,9 @@ void SpellMgr::LoadSpellInfoCorrections()
                 case 131116: // Raging Blow! - Handled by Raging Blow hit
                     spellInfo->ProcFlags = 0;
                     break;
-				case 31801:  ///< Seal of Truth
-					spellInfo->ProcFlags |= PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_NEG;
-					break;
+                case 31801:  ///< Seal of Truth
+                    spellInfo->ProcFlags |= PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_NEG;
+                    break;
                 case 32379: // Shadow Word: Death
                     std::swap(spellInfo->Effects[EFFECT_0].TargetA, spellInfo->Effects[EFFECT_1].TargetA);
                     std::swap(spellInfo->Effects[EFFECT_0].TargetB, spellInfo->Effects[EFFECT_1].TargetB);
@@ -7727,9 +7727,9 @@ void SpellMgr::LoadSpellInfoCorrections()
                     spellInfo->Effects[EFFECT_0].Effect = SPELL_EFFECT_HEAL_PCT;
                     spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_DONE_BONUS;
                     break;
-				case 42463: // Seal of Truth
-					spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_DONE_BONUS;
-					break;
+                case 42463: // Seal of Truth
+                    spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_DONE_BONUS;
+                    break;
                 case 35546:  // Combat Potency
                 case 49560:  // Death Grip
                     spellInfo->Mechanic = MECHANIC_NONE;
@@ -7814,9 +7814,9 @@ void SpellMgr::LoadSpellInfoCorrections()
                 case 106830: // Thrash
                 case 108686: // Immolate
                 case 114893: // Stone Bulwark
-					spellInfo->Effects[EFFECT_1].RealPointsPerLevel = 888;
-					spellInfo->Effects[EFFECT_1].BasePoints = 300;
-					spellInfo->Effects[EFFECT_1].ScalingMultiplier = 5.0;
+                    spellInfo->Effects[EFFECT_1].RealPointsPerLevel = 888;
+                    spellInfo->Effects[EFFECT_1].BasePoints = 300;
+                    spellInfo->Effects[EFFECT_1].ScalingMultiplier = 5.0;
                 case 132464: // Chi Wave
                 case 132467: // Chi Wave
                 case 137619: // Marked for Death

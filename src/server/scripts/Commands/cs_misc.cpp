@@ -52,7 +52,7 @@ public:
 
     std::vector<ChatCommand> GetCommands() const override
     {
-		static std::vector<ChatCommand> badWordCommandTable =
+        static std::vector<ChatCommand> badWordCommandTable =
         {
             { "add",                SEC_ADMINISTRATOR,      true,  &HandleBadWordAddCommand, },
             { "remove",             SEC_ADMINISTRATOR,      true,  &HandleBadWordRemoveCommand, },
@@ -198,7 +198,7 @@ public:
             { "replace",        SEC_ADMINISTRATOR, true, replaceCommandTable        },
             { "inotify",        SEC_CONSOLE,    true,   inotifyCommandTable         },
             { "checkladder",    SEC_ADMINISTRATOR,  true,   &HandleCheckLadderCommand   },
-			{ "wordfilter",         SEC_ADMINISTRATOR,      false, wordFilterCommandTable },
+            { "wordfilter",         SEC_ADMINISTRATOR,      false, wordFilterCommandTable },
             { "deleteditem",    SEC_ADMINISTRATOR,  true,
             {
                 { "list",      SEC_ADMINISTRATOR,   true,   &HandleDeletedItemListCommand,    },
@@ -324,7 +324,7 @@ public:
         return true;
     }
 
-	static bool HandleDevCommand(ChatHandler* handler, char const* args)
+    static bool HandleDevCommand(ChatHandler* handler, char const* args)
     {
         if (!*args)
         {

@@ -789,7 +789,7 @@ void WorldSession::SendListInventory(uint64 vendorGuid, uint32 vendorEntry)
     if (vendor->HasUnitState(UNIT_STATE_MOVING))
         vendor->StopMoving();
 
-	SetCurrentVendor(vendorEntry);
+    SetCurrentVendor(vendorEntry);
 
     VendorItemData const* vendorItems = vendorEntry ? sObjectMgr->GetNpcVendorItemList(vendorEntry) : vendor->GetVendorItems();
     uint32 rawItemCount = vendorItems ? vendorItems->GetItemCount() : 0;
@@ -797,7 +797,7 @@ void WorldSession::SendListInventory(uint64 vendorGuid, uint32 vendorEntry)
     //if (rawItemCount > 300),
     // rawItemCount = 300; // client cap but uint8 max value is 255
 
-    ByteBuffer itemsData(32 * rawItemCount);	
+    ByteBuffer itemsData(32 * rawItemCount);    
 
     bool hasExtendedCost[MAX_VENDOR_ITEMS];
 

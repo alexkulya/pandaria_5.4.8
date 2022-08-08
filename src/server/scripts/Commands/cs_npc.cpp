@@ -566,7 +566,7 @@ public:
         uint32 itemId = atol(pitem);
 
         const uint8 type = 1; // FIXME: make type (1 item, 2 currency) an argument
-		char* addMulti = strtok(NULL, " ");
+        char* addMulti = strtok(NULL, " ");
 
         if (!sObjectMgr->RemoveVendorItem(addMulti ? handler->GetSession()->GetCurrentVendor() : vendor->GetEntry(), itemId, type))
         {

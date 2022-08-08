@@ -41,7 +41,7 @@ void WorldSession::HandleBattlePayGetProductList(WorldPacket& /*recvData*/)
     }
 
     sBattlePayMgr->SendBattlePayProductList(this);
-	sBattlePayMgr->SendPointsBalance(this);
+    sBattlePayMgr->SendPointsBalance(this);
 }
 
 void WorldSession::HandleBattlePayStartPurchase(WorldPacket& recvData)

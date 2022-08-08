@@ -66,9 +66,9 @@ void WorldSession::HandleGMTicketCreateOpcode(WorldPacket& recvData)
         recvData >> Position.x;
         recvData >> count;
 
-		if (!message.empty())
-			for (uint8 X = 0; X < strlen(InvalidCharacters); ++X)
-				message.erase(std::remove(message.begin(), message.end(), InvalidCharacters[X]), message.end());
+        if (!message.empty())
+            for (uint8 X = 0; X < strlen(InvalidCharacters); ++X)
+                message.erase(std::remove(message.begin(), message.end(), InvalidCharacters[X]), message.end());
 
         if (count > 0)
         {
@@ -131,9 +131,9 @@ void WorldSession::HandleGMTicketUpdateOpcode(WorldPacket& recvData)
     messageLen = recvData.ReadBits(11);
     message    = recvData.ReadString(messageLen);
 
-	if (!message.empty())
-		for (uint8 X = 0; X < strlen(InvalidCharacters); ++X)
-			message.erase(std::remove(message.begin(), message.end(), InvalidCharacters[X]), message.end());
+    if (!message.empty())
+        for (uint8 X = 0; X < strlen(InvalidCharacters); ++X)
+            message.erase(std::remove(message.begin(), message.end(), InvalidCharacters[X]), message.end());
 
     GMTicketResponse response = GMTICKET_RESPONSE_UPDATE_ERROR;
     if (GmTicket* ticket = sTicketMgr->GetGmTicketByPlayerGuid(GetPlayer()->GetGUID()))

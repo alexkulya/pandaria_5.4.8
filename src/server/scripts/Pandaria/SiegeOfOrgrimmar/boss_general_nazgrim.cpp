@@ -84,7 +84,7 @@ enum Events
     EVENT_RAGE_ABILITY,
     EVENT_CALL_KORKRON,
     EVENT_EXECUTE,
-	EVENT_SPELLS_BASE,
+    EVENT_SPELLS_BASE,
 
     // Kork`ron
     EVENT_IRON_STORM,
@@ -479,9 +479,9 @@ class boss_general_nazgrim : public CreatureScript
                             if (!HandleSelectSpellByRagePower()) // Reschedule if not enough power for ability
                                 events.ScheduleEvent(EVENT_RAGE_ABILITY, 0.5 * IN_MILLISECONDS);
                             break;
-						case EVENT_SPELLS_BASE:
-							HandleSelectSpellByRagePower();
-							   events.ScheduleEvent(EVENT_SPELLS_BASE, 10 * IN_MILLISECONDS);
+                        case EVENT_SPELLS_BASE:
+                            HandleSelectSpellByRagePower();
+                               events.ScheduleEvent(EVENT_SPELLS_BASE, 10 * IN_MILLISECONDS);
                     }
                 }
 

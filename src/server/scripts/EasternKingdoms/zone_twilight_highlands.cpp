@@ -31,6 +31,7 @@ enum Quests
     QUEST_EARL_OF_EVILSCERATION = 27867,
     QUEST_TWILIGHT_TERROR       = 27868,
     QUEST_ONLY_HOMES_WE_HAVE    = 27804,
+    QUEST_TOTAL_WAR                = 27747,
 };
 
 enum Creatures
@@ -1359,6 +1360,26 @@ class spell_twilight_douse_fire : public SpellScript
     }
 };
 
+// 206195 Thundermar Ale Keg
+class gob_thundermar_ale_keg : public GameObjectScript
+{
+    public:
+        gob_thundermar_ale_keg() : GameObjectScript("gob_thundermar_ale_keg") { }
+
+        bool OnReportUse(Player* player, GameObject* go) override
+        {
+            if (player->GetQuestStatus(QUEST_TOTAL_WAR) == QUEST_STATUS_INCOMPLETE)
+            {
+                player->KilledMonsterCredit(46551);
+                go->ForcedDespawn();
+                return true;
+            }
+
+            go->CastSpell(player, 86855);
+            return true;
+        }
+};
+ 
 void AddSC_twilight_highlands()
 {
     new creature_script<npc_dunwald_victim>("npc_dunwald_victim");
@@ -1374,4 +1395,5 @@ void AddSC_twilight_highlands()
 
     new spell_script<spell_twilight_activate_pools>("spell_twilight_activate_pools");
     new spell_script<spell_twilight_douse_fire>("spell_twilight_douse_fire");
+    new gob_thundermar_ale_keg();
 }

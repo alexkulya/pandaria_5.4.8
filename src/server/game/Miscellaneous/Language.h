@@ -1529,7 +1529,7 @@ enum TrinityStrings
     LANG_BG_REWARD_TITLE_RICH               = 12529,
     LANG_BG_REWARD_BODY                     = 12530,
 
-	// Word filter
+    // Word filter
     LANG_WORD_FILTER_FOUND_BAD_WORD_IN_CHAT = 21000,
     LANG_WORD_FILTER_FOUND_BAD_WORD_IN_MAIL = 21001,
 

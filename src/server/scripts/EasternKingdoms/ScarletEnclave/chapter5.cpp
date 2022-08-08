@@ -1672,7 +1672,7 @@ struct npc_patchwerk_death_knight_quests : public ScriptedAI
 
     void Reset() override
     {
-		me->SetCorpseDelay(10);
+        me->SetCorpseDelay(10);
         me->SetRespawnDelay(60);
         enrage = false;
     }

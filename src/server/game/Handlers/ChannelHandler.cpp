@@ -24,18 +24,16 @@
 #include "WordFilterMgr.h"
 #include "../../dep/utf8cpp/utf8.h"
 
-
 bool WorldSession::ChannelCheck(std::string channel)
 {
-	if (channel.size() >= 100)
-		return false;
+    if (channel.size() >= 100)
+        return false;
 
-	if (channel.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890") != std::string::npos)
-		return false;
+    if (channel.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890") != std::string::npos)
+        return false;
 
-	return true;
+    return true;
 }
-
 
 void WorldSession::HandleJoinChannel(WorldPacket& recvPacket)
 {
@@ -69,7 +67,7 @@ void WorldSession::HandleJoinChannel(WorldPacket& recvPacket)
 
             if (channel->flags & CHANNEL_DBC_FLAG_CITY_ONLY)
             {
-				if (channelName.find("|") != std::string::npos || channelName.size() >= 100 || !utf8::is_valid(channelName.begin(), channelName.end()))
+                if (channelName.find("|") != std::string::npos || channelName.size() >= 100 || !utf8::is_valid(channelName.begin(), channelName.end()))
                 {
                     char cityName[200];
                     if (!sscanf(channelName.c_str(), channel->pattern[GetSessionDbcLocale()], cityName) &&
@@ -81,7 +79,7 @@ void WorldSession::HandleJoinChannel(WorldPacket& recvPacket)
             }
             else
             {
-				if (channelName.find("|") != std::string::npos || channelName.size() >= 100 || !utf8::is_valid(channelName.begin(), channelName.end()))
+                if (channelName.find("|") != std::string::npos || channelName.size() >= 100 || !utf8::is_valid(channelName.begin(), channelName.end()))
                 {
                     char zoneName[200];
                     if (!sscanf(channelName.c_str(), channel->pattern[GetSessionDbcLocale()], zoneName) &&
@@ -130,10 +128,10 @@ void WorldSession::HandleJoinChannel(WorldPacket& recvPacket)
         }
     }
 
-	if (!utf8::is_valid(channelName.begin(), channelName.end()))
-	{
-		return;
-	}
+    if (!utf8::is_valid(channelName.begin(), channelName.end()))
+    {
+        return;
+    }
 
     if (channelName.empty())
         return;

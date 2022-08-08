@@ -306,7 +306,7 @@ void Transmogrification::SetFakeEntry(Player* player, uint32 newEntry, uint8 /*s
     dataMap[itemGUID] = player->GetGUID();
     CharacterDatabase.PExecute("REPLACE INTO custom_transmogrification (GUID, FakeEntry, Owner) VALUES (%u, %u, %u)", GUID_LOPART(itemGUID), newEntry, player->GetGUIDLow());
     CharacterDatabase.PExecute("UPDATE item_instance SET transmogrifyId = %u WHERE guid = %u", newEntry, GUID_LOPART(itemGUID));
-	UpdateItem(player, itemTransmogrified, newEntry);
+    UpdateItem(player, itemTransmogrified, newEntry);
 }
 
 TransmogTrinityStrings Transmogrification::Transmogrify(Player* player, uint64 itemGUID, uint8 slot, /*uint32 newEntry, */bool no_cost)
@@ -419,14 +419,14 @@ bool Transmogrification::CanTransmogrifyItemWithItem(Player* player, ItemTemplat
         source->InventoryType == INVTYPE_QUIVER)
         return false;
 
-	if (source->Class == ITEM_CLASS_WEAPON && target->InventoryType == INVTYPE_WEAPONOFFHAND)
-		return true;
+    if (source->Class == ITEM_CLASS_WEAPON && target->InventoryType == INVTYPE_WEAPONOFFHAND)
+        return true;
 
-	if (source->Class == ITEM_CLASS_WEAPON && target->InventoryType == INVTYPE_HOLDABLE)
-		return true;
-	
-	if (source->Class == ITEM_CLASS_WEAPON && target->InventoryType == INVTYPE_SHIELD)
-		return true;
+    if (source->Class == ITEM_CLASS_WEAPON && target->InventoryType == INVTYPE_HOLDABLE)
+        return true;
+    
+    if (source->Class == ITEM_CLASS_WEAPON && target->InventoryType == INVTYPE_SHIELD)
+        return true;
 
     // TC doesnt check this? Checked by Inventory type check.
     if (source->Class != target->Class)

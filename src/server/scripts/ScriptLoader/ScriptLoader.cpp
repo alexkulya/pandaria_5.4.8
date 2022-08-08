@@ -1154,7 +1154,7 @@ void AddWorldScripts()
     AddSC_brawlers_guild();
     AddSC_chat_log();
     AddSC_on_duel();
-	AddSC_transmog();
+    AddSC_transmog();
     AddSC_world_map_scripts();
 #endif
 }

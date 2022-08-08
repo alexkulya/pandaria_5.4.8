@@ -816,10 +816,10 @@ uint32 Unit::DealDamage(Unit* victim, uint32 damage, CleanDamage const* cleanDam
     sScriptMgr->OnDamage(this, victim, damage);
 
     // optimization done
-	if ((damagetype == SPELL_DIRECT_DAMAGE || damagetype == DOT) && spellProto)
-	{
-		damage = RecaculateDamage(damage);
-	}
+    if ((damagetype == SPELL_DIRECT_DAMAGE || damagetype == DOT) && spellProto)
+    {
+        damage = RecaculateDamage(damage);
+    }
 
 
 
@@ -7316,26 +7316,26 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, AuraEffect* triggere
                     if (triggeredByAura->GetEffIndex() == EFFECT_0)
                         triggered_spell_id = 101423;
                     break;
-				case 31801:  // Seal of Truth
-				{
-					if (effIndex != 0)                      
-						return false;
+                case 31801:  // Seal of Truth
+                {
+                    if (effIndex != 0)                      
+                        return false;
 
-					
-					if (procFlag & PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_NEG && procSpell->Id != 20271)
-						return false;
+                    
+                    if (procFlag & PROC_FLAG_DONE_SPELL_MAGIC_DMG_CLASS_NEG && procSpell->Id != 20271)
+                        return false;
 
-					triggered_spell_id = 31803;
+                    triggered_spell_id = 31803;
 
-					int32 l_Bp = 17;
+                    int32 l_Bp = 17;
 
-					if (HasAura(56416))
-						CastCustomSpell(victim, 42463, &l_Bp, NULL, NULL, true);
-					else
-						CastSpell(victim, 42463, true);
+                    if (HasAura(56416))
+                        CastCustomSpell(victim, 42463, &l_Bp, NULL, NULL, true);
+                    else
+                        CastSpell(victim, 42463, true);
 
-					break;
-				}
+                    break;
+                }
                 case 105361:    // Seal of Command
                     if (triggeredByAura->GetEffIndex() == EFFECT_0)
                         triggered_spell_id = 118215;
@@ -19995,272 +19995,272 @@ void Unit::GetMovementSpeedModifiers(int32& mainBonus, float& stackBonus, float&
 
 uint32 Unit::RecaculateDamage(uint32 damage) // Here we calculate the damage done
 {
-	if (GetTypeId() == TYPEID_PLAYER)
-	{
-		switch (ToPlayer()->GetSpecialization())
-		{
-			// MAGE
-		case SPEC_MAGE_ARCANE:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECMAGEARCANE);
-			break;
-		case SPEC_MAGE_FIRE:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECMAGEFIRE);
-			break;
-		case SPEC_MAGE_FROST:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECMAGEFROST);
-			break;
-			// PALADIN
-		case SPEC_PALADIN_HOLY:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECPALADINHOLY);
-			break;
-		case SPEC_PALADIN_PROTECTION:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECPALADINPROTECTION);
-			break;
-		case SPEC_PALADIN_RETRIBUTION:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECPALADINRETRIBUTION);
-			break;
-			// WARRIOR
-		case SPEC_WARRIOR_ARMS:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECWARRIORARMS);
-			break;
-		case SPEC_WARRIOR_FURY:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECWARRIORFURY);
-			break;
-		case SPEC_WARRIOR_PROTECTION:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECWARRIORPROTECTION);
-			break;
-			// DRUID
-		case SPEC_DRUID_BALANCE:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECDRUIDBALANCE);
-			break;
-		case SPEC_DRUID_FERAL:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECDRUIDFERAL);
-			break;
-		case SPEC_DRUID_GUARDIAN:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECDRUIDGUARDIAN);
-			break;
-		case SPEC_DRUID_RESTORATION:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECDRUIDRESTORATION);
-			break;
-			// DEATH KNIGHT
-		case SPEC_DEATH_KNIGHT_BLOOD:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECDEATHKNIGHTBLOOD);
-			break;
-		case SPEC_DEATH_KNIGHT_FROST:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECDEATHKNIGHTFROST);
-			break;
-		case SPEC_DEATH_KNIGHT_UNHOLY:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECDEATHKNIGHTUNHOLY);
-			break;
-			// HUNTER
-		case SPEC_HUNTER_BEAST_MASTERY:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECHUNTERBEASTMASTERY);
-			break;
-		case SPEC_HUNTER_MARKSMANSHIP:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECHUNTERMARKSMANSHIP);
-			break;
-		case SPEC_HUNTER_SURVIVAL:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECHUNTERSURVIVAL);
-			break;
-			//PRIEST
-		case SPEC_PRIEST_DISCIPLINE:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECPRIESTDISCIPLINE);
-			break;
-		case SPEC_PRIEST_HOLY:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECPRIESTHOLY);
-			break;
-		case SPEC_PRIEST_SHADOW:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECPRIESTSHADOW);
-			break;
-			// ROGUE
-		case SPEC_ROGUE_ASSASSINATION:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECROGUEASSASSINATION);
-			break;
-		case SPEC_ROGUE_COMBAT:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECROGUECOMBAT);
-			break;
-		case SPEC_ROGUE_SUBTLETY:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECROGUESUBTLETY);
-			break;
-			//SHAMAN
-		case SPEC_SHAMAN_ELEMENTAL:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECSHAMANELEMENTAL);
-			break;
-		case SPEC_SHAMAN_ENHANCEMENT:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECSHAMANENHANCEMENT);
-			break;
-		case SPEC_SHAMAN_RESTORATION:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECSHAMANRESTORATION);
-			break;
-			//WARLOCK
-		case SPEC_WARLOCK_AFFLICTION:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECWARLOCKAFFLICTION);
-			break;
-		case SPEC_WARLOCK_DEMONOLOGY:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECWARLOCKDEMONOLOGY);
-			break;
-		case SPEC_WARLOCK_DESTRUCTION:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECWARLOCKDESTRUCTION);
-			break;
-			// MONK
-		case SPEC_MONK_BREWMASTER:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECMONKBREWMASTER);
-			break;
-		case SPEC_MONK_WINDWALKER:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECMONKWINDWALKER);
-			break;
-		case SPEC_MONK_MISTWEAVER:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECMONKMISTWEAVER);
-			break;
-		default:
-			break;
-		}
-	}
-	else if (ToCreature()->IsPet())
+    if (GetTypeId() == TYPEID_PLAYER)
     {
-	switch (ToPet()->GetSpecializationId())
-	{
-		case SPEC_PET_FEROCITY:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIG_SPEC_PET_FEROCITY);
-			break;
-		case SPEC_PET_TENACITY:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIG_SPEC_PET_TENACITY);
-			break;
-		case SPEC_PET_CUNNING:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIG_SPEC_PET_CUNNING);
-			break;
-		default:
-			damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIG_PET_NO_SPEC);
-			break;
-		}
+        switch (ToPlayer()->GetSpecialization())
+        {
+            // MAGE
+        case SPEC_MAGE_ARCANE:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECMAGEARCANE);
+            break;
+        case SPEC_MAGE_FIRE:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECMAGEFIRE);
+            break;
+        case SPEC_MAGE_FROST:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECMAGEFROST);
+            break;
+            // PALADIN
+        case SPEC_PALADIN_HOLY:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECPALADINHOLY);
+            break;
+        case SPEC_PALADIN_PROTECTION:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECPALADINPROTECTION);
+            break;
+        case SPEC_PALADIN_RETRIBUTION:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECPALADINRETRIBUTION);
+            break;
+            // WARRIOR
+        case SPEC_WARRIOR_ARMS:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECWARRIORARMS);
+            break;
+        case SPEC_WARRIOR_FURY:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECWARRIORFURY);
+            break;
+        case SPEC_WARRIOR_PROTECTION:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECWARRIORPROTECTION);
+            break;
+            // DRUID
+        case SPEC_DRUID_BALANCE:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECDRUIDBALANCE);
+            break;
+        case SPEC_DRUID_FERAL:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECDRUIDFERAL);
+            break;
+        case SPEC_DRUID_GUARDIAN:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECDRUIDGUARDIAN);
+            break;
+        case SPEC_DRUID_RESTORATION:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECDRUIDRESTORATION);
+            break;
+            // DEATH KNIGHT
+        case SPEC_DEATH_KNIGHT_BLOOD:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECDEATHKNIGHTBLOOD);
+            break;
+        case SPEC_DEATH_KNIGHT_FROST:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECDEATHKNIGHTFROST);
+            break;
+        case SPEC_DEATH_KNIGHT_UNHOLY:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECDEATHKNIGHTUNHOLY);
+            break;
+            // HUNTER
+        case SPEC_HUNTER_BEAST_MASTERY:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECHUNTERBEASTMASTERY);
+            break;
+        case SPEC_HUNTER_MARKSMANSHIP:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECHUNTERMARKSMANSHIP);
+            break;
+        case SPEC_HUNTER_SURVIVAL:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECHUNTERSURVIVAL);
+            break;
+            //PRIEST
+        case SPEC_PRIEST_DISCIPLINE:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECPRIESTDISCIPLINE);
+            break;
+        case SPEC_PRIEST_HOLY:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECPRIESTHOLY);
+            break;
+        case SPEC_PRIEST_SHADOW:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECPRIESTSHADOW);
+            break;
+            // ROGUE
+        case SPEC_ROGUE_ASSASSINATION:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECROGUEASSASSINATION);
+            break;
+        case SPEC_ROGUE_COMBAT:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECROGUECOMBAT);
+            break;
+        case SPEC_ROGUE_SUBTLETY:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECROGUESUBTLETY);
+            break;
+            //SHAMAN
+        case SPEC_SHAMAN_ELEMENTAL:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECSHAMANELEMENTAL);
+            break;
+        case SPEC_SHAMAN_ENHANCEMENT:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECSHAMANENHANCEMENT);
+            break;
+        case SPEC_SHAMAN_RESTORATION:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECSHAMANRESTORATION);
+            break;
+            //WARLOCK
+        case SPEC_WARLOCK_AFFLICTION:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECWARLOCKAFFLICTION);
+            break;
+        case SPEC_WARLOCK_DEMONOLOGY:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECWARLOCKDEMONOLOGY);
+            break;
+        case SPEC_WARLOCK_DESTRUCTION:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECWARLOCKDESTRUCTION);
+            break;
+            // MONK
+        case SPEC_MONK_BREWMASTER:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECMONKBREWMASTER);
+            break;
+        case SPEC_MONK_WINDWALKER:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECMONKWINDWALKER);
+            break;
+        case SPEC_MONK_MISTWEAVER:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIGSPECMONKMISTWEAVER);
+            break;
+        default:
+            break;
+        }
+    }
+    else if (ToCreature()->IsPet())
+    {
+    switch (ToPet()->GetSpecializationId())
+    {
+        case SPEC_PET_FEROCITY:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIG_SPEC_PET_FEROCITY);
+            break;
+        case SPEC_PET_TENACITY:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIG_SPEC_PET_TENACITY);
+            break;
+        case SPEC_PET_CUNNING:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIG_SPEC_PET_CUNNING);
+            break;
+        default:
+            damage = (damage / 100.0f) * sWorld->getFloatConfig(CONFIG_PET_NO_SPEC);
+            break;
+        }
     }
 
-	return damage;
+    return damage;
 }
 
 uint32 Unit::RecaculateHealing(uint32 healamount) // calculate healing here
 {
-	// Custom Balance System For TorghastWOW 
-	if (GetTypeId() == TYPEID_PLAYER)
-	{
-		switch (ToPlayer()->GetSpecialization())
-		{
-			// MAGE
-		case SPEC_MAGE_ARCANE:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECMAGEARCANE);
-			break;
-		case SPEC_MAGE_FIRE:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECMAGEFIRE);
-			break;
-		case SPEC_MAGE_FROST:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECMAGEFROST);
-			break;
-			// PALADIN
-		case SPEC_PALADIN_HOLY:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECPALADINHOLY);
-			break;
-		case SPEC_PALADIN_PROTECTION:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECPALADINPROTECTION);
-			break;
-		case SPEC_PALADIN_RETRIBUTION:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECPALADINRETRIBUTION);
-			break;
-			// WARRIOR
-		case SPEC_WARRIOR_ARMS:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECWARRIORARMS);
-			break;
-		case SPEC_WARRIOR_FURY:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECWARRIORFURY);
-			break;
-		case SPEC_WARRIOR_PROTECTION:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECWARRIORPROTECTION);
-			break;
-			// DRUID
-		case SPEC_DRUID_BALANCE:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECDRUIDBALANCE);
-			break;
-		case SPEC_DRUID_FERAL:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECDRUIDFERAL);
-			break;
-		case SPEC_DRUID_GUARDIAN:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECDRUIDGUARDIAN);
-			break;
-		case SPEC_DRUID_RESTORATION:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECDRUIDRESTORATION);
-			break;
-			// DEATH KNIGHT
-		case SPEC_DEATH_KNIGHT_BLOOD:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECDEATHKNIGHTBLOOD);
-			break;
-		case SPEC_DEATH_KNIGHT_FROST:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECDEATHKNIGHTFROST);
-			break;
-		case SPEC_DEATH_KNIGHT_UNHOLY:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECDEATHKNIGHTUNHOLY);
-			break;
-			// HUNTER
-		case SPEC_HUNTER_BEAST_MASTERY:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECHUNTERBEASTMASTERY);
-			break;
-		case SPEC_HUNTER_MARKSMANSHIP:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECHUNTERMARKSMANSHIP);
-			break;
-		case SPEC_HUNTER_SURVIVAL:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECHUNTERSURVIVAL);
-			break;
-			//PRIEST
-		case SPEC_PRIEST_DISCIPLINE:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECPRIESTDISCIPLINE);
-			break;
-		case SPEC_PRIEST_HOLY:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECPRIESTHOLY);
-			break;
-		case SPEC_PRIEST_SHADOW:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECPRIESTSHADOW);
-			break;
-			// ROGUE
-		case SPEC_ROGUE_ASSASSINATION:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECROGUEASSASSINATION);
-			break;
-		case SPEC_ROGUE_COMBAT:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECROGUECOMBAT);
-			break;
-		case SPEC_ROGUE_SUBTLETY:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECROGUESUBTLETY);
-			break;
-			//SHAMAN
-		case SPEC_SHAMAN_ELEMENTAL:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECSHAMANELEMENTAL);
-			break;
-		case SPEC_SHAMAN_ENHANCEMENT:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECSHAMANENHANCEMENT);
-			break;
-		case SPEC_SHAMAN_RESTORATION:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECSHAMANRESTORATION);
-			break;
-			//WARLOCK
-		case SPEC_WARLOCK_AFFLICTION:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECWARLOCKAFFLICTION);
-			break;
-		case SPEC_WARLOCK_DEMONOLOGY:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECWARLOCKDEMONOLOGY);
-			break;
-		case SPEC_WARLOCK_DESTRUCTION:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECWARLOCKDESTRUCTION);
-			break;
-			// MONK
-		case SPEC_MONK_BREWMASTER:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECMONKBREWMASTER);
-			break;
-		case SPEC_MONK_WINDWALKER:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECMONKWINDWALKER);
-			break;
-		case SPEC_MONK_MISTWEAVER:
-			healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECMONKMISTWEAVER);
-			break;
-		}
-	}
-	return healamount;
+    // Custom Balance System For TorghastWOW 
+    if (GetTypeId() == TYPEID_PLAYER)
+    {
+        switch (ToPlayer()->GetSpecialization())
+        {
+            // MAGE
+        case SPEC_MAGE_ARCANE:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECMAGEARCANE);
+            break;
+        case SPEC_MAGE_FIRE:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECMAGEFIRE);
+            break;
+        case SPEC_MAGE_FROST:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECMAGEFROST);
+            break;
+            // PALADIN
+        case SPEC_PALADIN_HOLY:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECPALADINHOLY);
+            break;
+        case SPEC_PALADIN_PROTECTION:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECPALADINPROTECTION);
+            break;
+        case SPEC_PALADIN_RETRIBUTION:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECPALADINRETRIBUTION);
+            break;
+            // WARRIOR
+        case SPEC_WARRIOR_ARMS:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECWARRIORARMS);
+            break;
+        case SPEC_WARRIOR_FURY:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECWARRIORFURY);
+            break;
+        case SPEC_WARRIOR_PROTECTION:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECWARRIORPROTECTION);
+            break;
+            // DRUID
+        case SPEC_DRUID_BALANCE:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECDRUIDBALANCE);
+            break;
+        case SPEC_DRUID_FERAL:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECDRUIDFERAL);
+            break;
+        case SPEC_DRUID_GUARDIAN:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECDRUIDGUARDIAN);
+            break;
+        case SPEC_DRUID_RESTORATION:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECDRUIDRESTORATION);
+            break;
+            // DEATH KNIGHT
+        case SPEC_DEATH_KNIGHT_BLOOD:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECDEATHKNIGHTBLOOD);
+            break;
+        case SPEC_DEATH_KNIGHT_FROST:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECDEATHKNIGHTFROST);
+            break;
+        case SPEC_DEATH_KNIGHT_UNHOLY:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECDEATHKNIGHTUNHOLY);
+            break;
+            // HUNTER
+        case SPEC_HUNTER_BEAST_MASTERY:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECHUNTERBEASTMASTERY);
+            break;
+        case SPEC_HUNTER_MARKSMANSHIP:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECHUNTERMARKSMANSHIP);
+            break;
+        case SPEC_HUNTER_SURVIVAL:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECHUNTERSURVIVAL);
+            break;
+            //PRIEST
+        case SPEC_PRIEST_DISCIPLINE:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECPRIESTDISCIPLINE);
+            break;
+        case SPEC_PRIEST_HOLY:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECPRIESTHOLY);
+            break;
+        case SPEC_PRIEST_SHADOW:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECPRIESTSHADOW);
+            break;
+            // ROGUE
+        case SPEC_ROGUE_ASSASSINATION:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECROGUEASSASSINATION);
+            break;
+        case SPEC_ROGUE_COMBAT:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECROGUECOMBAT);
+            break;
+        case SPEC_ROGUE_SUBTLETY:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECROGUESUBTLETY);
+            break;
+            //SHAMAN
+        case SPEC_SHAMAN_ELEMENTAL:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECSHAMANELEMENTAL);
+            break;
+        case SPEC_SHAMAN_ENHANCEMENT:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECSHAMANENHANCEMENT);
+            break;
+        case SPEC_SHAMAN_RESTORATION:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECSHAMANRESTORATION);
+            break;
+            //WARLOCK
+        case SPEC_WARLOCK_AFFLICTION:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECWARLOCKAFFLICTION);
+            break;
+        case SPEC_WARLOCK_DEMONOLOGY:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECWARLOCKDEMONOLOGY);
+            break;
+        case SPEC_WARLOCK_DESTRUCTION:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECWARLOCKDESTRUCTION);
+            break;
+            // MONK
+        case SPEC_MONK_BREWMASTER:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECMONKBREWMASTER);
+            break;
+        case SPEC_MONK_WINDWALKER:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECMONKWINDWALKER);
+            break;
+        case SPEC_MONK_MISTWEAVER:
+            healamount = (healamount / 100.0f) * sWorld->getFloatConfig(HEALCONFIGSPECMONKMISTWEAVER);
+            break;
+        }
+    }
+    return healamount;
 }
 
 void Unit::HandleEmoteCommandWithDelay(uint32 Delay, uint8 Id)

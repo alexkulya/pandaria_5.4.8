@@ -220,7 +220,7 @@ class boss_altairus : public CreatureScript
                     me->SummonCreature(NPC_TWISTER, AlrairusCenter.GetPositionX() + frand(-20.0f, 25.0f), AlrairusCenter.GetPositionY() + frand(-28.0f, 28.0f), AlrairusCenter.GetPositionZ(), AlrairusCenter.GetOrientation());
             }
         };
-		
+        
         CreatureAI* GetAI(Creature* creature) const override
         {
             return GetInstanceAI<boss_altairusAI>(creature);

@@ -235,8 +235,8 @@ class CharacterCreateInfo
 
 struct PacketCounter
 {
-	time_t lastReceiveTime;
-	uint32 amountCounter;
+    time_t lastReceiveTime;
+    uint32 amountCounter;
 };
 
 struct MuteInfo
@@ -296,7 +296,7 @@ class WorldSession : public Schedulable
         projectMemberInfo* GetprojectMemberInfo() const { return _projectMemberInfo; }
         void UpdateprojectMemberInfo();
 
-		uint32 GetCurrentVendor() const { return m_currentVendorEntry; }
+        uint32 GetCurrentVendor() const { return m_currentVendorEntry; }
         void SetCurrentVendor(uint32 vendorEntry) { m_currentVendorEntry = vendorEntry; }
 
         uint32 GetGUID() const;
@@ -328,9 +328,9 @@ class WorldSession : public Schedulable
         }
 
         void LogoutPlayer(bool save);
-		void KickPlayerOP(std::string const & reason);
+        void KickPlayerOP(std::string const & reason);
         void KickPlayer();
-		bool forceExit;
+        bool forceExit;
 
         void QueuePacket(WorldPacket* new_packet);
         bool Update(uint32 diff, PacketFilter& updater);
@@ -1139,9 +1139,9 @@ class WorldSession : public Schedulable
 
         void HandlePingUpdate(uint32 latency);
 
-		// chat
+        // chat
 
-		bool ChannelCheck(std::string channel);
+        bool ChannelCheck(std::string channel);
 
     private:
         void InitializeQueryCallbackParameters();
@@ -1163,7 +1163,7 @@ class WorldSession : public Schedulable
             friend class World;
             public:
                 DosProtection(WorldSession* s) : Session(s), _policy((Policy)sWorld->getIntConfig(CONFIG_PACKET_SPOOF_POLICY)) { }
-				bool EvaluateOpcode(WorldPacket& p, time_t time) const;
+                bool EvaluateOpcode(WorldPacket& p, time_t time) const;
                 void AllowOpcode(uint16 opcode, bool allow) { _isOpcodeAllowed[opcode] = allow; }
             protected:
                 enum Policy
@@ -1182,7 +1182,7 @@ class WorldSession : public Schedulable
                     return itr->second;
                 }
 
-				uint32 GetMaxPacketCounterAllowed(uint16 opcode) const;
+                uint32 GetMaxPacketCounterAllowed(uint16 opcode) const;
 
                 WorldSession* Session;
 
@@ -1190,11 +1190,11 @@ class WorldSession : public Schedulable
                 typedef std::unordered_map<uint16, bool> OpcodeStatusMap;
                 OpcodeStatusMap _isOpcodeAllowed; // could be bool array, but wouldn't be practical for game versions with non-linear opcodes
                 Policy _policy;
-				typedef std::unordered_map<uint16, PacketCounter> PacketThrottlingMap;
-				// mark this member as "mutable" so it can be modified even in const functions
-				mutable PacketThrottlingMap _PacketThrottlingMap;
-				DosProtection(DosProtection const& right) = delete;
-				DosProtection& operator=(DosProtection const& right) = delete;
+                typedef std::unordered_map<uint16, PacketCounter> PacketThrottlingMap;
+                // mark this member as "mutable" so it can be modified even in const functions
+                mutable PacketThrottlingMap _PacketThrottlingMap;
+                DosProtection(DosProtection const& right) = delete;
+                DosProtection& operator=(DosProtection const& right) = delete;
         } AntiDOS;
 
     private:
@@ -1261,7 +1261,7 @@ class WorldSession : public Schedulable
         projectMemberInfo* _projectMemberInfo;
 
         MuteInfo _mute;
-		uint32 m_currentVendorEntry;
+        uint32 m_currentVendorEntry;
 };
 #endif
 /// @}

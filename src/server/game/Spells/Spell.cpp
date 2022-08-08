@@ -1697,9 +1697,9 @@ void Spell::SelectImplicitChainTargets(SpellEffIndex effIndex, SpellImplicitTarg
         // Chain primary target is added earlier
         CallScriptObjectAreaTargetSelectHandlers(targets, effIndex);
 
-		for (std::list<WorldObject*>::iterator itr = targets.begin(); itr != targets.end(); ++itr)
-			if (Unit* unitTarget = (*itr)->ToUnit())
-				AddUnitTarget(unitTarget, effMask, false);
+        for (std::list<WorldObject*>::iterator itr = targets.begin(); itr != targets.end(); ++itr)
+            if (Unit* unitTarget = (*itr)->ToUnit())
+                AddUnitTarget(unitTarget, effMask, false);
     }
 }
 

@@ -23,9 +23,9 @@ void FusionCMSDatabaseConnection::DoPrepareStatements()
         m_stmts.resize(MAX_FUSIONCMSDATABASE_STATEMENTS);
     
     // BattlePay
-	PrepareStatement(FUSION_SEL_BATTLEPAY_COINS, "SELECT dp FROM account_data WHERE id = ?", CONNECTION_SYNCH);
-	PrepareStatement(FUSION_UPD_BATTLEPAY_INCREMENT_COINS, "UPDATE account_data SET dp = dp + ? WHERE id = ?", CONNECTION_SYNCH);
-	PrepareStatement(FUSION_UPD_BATTLEPAY_DECREMENT_COINS, "UPDATE account_data SET dp = dp - ? WHERE id = ?;", CONNECTION_SYNCH);
+    PrepareStatement(FUSION_SEL_BATTLEPAY_COINS, "SELECT dp FROM account_data WHERE id = ?", CONNECTION_SYNCH);
+    PrepareStatement(FUSION_UPD_BATTLEPAY_INCREMENT_COINS, "UPDATE account_data SET dp = dp + ? WHERE id = ?", CONNECTION_SYNCH);
+    PrepareStatement(FUSION_UPD_BATTLEPAY_DECREMENT_COINS, "UPDATE account_data SET dp = dp - ? WHERE id = ?;", CONNECTION_SYNCH);
 
     // Custom Reward
     PrepareStatement(FUSION_UPD_BATTLEPAY_VP_COINS, "UPDATE account_data SET vp = vp + ? WHERE id = ?;", CONNECTION_SYNCH);
