@@ -90,6 +90,19 @@ enum Gilneas
     SAY_JOSIAH_AVERY_5                      = 4,
     SAY_JOSIAH_AVERY_6                      = 5,
 
+    QUEST_FROM_THE_SHADOWS                  = 14204,
+
+    NPC_GILNEAS_MASTIFF                     = 35631,
+    NPC_BLOODFANG_LURKER                    = 35463,
+
+    SPELL_SUMMON_MASTIFF                    = 67807,
+    SPELL_ATTACK_LURKER                     = 67805,
+    SPELL_SHADOWSTALKER_STEALTH             = 5916,
+    SPELL_UNDYING_FRENZY                    = 80515,
+    SPELL_ENRAGE                            = 8599,
+
+    WORGEN_ENRAGE_EMOTE                     = 0,
+
     SPELL_SAVE_CYNTHIA                      = 68597,
     SPELL_SAVE_ASHLEY                       = 68598,
     SPELL_SAVE_JAMES                        = 68596,
@@ -1051,6 +1064,189 @@ class spell_gilneas_pull_to : public SpellScript
     }
 };
 
+class npc_lorna_crowley_basement : public CreatureScript
+{
+public:
+    npc_lorna_crowley_basement(const char *ScriptName) : CreatureScript(ScriptName) { }
+
+    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest)
+    {
+        if (quest->GetQuestId() == QUEST_FROM_THE_SHADOWS)
+        {
+            if (player->getClass() == CLASS_HUNTER)
+                player->UnsummonPetTemporaryIfAny();
+
+            player->CastSpell(player, SPELL_SUMMON_MASTIFF, false);
+            creature->AI()->Talk(0);
+        }
+        return true;
+    }
+
+    bool OnQuestReward(Player* player, Creature* creature, Quest const* quest, uint32 /*opt*/)
+    {
+        if (quest->GetQuestId() == QUEST_FROM_THE_SHADOWS)
+            if (Unit* charm = Unit::GetCreature(*creature, player->GetMinionGUID()))
+                if (charm->GetEntry() == NPC_GILNEAS_MASTIFF)
+                    if (Creature* mastiff = charm->ToCreature())
+                        mastiff->DespawnOrUnsummon();
+
+        if (player->getClass() == CLASS_HUNTER)
+            player->ResummonPetTemporaryUnSummonedIfAny();
+
+        return true;
+    }
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_lorna_crowley_basementAI (creature);
+    }
+
+    struct npc_lorna_crowley_basementAI : public ScriptedAI
+    {
+        npc_lorna_crowley_basementAI(Creature* creature) : ScriptedAI(creature)
+        {
+            me->SetReactState(REACT_PASSIVE);
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            if (!UpdateVictim())
+                return;
+        }
+    };
+};
+
+struct npc_gilnean_mastiff : public ScriptedAI
+{
+    npc_gilnean_mastiff(Creature* creature) : ScriptedAI(creature) 
+    {
+        me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_ATTACK_LURKER, true);
+    }
+
+    void Reset() override
+    {
+        me->GetCharmInfo()->InitEmptyActionBar(false);
+        me->GetCharmInfo()->SetActionBar(0, SPELL_ATTACK_LURKER, ACT_PASSIVE);
+        me->SetReactState(REACT_DEFENSIVE);
+        me->GetCharmInfo()->SetIsFollowing(true);
+    }
+
+    void UpdateAI(uint32 /*diff*/) override
+    {
+        Player* player = me->GetOwner()->ToPlayer();
+
+        if (player->GetQuestStatus(QUEST_FROM_THE_SHADOWS) == QUEST_STATUS_REWARDED)
+            me->DespawnOrUnsummon(1);
+
+        if (!UpdateVictim())
+        {
+            me->GetCharmInfo()->SetIsFollowing(true);
+            me->SetReactState(REACT_DEFENSIVE);
+            return;
+        }
+
+        DoMeleeAttackIfReady();
+    }
+
+    void JustDied(Unit* /*killer*/) override
+    {
+        me->DespawnOrUnsummon(1);
+    }
+
+    void KilledUnit(Unit* /*victim*/) override
+    {
+        Reset();
+    }
+};
+
+struct npc_bloodfang_lurker : public ScriptedAI
+{
+    npc_bloodfang_lurker(Creature* creature) : ScriptedAI(creature) { }
+
+    bool _enrage;
+    bool _frenzy;
+
+    void Reset() override
+    {
+        _enrage = false;
+        _frenzy = false;
+        DoCastSelf(SPELL_SHADOWSTALKER_STEALTH);
+        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+        me->SetReactState(REACT_PASSIVE);
+    }
+
+    void StartAttack(Unit* who)
+    {
+        me->SetReactState(REACT_AGGRESSIVE);
+        me->SetInCombatWith(who);
+        who->SetInCombatWith(me);
+    }
+
+    void DamageTaken(Unit* attacker, uint32 &damage) override
+    {
+        if (me->HasReactState(REACT_PASSIVE))
+            StartAttack(attacker);
+    }
+
+    void SpellHit(Unit* caster, const SpellInfo* spell) override
+    {
+        if (spell->Id == SPELL_ATTACK_LURKER)
+            StartAttack(caster);
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (!UpdateVictim())
+            return;
+
+        if (!_frenzy && me->HealthBelowPct(45))
+        {
+            _frenzy = true;
+            DoCast(SPELL_UNDYING_FRENZY);
+        }
+
+        if (!_enrage && me->HealthBelowPct(30))
+        {
+            _enrage = true;
+            DoCast(SPELL_ENRAGE);
+            Talk(WORGEN_ENRAGE_EMOTE);
+        }
+
+        DoMeleeAttackIfReady();
+    }
+};
+
+class spell_attack_lurker : public SpellScript
+{
+    PrepareSpellScript(spell_attack_lurker);
+
+    void HandleDummy()
+    {
+        Unit* caster = GetCaster();
+
+        if (Creature* target = caster->FindNearestCreature(NPC_BLOODFANG_LURKER, 30.0f))
+        {
+            float x,y,z,o;
+            target->GetContactPoint(caster, x, y, z, CONTACT_DISTANCE);
+            o = caster->GetOrientation();
+            float speedXY, speedZ;
+            speedZ = 10.0f;
+            speedXY = caster->GetExactDist2d(x, y) * 30.0f / speedZ;
+            caster->GetMotionMaster()->MoveCharge(x, y, z, speedXY, speedZ);
+            target->RemoveAura(SPELL_SHADOWSTALKER_STEALTH);
+            target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+            target->SetReactState(REACT_AGGRESSIVE);
+            target->AI()->AttackStart(caster);
+        }
+    }
+
+    void Register() override
+    {
+        AfterCast += SpellCastFn(spell_attack_lurker::HandleDummy);
+    }
+};
+
 class npc_gilneas_children : public CreatureScript
 {
     public:
@@ -1719,6 +1915,10 @@ void AddSC_gilneas()
     new creature_script<npc_josiah_avery>("npc_josiah_avery");
     new creature_script<npc_josiah_avery_worgen_form>("npc_josiah_avery_worgen_form");
     new spell_script<spell_gilneas_pull_to>("spell_gilneas_pull_to");
+    new npc_lorna_crowley_basement("npc_lorna_crowley_basement");
+    new creature_script<npc_gilnean_mastiff>("npc_gilnean_mastiff");
+    new creature_script<npc_bloodfang_lurker>("npc_bloodfang_lurker");
+    new spell_script<spell_attack_lurker>("spell_attack_lurker");
     new npc_gilneas_children("npc_james", SPELL_SAVE_JAMES, PLAYER_SAY_JAMES);
     new npc_gilneas_children("npc_ashley", SPELL_SAVE_ASHLEY, PLAYER_SAY_ASHLEY);
     new npc_gilneas_children("npc_cynthia", SPELL_SAVE_CYNTHIA, PLAYER_SAY_CYNTHIA);
