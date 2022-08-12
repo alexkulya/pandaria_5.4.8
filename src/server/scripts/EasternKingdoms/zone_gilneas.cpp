@@ -20,6 +20,7 @@
 #include "ScriptedEscortAI.h"
 #include "PassiveAI.h"
 #include "Vehicle.h"
+#include "TaskScheduler.h"
 
 enum Gilneas
 {
@@ -102,6 +103,20 @@ enum Gilneas
     SPELL_ENRAGE                            = 8599,
 
     WORGEN_ENRAGE_EMOTE                     = 0,
+
+    QUEST_SAVE_KRENNAN_ARANAS               = 14293,
+
+    NPC_KRENNAN_ARANAS                      = 35753,
+    NPC_KING_GREYMANES_HORSE                = 35905,
+    NPC_BLOODFANG_RIPPER                    = 35505,
+    NPC_GILNEAS_CITY_GUARD                  = 35509,
+    NPC_KRENNAN_ARANAS_KILL_CREDIT          = 35753,
+
+    TEXT_KRENNAN_ARANAS                     = 0,
+    EMOTE_SAVE_KRENNAN_ARANAS               = 0,
+    TEXT_SAVED_KRENNAN_ARANAS               = 0,
+
+    SPELL_GUARD_SHOOT                       = 48424,
 
     SPELL_SAVE_CYNTHIA                      = 68597,
     SPELL_SAVE_ASHLEY                       = 68598,
@@ -1247,6 +1262,293 @@ class spell_attack_lurker : public SpellScript
     }
 };
 
+class npc_king_genn_greymane : public CreatureScript
+{
+public:
+    npc_king_genn_greymane() : CreatureScript("npc_king_genn_greymane") { }
+
+    bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest)
+    {
+        if (quest->GetQuestId() == QUEST_SAVE_KRENNAN_ARANAS)
+        {
+            float x, y;
+            creature->GetNearPoint2D(x, y, 2.0f, player->GetOrientation() + M_PI / 2);
+
+            if (Creature* horse = player->SummonCreature(NPC_KING_GREYMANES_HORSE, x, y, creature->GetPositionZ(), creature->GetOrientation()))
+            {
+                if (npc_escortAI* escort = CAST_AI(npc_escortAI, horse->AI()))
+                {
+                    escort->AddWaypoint(1, -1799.37f, 1400.21f, 19.8951f);
+                    escort->AddWaypoint(2, -1798.23f, 1396.9f, 19.8993f);
+                    escort->AddWaypoint(3, -1795.03f, 1388.01f, 19.8898f);
+                    escort->AddWaypoint(4, -1790.16f, 1378.7f, 19.8016f);
+                    escort->AddWaypoint(5, -1786.41f, 1372.97f, 19.8406f);
+                    escort->AddWaypoint(6, -1779.72f, 1364.88f, 19.8131f);
+                    escort->AddWaypoint(7, -1774.43f, 1359.87f, 19.7021f);
+                    escort->AddWaypoint(8, -1769.0f, 1356.76f, 19.7439f);
+                    escort->AddWaypoint(9, -1762.64f, 1356.02f, 19.7979f);
+                    escort->AddWaypoint(10, -1758.91f, 1356.08f, 19.8635f);
+                    escort->AddWaypoint(11, -1751.95f, 1356.8f, 19.8273f);
+                    escort->AddWaypoint(12, -1745.66f, 1357.21f, 19.7993f);
+                    escort->AddWaypoint(13, -1738.7f, 1356.64f, 19.7822f);
+                    escort->AddWaypoint(14, -1731.79f, 1355.51f, 19.7149f);
+                    escort->AddWaypoint(15, -1724.89f, 1354.29f, 19.8661f);
+                    escort->AddWaypoint(16, -1718.03f, 1352.93f, 19.7824f);
+                    escort->AddWaypoint(17, -1707.68f, 1351.16f, 19.7811f, 0, true); // Jump
+                    escort->AddWaypoint(18, -1673.04f, 1344.91f, 15.1353f, 2000);
+                    escort->AddWaypoint(19, -1673.04f, 1344.91f, 15.1353f);
+                    escort->AddWaypoint(20, -1669.32f, 1346.55f, 15.1353f);
+                    escort->AddWaypoint(21, -1666.45f, 1349.89f, 15.1353f);
+                    escort->AddWaypoint(22, -1665.61f, 1353.85f, 15.1353f);
+                    escort->AddWaypoint(23, -1666.04f, 1358.01f, 15.1353f);
+                    escort->AddWaypoint(24, -1669.79f, 1360.71f, 15.1353f);
+                    escort->AddWaypoint(25, -1673.1f, 1362.11f, 15.1353f);
+                    escort->AddWaypoint(26, -1677.12f, 1361.57f, 15.1353f);
+                    escort->AddWaypoint(27, -1679.9f, 1360.1f, 15.1353f);
+                    escort->AddWaypoint(28, -1682.79f, 1357.56f, 15.1353f);
+                    escort->AddWaypoint(29, -1682.79f, 1357.56f, 15.1353f);
+                    escort->AddWaypoint(30, -1689.07f, 1352.39f, 15.1353f);
+                    escort->AddWaypoint(31, -1691.91f, 1351.83f, 15.1353f);
+                    escort->AddWaypoint(32, -1703.81f, 1351.82f, 19.7604f);
+                    escort->AddWaypoint(33, -1707.26f, 1352.38f, 19.7826f);
+                    escort->AddWaypoint(34, -1712.25f, 1353.55f, 19.7826f);
+                    escort->AddWaypoint(35, -1718.2f, 1356.51f, 19.7164f);
+                    escort->AddWaypoint(36, -1741.5f, 1372.04f, 19.9569f);
+                    escort->AddWaypoint(37, -1746.23f, 1375.8f, 19.9817f);
+                    escort->AddWaypoint(38, -1751.06f, 1380.53f, 19.8424f);
+                    escort->AddWaypoint(39, -1754.97f, 1386.34f, 19.8474f);
+                    escort->AddWaypoint(40, -1760.77f, 1394.37f, 19.9282f);
+                    escort->AddWaypoint(41, -1765.11f, 1402.07f, 19.8816f);
+                    escort->AddWaypoint(42, -1768.24f, 1410.2f, 19.7833f);
+                    escort->AddWaypoint(43, -1772.26f, 1420.48f, 19.9029f);
+                    escort->AddWaypoint(44, -1776.98f, 1436.13f, 19.632f);
+                    player->EnterVehicle(horse, 0);
+                }
+            }
+        }
+
+        return true;
+    }
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_king_genn_greymaneAI (creature);
+    }
+
+    struct npc_king_genn_greymaneAI : public ScriptedAI
+    {
+        npc_king_genn_greymaneAI(Creature* creature) : ScriptedAI(creature)
+        {
+            _scheduler.CancelAll();
+
+            _scheduler.Schedule(randtime(15s, 35s), [this](TaskContext context)
+            {
+                Talk(0);
+                context.Repeat(randtime(15s, 35s));
+            });
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            _scheduler.Update(diff);
+        }
+
+    private:
+        TaskScheduler _scheduler;
+    };
+};
+
+class npc_vehicle_genn_horse : public CreatureScript
+{
+public:
+    npc_vehicle_genn_horse() : CreatureScript("npc_vehicle_genn_horse") { }
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_vehicle_genn_horseAI (creature);
+    }
+
+    struct npc_vehicle_genn_horseAI : public npc_escortAI
+    {
+        npc_vehicle_genn_horseAI(Creature* creature) : npc_escortAI(creature)
+        {
+            _aranasSaved = false;
+            _playerSeated = false;
+        }
+
+        bool _playerSeated;
+        bool _aranasSaved;
+
+        void AttackStart(Unit* /*who*/) override { }
+        void EnterCombat(Unit* /*who*/) override { }
+        void EnterEvadeMode() override { }
+
+        void Reset() override
+        {
+            _playerSeated = false;
+        }
+
+        void PassengerBoarded(Unit* who, int8 /*seatId*/, bool apply)
+        {
+            if (who->GetTypeId() == TYPEID_PLAYER)
+            {
+                _playerSeated = true;
+
+                if (apply)
+                {
+                    Start(false, true, who->GetGUID());
+                    me->SetSpeed(MOVE_WALK, 1.0f, true);
+                    me->SetSpeed(MOVE_RUN, 1.3f, true);
+                }
+            }
+            else 
+            {
+                if (apply)
+                {
+                    SetEscortPaused(false);
+                    _aranasSaved = true;
+                    me->SetSpeed(MOVE_WALK, 1.0f, true);
+                    me->SetSpeed(MOVE_RUN, 1.3f, true);
+                }
+                else
+                    me->DespawnOrUnsummon(1);
+            }
+        }
+
+        void WaypointReached(uint32 i)
+        {
+            Player* player = GetPlayerForEscort();
+
+            switch(i)
+            {
+                case 1:
+                {
+                    if (Unit* passenger = me->GetVehicleKit()->GetPassenger(0))
+                    {
+                        if (Vehicle* vehicle = me->GetVehicleKit())
+                            if (Unit* passenger = vehicle->GetPassenger(0))
+                                if (Player* player = passenger->ToPlayer())
+                                    player->SetClientControl(me, 0);
+                    }
+                    break;
+                }
+                case 17:
+                {
+                    if (Unit* passenger = me->GetVehicleKit()->GetPassenger(0))
+                    {
+                        if (Creature* aranas = passenger->FindNearestCreature(NPC_KRENNAN_ARANAS, 50.0f))
+                            if (Vehicle* vehicle = me->GetVehicleKit())
+                                if (Unit* passenger = vehicle->GetPassenger(0))
+                                    if (Player* player = passenger->ToPlayer())
+                                        aranas->AI()->Talk(TEXT_KRENNAN_ARANAS);
+
+                        me->GetMotionMaster()->MoveJump(-1673.04f, 1344.91f, 15.1353f, 25.0f, 15.0f);
+
+                        me->m_Events.AddLambdaEventAtOffset([this, passenger]()
+                        {
+                            Talk(EMOTE_SAVE_KRENNAN_ARANAS, passenger);
+                        }, 2000);
+                    }
+                    break;
+                }
+                case 40:
+                {
+                    if (Vehicle* vehicle = me->GetVehicleKit())
+                    {
+                        if (Unit* passenger = vehicle->GetPassenger(0))
+                        {
+                            if (Player* player = passenger->ToPlayer())
+                            {
+                                std::list<Creature*> guards;
+                                me->GetCreatureListWithEntryInGrid(guards, NPC_GILNEAS_CITY_GUARD, 90.0f);
+
+                                if (!guards.empty())
+                                    for (std::list<Creature*>::const_iterator itr = guards.begin(); itr != guards.end(); ++itr)
+                                        if ((*itr)->IsAlive())
+                                            if (Creature* worgen = (*itr)->FindNearestCreature(NPC_BLOODFANG_RIPPER, 90.0f))
+                                                (*itr)->CastSpell(worgen, SPELL_GUARD_SHOOT, false);
+                            }
+                        }
+                    }
+                    break;
+                }
+                case 41:
+                {
+                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                    me->CombatStop();
+                    break;
+                }
+                case 42:
+                {
+                    if (Vehicle* vehicle = me->GetVehicleKit())
+                        if (Unit* passenger = vehicle->GetPassenger(0))
+                            if (Player* player = passenger->ToPlayer())
+                            {
+                                player->KilledMonsterCredit(NPC_KRENNAN_ARANAS_KILL_CREDIT, 0);
+
+                                if (Unit* passenger_2 = vehicle->GetPassenger(1))
+                                    if (Creature* aranas = passenger_2->ToCreature())
+                                        aranas->AI()->Talk(TEXT_SAVED_KRENNAN_ARANAS);
+                            }
+                    break;
+                }
+                case 44:
+                {
+                    if (Unit* passenger = me->GetVehicleKit()->GetPassenger(0))
+                    {
+                        if (Vehicle* vehicle = me->GetVehicleKit())
+                        {
+                            if (Unit* passenger = vehicle->GetPassenger(0))
+                                if (Player* player = passenger->ToPlayer())
+                                    player->SetClientControl(me, 1);
+
+                            if (Unit* passenger = vehicle->GetPassenger(1))
+                                if (Creature* aranas = passenger->ToCreature())
+                                    aranas->DespawnOrUnsummon();
+
+                            vehicle->RemoveAllPassengers();
+                        }
+                    }
+                    me->DespawnOrUnsummon(1);
+                    break;
+                }
+            }
+        }
+
+        void OnCharmed(bool /*apply*/) { }
+
+        void UpdateAI(uint32 diff) override
+        {
+            npc_escortAI::UpdateAI(diff);
+            Player* player = GetPlayerForEscort();
+
+            if (_playerSeated)
+            {
+                player->SetClientControl(me, 0);
+                _playerSeated = false;
+            }
+        }
+    };
+};
+
+struct npc_saved_aranas : public ScriptedAI
+{
+    npc_saved_aranas(Creature* creature) : ScriptedAI(creature)
+    {
+        me->SetReactState(REACT_PASSIVE);
+        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+
+        if (me->IsSummon())
+        {
+            if (Creature* horse = me->FindNearestCreature(NPC_KING_GREYMANES_HORSE, 20.0f))
+                DoCast(horse, 84275, true);
+
+            if (Creature* aranas = me->FindNearestCreature(NPC_KRENNAN_ARANAS, 50.0f))
+                aranas->DespawnOrUnsummon();
+        }
+    }
+};
+
 class npc_gilneas_children : public CreatureScript
 {
     public:
@@ -1919,6 +2221,9 @@ void AddSC_gilneas()
     new creature_script<npc_gilnean_mastiff>("npc_gilnean_mastiff");
     new creature_script<npc_bloodfang_lurker>("npc_bloodfang_lurker");
     new spell_script<spell_attack_lurker>("spell_attack_lurker");
+    new npc_king_genn_greymane();
+    new npc_vehicle_genn_horse();
+    new creature_script<npc_saved_aranas>("npc_saved_aranas");
     new npc_gilneas_children("npc_james", SPELL_SAVE_JAMES, PLAYER_SAY_JAMES);
     new npc_gilneas_children("npc_ashley", SPELL_SAVE_ASHLEY, PLAYER_SAY_ASHLEY);
     new npc_gilneas_children("npc_cynthia", SPELL_SAVE_CYNTHIA, PLAYER_SAY_CYNTHIA);
