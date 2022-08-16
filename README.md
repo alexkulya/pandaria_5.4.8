@@ -3,6 +3,10 @@
 
 Discord link: https://discord.gg/y3zspxan7k
 
+Compiled exe files: https://mega.nz/file/0dxU1b4I#axVg6aXsNfgQeKcglV_RLHOPV4gXB_kpd2uSP1_OTOw
+
+Geodata: https://mega.nz/file/EAZUmZiD#PxdHN7jcEKCA8qaIBTIWLWLGZcT5PdsKfIgkygTZgTs
+
 ## Requirements
 + Platform: Linux, Windows or Mac
 + Processor with SSE2 support
