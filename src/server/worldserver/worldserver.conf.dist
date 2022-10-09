@@ -95,11 +95,11 @@ LogsDir = "Logs"
 #                     "127.0.0.1;3306;skyfire;skyfire;characters" - (CharacterDatabaseInfo)
 #                     "127.0.0.1;3306;skyfire;skyfire;FusionCMS"  - (FusionCMSDatabaseInfo)
 
-LoginDatabaseInfo     = "127.0.0.1;3306;root;root;auth"
-WorldDatabaseInfo     = "127.0.0.1;3306;root;root;world"
-CharacterDatabaseInfo = "127.0.0.1;3306;root;root;characters"
-ArchiveDatabaseInfo   = "127.0.0.1;3306;root;root;archive"
-FusionCMSDatabaseInfo = "127.0.0.1;3306;root;root;fusion"
+LoginDatabaseInfo     = "127.0.0.1;3306;root;rootx;auth"
+WorldDatabaseInfo     = "127.0.0.1;3306;root;rootx;world"
+CharacterDatabaseInfo = "127.0.0.1;3306;root;rootx;characters"
+ArchiveDatabaseInfo   = "127.0.0.1;3306;root;rootx;archive"
+FusionCMSDatabaseInfo = "127.0.0.1;3306;root;rootx;fusion"
 
 #
 #    LoginDatabase.WorkerThreads
