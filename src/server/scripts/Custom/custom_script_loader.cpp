@@ -17,12 +17,6 @@
 
 // This is where scripts' loading functions should be declared:
 
-void AddSC_boost_profession();
-void AddSC_custom_items();
-void AddSC_custom_reward();
-void AddSC_npc_teleport();
-void AddSC_solocraft();
-void AddSC_wow_token.();
 
 void AddCustomScripts()
 {
