@@ -20,10 +20,5 @@
 
 void AddCustomScripts()
 {
-    boost_profession();
-    custom_items();
-    custom_reward();
-    npc_teleport();
-    solocraft();
-    wow_token();
+    
 }
