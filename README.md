@@ -29,4 +29,13 @@ Read file [THANKS](THANKS.md)
 
 [![windows-build](https://github.com/Legends-of-Azeroth/Legends-of-Azeroth-Pandaria-5.4.8/actions/workflows/windows-build.yml/badge.svg?branch=master)](https://github.com/Legends-of-Azeroth/Legends-of-Azeroth-Pandaria-5.4.8/actions/workflows/windows-build.yml)
 
+a href="https://scan.coverity.com/projects/legends-of-azeroth-mop">
+  <img alt="Coverity Scan Build Status"
+       src="https://scan.coverity.com/projects/26941/badge.svg"/>
+</a>
+<a href="https://scan.coverity.com/projects/legends-of-azeroth-mop">
+  <img alt="Coverity Scan Build Status"
+       src="https://img.shields.io/coverity/scan/26941.svg"/>
+</a>
+
 ПО всем вопросам обращайтесь в дискорд или на наш форум: http://legendsemu.funbb.ru/
