@@ -10,30 +10,18 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 # Before project or language initialization
-if (UNIX)
-  if (EXISTS "/usr/bin/gcc-4.9")
-    message (STATUS "gcc 4.9 found. Force switching to 4.8")
-    if (NOT EXISTS "/usr/bin/gcc-4.8")
-      message (FATAL_ERROR "gcc 4.8 not found")
-    endif()
-    if (NOT EXISTS "/usr/bin/g++-4.8")
-      message (FATAL_ERROR "g++ 4.8 not installed")
-    endif()
-    set (CMAKE_C_COMPILER "/usr/bin/gcc-4.8")
-    set (CMAKE_CXX_COMPILER "/usr/bin/g++-4.8")
-  endif()
-endif()
 
 # Set projectname (must be done AFTER setting configurationtypes)
 project(Pandaria_5.4.8)
 
 # CMake policies (can not be handled elsewhere)
-cmake_minimum_required(VERSION 2.8.9)
+cmake_minimum_required(VERSION 3.14)
 cmake_policy(SET CMP0005 OLD)
 if(POLICY CMP0043)
   cmake_policy(SET CMP0043 OLD) # Disable 'Ignore COMPILE_DEFINITIONS_<Config> properties'
 endif(POLICY CMP0043)
 
+set(CMAKE_CXX_STANDARD 14)
 # add this options before PROJECT keyword
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
