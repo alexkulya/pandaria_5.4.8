@@ -28,11 +28,13 @@
 
 #define LOGGER_ROOT "root"
 
+typedef std::unordered_map<std::string, Logger> LoggerMap;
+
 class Log
 {
     friend class ACE_Singleton<Log, ACE_Thread_Mutex>;
 
-    typedef std::unordered_map<std::string, Logger> LoggerMap;
+
 
     private:
         Log();

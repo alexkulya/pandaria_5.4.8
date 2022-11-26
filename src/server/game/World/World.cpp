@@ -1478,8 +1478,10 @@ void World::LoadConfigSettings(bool reload)
     m_float_configs[CONFIG_VENGEANCE_MULTIPLIER] = sConfigMgr->GetFloatDefault("VengeanceMultipier", 1.0f);
 
     m_bool_configs[CONFIG_BOOST_PROMOTION] = sConfigMgr->GetBoolDefault("BoostPromotion.Enabled", false);
+#ifdef ELUNA
 	//eluna
 	m_bool_configs[CONFIG_BOOL_ELUNA_ENABLED] = sConfigMgr->GetBoolDefault("Eluna.Enabled", true);
+#endif    
     // call ScriptMgr if we're reloading the configuration
     if (reload)
     {

@@ -204,19 +204,25 @@ if( USE_SCRIPTPCH AND MSVC )
   )
 endif()
 
+if (ELUNA)
 add_library(scripts STATIC 
 ${scripts_STAT_SRCS} 
   ${lua_STAT_SRCS}
   ${LuaEngine_STAT_SRCS}
 )
-add_dependencies(scripts revision.h)
 add_dependencies(scripts lua)
-if (ELUNA)
 target_link_libraries(scripts
  lua
  LuaEngine
 )
+else()
+add_library(scripts STATIC 
+${scripts_STAT_SRCS} 
+)
 endif()
+
+add_dependencies(scripts revision.h)
+
 # Generate precompiled header
 if (USE_SCRIPTPCH)
   add_cxx_pch(scripts ${scripts_STAT_PCH_HDR} ${scripts_STAT_PCH_SRC})

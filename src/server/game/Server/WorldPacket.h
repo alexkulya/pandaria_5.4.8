@@ -65,6 +65,7 @@ class WorldPacket : public ByteBuffer
             _curbitval = other._curbitval;
             m_rcvdOpcodeNumber = 0;
             _compressionStream = nullptr;
+            return *this;
         }
         
 
