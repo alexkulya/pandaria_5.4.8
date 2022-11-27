@@ -1,5 +1,4 @@
-# Copyright (C) 2011-2017 Project SkyFire <http://www.projectskyfire.org/
-# Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
+# This file is part of the TrinityCore Project. See AUTHORS file for Copyright information
 #
 # This file is free software; as a special exception the author gives
 # unlimited permission to copy and/or distribute it, with or without
@@ -55,19 +54,11 @@ set(g3dlib_STAT_SRCS
   source/Vector4.cpp
 )
 
-if(WIN32)
-  include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${CMAKE_SOURCE_DIR}/dep/zlib
-  )
-else()
-  include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-  )
-endif()
-
 add_library(g3dlib STATIC ${g3dlib_STAT_SRCS})
 
+target_include_directories(g3dlib
+  PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 target_link_libraries(g3dlib
-  ${ZLIB_LIBRARIES}
-)
+    zlib)
