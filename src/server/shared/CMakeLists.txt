@@ -101,7 +101,8 @@ add_library(shared STATIC
 )
 
 target_link_libraries(shared
-  ${ACE_LIBRARY}
+  sfmt
+  ${ACE_LIBRARY} 
 )
 
 # Generate precompiled header

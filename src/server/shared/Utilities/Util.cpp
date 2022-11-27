@@ -18,34 +18,53 @@
 #include "Util.h"
 #include "Common.h"
 #include "utf8.h"
-#include "SFMT.h"
+//#include "SFMT.h"
 #include "Errors.h" // for ASSERT
 #include <ace/TSS_T.h>
+//#include "Random.h"
+#include "SFMTRand.h"
+#include <memory>
+#include <random>
 
-typedef ACE_TSS<SFMTRand> SFMTRandTSS;
-static SFMTRandTSS sfmtRand;
+static thread_local std::unique_ptr<SFMTRand> sfmtRand;
+static SFMTEngine engine;
+
+static SFMTRand* GetRng()
+{
+    if (!sfmtRand)
+        sfmtRand = std::make_unique<SFMTRand>();
+
+    return sfmtRand.get();
+}
+
+
+// typedef ACE_TSS<SFMTRand> SFMTRandTSS;
+// static SFMTRandTSS sfmtRand;
 
 int32 irand(int32 min, int32 max)
 {
     ASSERT(max >= min);
-    return int32(sfmtRand->IRandom(min, max));
+    std::uniform_int_distribution<int32> uid(min, max);
+    return uid(engine);
 }
 
 uint32 urand(uint32 min, uint32 max)
 {
     ASSERT(max >= min);
-    return sfmtRand->URandom(min, max);
+    std::uniform_int_distribution<uint32> uid(min, max);
+    return uid(engine);
 }
 
 float frand(float min, float max)
 {
     ASSERT(max >= min);
-    return float(sfmtRand->Random() * (max - min) + min);
+    std::uniform_real_distribution<float> urd(min, max);
+    return urd(engine);
 }
 
 int32 rand32()
 {
-    return int32(sfmtRand->BRandom());
+    return GetRng()->RandomUInt32();
 }
 
 Milliseconds randtime(Milliseconds const& min, Milliseconds const& max)
@@ -56,19 +75,21 @@ Milliseconds randtime(Milliseconds const& min, Milliseconds const& max)
     return min + Milliseconds(urand(0, diff));
 }
 
-double rand_norm(void)
+double rand_norm()
 {
-    return sfmtRand->Random();
+    std::uniform_real_distribution<double> urd;
+    return urd(engine);
 }
 
-double rand_chance(void)
+double rand_chance()
 {
-    return sfmtRand->Random() * 100.0;
+    std::uniform_real_distribution<double> urd(0.0, 100.0);
+    return urd(engine);
 }
 
 SFMTEngine& SFMTEngine::Instance()
 {
-    static SFMTEngine engine;
+    //static SFMTEngine engine;
     return engine;
 }
 

@@ -29,6 +29,7 @@
 #include <ace/INET_Addr.h>
 #include <ctime>
 #include <array>
+#include <limits>
 
 // Searcher for map of structs
 template<typename T, class S> struct Finder
@@ -124,8 +125,8 @@ class SFMTEngine
 public:
     typedef uint32 result_type;
 
-    result_type min() const { return std::numeric_limits<result_type>::min(); }
-    result_type max() const { return std::numeric_limits<result_type>::max(); }
+    static constexpr result_type min() { return std::numeric_limits<result_type>::min(); }
+    static constexpr result_type max() { return std::numeric_limits<result_type>::max(); }
     result_type operator()() const { return rand32(); }
 
     static SFMTEngine& Instance();

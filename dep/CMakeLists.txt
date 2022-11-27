@@ -34,6 +34,7 @@ endif()
 add_subdirectory(zlib)
 add_subdirectory(g3dlite)
 add_subdirectory(recastnavigation)
+add_subdirectory(SFMT)
 
 if(SERVERS)
   add_subdirectory(gsoap)
