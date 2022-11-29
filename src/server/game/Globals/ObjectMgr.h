@@ -415,6 +415,49 @@ struct AreaTriggerStruct
     float  target_Orientation;
 };
 
+struct BroadcastText
+{
+    BroadcastText() : Id(0), LanguageID(0), EmoteId1(0), EmoteId2(0), EmoteId3(0),
+        EmoteDelay1(0), EmoteDelay2(0), EmoteDelay3(0), SoundEntriesID(0), EmotesID(0), Flags(0)
+    {
+        Text.resize(DEFAULT_LOCALE + 1);
+        Text1.resize(DEFAULT_LOCALE + 1);
+    }
+
+    uint32 Id;
+    uint32 LanguageID;
+    std::vector<std::string> Text;
+    std::vector<std::string> Text1;
+    uint32 EmoteId1;
+    uint32 EmoteId2;
+    uint32 EmoteId3;
+    uint32 EmoteDelay1;
+    uint32 EmoteDelay2;
+    uint32 EmoteDelay3;
+    uint32 SoundEntriesID;
+    uint32 EmotesID;
+    uint32 Flags;
+    // uint32 VerifiedBuild;
+
+    std::string const& GetText(LocaleConstant locale = DEFAULT_LOCALE, uint8 gender = GENDER_MALE, bool forceGender = false) const
+    {
+        if ((gender == GENDER_FEMALE || gender == GENDER_NONE) && (forceGender || !Text1[DEFAULT_LOCALE].empty()))
+        {
+            if (Text1.size() > size_t(locale) && !Text1[locale].empty())
+                return Text1[locale];
+            return Text1[DEFAULT_LOCALE];
+        }
+        // else if (gender == GENDER_MALE)
+        {
+            if (Text.size() > size_t(locale) && !Text[locale].empty())
+                return Text[locale];
+            return Text[DEFAULT_LOCALE];
+        }
+    }
+};
+
+typedef std::unordered_map<uint32, BroadcastText> BroadcastTextContainer;
+
 typedef std::set<uint32> CellGuidSet;
 typedef std::map<uint32/*player guid*/, uint32/*instance*/> CellCorpseSet;
 struct CellObjectGuids
@@ -1101,6 +1144,8 @@ class ObjectMgr
         bool LoadTrinityStrings(char const* table, int32 min_value, int32 max_value);
         bool LoadTrinityStrings() { return LoadTrinityStrings("trinity_string", MIN_TRINITY_STRING_ID, MAX_TRINITY_STRING_ID); }
         void LoadDbScriptStrings();
+        void LoadBroadcastTexts();
+        void LoadBroadcastTextLocales();        
         void LoadCreatureClassLevelStats();
         void LoadCreatureLocales();
         void LoadGraveyardOrientations();
@@ -1304,6 +1349,14 @@ class ObjectMgr
                 return &itr->second;
 
             return NULL;
+        }
+
+        BroadcastText const* GetBroadcastText(uint32 id) const
+        {
+            BroadcastTextContainer::const_iterator itr = _broadcastTextStore.find(id);
+            if (itr != _broadcastTextStore.end())
+                return &itr->second;
+            return nullptr;
         }
 
         CreatureData const* GetCreatureData(uint32 guid) const
@@ -1813,6 +1866,7 @@ class ObjectMgr
         /// Stores temp summon data grouped by summoner's entry, summoner's type and group id
         TempSummonDataContainer _tempSummonDataStore;
 
+        BroadcastTextContainer _broadcastTextStore;
         ItemTemplateContainer _itemTemplateStore;
         ItemLocaleContainer _itemLocaleStore;
         QuestLocaleContainer _questLocaleStore;
