@@ -1,5 +1,5 @@
 /*
-* This file is part of the Pandaria 5.4.8 Project. See THANKS file for Copyright information
+* This file is part of the Legends of Azeroth MOP Project. See THANKS file for Copyright information
 *
 * This program is free software; you can redistribute it and/or modify it
 * under the terms of the GNU General Public License as published by the
@@ -245,7 +245,8 @@ enum WorldBoolConfigs
     CONFIG_BOOST_PROMOTION,
     CONFIG_WORD_FILTER_ENABLE,
     CONFIG_WOW_TOKEN,
-    CONFIG_BONUS_TIME_REWARD,   
+    CONFIG_BONUS_TIME_REWARD, 
+    CONFIG_DISABLE_RESTART,   
 #ifdef ELUNA
 	CONFIG_BOOL_ELUNA_ENABLED,
 #endif 
@@ -612,6 +613,7 @@ enum WorldIntConfigs
     CONFIG_ARENA_WIN_STREAK_MOD_LIMIT,
     CONFIG_WORD_FILTER_MUTE_DURATION,
     CONFIG_PLAYED_TIME_REWARD,
+    CONFIG_AUTO_SERVER_RESTART_HOUR,
     INT_CONFIG_VALUE_COUNT
 };
 
@@ -763,6 +765,7 @@ enum WorldStates
     WS_WEEKLY_QUEST_RESET_TIME  = 20002,                     // Next weekly reset time
     WS_BG_DAILY_RESET_TIME      = 20003,                     // Next daily BG reset time
     WS_CLEANING_FLAGS           = 20004,                     // Cleaning Flags
+    WS_AUTO_SERVER_RESTART_TIME = 20005,                     // Next server restart time
     WS_GUILD_DAILY_RESET_TIME   = 20006,                     // Next guild cap reset time
     WS_MONTHLY_QUEST_RESET_TIME = 20007,                     // Next monthly reset time
     WS_ARENA_SEASON_WEEK        = 20008,                     // Current week of the arena season
@@ -1453,6 +1456,7 @@ class World
         void InitRandomBGResetTime();
         void InitGuildResetTime();
         void InitCurrencyResetTime();
+        void InitServerAutoRestartTime();
         void ResetDailyQuests();
         void ResetWeeklyQuests();
         void ResetMonthlyQuests();
@@ -1535,6 +1539,7 @@ class World
         time_t m_NextRandomBGReset;
         time_t m_NextGuildReset;
         time_t m_nextCurrencyReset;
+        time_t m_NextServerRestart;
 
         //Player Queue
         Queue m_QueuedPlayer;

@@ -1,5 +1,5 @@
 /*
-* This file is part of the Pandaria 5.4.8 Project. See THANKS file for Copyright information
+* This file is part of the Legends of Azeroth MOP Project. See THANKS file for Copyright information
 *
 * This program is free software; you can redistribute it and/or modify it
 * under the terms of the GNU General Public License as published by the
@@ -1320,6 +1320,13 @@ void World::LoadConfigSettings(bool reload)
 
     // Max instances per hour
     m_int_configs[CONFIG_MAX_INSTANCES_PER_HOUR] = sConfigMgr->GetIntDefault("AccountInstancesPerHour", 5);
+	
+   //Server restart in hour
+	m_int_configs[CONFIG_AUTO_SERVER_RESTART_HOUR] = sConfigMgr->GetIntDefault("Server.Auto.RestartHour", 4);
+	if (m_int_configs[CONFIG_AUTO_SERVER_RESTART_HOUR] > 23)
+	{
+		m_int_configs[CONFIG_AUTO_SERVER_RESTART_HOUR] = 4;
+	}
 
     // Anounce reset of instance to whole party
     m_bool_configs[CONFIG_INSTANCES_RESET_ANNOUNCE] = sConfigMgr->GetBoolDefault("InstancesResetAnnounce", false);
@@ -1366,6 +1373,9 @@ void World::LoadConfigSettings(bool reload)
     m_float_configs[CONFIG_STATS_LIMITS_PARRY] = sConfigMgr->GetFloatDefault("Stats.Limits.Parry", 95.0f);
     m_float_configs[CONFIG_STATS_LIMITS_BLOCK] = sConfigMgr->GetFloatDefault("Stats.Limits.Block", 95.0f);
     m_float_configs[CONFIG_STATS_LIMITS_CRIT] = sConfigMgr->GetFloatDefault("Stats.Limits.Crit", 95.0f);
+	
+    //Restart 
+	m_bool_configs[CONFIG_DISABLE_RESTART] = sConfigMgr->GetBoolDefault("DisableRestart", false);
 
     // Wow Token
     m_bool_configs[CONFIG_WOW_TOKEN] = sConfigMgr->GetBoolDefault("Wow.Token", false);
@@ -5134,4 +5144,35 @@ void World::SendRaidQueueInfo(Player* player)
             if (Player* plr = itr.second->GetPlayer())
                 sendInfo(plr);
     }
+}
+
+   void World::InitServerAutoRestartTime()
+{
+	time_t serverRestartTime = uint64(sWorld->getWorldState(WS_AUTO_SERVER_RESTART_TIME));
+	if (!serverRestartTime)
+		m_NextServerRestart = time_t(time(NULL));         // game time not yet init
+
+	// generate time by config
+	time_t curTime = time(NULL);
+	tm localTm;
+	ACE_OS::localtime_r(&curTime, &localTm);
+	localTm.tm_hour = getIntConfig(CONFIG_AUTO_SERVER_RESTART_HOUR);
+	localTm.tm_min = 0;
+	localTm.tm_sec = 0;
+
+	// current day reset time
+	time_t nextDayRestartTime = mktime(&localTm);
+
+	// next reset time before current moment
+	if (curTime >= nextDayRestartTime)
+		nextDayRestartTime += DAY;
+
+	// normalize reset time
+	m_NextServerRestart = serverRestartTime < curTime ? nextDayRestartTime - DAY : nextDayRestartTime;
+
+	if (sWorld->getBoolConfig(CONFIG_DISABLE_RESTART))
+		m_NextServerRestart = time_t(m_NextServerRestart + DAY);
+
+	if (!serverRestartTime)
+		sWorld->setWorldState(WS_AUTO_SERVER_RESTART_TIME, uint64(m_NextServerRestart));
 }
