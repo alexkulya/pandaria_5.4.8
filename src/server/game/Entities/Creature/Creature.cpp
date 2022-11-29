@@ -54,6 +54,7 @@
 #include "BattlePetSpawnMgr.h"
 #include "Transport.h"
 #include "ace/Stack_Trace.h"
+#include "Define.h"
 
 TrainerSpell const* TrainerSpellData::Find(uint32 spell_id) const
 {
@@ -2834,6 +2835,33 @@ void Creature::ReleaseFocus(Spell const* focusSpell)
 
     if (focusSpell && focusSpell->GetSpellInfo()->AttributesEx5 & SPELL_ATTR5_DONT_TURN_DURING_CAST)
         ClearUnitState(UNIT_STATE_ROTATING);
+}
+
+void Creature::SetTextRepeatId(uint8 textGroup, uint8 id)
+{
+    CreatureTextRepeatIds& repeats = m_textRepeat[textGroup];
+    if (std::find(repeats.begin(), repeats.end(), id) == repeats.end())
+        repeats.push_back(id);
+    else
+        TC_LOG_ERROR("sql.sql", "CreatureTextMgr: TextGroup %u for Creature(%s) GuidLow %u Entry %u, id %u already added", uint32(textGroup), GetName().c_str(), GetGUIDLow(), GetEntry(), uint32(id));
+}
+
+CreatureTextRepeatIds Creature::GetTextRepeatGroup(uint8 textGroup)
+{
+    CreatureTextRepeatIds ids;
+
+    CreatureTextRepeatGroup::const_iterator groupItr = m_textRepeat.find(textGroup);
+    if (groupItr != m_textRepeat.end())
+        ids = groupItr->second;
+
+    return ids;
+}
+
+void Creature::ClearTextRepeatGroup(uint8 textGroup)
+{
+    CreatureTextRepeatGroup::iterator groupItr = m_textRepeat.find(textGroup);
+    if (groupItr != m_textRepeat.end())
+        groupItr->second.clear();
 }
 
 void Creature::ApplyInstanceAuraIfNeeded()
