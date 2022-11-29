@@ -84,6 +84,7 @@ public:
             { "areatrigger_teleport",           SEC_ADMINISTRATOR,  true,   &HandleReloadAreaTriggerTeleportCommand,        },
             { "autobroadcast",                  SEC_ADMINISTRATOR,  true,   &HandleReloadAutobroadcastCommand,              },
             { "battleground_template",          SEC_ADMINISTRATOR,  true,   &HandleReloaBattlegroundTemplateCommand,        },
+            { "broadcast_text",                 SEC_ADMINISTRATOR,  true,   &HandleReloadBroadcastTextCommand,              },
             { "command",                        SEC_ADMINISTRATOR,  true,   &HandleReloadCommandCommand,                    },
             { "conditions",                     SEC_ADMINISTRATOR,  true,   &HandleReloadConditions,                        },
             { "config",                         SEC_ADMINISTRATOR,  true,   &HandleReloadConfigCommand,                     },
@@ -410,6 +411,15 @@ public:
         TC_LOG_INFO("misc", "Re-Loading Battleground Templates...");
         sBattlegroundMgr->CreateInitialBattlegrounds(true);
         handler->SendGlobalGMSysMessage("DB table `battleground_template` reloaded.");
+        return true;
+    }
+
+    static bool HandleReloadBroadcastTextCommand(ChatHandler* handler, char const* /*args*/)
+    {
+        TC_LOG_INFO("misc", "Re-Loading Broadcast texts...");
+        sObjectMgr->LoadBroadcastTexts();
+        sObjectMgr->LoadBroadcastTextLocales();
+        handler->SendGlobalGMSysMessage("DB table `broadcast_text` reloaded.");
         return true;
     }
 
