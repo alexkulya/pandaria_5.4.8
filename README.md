@@ -9,15 +9,16 @@ Geodata: https://mega.nz/file/EAZUmZiD#PxdHN7jcEKCA8qaIBTIWLWLGZcT5PdsKfIgkygTZg
 
 ## Requirements
 + Platform: Linux, Windows or Mac
-+ Processor with SSE2 support
++ AMD64 or AArch64 CPU architecture
++ Processor with SSE2(AMD64 CPU architecture) support
 + ACE = 7.0.0 (included for Windows) 
-+ MySQL = 5.7
++ MySQL = 5.7, 8.0
 + CMake ≥ 3.14 (latest stable recommended) 
-+ OpenSSL = 1.x.x
++ OpenSSL = 1.1.x
 + Boost ≥ 1.70 (latest stable recommended)
 + Windows SDK version 10
 + MS Visual Studio (Community) ≥ 16.4 (2019) (Desktop) (Not previews) 
-+ GCC = 4.7.2 (Linux only)
++ GCC = 5.0 above, Clang = 3.14 above (Linux only)
 
 ## Copyright
 License: GPL 2.0
