@@ -202,11 +202,13 @@ std::string Transmogrification::GetItemLink(Item* item, WorldSession* session) c
 {
     sLog->outDebug("Transmogrification.log", "Transmogrification::GetItemLink");
 
-    int loc_idx = session->GetSessionDbLocaleIndex();
+    LocaleConstant localeConstant = session->GetSessionDbLocaleIndex();
+    int loc_idx = session->GetSessionDbLocaleIndex(); // TODO
     const ItemTemplate* temp = item->GetTemplate();
     std::string name = temp->Name1;
-    if (ItemLocale const* il = sObjectMgr->GetItemLocale(temp->ItemId))
-        ObjectMgr::GetLocaleString(il->Name, loc_idx, name);
+    if (localeConstant != LOCALE_enUS)
+        if (ItemLocale const* il = sObjectMgr->GetItemLocale(temp->ItemId))
+            ObjectMgr::GetLocaleString(il->Name, localeConstant, name);
 
     if (int32 itemRandPropId = item->GetItemRandomPropertyId())
     {
@@ -253,10 +255,11 @@ std::string Transmogrification::GetItemLink(uint32 entry, WorldSession* session)
     sLog->outDebug("Transmogrification.log", "Transmogrification::GetItemLink");
 
     const ItemTemplate* temp = sObjectMgr->GetItemTemplate(entry);
-    int loc_idx = session->GetSessionDbLocaleIndex();
+    LocaleConstant localeConstant = session->GetSessionDbLocaleIndex();
     std::string name = temp->Name1;
-    if (ItemLocale const* il = sObjectMgr->GetItemLocale(entry))
-        ObjectMgr::GetLocaleString(il->Name, loc_idx, name);
+    if (localeConstant != LOCALE_enUS)
+        if (ItemLocale const* il = sObjectMgr->GetItemLocale(entry))
+            ObjectMgr::GetLocaleString(il->Name, localeConstant, name);
 
     std::ostringstream oss;
     oss << "|c" << std::hex << ItemQualityColors[temp->Quality] << std::dec <<

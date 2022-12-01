@@ -3863,6 +3863,7 @@ enum ChatMsg : uint8
 };
 
 #define MSG_NULL_ACTION 0x34
+#define MAX_CHAT_MSG_TYPE 0x41
 
 enum ChatLinkColors
 {

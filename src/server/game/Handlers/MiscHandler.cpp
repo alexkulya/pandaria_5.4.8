@@ -2215,87 +2215,87 @@ void WorldSession::HandleInstanceLockResponse(WorldPacket& recvPacket)
 
 void WorldSession::HandleRequestHotfix(WorldPacket& recvPacket)
 {
-    uint32 type, count;
-    recvPacket >> type;
+    // uint32 type, count;
+    // recvPacket >> type;
 
-    DB2StorageBase const* store = GetDB2Storage(type);
-    if (!store)
-    {
-        TC_LOG_DEBUG("network", "CMSG_REQUEST_HOTFIX: Received unknown hotfix type: %u", type);
-        recvPacket.rfinish();
-        return;
-    }
+    // DB2StorageBase const* store = GetDB2Storage(type);
+    // if (!store)
+    // {
+    //     TC_LOG_DEBUG("network", "CMSG_REQUEST_HOTFIX: Received unknown hotfix type: %u", type);
+    //     recvPacket.rfinish();
+    //     return;
+    // }
 
-    count = recvPacket.ReadBits(21);
+    // count = recvPacket.ReadBits(21);
 
-    ObjectGuid* guids = new ObjectGuid[count];
-    for (uint32 i = 0; i < count; ++i)
-    {
-        guids[i][6] = recvPacket.ReadBit();
-        guids[i][3] = recvPacket.ReadBit();
-        guids[i][0] = recvPacket.ReadBit();
-        guids[i][1] = recvPacket.ReadBit();
-        guids[i][4] = recvPacket.ReadBit();
-        guids[i][5] = recvPacket.ReadBit();
-        guids[i][7] = recvPacket.ReadBit();
-        guids[i][2] = recvPacket.ReadBit();
-    }
+    // ObjectGuid* guids = new ObjectGuid[count];
+    // for (uint32 i = 0; i < count; ++i)
+    // {
+    //     guids[i][6] = recvPacket.ReadBit();
+    //     guids[i][3] = recvPacket.ReadBit();
+    //     guids[i][0] = recvPacket.ReadBit();
+    //     guids[i][1] = recvPacket.ReadBit();
+    //     guids[i][4] = recvPacket.ReadBit();
+    //     guids[i][5] = recvPacket.ReadBit();
+    //     guids[i][7] = recvPacket.ReadBit();
+    //     guids[i][2] = recvPacket.ReadBit();
+    // }
 
-    uint32 entry;
-    std::unordered_map<uint32, uint32> requestedEntries;
-    for (uint32 i = 0; i < count; ++i)
-    {
-        recvPacket.ReadByteSeq(guids[i][1]);
-        recvPacket >> entry;
-        requestedEntries[i] = entry;
-        recvPacket.ReadByteSeq(guids[i][0]);
-        recvPacket.ReadByteSeq(guids[i][5]);
-        recvPacket.ReadByteSeq(guids[i][6]);
-        recvPacket.ReadByteSeq(guids[i][4]);
-        recvPacket.ReadByteSeq(guids[i][7]);
-        recvPacket.ReadByteSeq(guids[i][2]);
-        recvPacket.ReadByteSeq(guids[i][3]);
-    }
+    // uint32 entry;
+    // std::unordered_map<uint32, uint32> requestedEntries;
+    // for (uint32 i = 0; i < count; ++i)
+    // {
+    //     recvPacket.ReadByteSeq(guids[i][1]);
+    //     recvPacket >> entry;
+    //     requestedEntries[i] = entry;
+    //     recvPacket.ReadByteSeq(guids[i][0]);
+    //     recvPacket.ReadByteSeq(guids[i][5]);
+    //     recvPacket.ReadByteSeq(guids[i][6]);
+    //     recvPacket.ReadByteSeq(guids[i][4]);
+    //     recvPacket.ReadByteSeq(guids[i][7]);
+    //     recvPacket.ReadByteSeq(guids[i][2]);
+    //     recvPacket.ReadByteSeq(guids[i][3]);
+    // }
 
-    for (uint32 i = 0; i < count; ++i)
-    {
-        ByteBuffer db2Buffer;
-        switch (type) // overwrite db2 data from db
-        {
-            case DB2_REPLY_BROADCAST_TEXT:
-                SendBroadcastTextDb2Reply(requestedEntries[i], db2Buffer);
-                break;
-            case DB2_REPLY_ITEM:
-                SendItemDb2Reply(requestedEntries[i], db2Buffer);
-                break;
-            case DB2_REPLY_SPARSE:
-                SendItemSparseDb2Reply(requestedEntries[i], db2Buffer);
-                break;
-            default:
-                break;
-        }
+    // for (uint32 i = 0; i < count; ++i)
+    // {
+    //     ByteBuffer db2Buffer;
+    //     switch (type) // overwrite db2 data from db
+    //     {
+    //         case DB2_REPLY_BROADCAST_TEXT:
+    //             SendBroadcastTextDb2Reply(requestedEntries[i], db2Buffer);
+    //             break;
+    //         case DB2_REPLY_ITEM:
+    //             SendItemDb2Reply(requestedEntries[i], db2Buffer);
+    //             break;
+    //         case DB2_REPLY_SPARSE:
+    //             SendItemSparseDb2Reply(requestedEntries[i], db2Buffer);
+    //             break;
+    //         default:
+    //             break;
+    //     }
 
-        if (store->HasRecord(requestedEntries[i]) && !db2Buffer.size()) // load requested data from db2 (only for missing in db)
-            store->WriteRecord(requestedEntries[i],(uint32) GetSessionDbcLocale(), db2Buffer);
+    //     if (store->HasRecord(requestedEntries[i]) && !db2Buffer.size()) // load requested data from db2 (only for missing in db)
+    //         store->WriteRecord(requestedEntries[i],(uint32) GetSessionDbcLocale(), db2Buffer);
 
-        if (!db2Buffer.size())
-        {
-            TC_LOG_ERROR("network", "SMSG_DB_REPLY: Cant send hotfix entry: %u type: %u, because has no record.", requestedEntries[i], type);
-            continue;
-        }
+    //     if (!db2Buffer.size())
+    //     {
+    //         TC_LOG_ERROR("network", "SMSG_DB_REPLY: Cant send hotfix entry: %u type: %u, because has no record.", requestedEntries[i], type);
+    //         continue;
+    //     }
 
-        WorldPacket data(SMSG_DB_REPLY);
-        data << uint32(requestedEntries[i]);
-        data << uint32(time(NULL));
-        data << uint32(type);
-        data << uint32(db2Buffer.size());
-        data.append(db2Buffer);
-        SendPacket(&data);
+    //     WorldPacket data(SMSG_DB_REPLY);
+    //     data << uint32(requestedEntries[i]);
+    //     data << uint32(time(NULL));
+    //     data << uint32(type);
+    //     data << uint32(db2Buffer.size());
+    //     data.append(db2Buffer);
+    //     SendPacket(&data);
 
-        TC_LOG_DEBUG("network", "SMSG_DB_REPLY: Sent hotfix entry: %u type: %u", requestedEntries[i], type);
-    }
+    //     TC_LOG_DEBUG("network", "SMSG_DB_REPLY: Sent hotfix entry: %u type: %u", requestedEntries[i], type);
+    // }
 
-    delete [] guids;
+    // delete [] guids;
 }
 
 void WorldSession::SendBroadcastTextDb2Reply(uint32 entry, ByteBuffer& buffer)
@@ -2320,8 +2320,8 @@ void WorldSession::SendBroadcastTextDb2Reply(uint32 entry, ByteBuffer& buffer)
     {
         if (NpcTextLocale const* localeData = sObjectMgr->GetNpcTextLocale(entry))
         {
-            ObjectMgr::GetLocaleString(localeData->Text_0[0], locale, Text_0);
-            ObjectMgr::GetLocaleString(localeData->Text_1[0], locale, Text_1);
+            ObjectMgr::GetLocaleStringOld(localeData->Text_0[0], locale, Text_0);
+            ObjectMgr::GetLocaleStringOld(localeData->Text_1[0], locale, Text_1);
         }
     }
 

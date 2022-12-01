@@ -2449,17 +2449,16 @@ void AchievementMgr::CompletedAchievement(AchievementEntry const* achievement, P
     {
         Item* item = reward->ItemId ? Item::CreateItem(reward->ItemId, 1, referencePlayer) : NULL;
 
-        int loc_idx = referencePlayer->GetSession()->GetSessionDbLocaleIndex();
-
         // subject and text
         std::string subject = reward->Subject;
         std::string text = reward->Text;
-        if (loc_idx >= 0)
+        LocaleConstant localeConstant = referencePlayer->GetSession()->GetSessionDbLocaleIndex();
+        if (localeConstant != LOCALE_enUS)
         {
             if (AchievementRewardLocale const* loc = sAchievementMgr->GetAchievementRewardLocale(achievement))
             {
-                ObjectMgr::GetLocaleString(loc->Subject, loc_idx, subject);
-                ObjectMgr::GetLocaleString(loc->Text, loc_idx, text);
+                ObjectMgr::GetLocaleString(loc->Subject, localeConstant, subject);
+                ObjectMgr::GetLocaleString(loc->Text, localeConstant, text);
             }
         }
 

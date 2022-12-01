@@ -425,8 +425,8 @@ void WorldSession::HandleGameObjectQueryOpcode(WorldPacket& recvData)
         {
             if (GameObjectLocale const* gl = sObjectMgr->GetGameObjectLocale(entry))
             {
-                ObjectMgr::GetLocaleString(gl->Name, loc_idx, Name);
-                ObjectMgr::GetLocaleString(gl->CastBarCaption, loc_idx, CastBarCaption);
+                ObjectMgr::GetLocaleStringOld(gl->Name, loc_idx, Name);
+                ObjectMgr::GetLocaleStringOld(gl->CastBarCaption, loc_idx, CastBarCaption);
             }
         }
 
@@ -536,55 +536,143 @@ void WorldSession::HandleCorpseQueryOpcode(WorldPacket& /*recvData*/)
     SendPacket(&data);
 }
 
+//hack fix
+// void WorldSession::HandleNpcTextQueryOpcode(WorldPacket& recvData)
+// {
+//     uint32 textID;
+//     ObjectGuid guid;
+
+//     recvData >> textID;
+
+//     TC_LOG_DEBUG("network", "WORLD: CMSG_NPC_TEXT_QUERY ID '%u'", textID);
+
+//     guid[4] = recvData.ReadBit();
+//     guid[5] = recvData.ReadBit();
+//     guid[1] = recvData.ReadBit();
+//     guid[7] = recvData.ReadBit();
+//     guid[0] = recvData.ReadBit();
+//     guid[2] = recvData.ReadBit();
+//     guid[6] = recvData.ReadBit();
+//     guid[3] = recvData.ReadBit();
+
+//     recvData.ReadByteSeq(guid[4]);
+//     recvData.ReadByteSeq(guid[0]);
+//     recvData.ReadByteSeq(guid[2]);
+//     recvData.ReadByteSeq(guid[5]);
+//     recvData.ReadByteSeq(guid[1]);
+//     recvData.ReadByteSeq(guid[7]);
+//     recvData.ReadByteSeq(guid[3]);
+//     recvData.ReadByteSeq(guid[6]);
+
+//     GossipText const* pGossip = sObjectMgr->GetGossipText(textID);
+
+//     WorldPacket data(SMSG_NPC_TEXT_UPDATE, 1 + 4 + 64);
+//     data << textID;
+//     data << uint32(64);                                 // size (8 * 4) * 2
+
+//     data << float(pGossip ? pGossip->Options[0].Probability : 0);
+//     for (int i = 0; i < MAX_GOSSIP_TEXT_OPTIONS - 1; i++)
+//         data << float(0);
+
+//     data << textID;    // should be a broadcast id    
+                        
+//     for (int i = 0; i < MAX_GOSSIP_TEXT_OPTIONS - 1; i++)
+//         data << uint32(0);
+
+//     data.WriteBit(1);                                   // has data
+//     data.FlushBits();
+
+//     SendPacket(&data);
+
+//     TC_LOG_DEBUG("network", "WORLD: Sent SMSG_NPC_TEXT_UPDATE");
+// }
+
 void WorldSession::HandleNpcTextQueryOpcode(WorldPacket& recvData)
 {
     uint32 textID;
-    ObjectGuid guid;
+    uint64 guid;
 
     recvData >> textID;
+    TC_LOG_DEBUG("network", "WORLD: CMSG_NPC_TEXT_QUERY TextId: %u", textID);
 
-    TC_LOG_DEBUG("network", "WORLD: CMSG_NPC_TEXT_QUERY ID '%u'", textID);
+    recvData >> guid;
 
-    guid[4] = recvData.ReadBit();
-    guid[5] = recvData.ReadBit();
-    guid[1] = recvData.ReadBit();
-    guid[7] = recvData.ReadBit();
-    guid[0] = recvData.ReadBit();
-    guid[2] = recvData.ReadBit();
-    guid[6] = recvData.ReadBit();
-    guid[3] = recvData.ReadBit();
+    GossipText const* gossip = sObjectMgr->GetGossipText(textID);
 
-    recvData.ReadByteSeq(guid[4]);
-    recvData.ReadByteSeq(guid[0]);
-    recvData.ReadByteSeq(guid[2]);
-    recvData.ReadByteSeq(guid[5]);
-    recvData.ReadByteSeq(guid[1]);
-    recvData.ReadByteSeq(guid[7]);
-    recvData.ReadByteSeq(guid[3]);
-    recvData.ReadByteSeq(guid[6]);
-
-    GossipText const* pGossip = sObjectMgr->GetGossipText(textID);
-
-    WorldPacket data(SMSG_NPC_TEXT_UPDATE, 1 + 4 + 64);
+    WorldPacket data(SMSG_NPC_TEXT_UPDATE, 100);          // guess size
     data << textID;
-    data << uint32(64);                                 // size (8 * 4) * 2
 
-    data << float(pGossip ? pGossip->Options[0].Probability : 0);
-    for (int i = 0; i < MAX_GOSSIP_TEXT_OPTIONS - 1; i++)
-        data << float(0);
+    if (!gossip)
+    {
+        for (uint8 i = 0; i < MAX_GOSSIP_TEXT_OPTIONS; ++i)
+        {
+            data << float(0);
+            data << "Greetings $N";
+            data << "Greetings $N";
+            data << uint32(0);
+            data << uint32(0);
+            data << uint32(0);
+            data << uint32(0);
+            data << uint32(0);
+            data << uint32(0);
+            data << uint32(0);
+        }
+    }
+    else
+    {
+        std::string text0[MAX_GOSSIP_TEXT_OPTIONS], text1[MAX_GOSSIP_TEXT_OPTIONS];
+        LocaleConstant locale = GetSessionDbLocaleIndex();
 
-    data << textID;                                     // should be a broadcast id
+        for (uint8 i = 0; i < MAX_GOSSIP_TEXT_OPTIONS; ++i)
+        {
+            BroadcastText const* bct = sObjectMgr->GetBroadcastText(gossip->Options[i].BroadcastTextID);
+            if (bct)
+            {
+                text0[i] = bct->GetText(locale, GENDER_MALE, true);
+                text1[i] = bct->GetText(locale, GENDER_FEMALE, true);
+            }
+            else
+            {
+                text0[i] = gossip->Options[i].Text_0;
+                text1[i] = gossip->Options[i].Text_1;
+            }
 
-    for (int i = 0; i < MAX_GOSSIP_TEXT_OPTIONS - 1; i++)
-        data << uint32(0);
+            if (locale != DEFAULT_LOCALE && !bct)
+            {
+                if (NpcTextLocale const* npcTextLocale = sObjectMgr->GetNpcTextLocale(textID))
+                {
+                    ObjectMgr::GetLocaleString(npcTextLocale->Text_0[i], locale, text0[i]);
+                    ObjectMgr::GetLocaleString(npcTextLocale->Text_1[i], locale, text1[i]);
+                }
+            }
 
-    data.WriteBit(1);                                   // has data
-    data.FlushBits();
+            data << gossip->Options[i].Probability;
+
+            if (text0[i].empty())
+                data << text1[i];
+            else
+                data << text0[i];
+
+            if (text1[i].empty())
+                data << text0[i];
+            else
+                data << text1[i];
+
+            data << gossip->Options[i].Language;
+
+            for (uint8 j = 0; j < MAX_GOSSIP_TEXT_EMOTES; ++j)
+            {
+                data << gossip->Options[i].Emotes[j]._Delay;
+                data << gossip->Options[i].Emotes[j]._Emote;
+            }
+        }
+    }
 
     SendPacket(&data);
 
     TC_LOG_DEBUG("network", "WORLD: Sent SMSG_NPC_TEXT_UPDATE");
 }
+
 
 /// Only _static_ data is sent in this packet !!!
 void WorldSession::HandlePageTextQueryOpcode(WorldPacket& recvData)
@@ -628,7 +716,7 @@ void WorldSession::HandlePageTextQueryOpcode(WorldPacket& recvData)
             int loc_idx = GetSessionDbLocaleIndex();
             if (loc_idx >= 0)
                 if (PageTextLocale const* player = sObjectMgr->GetPageTextLocale(pageID))
-                    ObjectMgr::GetLocaleString(player->Text, loc_idx, Text);
+                    ObjectMgr::GetLocaleStringOld(player->Text, loc_idx, Text);
 
             data.WriteBits(Text.size(), 12);
 
