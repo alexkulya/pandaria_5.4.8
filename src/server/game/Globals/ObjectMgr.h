@@ -38,6 +38,7 @@
 #include "VehicleDefines.h"
 #include <string>
 #include <map>
+#include <unordered_map>
 #include <limits>
 #include "ConditionMgr.h"
 #include <functional>
@@ -46,6 +47,7 @@
 #include "Containers.h"
 #include "ItemSpec.h"
 #include <atomic>
+#include "Hash.h"
 
 class AreaTrigger;
 class Item;
@@ -496,7 +498,15 @@ typedef std::unordered_map<uint32, QuestLocale> QuestLocaleContainer;
 typedef std::unordered_map<uint32, NpcTextLocale> NpcTextLocaleContainer;
 typedef std::unordered_map<uint32, PageTextLocale> PageTextLocaleContainer;
 typedef std::unordered_map<int32, TrinityStringLocale> TrinityStringLocaleContainer;
-typedef std::unordered_map<uint32, GossipMenuItemsLocale> GossipMenuItemsLocaleContainer;
+//typedef std::unordered_map<uint32, GossipMenuItemsLocale> GossipMenuItemsLocaleContainer;
+
+struct GossipMenuItemsLocale
+{
+    std::vector<std::string> OptionText;
+    std::vector<std::string> BoxText;
+};
+
+typedef std::unordered_map<std::pair<uint32, uint32>, GossipMenuItemsLocale> GossipMenuItemsLocaleContainer;
 typedef std::unordered_map<uint32, PointOfInterestLocale> PointOfInterestLocaleContainer;
 typedef std::unordered_map<uint32, QuestObjectiveLocale> QuestObjectiveLocaleContainer;
 
@@ -573,25 +583,27 @@ struct PointOfInterest
 
 struct GossipMenuItems
 {
-    uint32          MenuId;
-    uint32          OptionIndex;
-    uint8           OptionIcon;
-    std::string     OptionText;
-    uint32          OptionType;
-    uint32          OptionNpcflag;
-    uint32          ActionMenuId;
-    uint32          ActionPoiId;
-    bool            BoxCoded;
-    uint32          BoxMoney;
-    std::string     BoxText;
-    ConditionList   Conditions;
+    uint32              MenuID;
+    uint32              OptionID;
+    uint8               OptionIcon;
+    std::string         OptionText;
+    uint32              OptionBroadcastTextID;
+    uint32              OptionType;
+    uint32              OptionNpcFlag;
+    uint32              ActionMenuID;
+    uint32              ActionPoiID;
+    bool                BoxCoded;
+    uint32              BoxMoney;
+    std::string         BoxText;
+    uint32              BoxBroadcastTextID;
+    ConditionList       Conditions;
 };
 
 struct GossipMenus
 {
-    uint32          entry;
-    uint32          text_id;
-    ConditionList   conditions;
+    uint32              MenuID;
+    uint32              TextID;
+    ConditionList   Conditions;
 };
 
 typedef std::multimap<uint32, GossipMenus> GossipMenusContainer;
@@ -1409,10 +1421,10 @@ class ObjectMgr
             if (itr == _pageTextLocaleStore.end()) return NULL;
             return &itr->second;
         }
-        GossipMenuItemsLocale const* GetGossipMenuItemsLocale(uint32 entry) const
+        GossipMenuItemsLocale const* GetGossipMenuItemsLocale(uint32 menuId, uint32 optionIndex) const
         {
-            GossipMenuItemsLocaleContainer::const_iterator itr = _gossipMenuItemsLocaleStore.find(entry);
-            if (itr == _gossipMenuItemsLocaleStore.end()) return NULL;
+            GossipMenuItemsLocaleContainer::const_iterator itr = _gossipMenuItemsLocaleStore.find(std::make_pair(menuId, optionIndex));
+            if (itr == _gossipMenuItemsLocaleStore.end()) return nullptr;
             return &itr->second;
         }
         PointOfInterestLocale const* GetPointOfInterestLocale(uint32 poi_id) const

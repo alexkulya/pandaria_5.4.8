@@ -236,6 +236,7 @@ struct Condition
 };
 
 typedef std::list<Condition*> ConditionList;
+//typedef std::vector<Condition*> ConditionContainer; // from TC
 typedef std::map<uint32, ConditionList> ConditionTypeContainer;
 typedef std::map<ConditionSourceType, ConditionTypeContainer> ConditionContainer;
 typedef std::map<uint32, ConditionTypeContainer> CreatureSpellConditionContainer;

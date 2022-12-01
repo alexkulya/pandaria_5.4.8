@@ -235,12 +235,6 @@ struct CreatureLocale
     StringVector SubName;
 };
 
-struct GossipMenuItemsLocale
-{
-    StringVector OptionText;
-    StringVector BoxText;
-};
-
 struct PointOfInterestLocale
 {
     StringVector IconName;
