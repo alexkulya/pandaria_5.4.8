@@ -2312,7 +2312,7 @@ void WorldSession::SendItemSparseDb2Reply(uint32 entry, ByteBuffer& buffer)
     std::string name = proto->Name1;
     if (locale >= 0)
         if (ItemLocale const* localeData = sObjectMgr->GetItemLocale(entry))
-            ObjectMgr::GetLocaleString(localeData->Name, locale, name);
+            ObjectMgr::GetLocaleStringOld(localeData->Name, locale, name);
 
     buffer << uint16(name.length());
     if (name.length())
@@ -2324,7 +2324,7 @@ void WorldSession::SendItemSparseDb2Reply(uint32 entry, ByteBuffer& buffer)
     std::string desc = proto->Description;
     if (locale >= 0)
         if (ItemLocale const* localeData = sObjectMgr->GetItemLocale(entry))
-            ObjectMgr::GetLocaleString(localeData->Description, locale, desc);
+            ObjectMgr::GetLocaleStringOld(localeData->Description, locale, desc);
 
     buffer << uint16(desc.length());
     if (desc.length())
