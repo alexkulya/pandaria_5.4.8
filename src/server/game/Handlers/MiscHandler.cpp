@@ -2304,19 +2304,20 @@ void WorldSession::SendBroadcastTextDb2Reply(uint32 entry, ByteBuffer& buffer)
      *  This is a hack fix! Still uses Gossip Id's instead of Broadcast Id's.
      *  Major database changed required at some point.
      */
-
-    GossipText const* pGossip = sObjectMgr->GetGossipText(entry);
-    std::string text = GetPlayer()->GetOverrideText(entry);
-    if (!pGossip && text.empty())
+    LocaleConstant locale = GetSessionDbLocaleIndex();
+    std::string Text_0;
+    std::string Text_1;
+    BroadcastText const* bct = sObjectMgr->GetBroadcastText(entry);
+    if (bct)
+    {
+        Text_0 = bct->GetText(locale, GENDER_MALE, true);
+        Text_1 = bct->GetText(locale, GENDER_FEMALE, true);
+    }
+    else
+    {
         return; // return without buffer for trying load data from db2 stores
-
-    buffer << uint32(entry);
-
-    std::string Text_0 = !text.empty() ? text : pGossip->Options[0].Text_0;
-    std::string Text_1 = !text.empty() ? text : pGossip->Options[0].Text_1;
-
-    int32 locale = GetSessionDbLocaleIndex();
-    if (locale >= 0 && text.empty())
+    }
+    if (locale >= 0)
     {
         if (NpcTextLocale const* localeData = sObjectMgr->GetNpcTextLocale(entry))
         {
@@ -2324,26 +2325,62 @@ void WorldSession::SendBroadcastTextDb2Reply(uint32 entry, ByteBuffer& buffer)
             ObjectMgr::GetLocaleStringOld(localeData->Text_1[0], locale, Text_1);
         }
     }
-
-    buffer << uint32(!text.empty() ? 0 : pGossip->Options[0].Language);
-
+    buffer << uint32(entry);
+    buffer << uint32(!bct ? 0 : bct->LanguageID);
     buffer << uint16(Text_0.length());
     if (Text_0.length())
-        buffer << std::string(Text_0);
-
+        buffer << std::string(Text_0);    
     buffer << uint16(Text_1.length());
     if (Text_1.length())
-        buffer << std::string(Text_1);
-
-    for (uint8 j = 0; j < MAX_GOSSIP_TEXT_EMOTES; ++j)
-        buffer << uint32(!text.empty() ? 0 : pGossip->Options[0].Emotes[j]._Emote);
-
-    for (uint8 j = 0; j < MAX_GOSSIP_TEXT_EMOTES; ++j)
-        buffer << uint32(!text.empty() ? 0 : pGossip->Options[0].Emotes[j]._Delay);
-
-    buffer << uint32(0); // Sound Id
+        buffer << std::string(Text_1); 
+    buffer << uint32(!bct ? 0 : bct->EmoteId1);  
+    buffer << uint32(!bct ? 0 : bct->EmoteId2);
+    buffer << uint32(!bct ? 0 : bct->EmoteId3);
+    buffer << uint32(!bct ? 0 : bct->EmoteDelay1);
+    buffer << uint32(!bct ? 0 : bct->EmoteDelay2);
+    buffer << uint32(!bct ? 0 : bct->EmoteDelay3);
+    buffer << uint32(!bct ? 0 : bct->SoundEntriesID); // Sound Id
     buffer << uint32(0); // UnkMoP1
-    buffer << uint32(0); // UnkMoP2
+    buffer << uint32(0); // UnkMoP2    
+    // GossipText const* pGossip = sObjectMgr->GetGossipText(entry);
+    // std::string text = GetPlayer()->GetOverrideText(entry);
+    // if (!pGossip && text.empty())
+    //     return; // return without buffer for trying load data from db2 stores
+
+    // buffer << uint32(entry);
+
+    // std::string Text_0 = !text.empty() ? text : pGossip->Options[0].Text_0;
+    // std::string Text_1 = !text.empty() ? text : pGossip->Options[0].Text_1;
+
+    // int32 locale = GetSessionDbLocaleIndex();
+    // if (locale >= 0 && text.empty())
+    // {
+    //     if (NpcTextLocale const* localeData = sObjectMgr->GetNpcTextLocale(entry))
+    //     {
+    //         ObjectMgr::GetLocaleStringOld(localeData->Text_0[0], locale, Text_0);
+    //         ObjectMgr::GetLocaleStringOld(localeData->Text_1[0], locale, Text_1);
+    //     }
+    // }
+
+    // buffer << uint32(!text.empty() ? 0 : pGossip->Options[0].Language);
+
+    // buffer << uint16(Text_0.length());
+    // if (Text_0.length())
+    //     buffer << std::string(Text_0);
+
+    // buffer << uint16(Text_1.length());
+    // if (Text_1.length())
+    //     buffer << std::string(Text_1);
+
+    // for (uint8 j = 0; j < MAX_GOSSIP_TEXT_EMOTES; ++j)
+    //     buffer << uint32(!text.empty() ? 0 : pGossip->Options[0].Emotes[j]._Emote);
+
+    // for (uint8 j = 0; j < MAX_GOSSIP_TEXT_EMOTES; ++j)
+    //     buffer << uint32(!text.empty() ? 0 : pGossip->Options[0].Emotes[j]._Delay);
+
+    // buffer << uint32(0); // Sound Id
+    // buffer << uint32(0); // UnkMoP1
+    // buffer << uint32(0); // UnkMoP2
 }
 
 void WorldSession::HandleUpdateMissileTrajectory(WorldPacket& recvPacket)
