@@ -73,7 +73,7 @@ namespace LuaGameObject
         float z = luaL_checknumber(L, 4);
         float o = luaL_checknumber(L, 5);
         uint32 respawnDelay = luaL_optunsigned(L, 6, 30);
-        G3D::Quat r = 0;
+        G3D::Quat r;
         sEluna->Push(L, go->SummonGameObject(entry, x, y, z, o, r, respawnDelay));
         return 1;
     }

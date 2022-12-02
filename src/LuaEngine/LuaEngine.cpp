@@ -219,7 +219,7 @@ void Eluna::LoadDirectory(const char* Dirname, LoadedScripts* lscr)
     }
     FindClose(hFile);
 #else
-    char* dir = strrchr(Dirname, '/');
+    const char* dir = strrchr(Dirname, '/');
     if (strcmp(Dirname, "..") == 0 || strcmp(Dirname, ".") == 0)
         return;
 

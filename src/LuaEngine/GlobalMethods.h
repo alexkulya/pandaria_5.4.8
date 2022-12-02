@@ -625,7 +625,7 @@ namespace LuaGlobalFunctions
 
             GameObject* object = new GameObject;
             uint32 lowguid = sObjectMgr->GenerateLowGuid(HIGHGUID_GAMEOBJECT);
-            G3D::Quat r = 0;
+            G3D::Quat r;
             if (!object->Create(lowguid, objectInfo->entry, map, phase, x, y, z, o, r, 0.0f, GO_STATE_READY))
             {
                 delete object;
