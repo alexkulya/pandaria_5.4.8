@@ -32,7 +32,7 @@ namespace LuaItem
 
         std::string name = temp->Name1;
         if (ItemLocale const* il = sObjectMgr->GetItemLocale(temp->ItemId))
-            ObjectMgr::GetLocaleString(il->Name, loc_idx, name);
+            ObjectMgr::GetLocaleStringOld(il->Name, loc_idx, name);
 
         if (int32 itemRandPropId = item->GetItemRandomPropertyId())
         {
