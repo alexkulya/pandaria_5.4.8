@@ -558,12 +558,12 @@ void BattlePayMgr::SendBattlePayProductList(WorldSession* session)
 
         std::string productTitle = product->Title;
         std::string productDescription = product->Description;
-        int loc_idx = session->GetSessionDbLocaleIndex();
-        if (loc_idx >= 0)
+        LocaleConstant localeConstant = session->GetSessionDbLocaleIndex();
+        if (localeConstant != LOCALE_enUS)
             if (BattlePayProductLocale const* locProd = GetProductLocale(product->Id))
             {
-                ObjectMgr::GetLocaleString(locProd->Title, loc_idx, productTitle);
-                ObjectMgr::GetLocaleString(locProd->Description, loc_idx, productDescription);
+                ObjectMgr::GetLocaleString(locProd->Title, localeConstant, productTitle);
+                ObjectMgr::GetLocaleString(locProd->Description, localeConstant, productDescription);
             }
 
         data.WriteBits(product->ChoiceType, 2);
@@ -653,12 +653,12 @@ void BattlePayMgr::SendBattlePayProductList(WorldSession* session)
     {
         std::string entryTitle = entry->Title;
         std::string entryDescription = entry->Description;
-        int loc_idx = session->GetSessionDbLocaleIndex();
-        if (loc_idx >= 0)
+        LocaleConstant localeConstant = session->GetSessionDbLocaleIndex();
+        if (localeConstant != LOCALE_enUS)
             if (BattlePayShopEntryLocale const* locEntry = GetShopEntryLocale(entry->Id))
             {
-                ObjectMgr::GetLocaleString(locEntry->Title, loc_idx, entryTitle);
-                ObjectMgr::GetLocaleString(locEntry->Description, loc_idx, entryDescription);
+                ObjectMgr::GetLocaleString(locEntry->Title, localeConstant, entryTitle);
+                ObjectMgr::GetLocaleString(locEntry->Description, localeConstant, entryDescription);
             }
 
         data.WriteBit(!entryTitle.empty() ? true : false);
@@ -677,10 +677,10 @@ void BattlePayMgr::SendBattlePayProductList(WorldSession* session)
     for (auto&& group : m_groupStore)
     {
         std::string groupName = group->Name;
-        int loc_idx = session->GetSessionDbLocaleIndex();
-        if (loc_idx >= 0)
+        LocaleConstant localeConstant = session->GetSessionDbLocaleIndex();
+        if (localeConstant != LOCALE_enUS)
             if (BattlePayGroupLocale const* locGroup = GetGroupLocale(group->Id))
-                ObjectMgr::GetLocaleString(locGroup->Name, loc_idx, groupName);
+                ObjectMgr::GetLocaleString(locGroup->Name, localeConstant, groupName);
 
         data.WriteBits(groupName.size(), 8);
     }
@@ -690,10 +690,10 @@ void BattlePayMgr::SendBattlePayProductList(WorldSession* session)
     for (auto&& group : m_groupStore)
     {
         std::string groupName = group->Name;
-        int loc_idx = session->GetSessionDbLocaleIndex();
-        if (loc_idx >= 0)
+        LocaleConstant localeConstant = session->GetSessionDbLocaleIndex();
+        if (localeConstant != LOCALE_enUS)
             if (BattlePayGroupLocale const* locGroup = GetGroupLocale(group->Id))
-                ObjectMgr::GetLocaleString(locGroup->Name, loc_idx, groupName);
+                ObjectMgr::GetLocaleString(locGroup->Name, localeConstant, groupName);
 
         data << uint32(group->Index);
         data.WriteString(groupName);
@@ -708,12 +708,12 @@ void BattlePayMgr::SendBattlePayProductList(WorldSession* session)
 
         std::string productTitle = product->Title;
         std::string productDescription = product->Description;
-        int loc_idx = session->GetSessionDbLocaleIndex();
-        if (loc_idx >= 0)
+        LocaleConstant localeConstant = session->GetSessionDbLocaleIndex();
+        if (localeConstant != LOCALE_enUS)
             if (BattlePayProductLocale const* locProd = GetProductLocale(product->Id))
             {
-                ObjectMgr::GetLocaleString(locProd->Title, loc_idx, productTitle);
-                ObjectMgr::GetLocaleString(locProd->Description, loc_idx, productDescription);
+                ObjectMgr::GetLocaleString(locProd->Title, localeConstant, productTitle);
+                ObjectMgr::GetLocaleString(locProd->Description, localeConstant, productDescription);
             }
 
         data << uint8(product->Type);
@@ -766,12 +766,12 @@ void BattlePayMgr::SendBattlePayProductList(WorldSession* session)
     {
         std::string entryTitle = entry->Title;
         std::string entryDescription = entry->Description;
-        int loc_idx = session->GetSessionDbLocaleIndex();
-        if (loc_idx >= 0)
+        LocaleConstant localeConstant = session->GetSessionDbLocaleIndex();
+        if (localeConstant != LOCALE_enUS)
             if (BattlePayShopEntryLocale const* locEntry = GetShopEntryLocale(entry->Id))
             {
-                ObjectMgr::GetLocaleString(locEntry->Title, loc_idx, entryTitle);
-                ObjectMgr::GetLocaleString(locEntry->Description, loc_idx, entryDescription);
+                ObjectMgr::GetLocaleString(locEntry->Title, localeConstant, entryTitle);
+                ObjectMgr::GetLocaleString(locEntry->Description, localeConstant, entryDescription);
             }
 
         if (!entryTitle.empty())
@@ -813,12 +813,12 @@ void BattlePayMgr::SendBattlePayDistributionUpdate(WorldSession* session, uint32
 
     std::string title = product->Title;
     std::string description = product->Description;
-    int loc_idx = session->GetSessionDbLocaleIndex();
-    if (loc_idx >= 0)
+    LocaleConstant localeConstant = session->GetSessionDbLocaleIndex();
+    if (localeConstant != LOCALE_enUS)
         if (BattlePayShopEntryLocale const* locEntry = GetShopEntryLocale(product->Id))
         {
-            ObjectMgr::GetLocaleString(locEntry->Title, loc_idx, title);
-            ObjectMgr::GetLocaleString(locEntry->Description, loc_idx, description);
+            ObjectMgr::GetLocaleString(locEntry->Title, localeConstant, title);
+            ObjectMgr::GetLocaleString(locEntry->Description, localeConstant, description);
         }
 
     WorldPacket data(SMSG_BATTLE_PAY_DISTRIBUTION_UPDATE);
@@ -1007,12 +1007,12 @@ void BattlePayMgr::SendBattlePayPurchaseUpdate(PurchaseInfo* purchase)
                 // not blizzlike, but who cares (temp solution)
                 std::string productTitle = product->Title;
                 std::string productDescription = product->Description;
-                int loc_idx = purchase->GetSession()->GetSessionDbLocaleIndex();
-                if (loc_idx >= 0)
+                LocaleConstant localeConstant = purchase->GetSession()->GetSessionDbLocaleIndex();
+                if (localeConstant != LOCALE_enUS)
                     if (BattlePayProductLocale const* locProd = GetProductLocale(product->Id))
                     {
-                        ObjectMgr::GetLocaleString(locProd->Title, loc_idx, productTitle);
-                        ObjectMgr::GetLocaleString(locProd->Description, loc_idx, productDescription);
+                        ObjectMgr::GetLocaleString(locProd->Title, localeConstant, productTitle);
+                        ObjectMgr::GetLocaleString(locProd->Description, localeConstant, productDescription);
                     }
 
                 PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_INS_MAIL);
