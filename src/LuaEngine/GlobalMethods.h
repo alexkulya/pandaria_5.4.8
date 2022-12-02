@@ -1006,7 +1006,7 @@ namespace LuaGlobalFunctions
 
         std::string name = temp->Name1;
         if (ItemLocale const* il = sObjectMgr->GetItemLocale(entry))
-            ObjectMgr::GetLocaleString(il->Name, loc_idx, name);
+            ObjectMgr::GetLocaleStringOld(il->Name, loc_idx, name);
 
         std::ostringstream oss;
         oss << "|c" << std::hex << ItemQualityColors[temp->Quality] << std::dec <<
