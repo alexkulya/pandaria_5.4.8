@@ -121,7 +121,7 @@ void DB2Utilities::WriteItemSparseDbReply(DB2Storage<ItemSparseEntry> const& /*s
     // item name
     std::string name = proto->Name1;
     if (localeData)
-        ObjectMgr::GetLocaleString(localeData->Name, locale, name);
+        ObjectMgr::GetLocaleStringOld(localeData->Name, locale, name);
 
     buffer << uint16(name.length());
     if (name.length())
@@ -132,7 +132,7 @@ void DB2Utilities::WriteItemSparseDbReply(DB2Storage<ItemSparseEntry> const& /*s
 
     std::string desc = proto->Description;
     if (localeData)
-        ObjectMgr::GetLocaleString(localeData->Description, locale, desc);
+        ObjectMgr::GetLocaleStringOld(localeData->Description, locale, desc);
 
     buffer << uint16(desc.length());
     if (desc.length())
