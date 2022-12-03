@@ -2,7 +2,7 @@ name: windows-build
 
 on:
   push:
-    branches: [ master, development ]
+    branches: [ master, development, zTerragor-patch-emo ]
     paths-ignore:
       - 'sql/**'
       
