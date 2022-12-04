@@ -182,6 +182,10 @@ class SmartAI : public CreatureAI
         void sGossipHello(Player* player);
         void sGossipSelect(Player* player, uint32 sender, uint32 action);
         void sGossipSelectCode(Player* player, uint32 sender, uint32 action, const char* code);
+        // TC
+        bool OnGossipHello(Player* player) override;
+        bool OnGossipSelect(Player* player, uint32 menuId, uint32 gossipListId) override;
+        bool OnGossipSelectCode(Player* player, uint32 menuId, uint32 gossipListId, char const* code) override;       
         void sQuestAccept(Player* player, Quest const* quest);
         //void sQuestSelect(Player* player, Quest const* quest);
         //void sQuestComplete(Player* player, Quest const* quest);
@@ -205,6 +209,11 @@ class SmartAI : public CreatureAI
         uint32 GetPhase() { return GetScript()->GetPhase(); }
 
         bool IsCreatureRun() { return mRun; }
+
+        void SetGossipReturn(bool val)
+        {
+            _gossipReturn = val;
+        }        
 
     protected:
         bool mSmartVehicle = false;
@@ -243,6 +252,9 @@ class SmartAI : public CreatureAI
         uint32 mDespawnState;
         void UpdateDespawn(const uint32 diff);
         uint32 mEscortInvokerCheckTimer;
+
+        // Gossip
+        bool _gossipReturn;
 };
 
 class SmartVehicleAI : public SmartAI, private VehicleAIBase

@@ -341,6 +341,11 @@ bool CreatureAI::_EnterEvadeMode()
     return true;
 }
 
+// Optional<QuestGiverStatus> CreatureAI::GetDialogStatus(Player* /*player*/)
+// {
+//     return {};
+// }
+
 Creature* CreatureAI::DoSummon(uint32 entry, const Position& pos, uint32 despawnTime, TempSummonType summonType)
 {
     return me->SummonCreature(entry, pos, summonType, despawnTime);

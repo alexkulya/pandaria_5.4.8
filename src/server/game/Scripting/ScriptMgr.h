@@ -1004,6 +1004,7 @@ class ScriptMgr
         ScriptMgr();
         virtual ~ScriptMgr();
     public: /* Initialization */
+        // static ScriptMgr* instance(); TODO cause link issue
         void SetLoader(ScriptLoader loader) { _scriptLoader = loader; }
         void Initialize();
         void LoadDatabase();
@@ -1318,5 +1319,43 @@ struct pet_script : public CreatureScript
     pet_script(char const* name) : CreatureScript(name) { }
     CreatureAI* GetAI(Creature* creature) const override { return ScriptMgr::CanHavePetAI(creature) ? new T(creature) : nullptr; }
 };
+
+template <class AI>
+class GenericCreatureScript : public CreatureScript
+{
+    public:
+        GenericCreatureScript(char const* name) : CreatureScript(name) { }
+        CreatureAI* GetAI(Creature* me) const override { return new AI(me); }
+};
+#define RegisterCreatureAI(ai_name) new GenericCreatureScript<ai_name>(#ai_name)
+
+template <class AI, AI* (*AIFactory)(Creature*)>
+class FactoryCreatureScript : public CreatureScript
+{
+    public:
+        FactoryCreatureScript(char const* name) : CreatureScript(name) { }
+        CreatureAI* GetAI(Creature* me) const override { return AIFactory(me); }
+};
+#define RegisterCreatureAIWithFactory(ai_name, factory_fn) new FactoryCreatureScript<ai_name, &factory_fn>(#ai_name)
+
+template <class AI>
+class GenericGameObjectScript : public GameObjectScript
+{
+    public:
+        GenericGameObjectScript(char const* name) : GameObjectScript(name) { }
+        GameObjectAI* GetAI(GameObject* go) const override { return new AI(go); }
+};
+#define RegisterGameObjectAI(ai_name) new GenericGameObjectScript<ai_name>(#ai_name)
+
+template <class AI, AI* (*AIFactory)(GameObject*)>
+class FactoryGameObjectScript : public GameObjectScript
+{
+    public:
+        FactoryGameObjectScript(char const* name) : GameObjectScript(name) { }
+        GameObjectAI* GetAI(GameObject* me) const override { return AIFactory(me); }
+};
+#define RegisterGameObjectAIWithFactory(ai_name, factory_fn) new FactoryGameObjectScript<ai_name, &factory_fn>(#ai_name)
+
+// #define sScriptMgr ScriptMgr::instance() TODO cause link error
 
 #endif

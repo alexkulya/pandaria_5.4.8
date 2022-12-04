@@ -109,7 +109,6 @@ bool SummonList::HasEntry(uint32 entry) const
 }
 
 ScriptedAI::ScriptedAI(Creature* creature) : CreatureAI(creature),
-    me(creature),
     IsFleeing(false),
     _evadeCheckCooldown(2500),
     _isCombatMovementAllowed(true)
