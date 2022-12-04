@@ -284,7 +284,7 @@ void PlayerMenu::SendGossipMenu(uint32 titleTextId, ObjectGuid objectGUID) const
 
 void PlayerMenu::SendCloseGossip() const
 {
-    _gossipMenu.SetSenderGUID(ObjectGuid::Empty);
+    //_gossipMenu.SetSenderGUID(ObjectGuid::Empty);
     WorldPacket data(SMSG_GOSSIP_COMPLETE, 0);
     _session->SendPacket(&data);
 }
