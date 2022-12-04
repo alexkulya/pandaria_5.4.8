@@ -113,9 +113,9 @@ public:
                 case TARETHA_ENTRY:
                     TarethaGUID = creature->GetGUID();
                     break;
-            case EPOCH_ENTRY:
-            EpochGUID = creature->GetGUID();
-            break;
+                case EPOCH_ENTRY:
+                    EpochGUID = creature->GetGUID();
+                    break;
             }
         }
 

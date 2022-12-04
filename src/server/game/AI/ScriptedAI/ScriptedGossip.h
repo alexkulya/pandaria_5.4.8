@@ -52,6 +52,7 @@ enum eTradeskill
     TRADESKILL_LEVEL_ARTISAN            = 4,
     TRADESKILL_LEVEL_MASTER             = 5,
     TRADESKILL_LEVEL_GRAND_MASTER       = 6,
+    TRADESKILL_LEVEL_ILLUSTRIOUS        = 7,
 
     // Gossip defines
     GOSSIP_ACTION_TRADE                 = 1,
@@ -101,5 +102,19 @@ enum eTradeskill
 
 // Closes the Menu
 #define CLOSE_GOSSIP_MENU()        PlayerTalkClass->SendCloseGossip()
+
+class Creature;
+uint32 GetGossipActionFor(Player* player, uint32 gossipListId);
+void InitGossipMenuFor(Player* player, uint32 menuId);
+void ClearGossipMenuFor(Player* player);
+// Using provided text, not from DB
+void AddGossipItemFor(Player* player, uint32 icon, std::string const& text, uint32 sender, uint32 action);
+// Using provided texts, not from DB
+void AddGossipItemFor(Player* player, uint32 icon, std::string const& text, uint32 sender, uint32 action, std::string const& popupText, uint32 popupMoney, bool coded);
+// Uses gossip item info from DB
+void AddGossipItemFor(Player* player, uint32 gossipMenuID, uint32 gossipMenuItemID, uint32 sender, uint32 action);
+void SendGossipMenuFor(Player* player, uint32 npcTextID, ObjectGuid const& guid);
+void SendGossipMenuFor(Player* player, uint32 npcTextID, Creature const* creature);
+void CloseGossipMenuFor(Player* player);
 
 #endif

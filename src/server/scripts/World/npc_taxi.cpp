@@ -32,7 +32,7 @@ EndScriptData
 #define GOSSIP_SUSURRUS         "I am ready."
 #define GOSSIP_NETHER_DRAKE     "I'm ready to fly! Take me up, dragon!"
 #define GOSSIP_BRAZEN           "I am ready to go to Durnholde Keep."
-#define GOSSIP_IRONWING         "I'd like to take a flight around Stormwind Harbor."
+//#define GOSSIP_IRONWING         "I'd like to take a flight around Stormwind Harbor."
 #define GOSSIP_DABIREE1         "Fly me to Murketh and Shaadraz Gateways"
 #define GOSSIP_DABIREE2         "Fly me to Shatter Point"
 #define GOSSIP_WINDBELLOW1      "Fly me to The Abyssal Shelf"
@@ -82,9 +82,9 @@ public:
         case 18725: // Old Hillsbrad Foothills - Brazen
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_BRAZEN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
             break;
-        case 29154: // Stormwind City - Thargold Ironwing
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_IRONWING, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
-            break;
+        // case 29154: // Stormwind City - Thargold Ironwing done in SAI
+        //     player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_IRONWING, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+        //     break;
         case 19409: // Hellfire Peninsula - Wing Commander Dabir'ee
             //Mission: The Murketh and Shaadraz Gateways
             if (player->GetQuestStatus(10146) == QUEST_STATUS_INCOMPLETE)
@@ -204,10 +204,10 @@ public:
                 player->ActivateTaxiPathTo(534);              //TaxiPath 534
             }
             break;
-        case GOSSIP_ACTION_INFO_DEF + 3:
-            player->CLOSE_GOSSIP_MENU();
-            player->CastSpell(player, 53335, true);               //TaxiPath 1041 (Stormwind Harbor)
-            break;
+        // case GOSSIP_ACTION_INFO_DEF + 3:
+        //     player->CLOSE_GOSSIP_MENU();
+        //     player->CastSpell(player, 53335, true);               //TaxiPath 1041 (Stormwind Harbor)
+        //     break;
         case GOSSIP_ACTION_INFO_DEF + 4:
             player->CLOSE_GOSSIP_MENU();
             player->CastSpell(player, 33768, true);               //TaxiPath 585 (Gateways Murket and Shaadraz)

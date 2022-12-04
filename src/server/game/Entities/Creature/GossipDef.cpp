@@ -185,12 +185,13 @@ void PlayerMenu::ClearMenus()
     _questMenu.ClearMenu();
 }
 
-void PlayerMenu::SendGossipMenu(uint32 titleTextId, uint64 objectGUID) const
+void PlayerMenu::SendGossipMenu(uint32 titleTextId, ObjectGuid objectGUID) const
 {
     std::vector<std::string> updatedQuestTitles;
     updatedQuestTitles.reserve(_questMenu.GetMenuItemCount());
 
-    ObjectGuid guid = ObjectGuid(objectGUID);
+    //ObjectGuid guid = ObjectGuid(objectGUID);
+    ObjectGuid guid = objectGUID;
 
     WorldPacket data(SMSG_GOSSIP_MESSAGE, 150);             // Guessed
 
@@ -283,6 +284,7 @@ void PlayerMenu::SendGossipMenu(uint32 titleTextId, uint64 objectGUID) const
 
 void PlayerMenu::SendCloseGossip() const
 {
+    _gossipMenu.SetSenderGUID(ObjectGuid::Empty);
     WorldPacket data(SMSG_GOSSIP_COMPLETE, 0);
     _session->SendPacket(&data);
 }

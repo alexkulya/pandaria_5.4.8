@@ -36,13 +36,12 @@ enum Spells
     SPELL_TREAT                 = 24715
 };
 
-#define LOCALE_TRICK_OR_TREAT_0 "Trick or Treat!"
-#define LOCALE_TRICK_OR_TREAT_2 "Des bonbons ou des blagues!"
-#define LOCALE_TRICK_OR_TREAT_3 "Süßes oder Saures!"
-#define LOCALE_TRICK_OR_TREAT_6 "¡Truco o trato!"
+enum Npc
+{
+    NPC_GOSSIP_MENU = 9733,
+    NPC_GOSSIP_MENU_EVENT = 342,
+};
 
-#define LOCALE_INNKEEPER_0 "Make this inn my home."
-#define LOCALE_INNKEEPER_3 "Ich möchte dieses Gasthaus zu meinem Heimatort machen."
 
 class npc_innkeeper : public CreatureScript
 {
@@ -52,34 +51,16 @@ public:
     bool OnGossipHello(Player* player, Creature* creature) override
     {
         if (IsHolidayActive(HOLIDAY_HALLOWS_END) && !player->HasAura(SPELL_TRICK_OR_TREATED))
-        {
-            const char* localizedEntry;
-            switch (player->GetSession()->GetSessionDbcLocale())
-            {
-                case LOCALE_frFR: localizedEntry = LOCALE_TRICK_OR_TREAT_2; break;
-                case LOCALE_deDE: localizedEntry = LOCALE_TRICK_OR_TREAT_3; break;
-                case LOCALE_esES: localizedEntry = LOCALE_TRICK_OR_TREAT_6; break;
-                case LOCALE_enUS: default: localizedEntry = LOCALE_TRICK_OR_TREAT_0;
-            }
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, localizedEntry, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-        }
+            AddGossipItemFor(player, NPC_GOSSIP_MENU_EVENT, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
         if (creature->IsQuestGiver())
             player->PrepareQuestMenu(creature->GetGUID());
 
         if (creature->IsVendor())
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_VENDOR, GOSSIP_TEXT_BROWSE_GOODS, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_TRADE);
+            AddGossipItemFor(player, NPC_GOSSIP_MENU, 2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_TRADE);
 
         if (creature->IsInnkeeper())
-        {
-            const char* localizedEntry;
-            switch (player->GetSession()->GetSessionDbcLocale())
-            {
-                case LOCALE_deDE: localizedEntry = LOCALE_INNKEEPER_3; break;
-                case LOCALE_enUS: default: localizedEntry = LOCALE_INNKEEPER_0;
-            }
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_INTERACT_1, localizedEntry, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INN);
-        }
+            AddGossipItemFor(player, NPC_GOSSIP_MENU, 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INN);
 
         player->TalkedToCreature(creature->GetEntry(), creature->GetGUID());
         player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
@@ -130,10 +111,16 @@ public:
         }
         return true;
     }
+
+    // CreatureAI* GetAI(Creature* creature) const override
+    // {
+    //     return new npc_innkeeperAI(creature);
+    // }
+
 };
 
 void AddSC_npc_innkeeper()
 {
-    new npc_innkeeper;
+    new npc_innkeeper();
 }
 

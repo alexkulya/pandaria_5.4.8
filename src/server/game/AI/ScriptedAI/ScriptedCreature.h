@@ -152,8 +152,7 @@ class DummyEntryCheckPredicate
 struct ScriptedAI : public CreatureAI
 {
     explicit ScriptedAI(Creature* creature);
-    virtual ~ScriptedAI()
-    { }
+    virtual ~ScriptedAI() { }
 
     // *************
     //CreatureAI Functions
@@ -205,7 +204,7 @@ struct ScriptedAI : public CreatureAI
     // *************
 
     //Pointer to creature we are manipulating
-    Creature* me;
+    // Creature* me;
 
     //For fleeing
     bool IsFleeing;
