@@ -14,4 +14,4 @@ set(scripts_STAT_SRCS
   Custom/emo_teleporter.cpp
 )
 
-message("  -> Prepared: Custom")+
+message("  -> Prepared: Custom")
