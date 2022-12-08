@@ -179,14 +179,10 @@ class SmartAI : public CreatureAI
 
         void SetInvincibilityHpLevel(uint32 level) { mInvincibilityHpLevel = level; }
 
-        void sGossipHello(Player* player);
-        void sGossipSelect(Player* player, uint32 sender, uint32 action);
-        void sGossipSelectCode(Player* player, uint32 sender, uint32 action, const char* code);
-        // TC
         bool OnGossipHello(Player* player) override;
         bool OnGossipSelect(Player* player, uint32 menuId, uint32 gossipListId) override;
-        bool OnGossipSelectCode(Player* player, uint32 menuId, uint32 gossipListId, char const* code) override;       
-        void sQuestAccept(Player* player, Quest const* quest);
+        bool OnGossipSelectCode(Player* player, uint32 menuId, uint32 gossipListId, char const* code) override;  
+        void OnQuestAccept(Player* player, Quest const* quest) override;     
         //void sQuestSelect(Player* player, Quest const* quest);
         //void sQuestComplete(Player* player, Quest const* quest);
         void sQuestReward(Player* player, Quest const* quest, uint32 opt);
