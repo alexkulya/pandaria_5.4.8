@@ -3007,7 +3007,7 @@ void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, ui
                 return;
             ProcessTimedAction(e, e.event.minMaxRepeat.repeatMin, e.event.minMaxRepeat.repeatMax);
             break;
-        case SMART_EVENT_HEALT_PCT:
+        case SMART_EVENT_HEALTH_PCT:
         {
             if (!me || !me->IsInCombat() || !me->GetMaxHealth())
                 return;
@@ -3139,7 +3139,7 @@ void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, ui
         case SMART_EVENT_TRANSPORT_ADDPLAYER:
         case SMART_EVENT_TRANSPORT_REMOVE_PLAYER:
         case SMART_EVENT_QUEST_ACCEPTED:
-        case SMART_EVENT_QUEST_OBJ_COPLETETION:
+        case SMART_EVENT_QUEST_OBJ_COMPLETION:
         case SMART_EVENT_QUEST_COMPLETION:
         case SMART_EVENT_QUEST_REWARDED:
         case SMART_EVENT_QUEST_FAIL:
@@ -3147,6 +3147,27 @@ void SmartScript::ProcessEvent(SmartScriptHolder& e, Unit* unit, uint32 var0, ui
         case SMART_EVENT_RESET:
         case SMART_EVENT_JUST_CREATED:
         case SMART_EVENT_GOSSIP_HELLO:
+            switch (e.event.gossipHello.filter)
+            {
+                case 0:
+                    // no filter set, always execute action
+                    break;
+                case 1:
+                    // OnGossipHello only filter set, skip action if OnReportUse
+                    if (var0)
+                        return;
+                    break;
+                case 2:
+                    // OnReportUse only filter set, skip action if OnGossipHello
+                    if (!var0)
+                        return;
+                    break;
+                default:
+                    // Ignore any other value
+                    break;
+            }
+
+            ProcessAction(e, unit, var0, var1, bvar, spell, gob);       
         case SMART_EVENT_FOLLOW_COMPLETED:
         case SMART_EVENT_ON_SPELLCLICK:
         case SMART_EVENT_ON_GO_REPORT_USE:
@@ -3585,7 +3606,7 @@ void SmartScript::UpdateTimer(SmartScriptHolder& e, uint32 const diff)
             case SMART_EVENT_UPDATE:
             case SMART_EVENT_UPDATE_OOC:
             case SMART_EVENT_UPDATE_IC:
-            case SMART_EVENT_HEALT_PCT:
+            case SMART_EVENT_HEALTH_PCT:
             case SMART_EVENT_TARGET_HEALTH_PCT:
             case SMART_EVENT_MANA_PCT:
             case SMART_EVENT_TARGET_MANA_PCT:

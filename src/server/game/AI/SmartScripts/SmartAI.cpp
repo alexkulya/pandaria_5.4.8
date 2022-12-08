@@ -764,18 +764,6 @@ void SmartAI::SetEvadeDisabled(bool disable)
     mEvadeDisabled = disable;
 }
 
-void SmartAI::sGossipHello(Player* player)
-{
-    GetScript()->ProcessEventsFor(SMART_EVENT_GOSSIP_HELLO, player);
-}
-
-void SmartAI::sGossipSelect(Player* player, uint32 sender, uint32 action)
-{
-    GetScript()->ProcessEventsFor(SMART_EVENT_GOSSIP_SELECT, player, sender, action);
-}
-
-void SmartAI::sGossipSelectCode(Player* /*player*/, uint32 /*sender*/, uint32 /*action*/, const char* /*code*/) { }
-
 bool SmartAI::OnGossipHello(Player* player)
 {
     _gossipReturn = false;
@@ -795,7 +783,7 @@ bool SmartAI::OnGossipSelectCode(Player* /*player*/, uint32 /*menuId*/, uint32 /
     return false;
 }
 
-void SmartAI::sQuestAccept(Player* player, Quest const* quest)
+void SmartAI::OnQuestAccept(Player* player, Quest const* quest)
 {
     GetScript()->ProcessEventsFor(SMART_EVENT_ACCEPTED_QUEST, player, quest->GetQuestId());
 }
