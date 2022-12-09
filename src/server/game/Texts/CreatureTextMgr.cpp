@@ -24,26 +24,26 @@
 #include "GridNotifiers.h"
 #include "GridNotifiersImpl.h"
 #include "CreatureTextMgr.h"
+#include "SharedDefines.h"
 #include "Group.h"
 
 class CreatureTextBuilder
 {
     public:
-         CreatureTextBuilder(WorldObject* obj, ChatMsg msgtype, uint8 textGroup, uint32 id, uint32 language, WorldObject const* target)
-            : _source(obj), _msgType(msgtype), _textGroup(textGroup), _textId(id), _language(language), _target(target)
+         CreatureTextBuilder(WorldObject* obj, uint8 gender, ChatMsg msgtype, uint8 textGroup, uint32 id, uint32 language, WorldObject const* target)
+            : _source(obj), _gender(gender), _msgType(msgtype), _textGroup(textGroup), _textId(id), _language(language), _target(target)
         {
         }
 
-        void operator()(WorldPacket* data, LocaleConstant locale, uint64 guid) const
+        size_t operator()(WorldPacket* data, LocaleConstant locale, uint64 guid) const
         {
-            std::string const& text = sCreatureTextMgr->GetLocalizedChatString(_source->GetEntry(), _textGroup, _textId, _source->isType(TYPEMASK_UNIT) ? (Gender)_source->ToUnit()->getGender() : GENDER_NONE, locale);
-            ObjectGuid receiverGuid = guid ? guid : _target ? _target->GetGUID() : 0;
-            
-            ChatHandler::BuildChatPacket(*data, _msgType, Language(_language), _source->GetGUID(), receiverGuid, text, 0,
-                _source->GetNameForLocaleIdx(locale), _target ? _target->GetNameForLocaleIdx(locale) : "");
+            std::string const& text = sCreatureTextMgr->GetLocalizedChatString(_source->GetEntry(), _gender, _textGroup, _textId, locale);
+
+            return ChatHandler::BuildChatPacket(*data, _msgType, Language(_language), _source, _target, text, 0, "", locale);
         }
 
         WorldObject* _source;
+        uint8 _gender;
         ChatMsg _msgType;
         uint8 _textGroup;
         uint32 _textId;
@@ -239,15 +239,42 @@ uint32 CreatureTextMgr::SendChat(Creature* source, uint8 textGroup,  WorldObject
 
     if (tempGroup.empty())
     {
-        CreatureTextRepeatMap::iterator mapItr = mTextRepeatMap.find(source->GetGUID());
-        if (mapItr != mTextRepeatMap.end())
-        {
-            CreatureTextRepeatGroup::iterator groupItr = mapItr->second.find(textGroup);
-            groupItr->second.clear();
-        }
-
+        source->ClearTextRepeatGroup(textGroup);
         tempGroup = textGroupContainer;
     }
+
+    // auto iter = Trinity::Containers::SelectRandomWeightedContainerElement(tempGroup, [](CreatureTextEntry const& t) -> double
+    // {
+    //     return t.probability;
+    // });
+
+    // ChatMsg finalType = (msgType == CHAT_MSG_ADDON) ? iter->type : msgType;
+    // Language finalLang = (language == LANG_ADDON) ? iter->lang : language;
+    // uint32 finalSound = sound ? sound : iter->sound;
+
+    // if (range == TEXT_RANGE_NORMAL)
+    //     range = iter->TextRange;
+
+    // if (finalSound)
+    //     SendSound(source, finalSound, finalType, whisperTarget, range, team, gmOnly);
+
+    // Unit* finalSource = source;
+    // if (srcPlr)
+    //     finalSource = srcPlr;
+
+    // if (iter->emote)
+    //     SendEmote(finalSource, iter->emote);
+
+    // if (srcPlr)
+    // {
+    //     PlayerTextBuilder builder(source, finalSource, finalSource->GetGender(), finalType, iter->groupId, iter->id, finalLang, whisperTarget);
+    //     SendChatPacket(finalSource, builder, finalType, whisperTarget, range, team, gmOnly);
+    // }
+    // else
+    // {
+    //     CreatureTextBuilder builder(finalSource, finalSource->GetGender(), finalType, iter->groupId, iter->id, finalLang, whisperTarget);
+    //     SendChatPacket(finalSource, builder, finalType, whisperTarget, range, team, gmOnly);
+    // }
 
     uint8 count = 0;
     float lastChance = -1;
@@ -310,12 +337,13 @@ uint32 CreatureTextMgr::SendChat(Creature* source, uint8 textGroup,  WorldObject
     }
     else
     {
-        CreatureTextBuilder builder(finalSource, finalType, iter->groupId, iter->id, finalLang, whisperTarget);
+        CreatureTextBuilder builder(finalSource, finalSource->getGender(), finalType, iter->groupId, iter->id, finalLang, whisperTarget);
         SendChatPacket(finalSource, builder, finalType, whisperTarget, range, team, gmOnly);
     }
     if (isEqualChanced || (!isEqualChanced && totalChance == 100.0f))
         SetRepeatId(source, textGroup, iter->id);
 
+    source->SetTextRepeatId(textGroup, iter->id);
     return iter->duration;
 }
 

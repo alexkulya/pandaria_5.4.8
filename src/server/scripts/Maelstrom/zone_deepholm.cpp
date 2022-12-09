@@ -72,16 +72,16 @@ enum realmOfEarthTypes
     QUEST_DEEPHOLM_REALM_OF_EARTH = 27123,
 
     TALK_INTRO = 0,
-    TALK_SPECIAL_1,
-    TALK_SPECIAL_2,
-    TALK_SPECIAL_3,
-    TALK_SPECIAL_4,
-    TALK_SPECIAL_5,
-    TALK_SPECIAL_6,
-    TALK_SPECIAL_7,
-    TALK_SPECIAL_8,
-    TALK_SPECIAL_9,
-    TALK_SPECIAL_10,
+    TALK_SPECIAL_1 = 1,
+    TALK_SPECIAL_2 = 2,
+    TALK_SPECIAL_3 = 3,
+    TALK_SPECIAL_4 = 4,
+    TALK_SPECIAL_5 = 5,
+    TALK_SPECIAL_6 = 6,
+    TALK_SPECIAL_7 = 7,
+    TALK_SPECIAL_8 = 8,
+    TALK_SPECIAL_9 = 9,
+    TALK_SPECIAL_10 = 10,
 };
 
 const Position wyvernMaelstormPath[10] =
