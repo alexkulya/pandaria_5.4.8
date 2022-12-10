@@ -133,6 +133,16 @@ class CreatureTextLocalizer
             _packetCache.resize(TOTAL_LOCALES);
         }
 
+        ~CreatureTextLocalizer()
+        {
+            for (size_t i = 0; i < _packetCache.size(); ++i)
+            {
+                if (_packetCache[i])
+                    delete _packetCache[i]->first;
+                delete _packetCache[i];
+            }
+        }
+
         void operator()(Player* player)
         {
             LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
