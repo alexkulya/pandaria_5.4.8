@@ -18,6 +18,13 @@
 #ifndef SF_LANGUAGE_H
 #define SF_LANGUAGE_H
 
+enum BroadcastTextIds
+{
+    BROADCAST_TEXT_ACHIEVEMENT_EARNED     = 29245,
+    BROADCAST_TEXT_CALL_FOR_HELP          = 2541,
+    BROADCAST_TEXT_FLEE_FOR_ASSIST        = 1150
+};
+
 enum TrinityStrings
 {
     // for chat commands

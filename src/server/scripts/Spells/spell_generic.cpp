@@ -3932,10 +3932,10 @@ class spell_gen_noodle_cart_wave : public SpellScript
     {
         TextBuilder(Player* source, int32 id, WorldObject* target) : m_source(source), m_textId(id), m_target(target) { }
 
-        void operator()(WorldPacket* data, LocaleConstant locale, uint64 guid) const
+        size_t operator()(WorldPacket* data, LocaleConstant locale) const
         {
             std::string text = sObjectMgr->GetTrinityString(m_textId, locale);
-            ChatHandler::BuildChatPacket(*data, CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, m_source->GetGUID(), m_target ? m_target->GetGUID() : 0, text, 0,
+            return ChatHandler::BuildChatPacket(*data, CHAT_MSG_MONSTER_SAY, LANG_UNIVERSAL, m_source->GetGUID(), m_target ? m_target->GetGUID() : 0, text, 0,
                 m_source->GetNameForLocaleIdx(locale), m_target ? m_target->GetNameForLocaleIdx(locale) : "");
         }
 
