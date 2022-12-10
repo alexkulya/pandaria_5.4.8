@@ -2821,10 +2821,10 @@ class spell_item_taunt_flag_targeting : public SpellScript
     {
         TextBuilder(Player* source, int32 id, WorldObject* target) : _source(source), _textId(id), _target(target) { }
 
-        void operator()(WorldPacket* data, LocaleConstant locale, uint64 guid) const
+        size_t operator()(WorldPacket* data, LocaleConstant locale) const
         {
             std::string text = sObjectMgr->GetTrinityString(_textId, locale);
-            ChatHandler::BuildChatPacket(*data, CHAT_MSG_MONSTER_EMOTE, LANG_UNIVERSAL, _source->GetGUID(), _target->GetGUID(), text, 0,
+            return ChatHandler::BuildChatPacket(*data, CHAT_MSG_MONSTER_EMOTE, LANG_UNIVERSAL, _source->GetGUID(), _target->GetGUID(), text, 0,
                 _source->GetNameForLocaleIdx(locale), _target->GetNameForLocaleIdx(locale));
         }
 

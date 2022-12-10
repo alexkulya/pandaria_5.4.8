@@ -112,7 +112,6 @@ class CreatureTextMgr
         void SendChatPacket(WorldObject* source, Builder const& builder, ChatMsg msgType, WorldObject const* whisperTarget = nullptr, CreatureTextRange range = TEXT_RANGE_NORMAL, Team team = TEAM_OTHER, bool gmOnly = false) const;
     private:
         CreatureTextRepeatIds GetRepeatGroup(Creature* source, uint8 textGroup);
-        void SetRepeatId(Creature* source, uint8 textGroup, uint8 id);
 
         void SendNonChatPacket(WorldObject* source, WorldPacket* data, ChatMsg msgType, WorldObject const* whisperTarget, CreatureTextRange range, Team team, bool gmOnly) const;
         float GetRangeForChatType(ChatMsg msgType) const;
@@ -145,37 +144,69 @@ class CreatureTextLocalizer
 
         void operator()(Player* player)
         {
+            // LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
+            // WorldPacket* messageTemplate;
+
+            // uint64 guid = 0LL;
+            // switch (_msgType)
+            // {
+            //     case CHAT_MSG_MONSTER_WHISPER:
+            //     case CHAT_MSG_RAID_BOSS_WHISPER:
+            //         guid = player->GetGUID();
+            //         break;
+            //     default:
+            //         break;
+            // }
+
+            // // create if not cached yet
+            // if (!_packetCache[loc_idx])
+            // {
+            //     messageTemplate = new WorldPacket();
+            //     _builder(messageTemplate, loc_idx, guid);
+            //      ASSERT(messageTemplate->GetOpcode() != MSG_NULL_ACTION);
+            //     _packetCache[loc_idx].reset(messageTemplate);
+            // }
+            // else
+            //     messageTemplate = _packetCache[loc_idx].get();
+
+            // WorldPacket data(*messageTemplate);
+
+
+
             LocaleConstant loc_idx = player->GetSession()->GetSessionDbLocaleIndex();
             WorldPacket* messageTemplate;
-
-            uint64 guid = 0LL;
-            switch (_msgType)
-            {
-                case CHAT_MSG_MONSTER_WHISPER:
-                case CHAT_MSG_RAID_BOSS_WHISPER:
-                    guid = player->GetGUID();
-                    break;
-                default:
-                    break;
-            }
+            size_t whisperGUIDpos;
 
             // create if not cached yet
             if (!_packetCache[loc_idx])
             {
                 messageTemplate = new WorldPacket();
-                _builder(messageTemplate, loc_idx, guid);
-                 ASSERT(messageTemplate->GetOpcode() != MSG_NULL_ACTION);
-                _packetCache[loc_idx].reset(messageTemplate);
+                whisperGUIDpos = _builder(messageTemplate, loc_idx);
+                _packetCache[loc_idx] = new std::pair<WorldPacket*, size_t>(messageTemplate, whisperGUIDpos);
             }
             else
-                messageTemplate = _packetCache[loc_idx].get();
+            {
+                messageTemplate = _packetCache[loc_idx]->first;
+                whisperGUIDpos = _packetCache[loc_idx]->second;
+            }
 
             WorldPacket data(*messageTemplate);
+            switch (_msgType)
+            {
+                case CHAT_MSG_MONSTER_WHISPER:
+                case CHAT_MSG_RAID_BOSS_WHISPER:
+                    data.put<uint64>(whisperGUIDpos, player->GetGUID()); //.GetRawValue()
+                    break;
+                default:
+                    break;
+            }
+
             player->SendDirectMessage(&data);
         }
 
     private:
-        std::vector<std::unique_ptr<WorldPacket>> _packetCache;
+        //std::vector<std::unique_ptr<WorldPacket>> _packetCache;
+        mutable std::vector<std::pair<WorldPacket*, size_t>*> _packetCache;
         Builder const& _builder;
         ChatMsg _msgType;
 };

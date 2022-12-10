@@ -17,6 +17,7 @@
 
 #include "Cell.h"
 #include "CellImpl.h"
+#include "ChatTextBuilder.h"
 #include "CreatureTextMgr.h"
 #include "DatabaseEnv.h"
 #include "GossipDef.h"
@@ -38,30 +39,31 @@
 #include "GameEventMgr.h"
 #include "Chat.h"
 
-class TrinityStringTextBuilder
-{
-    public:
-        TrinityStringTextBuilder(WorldObject* obj, ChatMsg msgtype, int32 id, uint32 language, uint64 targetGUID)
-            : _source(obj), _msgType(msgtype), _textId(id), _language(language), _targetGUID(targetGUID)
-        {
-        }
+// class TrinityStringTextBuilder
+// {
+//     public:
+//         TrinityStringTextBuilder(WorldObject* obj, ChatMsg msgtype, int32 id, uint32 language, uint64 targetGUID)
+//             : _source(obj), _msgType(msgtype), _textId(id), _language(language), _targetGUID(targetGUID)
+//         {
+//         }
 
-        void operator()(WorldPacket* data, LocaleConstant locale, uint64 guid) const
-        {
-            std::string text = sObjectMgr->GetTrinityString(_textId, locale);
-            std::string localizedName = _source->GetNameForLocaleIdx(locale);
-            ObjectGuid receiverGuid = guid ? guid : _targetGUID;
+//         size_t operator()(WorldPacket* data, LocaleConstant locale, uint64 guid) const
+//         {
+//             std::string text = sObjectMgr->GetTrinityString(_textId, locale);
+//             std::string localizedName = _source->GetNameForLocaleIdx(locale);
+//             ObjectGuid receiverGuid = guid ? guid : _targetGUID;
 
-            ChatHandler::BuildChatPacket(*data, _msgType, Language(_language), _source->GetGUID(), _targetGUID, text, 0,
-                _source->GetNameForLocaleIdx(locale));
-        }
+//             ChatHandler::BuildChatPacket(*data, _msgType, Language(_language), _source->GetGUID(), _targetGUID, text, 0,
+//                 _source->GetNameForLocaleIdx(locale));
+//             return ChatHandler::BuildChatPacket(*data, _msgType, Language(_language), _talker, _target, text, 0, "", locale);
+//         }
 
-        WorldObject* _source;
-        ChatMsg _msgType;
-        int32 _textId;
-        uint32 _language;
-        uint64 _targetGUID;
-};
+//         WorldObject* _source;
+//         ChatMsg _msgType;
+//         int32 _textId;
+//         uint32 _language;
+//         uint64 _targetGUID;
+// };
 
 SmartScript::SmartScript()
 {
@@ -760,7 +762,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             me->DoFleeToGetAssistance();
             if (e.action.flee.withEmote)
             {
-                TrinityStringTextBuilder builder(me, CHAT_MSG_MONSTER_EMOTE, LANG_FLEE, LANG_UNIVERSAL, 0);
+                Trinity::BroadcastTextBuilder builder(me, CHAT_MSG_MONSTER_EMOTE, BROADCAST_TEXT_FLEE_FOR_ASSIST, me->getGender());
                 sCreatureTextMgr->SendChatPacket(me, builder, CHAT_MSG_MONSTER_EMOTE);
             }
             TC_LOG_DEBUG("scripts.ai", "SmartScript::ProcessAction:: SMART_ACTION_FLEE_FOR_ASSIST: Creature %u DoFleeToGetAssistance", me->GetGUIDLow());
@@ -998,7 +1000,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                 me->CallForHelp((float)e.action.callHelp.range);
                 if (e.action.callHelp.withEmote)
                 {
-                    TrinityStringTextBuilder builder(me, CHAT_MSG_MONSTER_EMOTE, LANG_CALL_FOR_HELP, LANG_UNIVERSAL, 0);
+                    Trinity::BroadcastTextBuilder builder(me, CHAT_MSG_MONSTER_EMOTE, BROADCAST_TEXT_CALL_FOR_HELP, me->getGender());
                     sCreatureTextMgr->SendChatPacket(me, builder, CHAT_MSG_MONSTER_EMOTE);
                 }
                 TC_LOG_DEBUG("scripts.ai", "SmartScript::ProcessAction: SMART_ACTION_CALL_FOR_HELP: Creature %u", me->GetGUIDLow());
