@@ -74,8 +74,20 @@ if( UNIX )
   find_package(BZip2)
 endif()
 
-set(Boost_USE_STATIC_LIBS ON)
-find_package(Boost COMPONENTS system locale filesystem thread regex serialization
+if(WIN32)
+  set(BOOST_DEBUG OFF)
+  if(DEFINED ENV{BOOST_ROOT})
+    set(BOOST_ROOT $ENV{BOOST_ROOT})
+  endif()
+
+  set(Boost_USE_STATIC_LIBS        ON)
+  set(Boost_USE_MULTITHREADED      ON)
+  set(Boost_USE_STATIC_RUNTIME     OFF)
+else()
+  set(Boost_USE_STATIC_LIBS ON)
+endif()
+
+find_package(Boost COMPONENTS system locale thread regex serialization
     REQUIRED
 )
 
