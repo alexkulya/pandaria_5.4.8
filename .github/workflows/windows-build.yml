@@ -32,7 +32,6 @@ jobs:
     - name: Create Build Environment
       run: |
         echo "BOOST_ROOT_1_72_0=${{env.BOOST_INSTALL_DIR}}/boost/boost-${{env.BOOST_VERSION}}-win32-${{env.BOOST_TOOLSET}}-x86_64" >> $env:GITHUB_ENV
-        echo "::set-env name=BOOST_ROOT_LATEST::$env:BOOST_ROOT_1_72_0"
         echo "ARCHIVE_FILENAME=$env:CI_REPOSITORY_NAME-${{matrix.TYPE}}-$env:CI_SHA_SHORT.zip" >> $env:GITHUB_ENV
         cmake -E make_directory ${{ env.BUILD_DIR }}
     # install dependencies
