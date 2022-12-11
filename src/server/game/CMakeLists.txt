@@ -287,36 +287,35 @@ if (Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIRS})
 endif()
 
-if ( ELUNA )
+if (ELUNA)
+  include_directories(
+    ${CMAKE_SOURCE_DIR}/dep/lualib
+    ${CMAKE_SOURCE_DIR}/src/LuaEngine 
+  )
 
-include_directories(
-  ${CMAKE_SOURCE_DIR}/dep/lualib
-  ${CMAKE_SOURCE_DIR}/src/LuaEngine 
-)
+  add_library(game STATIC
+    ${game_STAT_SRCS}
+    ${game_STAT_PCH_SRC}
+    ${lua_STAT_SRCS}
+    ${LuaEngine_STAT_SRCS}
+  )
 
-add_library(game STATIC
-  ${game_STAT_SRCS}
-  ${game_STAT_PCH_SRC}
-  ${lua_STAT_SRCS}
-  ${LuaEngine_STAT_SRCS}
-)
-
-add_dependencies(game lua)
-target_link_libraries(game
- lua
- LuaEngine
-)
-
+  add_dependencies(game lua)
+  target_link_libraries(game
+   lua
+   LuaEngine
+  )
 else()
-add_library(game STATIC
-  ${game_STAT_SRCS}
-  ${game_STAT_PCH_SRC}
-)
+  add_library(game STATIC
+    ${game_STAT_SRCS}
+    ${game_STAT_PCH_SRC}
+  )
 endif()
 
 add_dependencies(game revision.h)
 
 # Generate precompiled header
 if (USE_COREPCH)
-  add_cxx_pch(game ${game_STAT_PCH_HDR} ${game_STAT_PCH_SRC})
+  target_precompile_headers(game PUBLIC ${game_STAT_PCH_HDR}) 
+  target_precompile_headers(game REUSE_FROM shared worldserver)
 endif ()

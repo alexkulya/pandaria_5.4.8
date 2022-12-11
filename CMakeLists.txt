@@ -15,13 +15,14 @@
 project(Pandaria_5.4.8)
 
 # CMake policies (can not be handled elsewhere)
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.16)
 cmake_policy(SET CMP0005 OLD)
 if(POLICY CMP0043)
   cmake_policy(SET CMP0043 OLD) # Disable 'Ignore COMPILE_DEFINITIONS_<Config> properties'
 endif(POLICY CMP0043)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_EXE_LINKER_FLAGS "-Wl,--gc-sections -s -w")
 # add this options before PROJECT keyword
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)

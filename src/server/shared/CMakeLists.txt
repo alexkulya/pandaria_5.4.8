@@ -107,5 +107,5 @@ target_link_libraries(shared
 
 # Generate precompiled header
 if (USE_COREPCH)
-  add_cxx_pch(shared ${shared_STAT_PCH_HDR} ${shared_STAT_PCH_SRC})
+  target_precompile_headers(shared PRIVATE ${shared_STAT_PCH_HDR}) 
 endif ()

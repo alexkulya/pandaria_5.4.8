@@ -94,5 +94,5 @@ target_link_libraries(collision
 
 # Generate precompiled header
 if (USE_COREPCH)
-  add_cxx_pch(collision ${collision_STAT_PCH_HDR} ${collision_STAT_PCH_SRC})
+  target_precompile_headers(collision PRIVATE ${collision_STAT_PCH_HDR}) 
 endif ()

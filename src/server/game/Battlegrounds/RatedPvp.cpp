@@ -24,7 +24,7 @@
 #include "Config.h"
 #include "AchievementMgr.h"
 #include "Language.h"
-#include <boost/filesystem.hpp>
+#include <filesystem>
 #include <fstream>
 
 void RatedPvpMgr::LoadFromDB()
@@ -883,9 +883,9 @@ void RatedPvpMgr::RewardSeason()
     GetSeasonPrizewinners(teams2v2, teams3v3, teams5v5);
 
     std::string dir = sConfigMgr->GetStringDefault("LogsDir", ".") + "/arena";
-    boost::filesystem::path path{ dir };
-    boost::system::error_code c;
-    if (!boost::filesystem::create_directories(path, c) && c.value() != 0)
+    std::filesystem::path path{ dir };
+    std::error_code c;
+    if (!std::filesystem::create_directories(path, c) && c.value() != 0)
     {
         TC_LOG_ERROR("server", "RatedPvpMgr::CheckSeasonEnd Couldn't create directory %s, errno %u", dir.c_str(), c.value());
         return;
@@ -893,7 +893,7 @@ void RatedPvpMgr::RewardSeason()
 
     std::string p = dir + "/rewarding_season_" + std::to_string(oldseason) + ".log";
 
-    path = boost::filesystem::path{ p };
+    path = std::filesystem::path{ p };
     std::fstream out(path.c_str(), std::ios::out | std::ios::trunc);
     if (!out)
     {
@@ -902,7 +902,7 @@ void RatedPvpMgr::RewardSeason()
     }
 
     p = dir + "/rewarding_season_" + std::to_string(oldseason) + "_misc.log";
-    path = boost::filesystem::path{ p };
+    path = std::filesystem::path{ p };
     std::ofstream misclog{ path.c_str() };
     if (!misclog.is_open())
     {

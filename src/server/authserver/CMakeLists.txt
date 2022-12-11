@@ -119,5 +119,5 @@ endif()
 
 # Generate precompiled header
 if (USE_COREPCH)
-  add_cxx_pch(authserver ${authserver_PCH_HDR} ${authserver_PCH_SRC})
+  target_precompile_headers(authserver PRIVATE ${authserver_PCH_HDR}) 
 endif()
