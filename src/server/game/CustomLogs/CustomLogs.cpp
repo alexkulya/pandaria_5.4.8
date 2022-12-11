@@ -19,7 +19,7 @@
 #include "Player.h"
 #include "World.h"
 #include "Config.h"
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 void LogFile::Write(char const* str, ...)
 {
@@ -28,7 +28,7 @@ void LogFile::Write(char const* str, ...)
 
     va_list ap;
     va_start(ap, str);
-    fprintf(_file, TimeStr(time(NULL), "%Y-%m-%d %H:%M:%S ").c_str());
+    fprintf(_file, "%s", TimeStr(time(NULL), "%Y-%m-%d %H:%M:%S ").c_str());
     vfprintf(_file, str, ap);
     fprintf(_file, "\n");
     fflush(_file);
@@ -86,9 +86,9 @@ namespace logs
             sAccountMgr->GetName(player->GetSession()->GetAccountId(), accName);
             std::string p = sConfigMgr->GetStringDefault("LogsDir", "") + "/items/" + accName;
 
-            boost::filesystem::path path{ p };
-            boost::system::error_code c;
-            if (!boost::filesystem::create_directories(path, c) && c.value() != 0)
+            std::filesystem::path path{ p };
+            std::error_code c;
+            if (!std::filesystem::create_directories(path, c) && c.value() != 0)
             {
                 TC_LOG_ERROR("server", "logs::ItemLog - Couldn't create directory %s, errno %u", p.c_str(), c.value());
                 return;

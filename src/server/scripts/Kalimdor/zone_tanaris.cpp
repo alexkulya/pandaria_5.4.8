@@ -663,7 +663,7 @@ public:
             {
                 case ACTION_START_WP:
                 {
-                    Start(false, true, NULL, NULL, false, true, true);
+                    Start(false, true, 0, NULL, false, true, true);
                     SetDespawnAtEnd(false);
                     break;
                 }

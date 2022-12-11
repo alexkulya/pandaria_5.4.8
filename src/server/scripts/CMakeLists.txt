@@ -225,5 +225,5 @@ add_dependencies(scripts revision.h)
 
 # Generate precompiled header
 if (USE_SCRIPTPCH)
-  add_cxx_pch(scripts ${scripts_STAT_PCH_HDR} ${scripts_STAT_PCH_SRC})
+  target_precompile_headers(scripts PRIVATE ${scripts_STAT_PCH_HDR}) 
 endif()

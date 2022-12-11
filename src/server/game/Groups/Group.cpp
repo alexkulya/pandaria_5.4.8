@@ -38,7 +38,7 @@
 #include "AchievementMgr.h"
 #include "SocialMgr.h"
 #include "Config.h"
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 Roll::Roll(ObjectGuid lootGuid, LootItem const& li) : lootGUID(lootGuid), itemid(li.itemid),
 itemRandomPropId(li.randomPropertyId), itemRandomSuffix(li.randomSuffix), itemCount(li.count),
@@ -3681,9 +3681,9 @@ bool Group::StartLog()
     dir << sConfigMgr->GetStringDefault("LogsDir", "") << "/groups/" << timestampDate;
     path << sConfigMgr->GetStringDefault("LogsDir", "") << "/groups/" << timestampDate << "/" << timestamp << " - " << GetLeaderName() << " - " << GetDbStoreId() << ".log";
 
-    boost::filesystem::path p{ dir.str() };
-    boost::system::error_code c;
-    if (!boost::filesystem::create_directories(p, c) && c.value() != 0)
+    std::filesystem::path p{ dir.str() };
+    std::error_code c;
+    if (!std::filesystem::create_directories(p, c) && c.value() != 0)
     {
         TC_LOG_ERROR("server", "Group::StartLog - Couldn't create directory %s, errno %u", p.c_str(), c.value());
         return false;
