@@ -16,8 +16,8 @@ env:
   BUILD_TYPE: Release
   REPO_DIR : ${{github.workspace}}
   BUILD_DIR: ${{github.workspace}}/bin/builddir
-  BOOST_TOOLSET: "msvc14.1"
-  BOOST_VERSION: "1.74.0"
+  BOOST_TOOLSET: "msvc14.2"
+  BOOST_VERSION: "1.72.0"
   BOOST_INSTALL_DIR: "${{github.workspace}}/bin"
   
 jobs:
