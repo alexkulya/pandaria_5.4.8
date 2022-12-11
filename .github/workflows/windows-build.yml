@@ -33,7 +33,7 @@ jobs:
       run: |
         echo "BOOST_ROOT_1_72_0=${{env.BOOST_INSTALL_DIR}}/boost/boost-${{env.BOOST_VERSION}}-win32-${{env.BOOST_TOOLSET}}-x86_64" >> $env:GITHUB_ENV
         echo "ARCHIVE_FILENAME=$env:CI_REPOSITORY_NAME-${{matrix.TYPE}}-$env:CI_SHA_SHORT.zip" >> $env:GITHUB_ENV
-        cmake -E make_directory ${{ env.BUILD_DIR }}
+        cmake -E make_directory ${{ env.BUILD_DIR }} -DBOOST_ROOT=${{env.BOOST_INSTALL_DIR}}/boost/boost-${{env.BOOST_VERSION}}-win32-${{env.BOOST_TOOLSET}}-x86_64 -DBOOST_INCLUDEDIR=${{env.BOOST_INSTALL_DIR}}/boost/boost-${{env.BOOST_VERSION}}-win32-${{env.BOOST_TOOLSET}}-x86_64/boost/include -DBOOST_LIBRARYDIR=${{env.BOOST_INSTALL_DIR}}/boost/boost-${{env.BOOST_VERSION}}-win32-${{env.BOOST_TOOLSET}}-x86_64/lib
     # install dependencies
     - name: Cache Windows boost
       uses: actions/cache@v2
