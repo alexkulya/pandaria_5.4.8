@@ -317,5 +317,4 @@ add_dependencies(game revision.h)
 # Generate precompiled header
 if (USE_COREPCH)
   target_precompile_headers(game PUBLIC ${game_STAT_PCH_HDR}) 
-  target_precompile_headers(game REUSE_FROM shared worldserver)
 endif ()
