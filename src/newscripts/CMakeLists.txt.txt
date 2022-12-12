@@ -1,0 +1,153 @@
+# Copyright (C) 2008-2012 TrinityCore httpwww.trinitycore.org
+#
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy andor distribute it, with or without
+# modifications, as long as this notice is preserved.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+# Enable precompiled headers when using the GCC compiler.
+
+if (USE_SCRIPTPCH)
+  set(scripts_STAT_PCH_HDR PrecompiledHeadersNewScriptPCH.h)
+  set(scripts_STAT_PCH_SRC PrecompiledHeadersNewScriptPCH.cpp)
+endif ()
+
+message(STATUS SCRIPT PREPARATIONS)
+
+set(scripts_STAT_SRCS
+  ${scripts_STAT_SRCS}
+  ..gameAIScriptedAIScriptedEscortAI.cpp
+  ..gameAIScriptedAIScriptedCreature.cpp
+  ..gameAIScriptedAIScriptedFollowerAI.cpp
+)
+
+if(SCRIPTS)
+  include(PandariaCMakeLists.txt)
+  include(EasternKingdomsCMakeLists.txt)
+  include(ScenarioCMakeLists.txt)
+endif()
+
+message(STATUS SCRIPT PREPARATION COMPLETE)
+message()
+
+include_directories(
+  ${CMAKE_BINARY_DIR}
+  ${CMAKE_SOURCE_DIR}dep
+  ${CMAKE_SOURCE_DIR}deprecastnavigationDetour
+  ${CMAKE_SOURCE_DIR}deprecastnavigationRecast
+  ${CMAKE_SOURCE_DIR}deprecastnavigationDetourInclude
+  ${CMAKE_SOURCE_DIR}depg3dliteinclude
+  ${CMAKE_SOURCE_DIR}depSFMT
+  ${CMAKE_SOURCE_DIR}depzlib
+  ${CMAKE_SOURCE_DIR}depfmt
+  ${CMAKE_SOURCE_DIR}srcservershared
+  ${CMAKE_SOURCE_DIR}srcserversharedConfiguration
+  ${CMAKE_SOURCE_DIR}srcserversharedCryptography
+  ${CMAKE_SOURCE_DIR}srcserversharedDatabase
+  ${CMAKE_SOURCE_DIR}srcserversharedDataStores
+  ${CMAKE_SOURCE_DIR}srcserversharedDebugging
+  ${CMAKE_SOURCE_DIR}srcserversharedDynamicLinkedReference
+  ${CMAKE_SOURCE_DIR}srcserversharedDynamic
+  ${CMAKE_SOURCE_DIR}srcserversharedLogging
+  ${CMAKE_SOURCE_DIR}srcserversharedPackets
+  ${CMAKE_SOURCE_DIR}srcserversharedThreading
+  ${CMAKE_SOURCE_DIR}srcserversharedUtilities
+  ${CMAKE_SOURCE_DIR}srcservercollision
+  ${CMAKE_SOURCE_DIR}srcservercollisionManagement
+  ${CMAKE_SOURCE_DIR}srcservercollisionModels
+  ${CMAKE_SOURCE_DIR}srcservercollisionMaps
+  ${CMAKE_SOURCE_DIR}srcservershared
+  ${CMAKE_SOURCE_DIR}srcserversharedDatabase
+  ${CMAKE_SOURCE_DIR}srcservergameAccounts
+  ${CMAKE_SOURCE_DIR}srcservergameAnticheat
+  ${CMAKE_SOURCE_DIR}srcservergameAchievements
+  ${CMAKE_SOURCE_DIR}srcservergameAddons
+  ${CMAKE_SOURCE_DIR}srcservergameAI
+  ${CMAKE_SOURCE_DIR}srcservergameAICoreAI
+  ${CMAKE_SOURCE_DIR}srcservergameAIScriptedAI
+  ${CMAKE_SOURCE_DIR}srcservergameAISmartScripts
+  ${CMAKE_SOURCE_DIR}srcservergameAuctionHouse
+  ${CMAKE_SOURCE_DIR}srcservergameBattlefield
+  ${CMAKE_SOURCE_DIR}srcservergameBattlefieldZones
+  ${CMAKE_SOURCE_DIR}srcservergameBattlegrounds
+  ${CMAKE_SOURCE_DIR}srcservergameBattlegroundsZones
+  ${CMAKE_SOURCE_DIR}srcservergameBattlePet
+  ${CMAKE_SOURCE_DIR}srcservergameCalendar
+  ${CMAKE_SOURCE_DIR}srcservergameChat
+  ${CMAKE_SOURCE_DIR}srcservergameChatChannels
+  ${CMAKE_SOURCE_DIR}srcservergameConditions
+  ${CMAKE_SOURCE_DIR}srcserversharedConfiguration
+  ${CMAKE_SOURCE_DIR}srcservergameCombat
+  ${CMAKE_SOURCE_DIR}srcservergameDataStores
+  ${CMAKE_SOURCE_DIR}srcservergameDungeonFinding
+  ${CMAKE_SOURCE_DIR}srcservergameEntitiesAreaTrigger
+  ${CMAKE_SOURCE_DIR}srcservergameEntitiesCorpse
+  ${CMAKE_SOURCE_DIR}srcservergameEntitiesCreature
+  ${CMAKE_SOURCE_DIR}srcservergameEntitiesDynamicObject
+  ${CMAKE_SOURCE_DIR}srcservergameEntitiesItem
+  ${CMAKE_SOURCE_DIR}srcservergameEntitiesItemContainer
+  ${CMAKE_SOURCE_DIR}srcservergameEntitiesGameObject
+  ${CMAKE_SOURCE_DIR}srcservergameEntitiesObject
+  ${CMAKE_SOURCE_DIR}srcservergameEntitiesObjectUpdates
+  ${CMAKE_SOURCE_DIR}srcservergameEntitiesPet
+  ${CMAKE_SOURCE_DIR}srcservergameEntitiesPlayer
+  ${CMAKE_SOURCE_DIR}srcservergameEntitiesTransport
+  ${CMAKE_SOURCE_DIR}srcservergameEntitiesUnit
+  ${CMAKE_SOURCE_DIR}srcservergameEntitiesVehicle
+  ${CMAKE_SOURCE_DIR}srcservergameEvents
+  ${CMAKE_SOURCE_DIR}srcservergameGlobals
+  ${CMAKE_SOURCE_DIR}srcservergameGrids
+  ${CMAKE_SOURCE_DIR}srcservergameGridsCells
+  ${CMAKE_SOURCE_DIR}srcservergameGridsNotifiers
+  ${CMAKE_SOURCE_DIR}srcservergameGroups
+  ${CMAKE_SOURCE_DIR}srcservergameGuilds
+  ${CMAKE_SOURCE_DIR}srcservergameHandlers
+  ${CMAKE_SOURCE_DIR}srcservergameInstances
+  ${CMAKE_SOURCE_DIR}srcservergameLookingForGroup
+  ${CMAKE_SOURCE_DIR}srcservergameLoot
+  ${CMAKE_SOURCE_DIR}srcservergameMails
+  ${CMAKE_SOURCE_DIR}srcservergameMiscellaneous
+  ${CMAKE_SOURCE_DIR}srcservergameMaps
+  ${CMAKE_SOURCE_DIR}srcservergameMovement
+  ${CMAKE_SOURCE_DIR}srcservergameMovementMovementGenerators
+  ${CMAKE_SOURCE_DIR}srcservergameMovementSpline
+  ${CMAKE_SOURCE_DIR}srcservergameMovementWaypoints
+  ${CMAKE_SOURCE_DIR}srcservergameOpcodes
+  ${CMAKE_SOURCE_DIR}srcservergameOutdoorPvP
+  ${CMAKE_SOURCE_DIR}srcservergamePools
+  ${CMAKE_SOURCE_DIR}srcservergamePrecompiledHeaders
+  ${CMAKE_SOURCE_DIR}srcservergameQuests
+  ${CMAKE_SOURCE_DIR}srcservergameReputation
+  ${CMAKE_SOURCE_DIR}srcservergameScripting
+  ${CMAKE_SOURCE_DIR}srcservergameServer
+  ${CMAKE_SOURCE_DIR}srcservergameServerProtocol
+  ${CMAKE_SOURCE_DIR}srcservergameSkills
+  ${CMAKE_SOURCE_DIR}srcservergameSpells
+  ${CMAKE_SOURCE_DIR}srcservergameSpellsAuras
+  ${CMAKE_SOURCE_DIR}srcservergameTexts
+  ${CMAKE_SOURCE_DIR}srcservergameTickets
+  ${CMAKE_SOURCE_DIR}srcservergameTools
+  ${CMAKE_SOURCE_DIR}srcservergameWarden
+  ${CMAKE_SOURCE_DIR}srcservergameWeather
+  ${CMAKE_SOURCE_DIR}srcservergameWorld
+  ${CMAKE_CURRENT_SOURCE_DIR}PrecompiledHeaders
+  ${ACE_INCLUDE_DIR}
+  ${MYSQL_INCLUDE_DIR}
+)
+
+GroupSources(${CMAKE_CURRENT_SOURCE_DIR})
+
+add_library(newscripts STATIC
+  ${scripts_STAT_SRCS}
+  ${scripts_STAT_PCH_SRC}
+)
+
+add_dependencies(newscripts revision.h)
+
+# Generate precompiled header
+if (USE_SCRIPTPCH)
+  add_cxx_pch(newscripts ${scripts_STAT_PCH_HDR} ${scripts_STAT_PCH_SRC})
+endif()
