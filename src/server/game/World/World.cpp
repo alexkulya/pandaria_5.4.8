@@ -4759,7 +4759,9 @@ bool projectMemberInfo::Notify(Player* player, Notification notification, ...)
 bool projectMemberInfo::Notify(Player* player, std::initializer_list<Notification> notifications)
 {
     std::vector<Notification> random { notifications };
-    std::random_shuffle(random.begin(), random.end());
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::shuffle(random.begin(), random.end(), g);
     for (auto&& notification : random)
         if (Notify(player, notification))
             return true;

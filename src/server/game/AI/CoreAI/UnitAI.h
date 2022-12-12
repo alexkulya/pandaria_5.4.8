@@ -39,7 +39,7 @@ enum SelectAggroTarget
 };
 
 // default predicate function to select target based on distance, player and/or aura criteria
-struct DefaultTargetSelector : public std::unary_function<Unit*, bool>
+struct DefaultTargetSelector
 {
     const Unit* me;
     float m_dist;
@@ -89,7 +89,7 @@ struct DefaultTargetSelector : public std::unary_function<Unit*, bool>
 
 // Target selector for spell casts checking range, auras and attributes
 /// @todo Add more checks from Spell::CheckCast
-struct SpellTargetSelector : public std::unary_function<Unit*, bool>
+struct SpellTargetSelector
 {
     public:
         SpellTargetSelector(Unit* caster, uint32 spellId);
@@ -103,7 +103,7 @@ struct SpellTargetSelector : public std::unary_function<Unit*, bool>
 // Very simple target selector, will just skip main target
 // NOTE: When passing to UnitAI::SelectTarget remember to use 0 as position for random selection
 //       because tank will not be in the temporary list
-struct NonTankTargetSelector : public std::unary_function<Unit*, bool>
+struct NonTankTargetSelector
 {
     public:
         NonTankTargetSelector(Creature* source, bool playerOnly = true) : _source(source), _playerOnly(playerOnly) { }
@@ -114,7 +114,7 @@ struct NonTankTargetSelector : public std::unary_function<Unit*, bool>
         bool _playerOnly;
 };
 
-struct CasterSpecTargetSelector :public std::unary_function<uint32, bool>
+struct CasterSpecTargetSelector
 {
     public:
         CasterSpecTargetSelector(uint32 spellId = 0 ) : _spellId(spellId) { }
@@ -125,7 +125,7 @@ struct CasterSpecTargetSelector :public std::unary_function<uint32, bool>
         uint32 _spellId;
 };
 
-struct MeeleSpecTargetSelector :public std::unary_function<uint32, bool>
+struct MeeleSpecTargetSelector
 {
     public:
         MeeleSpecTargetSelector(uint32 spellId = 0) : _spellId(spellId) { }
@@ -136,7 +136,7 @@ struct MeeleSpecTargetSelector :public std::unary_function<uint32, bool>
         uint32 _spellId;
 };
 
-struct DpsSpecTargetSelector :public std::unary_function<uint32, bool>
+struct DpsSpecTargetSelector
 {
     public:
         DpsSpecTargetSelector(uint32 spellId = 0) : _spellId(spellId) { }
@@ -147,7 +147,7 @@ struct DpsSpecTargetSelector :public std::unary_function<uint32, bool>
         uint32 _spellId;
 };
 
-struct TankSpecTargetSelector :public std::unary_function<uint32, bool>
+struct TankSpecTargetSelector
 {
     public:
         TankSpecTargetSelector(uint32 spellId = 0) : _spellId(spellId) { }
@@ -158,7 +158,7 @@ struct TankSpecTargetSelector :public std::unary_function<uint32, bool>
         uint32 _spellId;
 };
 
-struct HealerSpecTargetSelector :public std::unary_function<uint32, bool>
+struct HealerSpecTargetSelector
 {
     public:
         HealerSpecTargetSelector(uint32 spellId = 0) : _spellId(spellId) { }
@@ -169,7 +169,7 @@ struct HealerSpecTargetSelector :public std::unary_function<uint32, bool>
         uint32 _spellId;
 };
 
-struct NonTankSpecTargetSelector :public std::unary_function<uint32, bool>
+struct NonTankSpecTargetSelector
 {
     public:
         NonTankSpecTargetSelector(uint32 spellId = 0) : _spellId(spellId) { }
@@ -196,7 +196,10 @@ class UnitAI
 
         virtual void Reset() { };
 
-        // Called when unit is charmed
+        // Called when unit's charm state changes with isNew = false
+        // Implementation should call me->ScheduleAIChange() if AI replacement is desired
+        // If this call is made, AI will be replaced on the next tick
+        // When replacement is made, OnCharmed is called with isNew = true
         virtual void OnCharmed(bool apply) = 0;
 
         // Pass parameters between AI
@@ -284,6 +287,16 @@ class UnitAI
                 targetList.resize(maxTargets);
         }
 
+        // Called when the unit enters combat
+        // (NOTE: Creature engage logic should NOT be here, but in JustEngagedWith, which happens once threat is established!)
+        virtual void JustEnteredCombat(Unit* /*who*/) { }
+
+        // Called when the unit leaves combat
+        virtual void JustExitedCombat() { }
+
+        // Called when the unit is about to be removed from the world (despawn, grid unload, corpse disappearing, player logging out etc.)
+        virtual void OnDespawn() { }
+
         // Called at any Damage to any victim (before damage apply)
         virtual void DamageDealt(Unit* /*victim*/, uint32& /*damage*/, DamageEffectType /*damageType*/) { }
 
@@ -321,6 +334,7 @@ class UnitAI
         static AISpellInfoType* AISpellInfo;
         static void FillAISpellInfo();
 
+        // skyfire function start
         virtual void sGossipHello(Player* /*player*/) { }
         virtual void sGossipSelect(Player* /*player*/, uint32 /*sender*/, uint32 /*action*/) { }
         virtual void sGossipSelectCode(Player* /*player*/, uint32 /*sender*/, uint32 /*action*/, char const* /*code*/) { }
@@ -330,6 +344,13 @@ class UnitAI
         virtual void sQuestReward(Player* /*player*/, Quest const* /*quest*/, uint32 /*opt*/) { }
         virtual bool sOnDummyEffect(Unit* /*caster*/, uint32 /*spellId*/, SpellEffIndex /*effIndex*/) { return false; }
         virtual void sOnGameEvent(bool /*start*/, uint16 /*eventId*/) { }
+        // skyfire function end
+
+    private:
+        UnitAI(UnitAI const& right) = delete;
+        UnitAI& operator=(UnitAI const& right) = delete;
+        ThreatManager& GetThreatManager();
+        void SortByDistance(std::list<Unit*>& list, bool ascending = true);        
 };
 
 #endif
