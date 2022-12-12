@@ -1574,7 +1574,7 @@ class spell_nazgrim_heroic_shockwave : public SpellScript
 };
 
 // TARGET_UNIT_CONE_UNK_130 working wrong
-class AftershockPredicate : public std::unary_function<Unit*, bool>
+class AftershockPredicate 
 {
     public:
         AftershockPredicate(Unit* const m_caster) : _caster(m_caster) { }

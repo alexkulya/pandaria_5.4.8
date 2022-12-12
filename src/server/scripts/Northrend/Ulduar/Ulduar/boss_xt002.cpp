@@ -967,7 +967,7 @@ class spell_xt002_gravity_bomb_aura : public SpellScriptLoader
         }
 };
 
-class BombTargetSelector : public std::unary_function<Unit *, bool>
+class BombTargetSelector 
 {
     public:
         BombTargetSelector(Creature* me, const Unit* victim) : _me(me), _victim(victim) { }

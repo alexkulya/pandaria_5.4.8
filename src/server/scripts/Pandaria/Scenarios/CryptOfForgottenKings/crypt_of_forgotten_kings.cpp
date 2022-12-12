@@ -392,7 +392,7 @@ class npc_cfk_jin_ironfist : public CreatureScript
             }
 
             private:
-                struct FlyingKickPredicate : public std::unary_function<Unit*, bool>
+                struct FlyingKickPredicate 
                 {
                     public:
                         FlyingKickPredicate(Creature const* me) : _me(me) { }

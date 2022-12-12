@@ -911,7 +911,7 @@ class npc_mp_quilen_guardian : public CreatureScript
             }
 
         private:
-            struct LeapingRushPredicate : public std::unary_function<Unit*, bool>
+            struct LeapingRushPredicate 
             {
                 public:
                     LeapingRushPredicate(Creature const* me) : _me(me) { }

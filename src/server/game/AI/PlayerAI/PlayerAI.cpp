@@ -616,7 +616,7 @@ void PlayerAI::CancelAllShapeshifts()
         me->RemoveOwnedAura(aura, AURA_REMOVE_BY_CANCEL);
 }
 
-struct UncontrolledTargetSelectPredicate : public std::unary_function<Unit*, bool>
+struct UncontrolledTargetSelectPredicate
 {
     bool operator()(Unit const* target) const
     {

@@ -1217,7 +1217,7 @@ class boss_spirit_kings : public CreatureScript
             }
 
             private:
-                struct PillagePredicate : public std::unary_function<Unit*, bool>
+                struct PillagePredicate 
                 {
                     public:
                         PillagePredicate(Creature const* me) : _me(me) { }

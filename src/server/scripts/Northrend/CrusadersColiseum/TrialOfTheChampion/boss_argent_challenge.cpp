@@ -367,7 +367,7 @@ class boss_eadric : public CreatureScript
         }
 };
 
-class OrientationCheck : public std::unary_function<Unit*, bool>
+class OrientationCheck 
 {
     public:
         explicit OrientationCheck(Unit* _caster) : caster(_caster) { }

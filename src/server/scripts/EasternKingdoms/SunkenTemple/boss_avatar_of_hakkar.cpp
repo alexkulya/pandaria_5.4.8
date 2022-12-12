@@ -178,7 +178,7 @@ class boss_avatar_of_hakkar : public CreatureScript
             }
 
             private:
-                struct TonguePredicate : public std::unary_function<Unit*, bool>
+                struct TonguePredicate 
                 {
                     public:
                         TonguePredicate(Creature const* me) : _me(me) { }

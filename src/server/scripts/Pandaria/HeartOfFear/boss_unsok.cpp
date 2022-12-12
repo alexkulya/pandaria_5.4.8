@@ -459,7 +459,7 @@ class boss_amber_shaper_unsok : public CreatureScript
                         itr->AI()->DoAction(action);
                 }
 
-                struct ReshapeLifeSecondTankPredicate : public std::unary_function<Unit*, bool>
+                struct ReshapeLifeSecondTankPredicate 
                 {
                     public:
                         ReshapeLifeSecondTankPredicate(Creature const* me) : _me(me) { }

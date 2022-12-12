@@ -2149,7 +2149,7 @@ public:
             {
                 case ACTION_START_WP:
                 {
-                    Start(false, true, NULL, NULL, false, false, true);
+                    Start(false, true, 0, NULL, false, false, true);
                     SetDespawnAtEnd(true);
 
                     if (GameObject* gate = me->FindNearestGameObject(GO_FIRST_GATE, 80.0f))
