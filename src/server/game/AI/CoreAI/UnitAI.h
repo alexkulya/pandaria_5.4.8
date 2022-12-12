@@ -210,8 +210,9 @@ class UnitAI
         virtual uint64 GetGUID(int32 /*id*/ = 0) const { return 0; }
 
         Unit* SelectTarget(SelectAggroTarget targetType, uint32 position = 0, float dist = 0.0f, bool playerOnly = false, int32 aura = 0);
-        // Select the targets satifying the predicate.
-        // predicate shall extend std::unary_function<Unit*, bool>
+        // Select the best target (in <targetType> order) satisfying <predicate> from the threat list.
+        // If <offset> is nonzero, the first <offset> entries in <targetType> order (or SelectTargetMethod::MaxThreat
+        // order, if <targetType> is SelectTargetMethod::Random) are skipped.
         template <class PREDICATE> Unit* SelectTarget(SelectAggroTarget targetType, uint32 position, PREDICATE const& predicate)
         {
             ThreatContainer::StorageType const& threatlist = me->getThreatManager().getThreatList();
@@ -258,10 +259,21 @@ class UnitAI
             return NULL;
         }
 
+        // Select the best (up to) <num> targets (in <targetType> order) from the threat list that fulfill the following:
+        // - Not among the first <offset> entries in <targetType> order (or SelectTargetMethod::MaxThreat order,
+        //   if <targetType> is SelectTargetMethod::Random).
+        // - Within at most <dist> yards (if dist > 0.0f)
+        // - At least -<dist> yards away (if dist < 0.0f)
+        // - Is a player (if playerOnly = true)
+        // - Not the current tank (if withTank = false)
+        // - Has aura with ID <aura> (if aura > 0)
+        // - Does not have aura with ID -<aura> (if aura < 0)
+        // The resulting targets are stored in <targetList> (which is cleared first).
         void SelectTargetList(std::list<Unit*>& targetList, uint32 num, SelectAggroTarget targetType, float dist = 0.0f, bool playerOnly = false, int32 aura = 0);
 
-        // Select the targets satifying the predicate.
-        // predicate shall extend std::unary_function<Unit*, bool>
+        // Select the best (up to) <num> targets (in <targetType> order) satisfying <predicate> from the threat list and stores them in <targetList> (which is cleared first).
+        // If <offset> is nonzero, the first <offset> entries in <targetType> order (or SelectTargetMethod::MaxThreat
+        // order, if <targetType> is SelectTargetMethod::Random) are skipped.
         template <class PREDICATE> void SelectTargetList(std::list<Unit*>& targetList, PREDICATE const& predicate, uint32 maxTargets, SelectAggroTarget targetType)
         {
             ThreatContainer::StorageType const& threatlist = me->getThreatManager().getThreatList();
@@ -327,6 +339,8 @@ class UnitAI
         void DoCastAOE(uint32 spellId, bool triggered = false);
 
         float DoGetSpellMaxRange(uint32 spellId, bool positive = false);
+
+        virtual bool ShouldSparWith(Unit const* /*target*/) const { return false; }
 
         void DoMeleeAttackIfReady(bool ignoreLos = false);
         bool DoSpellAttackIfReady(uint32 spell);

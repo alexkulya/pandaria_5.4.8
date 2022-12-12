@@ -156,7 +156,7 @@ class boss_jammalan_prophet : public CreatureScript
             }
 
             private:
-                struct CasterPredicate : public std::unary_function<Unit*, bool>
+                struct CasterPredicate 
                 {
                     public:
                         CasterPredicate(Creature const* me) : _me(me) { }

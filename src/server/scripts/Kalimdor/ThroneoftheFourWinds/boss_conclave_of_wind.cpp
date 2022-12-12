@@ -740,7 +740,7 @@ class boss_nezir : public CreatureScript
             }
 
         private:
-            struct IcePatchTargetSelector : public std::unary_function<Unit*, bool>
+            struct IcePatchTargetSelector 
             {
                 public:
                     IcePatchTargetSelector(Creature const* me) : _me(me) { }

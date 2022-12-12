@@ -1783,7 +1783,7 @@ class npc_zandalari_warlord : public CreatureScript
         }
 };
 
-class BehindTribePredicate : public std::unary_function<Unit*, bool>
+class BehindTribePredicate 
 {
     public:
         BehindTribePredicate(Unit* const m_caster) : _caster(m_caster) { }
@@ -3398,7 +3398,7 @@ class spell_conjure_elementals : public SpellScript
     }
 };
 
-class SummonShadowyMinionsPredicate : public std::unary_function<Creature*, bool>
+class SummonShadowyMinionsPredicate 
 {
     public:
         SummonShadowyMinionsPredicate(Creature* const m_caster) : _caster(m_caster) { }
@@ -3487,7 +3487,7 @@ class spell_waterspout_back : public AuraScript
     }
 };
 
-class SiphonLifePredicate : public std::unary_function<Unit*, bool>
+class SiphonLifePredicate 
 {
     public:
         SiphonLifePredicate(Unit* const m_owner) : _owner(m_owner) { }

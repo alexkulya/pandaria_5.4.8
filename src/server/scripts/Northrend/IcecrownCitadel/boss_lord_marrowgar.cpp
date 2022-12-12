@@ -94,7 +94,7 @@ enum Actions
     ACTION_TALK_ENTER_ZONE        = 2
 };
 
-class BoneSpikeTargetSelector : public std::unary_function<Unit*, bool>
+class BoneSpikeTargetSelector 
 {
     public:
         BoneSpikeTargetSelector(UnitAI* ai) : _ai(ai) { }
@@ -118,7 +118,7 @@ class BoneSpikeTargetSelector : public std::unary_function<Unit*, bool>
         UnitAI* _ai;
 };
 
-class BoneStormTargetSelector : public std::unary_function<Unit*, bool>
+class BoneStormTargetSelector 
 {
     public:
         BoneStormTargetSelector(WorldObject const* source, bool ignoreDistance) : _source(source), _ignoreDistance(ignoreDistance) { }

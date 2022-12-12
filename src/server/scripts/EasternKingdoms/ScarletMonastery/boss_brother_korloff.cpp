@@ -248,7 +248,7 @@ class boss_brother_korloff : public CreatureScript
             }
 
             private:
-                struct FireStormPredicate : public std::unary_function<Unit*, bool>
+                struct FireStormPredicate
                 {
                     public:
                         FireStormPredicate(Creature const* me) : _me(me) { }
