@@ -550,11 +550,11 @@ class go_murozond_hourglass_of_time : public GameObjectScript
     public:
         go_murozond_hourglass_of_time() : GameObjectScript("go_murozond_hourglass_of_time") { }
 
-        bool OnGossipHello(Player* /*player*/, GameObject* go) override
+        bool OnReportUse(Player* /*player*/, GameObject* go) override
         {
             InstanceScript* instance = go->GetInstanceScript();
             if (!instance || instance->GetBossState(DATA_MUROZOND) != IN_PROGRESS)
-                return true;
+                return false;
 
             if (Creature* pMurozond = ObjectAccessor::GetCreature(*go, instance->GetData64(DATA_MUROZOND)))
             {
