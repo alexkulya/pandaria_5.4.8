@@ -604,6 +604,9 @@ StrictPetNames = 0
 #                     6   - (Spanish)
 #                     7   - (Spanish Mexico)
 #                     8   - (Russian)
+#                     9   - (Italian)
+#                     10  - (Brazilian)
+#                     11  - (Portuguese)
 
 DBC.Locale = 0
 
@@ -671,18 +674,23 @@ CharacterCreating.Disabled = 0
 #
 #    CharacterCreating.Disabled.RaceMask
 #        Description: Mask of races which cannot be created by players.
-#        Example:     1536 - (1024 + 512, Blood Elf and Draenei races are disabled)
-#        Default:     0    - (Enabled, All races are allowed)
-#                     1    - (Disabled, Human)
-#                     2    - (Disabled, Orc)
-#                     4    - (Disabled, Dwarf)
-#                     8    - (Disabled, Night Elf)
-#                     16   - (Disabled, Undead)
-#                     32   - (Disabled, Tauren)
-#                     64   - (Disabled, Gnome)
-#                     128  - (Disabled, Troll)
-#                     512  - (Disabled, Blood Elf)
-#                     1024 - (Disabled, Draenei)
+#        Example:     1536     - (1024 + 512, Blood Elf and Draenei races are disabled)
+#        Default:     0        - (Enabled, All races are allowed)
+#                     1        - (Disabled, Human)
+#                     2        - (Disabled, Orc)
+#                     4        - (Disabled, Dwarf)
+#                     8        - (Disabled, Night Elf)
+#                     16       - (Disabled, Undead)
+#                     32       - (Disabled, Tauren)
+#                     64       - (Disabled, Gnome)
+#                     128      - (Disabled, Troll)
+#                     256      - (Disabled, Goblin)
+#                     512      - (Disabled, Blood Elf)
+#                     1024     - (Disabled, Draenei)
+#                     2097152  - (Disabled, Worgen)
+#                     8388608  - (Disabled, Pandaren Neutral)
+#                     16777216 - (Disabled, Pandaren Alliance)
+#                     33554432 - (Disabled, Pandaren Horde)
 
 CharacterCreating.Disabled.RaceMask = 0
 
@@ -700,6 +708,7 @@ CharacterCreating.Disabled.RaceMask = 0
 #                     64   - (Disabled, Shaman)
 #                     128  - (Disabled, Mage)
 #                     256  - (Disabled, Warlock)
+#                     512  - (Disabled, Monk)
 #                     1024 - (Disabled, Druid)
 
 CharacterCreating.Disabled.ClassMask = 0
