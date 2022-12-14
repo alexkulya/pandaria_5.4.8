@@ -7950,7 +7950,7 @@ void Player::SendPvpRewards() const
     uint32 currentRatedBg = GetCurrencyOnWeek(CURRENCY_TYPE_CONQUEST_META_RATED_BG, true);
     uint32 currentMax = GetCurrencyOnWeek(CURRENCY_TYPE_CONQUEST_POINTS, true);
 
-    WorldPacket data(SMSG_REQUEST_PVP_REWARDS_RESPONSE, 24);
+    WorldPacket data(SMSG_REQUEST_PVP_REWARDS_RESPONSE, 40);
     data << capMax;
     data << currentArenaOrRandomBg;
     data << currentRatedBg;
