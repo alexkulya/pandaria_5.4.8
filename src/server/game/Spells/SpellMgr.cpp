@@ -2869,6 +2869,20 @@ void SpellMgr::LoadSpellInfoCustomAttributes()
                 case 64688: // Sonic Screech
                 case 72373: // Shared Suffering
                 case 70492: // Ooze Eruption
+                case 81280:  // Blood Burst
+                case 98474:  // Flame Scythe
+                case 145944: // Sha Smash
+                case 106375: // Unstable Twilight
+                case 107439: // Twilight Barrage
+                case 106401: // Twilight Onslaught
+                case 103414: // Stomp
+                case 135703: // Static shock tr ef dmg
+                case 116364:  //Arcane Velocity
+                case 116018:  //Epicenter
+                case 116157:  //Lightning fists
+                case 116374:  //Lightning fists (trigger dmg)
+                case 136324:  //Rising Anger
+                case 136220: //Acidic explosion tr ef dmg
                     // ONLY SPELLS WITH SPELLFAMILY_GENERIC and EFFECT_SCHOOL_DAMAGE
                     spellInfo->AttributesCu |= SPELL_ATTR0_CU_SHARE_DAMAGE;
                     break;
