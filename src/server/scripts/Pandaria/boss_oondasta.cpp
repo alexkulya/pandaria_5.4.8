@@ -20,23 +20,29 @@
 #include "ObjectMgr.h"
 #include "ScriptMgr.h"
 
-enum Spells
+enum OondastaSpellData
 {
-    SPELL_CRUSH           = 137504,
-    SPELL_ALPHA_MALE      = 138391,
-    SPELL_ALPHA_MALE_EFF  = 138390, // set increased threat for tanks
-    SPELL_FRILL_BLAST     = 137505, // channeled 
-    SPELL_GROWING_FURY    = 137502,
-    SPELL_PIERCING_ROAR   = 137457,
-    SPELL_SPIRITFIRE_BEAM = 137508, // 99 chains lol
+    SPELL_CRUSH                             = 137504,
+    SPELL_ALPHA_MALE                        = 138391,
+    SPELL_ALPHA_MALE_EFF                    = 138390, // set increased threat for tanks
+    SPELL_FRILL_BLAST                       = 137505, // channeled 
+    SPELL_GROWING_FURY                      = 137502,
+    SPELL_PIERCING_ROAR                     = 137457,
+    SPELL_SPIRITFIRE_BEAM                   = 137508, // 99 chains lol
 
     // Misc
-    SPELL_KILL_DOHAMAN    = 138859,
+    SPELL_KILL_DOHAMAN                      = 138859
 };
 
-enum Events
+enum OondastaTexts
 {
-    EVENT_CRUSH = 1,
+    TALK_INTRO,
+    TALK_DEATH
+};
+
+enum OondastaEvents
+{
+    EVENT_CRUSH                             = 1,
     EVENT_FRILL_BLAST,
     EVENT_GROWING_FURY,
     EVENT_PIERCING_ROAR,
@@ -44,16 +50,10 @@ enum Events
     EVENT_SPIRITFIRE_BEAM_2,
 };
 
-enum Yells
+enum OondastaCreatures
 {
-    TALK_INTRO,
-    TALK_DEATH,
-};
-
-enum Creatures
-{
-    NPC_DOHAMAN_THE_BEAST_LORD = 69926, // init combat event (BITE!)
-    NPC_OONDASTA               = 69161,
+    NPC_DOHAMAN_THE_BEAST_LORD              = 69926, // init combat event (BITE!)
+    NPC_OONDASTA                            = 69161
 };
 
 const Position DohamanSummPos = { 6039.462f, 1111.173f, 55.538712f, 0.0f };
@@ -84,7 +84,7 @@ class boss_oondasta : public CreatureScript
                 summons.DespawnAll();
                 events.Reset();
                 me->SetReactState(REACT_DEFENSIVE);
-                targetGUID      = 0;
+                targetGUID = 0;
                 spiritFireCount = 0;
 
                 scheduler
@@ -100,8 +100,7 @@ class boss_oondasta : public CreatureScript
                 if (Creature* dohaman = me->FindNearestCreature(NPC_DOHAMAN_THE_BEAST_LORD, 150.0f, true))
                     dohaman->AI()->Talk(TALK_INTRO);
 
-                scheduler
-                    .Schedule(Seconds(7), [this](TaskContext context)
+                scheduler.Schedule(Seconds(7), [this](TaskContext context)
                 {
                     if (Creature* dohaman = me->FindNearestCreature(NPC_DOHAMAN_THE_BEAST_LORD, 150.0f, true))
                         dohaman->AI()->Talk(TALK_DEATH);
@@ -111,12 +110,12 @@ class boss_oondasta : public CreatureScript
 
                 DoCast(me, SPELL_ALPHA_MALE);
 
-                events.ScheduleEvent(EVENT_CRUSH, 3 * IN_MILLISECONDS);
-                events.ScheduleEvent(EVENT_FRILL_BLAST, 40 * IN_MILLISECONDS);
-                events.ScheduleEvent(EVENT_PIERCING_ROAR, 20 * IN_MILLISECONDS);
-                events.ScheduleEvent(EVENT_SPIRITFIRE_BEAM, 5 * IN_MILLISECONDS);
-                events.ScheduleEvent(EVENT_SPIRITFIRE_BEAM_2, urand(35 * IN_MILLISECONDS, 60 * IN_MILLISECONDS)); // additional spirit fire, not in chain
-                events.ScheduleEvent(EVENT_GROWING_FURY, 18.5 * IN_MILLISECONDS);
+                events.ScheduleEvent(EVENT_CRUSH, 3s);
+                events.ScheduleEvent(EVENT_FRILL_BLAST, 40s);
+                events.ScheduleEvent(EVENT_PIERCING_ROAR, 20s);
+                events.ScheduleEvent(EVENT_SPIRITFIRE_BEAM, 5s);
+                events.ScheduleEvent(EVENT_SPIRITFIRE_BEAM_2, 35s, 1min); // additional spirit fire, not in chain
+                events.ScheduleEvent(EVENT_GROWING_FURY, 18s +500ms);
             }
 
             void JustSummoned(Creature* summon) override
@@ -128,7 +127,7 @@ class boss_oondasta : public CreatureScript
             {
                 if (victim->GetTypeId() == TYPEID_PLAYER)
                     //Talk(TALK_SLAY);
-                        return;
+                    return;
             }
 
             void JustDied(Unit* killer) override
@@ -174,7 +173,7 @@ class boss_oondasta : public CreatureScript
                             if (Unit* vict = me->GetVictim())
                                 DoCast(vict, SPELL_CRUSH);
                         
-                            events.ScheduleEvent(EVENT_CRUSH, 30 * IN_MILLISECONDS);
+                            events.ScheduleEvent(EVENT_CRUSH, 30s);
                             break;
                         case EVENT_FRILL_BLAST:
                             if (Unit* target = me->GetVictim())
@@ -187,11 +186,11 @@ class boss_oondasta : public CreatureScript
                                 me->RemoveChanneledCast(targetGUID);
                             });
                         
-                            events.ScheduleEvent(EVENT_FRILL_BLAST, urand(25 * IN_MILLISECONDS, 30 * IN_MILLISECONDS));
+                            events.ScheduleEvent(EVENT_FRILL_BLAST, 25s, 30s);
                             break;
                         case EVENT_PIERCING_ROAR:
                             DoCast(me, SPELL_PIERCING_ROAR);
-                            events.ScheduleEvent(EVENT_PIERCING_ROAR, urand(26 * IN_MILLISECONDS, 60 * IN_MILLISECONDS));
+                            events.ScheduleEvent(EVENT_PIERCING_ROAR, 26s, 1min);
                             break;
                         case EVENT_SPIRITFIRE_BEAM:
                             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, CasterSpecTargetSelector()))
@@ -205,7 +204,7 @@ class boss_oondasta : public CreatureScript
                             if (++spiritFireCount >= 2)
                                 spiritFireCount = 0;
 
-                            events.ScheduleEvent(EVENT_SPIRITFIRE_BEAM, spiritFireCount == 0 ? 45 * IN_MILLISECONDS : 5 * IN_MILLISECONDS);
+                            events.ScheduleEvent(EVENT_SPIRITFIRE_BEAM, spiritFireCount == 0 ? 45s : 5s);
                             break;
                         case EVENT_SPIRITFIRE_BEAM_2:
                             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, CasterSpecTargetSelector()))
@@ -215,11 +214,11 @@ class boss_oondasta : public CreatureScript
                             else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
                                 DoCast(target, SPELL_SPIRITFIRE_BEAM);
 
-                            events.ScheduleEvent(EVENT_SPIRITFIRE_BEAM_2, urand(35 * IN_MILLISECONDS, 60 * IN_MILLISECONDS));
+                            events.ScheduleEvent(EVENT_SPIRITFIRE_BEAM_2, 35s, 1min);
                             break;
                         case EVENT_GROWING_FURY:
                             DoCast(me, SPELL_GROWING_FURY);
-                            events.ScheduleEvent(EVENT_GROWING_FURY, 30 * IN_MILLISECONDS);
+                            events.ScheduleEvent(EVENT_GROWING_FURY, 30s);
                             break;
                     }
                 }
@@ -234,7 +233,6 @@ class boss_oondasta : public CreatureScript
         }
 };
 
-// Alpha Male Eff 138390
 class spell_alpha_male_eff : public SpellScript
 {
     PrepareSpellScript(spell_alpha_male_eff)
@@ -250,7 +248,6 @@ class spell_alpha_male_eff : public SpellScript
     }
 };
 
-// Kill Dohaman 138859
 class spell_kill_dohaman : public SpellScript
 {
     PrepareSpellScript(spell_kill_dohaman);

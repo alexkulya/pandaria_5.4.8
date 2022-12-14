@@ -20,35 +20,33 @@
 #include "ObjectMgr.h"
 #include "ScriptMgr.h"
 
-enum Spells
+enum NalakSpellData
 {
-    SPELL_STATIC_SHIELD             = 136341,
-    SPELL_ARC_NOVA                  = 136338,
-    SPELL_STORM_CLOUD               = 136340,
-    SPELL_LIGHTNING_TETHER          = 136339,
-    SPELL_LIGHTNING_TETHER_EFF      = 136349,
-    SPELL_LIGHTNING_TETHER_EFF_NEAR = 136353,
+    SPELL_STATIC_SHIELD                     = 136341,
+    SPELL_ARC_NOVA                          = 136338,
+    SPELL_STORM_CLOUD                       = 136340,
+    SPELL_LIGHTNING_TETHER                  = 136339,
+    SPELL_LIGHTNING_TETHER_EFF              = 136349,
+    SPELL_LIGHTNING_TETHER_EFF_NEAR         = 136353
 };
 
-enum Events
+enum NalakTexts
 {
-    EVENT_ARC_NOVA = 1,
-    EVENT_STORM_CLOUD,
-    EVENT_LIGHTNING_TETHER,
-};
-
-enum Yells
-{
-    // Nalak
-    SAY_NALAK_AGGRO = 0,
+    SAY_NALAK_AGGRO                         = 0,
     SAY_NALAK_DEATH,
     SAY_NALAK_INTRO,
     SAY_NALAK_SLAY,
     SAY_NALAK_STORMCLOUD,
-    SAY_NALAK_LIGHTNING_TETHER,
+    SAY_NALAK_LIGHTNING_TETHER
 };
 
-// Nalak 69099
+enum NalakEvents
+{
+    EVENT_ARC_NOVA                          = 1,
+    EVENT_STORM_CLOUD,
+    EVENT_LIGHTNING_TETHER
+};
+
 class boss_nalak : public CreatureScript
 {
     public:
@@ -74,9 +72,9 @@ class boss_nalak : public CreatureScript
                 Talk(SAY_NALAK_AGGRO);
                 DoCast(me, SPELL_STATIC_SHIELD, true);
 
-                events.ScheduleEvent(EVENT_ARC_NOVA, 39 * IN_MILLISECONDS);
-                events.ScheduleEvent(EVENT_LIGHTNING_TETHER, 28 * IN_MILLISECONDS);
-                events.ScheduleEvent(EVENT_STORM_CLOUD, urand(15 * IN_MILLISECONDS, 17 * IN_MILLISECONDS));
+                events.ScheduleEvent(EVENT_ARC_NOVA, 39s);
+                events.ScheduleEvent(EVENT_LIGHTNING_TETHER, 28s);
+                events.ScheduleEvent(EVENT_STORM_CLOUD, 15s, 17s);
             }
 
             void EnterEvadeMode() override
@@ -121,17 +119,17 @@ class boss_nalak : public CreatureScript
                     {
                         case EVENT_ARC_NOVA:
                             DoCast(me, SPELL_ARC_NOVA);
-                            events.ScheduleEvent(EVENT_ARC_NOVA, 42 * IN_MILLISECONDS);
+                            events.ScheduleEvent(EVENT_ARC_NOVA, 42s);
                             break;
                         case EVENT_LIGHTNING_TETHER:
                             Talk(SAY_NALAK_LIGHTNING_TETHER);
                             DoCast(me, SPELL_LIGHTNING_TETHER);
-                            events.ScheduleEvent(EVENT_LIGHTNING_TETHER, 35 * IN_MILLISECONDS);
+                            events.ScheduleEvent(EVENT_LIGHTNING_TETHER, 35s);
                             break;
                         case EVENT_STORM_CLOUD:
                             Talk(SAY_NALAK_STORMCLOUD);
                             DoCast(me, SPELL_STORM_CLOUD);
-                            events.ScheduleEvent(EVENT_STORM_CLOUD, 24 * IN_MILLISECONDS);
+                            events.ScheduleEvent(EVENT_STORM_CLOUD, 24s);
                             break;
                     }
                 }
@@ -146,7 +144,6 @@ class boss_nalak : public CreatureScript
         }
 };
 
-// Lightning Tether 136339
 class spell_nalak_lightning_tether : public SpellScript
 {
     PrepareSpellScript(spell_nalak_lightning_tether);
@@ -190,7 +187,6 @@ class spell_nalak_lightning_tether : public SpellScript
     }
 };
 
-// Lightning Tether Eff 136350
 class spell_nalak_lightning_tether_eff : public SpellScript
 {
     PrepareSpellScript(spell_nalak_lightning_tether_eff);
@@ -208,7 +204,6 @@ class spell_nalak_lightning_tether_eff : public SpellScript
     }
 };
 
-// Lightning Teather Hit Eff 136349, 136353
 class spell_nalak_lightning_teather_hit_eff : public SpellScript
 {
     PrepareSpellScript(spell_nalak_lightning_teather_hit_eff);
@@ -234,7 +229,6 @@ class spell_nalak_lightning_teather_hit_eff : public SpellScript
     }
 };
 
-// Storm Cloud 136340
 class spell_nalak_storm_cloud : public SpellScript
 {
     PrepareSpellScript(spell_nalak_storm_cloud);

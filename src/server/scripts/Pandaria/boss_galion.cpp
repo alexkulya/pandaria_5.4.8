@@ -21,44 +21,44 @@
 #include "ScriptMgr.h"
 #include "Vehicle.h"
 
-enum eBosses
+enum GalionSpellData
 {
-    BOSS_GALION,
+    SPELL_STOMP                             = 121787,
+    SPELL_CANNON_BARRAGE                    = 121577,
+    SPELL_FIRE_SHOT                         = 121673,
+    SPELL_EMPALLING_PULL                    = 121747,
+    SPELL_BERSERK                           = 47008
 };
 
-enum eActions
+enum GalionEvents
+{
+    EVENT_STOMP                             = 1,
+    EVENT_CANNON                            = 2,
+    EVENT_FIRE_SHOT                         = 3,
+    EVENT_EMPALLING                         = 4,
+    EVENT_SPAWN                             = 6,
+    EVENT_BERSERK                           = 7,
+    EVENT_INIT_VEHICLE                      = 8,
+    EVENT_INIT_COMBAT                       = 9
+};
+
+enum GalionActions
 {
     ACTION_INIT_COMBAT,
 };
 
-enum eSpells
+enum GalionCreatures
 {
-    SPELL_STOMP                 = 121787,
-    SPELL_CANNON_BARRAGE        = 121577,
-    SPELL_FIRE_SHOT             = 121673,
-    SPELL_EMPALLING_PULL        = 121747,
-    SPELL_BERSERK               = 47008,
+    NPC_GALLEON                             = 62346,
+    NPC_GALLEON_CANNON                      = 62355,
+    NPC_SALYIN_WARMONGER                    = 62351, // temp summon
+    NPC_SALYIN_SKRIMISHER                   = 62350,
+    NPC_CHIEF_SALYIS                        = 62352
 };
 
-enum eEvents
+enum GalionMisc
 {
-    EVENT_STOMP                 = 1,
-    EVENT_CANNON                = 2,
-    EVENT_FIRE_SHOT             = 3,
-    EVENT_EMPALLING             = 4,
-    EVENT_SPAWN                 = 6,
-    EVENT_BERSERK               = 7,
-    EVENT_INIT_VEHICLE          = 8,
-    EVENT_INIT_COMBAT           = 9,
-};
-
-enum eCreatures
-{
-    NPC_GALLEON                 = 62346,
-    NPC_GALLEON_CANNON          = 62355,
-    NPC_SALYIN_WARMONGER        = 62351, // temp summon
-    NPC_SALYIN_SKRIMISHER       = 62350,
-    NPC_CHIEF_SALYIS            = 62352,
+    DATA_BOSS_GALION,
 };
 
 void HandleInitCombat(uint64 ownerGUID)
@@ -83,6 +83,7 @@ void HandleInitCombat(uint64 ownerGUID)
         owner->Attack(target, true);
     }
 }
+
 class boss_galion : public CreatureScript
 {
     public:
@@ -90,7 +91,7 @@ class boss_galion : public CreatureScript
 
         struct boss_galion_AI : public BossAI
         {
-            boss_galion_AI(Creature* creature) : BossAI(creature, BOSS_GALION) { }
+            boss_galion_AI(Creature* creature) : BossAI(creature, DATA_BOSS_GALION) { }
 
             EventMap vEvents;
             int32 m_bp;
@@ -101,7 +102,7 @@ class boss_galion : public CreatureScript
                 summons.DespawnAll();
                 m_bp = 0;
 
-                vEvents.ScheduleEvent(EVENT_INIT_VEHICLE, 0.5 * IN_MILLISECONDS);
+                vEvents.ScheduleEvent(EVENT_INIT_VEHICLE, 500ms);
             }
 
             void KilledUnit(Unit* /*victim*/) override { }
@@ -115,11 +116,11 @@ class boss_galion : public CreatureScript
 
             void EnterCombat(Unit* /*who*/) override
             {
-                events.ScheduleEvent(EVENT_STOMP, 50000);
-                events.ScheduleEvent(EVENT_CANNON,25000);
-                events.ScheduleEvent(EVENT_SPAWN,60000);
-                events.ScheduleEvent(EVENT_BERSERK,900000);
-                events.ScheduleEvent(EVENT_INIT_COMBAT, 1.5 * IN_MILLISECONDS);
+                events.ScheduleEvent(EVENT_STOMP, 50s);
+                events.ScheduleEvent(EVENT_CANNON, 25s);
+                events.ScheduleEvent(EVENT_SPAWN, 1min);
+                events.ScheduleEvent(EVENT_BERSERK, 15min);
+                events.ScheduleEvent(EVENT_INIT_COMBAT, 1s + 500ms);
             }
 
             void UpdateAI(uint32 diff) override
@@ -172,14 +173,14 @@ class boss_galion : public CreatureScript
                     {
                         case EVENT_STOMP:
                         {
-                            me->CastSpell(me,SPELL_STOMP,true);
-                            events.ScheduleEvent(EVENT_STOMP, 60000);
+                            me->CastSpell(me, SPELL_STOMP, true);
+                            events.ScheduleEvent(EVENT_STOMP, 1min);
                             break;
                         }
                         case EVENT_CANNON:
                         {
                             DoCast(me, SPELL_CANNON_BARRAGE);
-                            events.ScheduleEvent(EVENT_CANNON, 60000);
+                            events.ScheduleEvent(EVENT_CANNON, 1min);
                             break;
                         }
                         case EVENT_SPAWN:
@@ -187,12 +188,12 @@ class boss_galion : public CreatureScript
                             for (uint8 i = 0; i < 6; ++i)
                                 me->SummonCreature(NPC_SALYIN_WARMONGER, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ());
 
-                            events.ScheduleEvent(EVENT_SPAWN, 60000);
+                            events.ScheduleEvent(EVENT_SPAWN, 1min);
                             break;
                         }
                         case EVENT_BERSERK:
                         {
-                            me->CastSpell(me,SPELL_BERSERK,false);
+                            me->CastSpell(me, SPELL_BERSERK, false);
                             break;
                         }
                         case EVENT_INIT_COMBAT:
@@ -220,114 +221,90 @@ class boss_galion : public CreatureScript
         }
 };
 
-// Salyin Skrimisher 62350
-class npc_salyin_skrimisher : public CreatureScript
+struct npc_salyin_skrimisher : public ScriptedAI
 {
-    public:
-        npc_salyin_skrimisher() : CreatureScript("npc_salyin_skrimisher") { }
+    npc_salyin_skrimisher(Creature* creature) : ScriptedAI(creature) { }
 
-        struct npc_salyin_skrimisherAI : public ScriptedAI
+    EventMap events;
+    uint64 ownerGUID;
+
+    void IsSummonedBy(Unit* summoner) override
+    {
+        ownerGUID = summoner->GetGUID();
+    }
+
+    void DoAction(int32 actionId) override
+    {
+        if (actionId == ACTION_INIT_COMBAT)
         {
-            npc_salyin_skrimisherAI(Creature* creature) : ScriptedAI(creature) { }
+            HandleInitCombat(me->GetGUID());
+            events.ScheduleEvent(EVENT_FIRE_SHOT, 3s, 16s);
+        }
+    }
 
-            EventMap events;
-            uint64 ownerGUID;
+    void UpdateAI(uint32 diff) override
+    {
+        events.Update(diff);
 
-            void IsSummonedBy(Unit* summoner) override
+        while (uint32 eventId = events.ExecuteEvent())
+        {
+            if (eventId == EVENT_FIRE_SHOT)
             {
-                ownerGUID = summoner->GetGUID();
+                DoCast(me, SPELL_FIRE_SHOT);
+                events.ScheduleEvent(EVENT_FIRE_SHOT, 3s, 16s);
             }
+            break;
+        }
+    }
+};
 
-            void DoAction(int32 actionId) override
+struct npc_salyin_warmonger : public ScriptedAI
+{
+    npc_salyin_warmonger(Creature* creature) : ScriptedAI(creature) { }
+
+    EventMap events;
+
+    void IsSummonedBy(Unit* summoner) override
+    {
+        HandleInitCombat(me->GetGUID());
+    }
+
+    void Reset() override
+    {
+        events.Reset();
+    }
+
+    void EnterCombat(Unit* /*who*/) override
+    {
+        events.ScheduleEvent(EVENT_EMPALLING, 50s);
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (!UpdateVictim())
+            return;
+
+        events.Update(diff);
+
+        while (uint32 eventId = events.ExecuteEvent())
+        {
+            switch (eventId)
             {
-                if (actionId == ACTION_INIT_COMBAT)
+                case EVENT_EMPALLING:
                 {
-                    HandleInitCombat(me->GetGUID());
-                    events.ScheduleEvent(EVENT_FIRE_SHOT, urand(3 * IN_MILLISECONDS, 16 * IN_MILLISECONDS));
-                }
-            }
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
+                        me->CastSpell(target, SPELL_EMPALLING_PULL, true);
 
-            void UpdateAI(uint32 diff) override
-            {
-                events.Update(diff);
-
-                while (uint32 eventId = events.ExecuteEvent())
-                {
-                    if (eventId == EVENT_FIRE_SHOT)
-                    {
-                        DoCast(me, SPELL_FIRE_SHOT);
-                        events.ScheduleEvent(EVENT_FIRE_SHOT, urand(3 * IN_MILLISECONDS, 16 * IN_MILLISECONDS));
-                    }
+                    events.ScheduleEvent(EVENT_EMPALLING, 1min);
                     break;
                 }
             }
-        };
-
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new npc_salyin_skrimisherAI(creature);
         }
+
+        DoMeleeAttackIfReady();
+    }
 };
 
-class npc_salyin_warmonger : public CreatureScript
-{
-    public:
-        npc_salyin_warmonger() : CreatureScript("npc_salyin_warmonger") { }
-
-        struct npc_salyin_warmongerAI : public ScriptedAI
-        {
-            npc_salyin_warmongerAI(Creature* creature) : ScriptedAI(creature) { }
-
-            EventMap events;
-
-            void IsSummonedBy(Unit* summoner) override
-            {
-                HandleInitCombat(me->GetGUID());
-            }
-
-            void Reset() override
-            {
-                events.Reset();
-            }
-
-            void EnterCombat(Unit* /*who*/) override
-            {
-                events.ScheduleEvent(EVENT_EMPALLING, 50000);
-            }
-
-            void UpdateAI(uint32 diff) override
-            {
-                if (!UpdateVictim())
-                    return;
-
-                events.Update(diff);
-
-                while (uint32 eventId = events.ExecuteEvent())
-                {
-                    switch (eventId)
-                    {
-                        case EVENT_EMPALLING:
-                        {
-                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
-                                me->CastSpell(target, SPELL_EMPALLING_PULL, true);
-
-                            events.ScheduleEvent(EVENT_EMPALLING, 60000);
-                            break;
-                        }
-                    }
-                }
-
-                DoMeleeAttackIfReady();
-            }
-        };
-
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new npc_salyin_warmongerAI(creature);
-        }
-};
-
-// Fire Shot 121673
 class spell_galleon_fire_shot : public SpellScript
 {
     PrepareSpellScript(spell_galleon_fire_shot);
@@ -347,7 +324,7 @@ class spell_galleon_fire_shot : public SpellScript
 void AddSC_boss_galion()
 {
     new boss_galion();
-    new npc_salyin_skrimisher();
-    new npc_salyin_warmonger();
+    new creature_script<npc_salyin_skrimisher>("npc_salyin_skrimisher");
+    new creature_script<npc_salyin_warmonger>("npc_salyin_warmonger");
     new spell_script<spell_galleon_fire_shot>("spell_galleon_fire_shot");
 }
