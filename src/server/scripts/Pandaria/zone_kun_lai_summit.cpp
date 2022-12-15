@@ -387,7 +387,7 @@ struct npc_nessos_the_oracle : public ScriptedAI
                 case EVENT_VANISH:
                     me->CastSpell(me, SPELL_VANISH, false);
                     events.ScheduleEvent(EVENT_VANISH, 20s);
-                    events.ScheduleEvent(EVENT_SMOKED_BLADE, 0ms, 8s);
+                    events.ScheduleEvent(EVENT_SMOKED_BLADE, randtime(0ms, 8s));
                     break;
                 case EVENT_SMOKED_BLADE:
                     if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
@@ -646,7 +646,7 @@ struct npc_terracotta_gladiator : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_WICKED_BLADE, 4s + 500ms, 13s);
+        events.ScheduleEvent(EVENT_WICKED_BLADE, randtime(4s + 500ms, 13s));
         events.ScheduleEvent(EVENT_GROUND_SMASH, 10s);
     }
 
@@ -665,7 +665,7 @@ struct npc_terracotta_gladiator : public ScriptedAI
                     if (Unit* target = me->GetVictim())
                         DoCast(target, SPELL_WICKED_BLADE);
 
-                    events.ScheduleEvent(EVENT_WICKED_BLADE, 4s + 500ms, 13s);
+                    events.ScheduleEvent(EVENT_WICKED_BLADE, randtime(4s + 500ms, 13s));
                     break;
                 case EVENT_GROUND_SMASH:
                     DoCast(me, SPELL_GROUND_SMASH);
@@ -691,7 +691,7 @@ struct npc_terracotta_defender : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_PETRFYING_STRIKE, 4s + 500ms, 12s);
+        events.ScheduleEvent(EVENT_PETRFYING_STRIKE, randtime(4s + 500ms, 12s));
     }
 
     void UpdateAI(uint32 diff) override
@@ -708,7 +708,7 @@ struct npc_terracotta_defender : public ScriptedAI
                 if (Unit* target = me->GetVictim())
                     DoCast(target, SPELL_PETRIFYING_STRIKE);
 
-                events.ScheduleEvent(EVENT_PETRFYING_STRIKE, 4s + 500ms, 12s);
+                events.ScheduleEvent(EVENT_PETRFYING_STRIKE, randtime(4s + 500ms, 12s));
             }
             break;
         }
@@ -730,7 +730,7 @@ struct npc_upland_raven : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_SWOOP, 4s + 500ms, 13s);
+        events.ScheduleEvent(EVENT_SWOOP, randtime(4s + 500ms, 13s));
         events.ScheduleEvent(EVENT_HAWK_REND, 8s);
     }
 
@@ -749,13 +749,13 @@ struct npc_upland_raven : public ScriptedAI
                     if (Unit* target = me->GetVictim())
                         DoCast(target, SPELL_SWOOP);
 
-                    events.ScheduleEvent(EVENT_SWOOP, 4s + 500ms, 13s);
+                    events.ScheduleEvent(EVENT_SWOOP, randtime(4s + 500ms, 13s));
                     break;
                 case EVENT_HAWK_REND:
                     if (Unit* target = me->GetVictim())
                         DoCast(target, SPELL_HAWK_REND);
 
-                    events.ScheduleEvent(EVENT_HAWK_REND, 12s, 18s);
+                    events.ScheduleEvent(EVENT_HAWK_REND, randtime(12s, 18s));
                     break;
             }
         }
@@ -777,7 +777,7 @@ struct npc_zandalari_warrior : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_SLAM, 4s + 500ms, 13s);
+        events.ScheduleEvent(EVENT_SLAM, randtime(4s + 500ms, 13s));
         events.ScheduleEvent(EVENT_BACKHAND, 8s);
     }
 
@@ -796,13 +796,13 @@ struct npc_zandalari_warrior : public ScriptedAI
                     if (Unit* target = me->GetVictim())
                         DoCast(target, SPELL_SLAM);
 
-                    events.ScheduleEvent(EVENT_SLAM, 4s + 500ms, 13s);
+                    events.ScheduleEvent(EVENT_SLAM, randtime(4s + 500ms, 13s));
                     break;
                 case EVENT_BACKHAND:
                     if (Unit* target = me->GetVictim())
                         DoCast(target, SPELL_BACKHAND);
 
-                    events.ScheduleEvent(EVENT_BACKHAND, 12s, 18s);
+                    events.ScheduleEvent(EVENT_BACKHAND, randtime(12s, 18s));
                     break;
             }
         }
@@ -863,7 +863,7 @@ struct npc_mischievous_snow_sprite : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_SNOWBALL, 4s + 500ms, 6s);
+        events.ScheduleEvent(EVENT_SNOWBALL, randtime(4s + 500ms, 6s));
     }
 
     void DamageTaken(Unit* attacker, uint32& damage) override
@@ -889,7 +889,7 @@ struct npc_mischievous_snow_sprite : public ScriptedAI
                 if (Unit* target = me->GetVictim())
                     DoCast(target, SPELL_SNOWBALL);
 
-                events.ScheduleEvent(EVENT_SNOWBALL, 4s + 500ms, 6s);
+                events.ScheduleEvent(EVENT_SNOWBALL, randtime(4s + 500ms, 6s));
             }
             break;
         }
@@ -911,7 +911,7 @@ struct npc_tomb_guardian : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_JADE_LIGHTNING, 4s + 500ms, 12s);
+        events.ScheduleEvent(EVENT_JADE_LIGHTNING, randtime(4s + 500ms, 12s));
         events.ScheduleEvent(EVENT_JADE_STRIKE, 10s);
     }
 
@@ -930,7 +930,7 @@ struct npc_tomb_guardian : public ScriptedAI
                     if (Unit* target = me->GetVictim())
                         DoCast(target, SPELL_JADE_LIGHTNING);
 
-                    events.ScheduleEvent(EVENT_JADE_LIGHTNING, 4s + 500ms, 12s);
+                    events.ScheduleEvent(EVENT_JADE_LIGHTNING, randtime(4s + 500ms, 12s));
                     break;
                 case EVENT_JADE_STRIKE:
                     if (Unit* target = me->GetVictim())
@@ -1100,7 +1100,7 @@ struct npc_ordo_overseer : public ScriptedAI
 
     void EnterCombat(Unit* /*victim*/)
     {
-        events.ScheduleEvent(EVENT_AGONIZING_STRIKE, 5s, 10s);
+        events.ScheduleEvent(EVENT_AGONIZING_STRIKE, randtime(5s, 10s));
     }
 
     void JustDied(Unit* killer) override
@@ -1139,7 +1139,7 @@ struct npc_ordo_overseer : public ScriptedAI
                 case EVENT_AGONIZING_STRIKE:
                 {
                     DoCastVictim(SPELL_AGONIZING_STRIKE);
-                    events.RescheduleEvent(EVENT_AGONIZING_STRIKE, 5s, 10s);
+                    events.RescheduleEvent(EVENT_AGONIZING_STRIKE, randtime(5s, 10s));
                 }
             }
         }
@@ -1482,7 +1482,7 @@ struct npc_relcaimer_zuan_pets : public ScriptedAI
     {
         if (me->GetEntry() == NPC_RECLAIMER_ZUAN)
         {
-            events.ScheduleEvent(EVENT_RECLAIM_STRG, 5s, 6s);
+            events.ScheduleEvent(EVENT_RECLAIM_STRG, randtime(5s, 6s));
             events.ScheduleEvent(EVENT_WILD_MAGIC, 15s);
         }
     }
@@ -1930,7 +1930,7 @@ struct celestial_experience_sha : public ScriptedAI
 
     void EnterCombat(Unit* /*victim*/)
     {
-        events.ScheduleEvent(EVENT_HATED_BLAST, 2s, 3s);
+        events.ScheduleEvent(EVENT_HATED_BLAST, randtime(2s, 3s));
         events.ScheduleEvent(EVENT_SHA_CORRUPTION, 8s);
 
         switch (me->GetEntry())
@@ -1983,7 +1983,7 @@ struct celestial_experience_sha : public ScriptedAI
                     if (Unit* vict = me->GetVictim())
                         DoCast(vict, SPELL_HATED_BLAST, false);
 
-                    events.ScheduleEvent(EVENT_HATED_BLAST, 8s, 12s);
+                    events.ScheduleEvent(EVENT_HATED_BLAST, randtime(8s, 12s));
                     break;
                 case EVENT_SHA_CORRUPTION:
                     if (Unit* vict = me->GetVictim())
@@ -1998,7 +1998,7 @@ struct celestial_experience_sha : public ScriptedAI
                         me->PrepareChanneledCast(me->GetAngle(vict), SPELL_DEVASTATION);
                     }
 
-                    events.ScheduleEvent(EVENT_DEVASTATION, 25s, 30s);
+                    events.ScheduleEvent(EVENT_DEVASTATION, randtime(25s, 30s));
                     break;
                 case EVENT_WHIRLWIND:
                     DoCast(me, SPELL_WHIRWIND_OF_ANGER);
@@ -2032,7 +2032,7 @@ struct npc_varatus_the_conqueror : public customCreatureAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_INEVITABILITY, 1s + 500ms, 2s + 500ms);
+        events.ScheduleEvent(EVENT_INEVITABILITY, randtime(1s + 500ms, 2s + 500ms));
     }
 
     void UpdateAI(uint32 diff) override

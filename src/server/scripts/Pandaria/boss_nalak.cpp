@@ -74,7 +74,7 @@ class boss_nalak : public CreatureScript
 
                 events.ScheduleEvent(EVENT_ARC_NOVA, 39s);
                 events.ScheduleEvent(EVENT_LIGHTNING_TETHER, 28s);
-                events.ScheduleEvent(EVENT_STORM_CLOUD, 15s, 17s);
+                events.ScheduleEvent(EVENT_STORM_CLOUD, randtime(15s, 17s));
             }
 
             void EnterEvadeMode() override
