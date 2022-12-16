@@ -114,7 +114,7 @@ class boss_oondasta : public CreatureScript
                 events.ScheduleEvent(EVENT_FRILL_BLAST, 40s);
                 events.ScheduleEvent(EVENT_PIERCING_ROAR, 20s);
                 events.ScheduleEvent(EVENT_SPIRITFIRE_BEAM, 5s);
-                events.ScheduleEvent(EVENT_SPIRITFIRE_BEAM_2, 35s, 1min); // additional spirit fire, not in chain
+                events.ScheduleEvent(EVENT_SPIRITFIRE_BEAM_2, randtime(35s, 60s)); // additional spirit fire, not in chain
                 events.ScheduleEvent(EVENT_GROWING_FURY, 18s +500ms);
             }
 
@@ -186,11 +186,11 @@ class boss_oondasta : public CreatureScript
                                 me->RemoveChanneledCast(targetGUID);
                             });
                         
-                            events.ScheduleEvent(EVENT_FRILL_BLAST, 25s, 30s);
+                            events.ScheduleEvent(EVENT_FRILL_BLAST, randtime(25s, 30s));
                             break;
                         case EVENT_PIERCING_ROAR:
                             DoCast(me, SPELL_PIERCING_ROAR);
-                            events.ScheduleEvent(EVENT_PIERCING_ROAR, 26s, 1min);
+                            events.ScheduleEvent(EVENT_PIERCING_ROAR, randtime(26s, 1min));
                             break;
                         case EVENT_SPIRITFIRE_BEAM:
                             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, CasterSpecTargetSelector()))
@@ -214,7 +214,7 @@ class boss_oondasta : public CreatureScript
                             else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
                                 DoCast(target, SPELL_SPIRITFIRE_BEAM);
 
-                            events.ScheduleEvent(EVENT_SPIRITFIRE_BEAM_2, 35s, 1min);
+                            events.ScheduleEvent(EVENT_SPIRITFIRE_BEAM_2, randtime(35s, 1min));
                             break;
                         case EVENT_GROWING_FURY:
                             DoCast(me, SPELL_GROWING_FURY);

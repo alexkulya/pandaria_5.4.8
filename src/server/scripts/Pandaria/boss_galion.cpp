@@ -238,7 +238,7 @@ struct npc_salyin_skrimisher : public ScriptedAI
         if (actionId == ACTION_INIT_COMBAT)
         {
             HandleInitCombat(me->GetGUID());
-            events.ScheduleEvent(EVENT_FIRE_SHOT, 3s, 16s);
+            events.ScheduleEvent(EVENT_FIRE_SHOT, randtime(3s, 16s));
         }
     }
 
@@ -251,7 +251,7 @@ struct npc_salyin_skrimisher : public ScriptedAI
             if (eventId == EVENT_FIRE_SHOT)
             {
                 DoCast(me, SPELL_FIRE_SHOT);
-                events.ScheduleEvent(EVENT_FIRE_SHOT, 3s, 16s);
+                events.ScheduleEvent(EVENT_FIRE_SHOT, randtime(3s, 16s));
             }
             break;
         }
