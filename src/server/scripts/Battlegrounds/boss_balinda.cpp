@@ -60,6 +60,74 @@ enum BalindaWaterElementalEvents
     EVENT_WATER_ELEMENTAL_RESET             = 2
 };
 
+class npc_water_elemental : public CreatureScript
+{
+    public:
+        npc_water_elemental(const char *ScriptName) : CreatureScript(ScriptName) { }
+
+    struct npc_water_elementalAI : public ScriptedAI
+    {
+        npc_water_elementalAI(Creature* creature) : ScriptedAI(creature) { }
+
+        uint64 balindaGUID;
+
+        void Reset() override
+        {
+            _events.Reset();
+            balindaGUID = 0;
+        }
+
+        void EnterCombat(Unit* /*who*/) override
+        {
+            Talk(YELL_AGGRO);
+            _events.ScheduleEvent(EVENT_CAST_SPELL_WATERBOLT, 3s);
+            _events.ScheduleEvent(EVENT_WATER_ELEMENTAL_RESET, 5s);
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            if (!UpdateVictim())
+                return;
+
+            _events.Update(diff);
+
+            if (me->HasUnitState(UNIT_STATE_CASTING))
+                return;
+
+            while (uint32 eventId = _events.ExecuteEvent())
+            {
+                switch (eventId)
+                {
+                    case EVENT_CAST_SPELL_WATERBOLT:
+                        DoCastVictim(SPELL_WATERBOLT);
+                        _events.ScheduleEvent(EVENT_CAST_SPELL_WATERBOLT, 5s);
+                        break;
+                    case EVENT_WATER_ELEMENTAL_RESET:
+                        // Check if creature is not outside of building
+                        if (Creature* pBalinda = Unit::GetCreature(*me, balindaGUID))
+                            if (me->GetDistance2d(pBalinda->GetHomePosition().GetPositionX(), pBalinda->GetHomePosition().GetPositionY()) > 50)
+                                EnterEvadeMode();
+
+                        _events.ScheduleEvent(EVENT_WATER_ELEMENTAL_RESET, 5s);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            DoMeleeAttackIfReady();
+        }
+
+    private:
+        EventMap _events;
+    };
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_water_elementalAI(creature);
+    }
+};
+
 struct boss_balinda : public ScriptedAI
 {
     boss_balinda(Creature* creature) : ScriptedAI(creature), summons(me)
@@ -175,64 +243,8 @@ private:
     EventMap _events;
 };
 
-struct npc_water_elementalAI : public ScriptedAI
-{
-    npc_water_elementalAI(Creature* creature) : ScriptedAI(creature) { }
-
-    void Reset() override
-    {
-        _events.Reset();
-        balindaGUID = 0;
-    }
-
-    void EnterCombat(Unit* /*who*/) override
-    {
-        Talk(YELL_AGGRO);
-        _events.ScheduleEvent(EVENT_CAST_SPELL_WATERBOLT, 3s);
-        _events.ScheduleEvent(EVENT_WATER_ELEMENTAL_RESET, 5s);
-    }
-
-    void UpdateAI(uint32 diff) override
-    {
-        if (!UpdateVictim())
-            return;
-
-        _events.Update(diff);
-
-        if (me->HasUnitState(UNIT_STATE_CASTING))
-            return;
-
-        while (uint32 eventId = _events.ExecuteEvent())
-        {
-            switch (eventId)
-            {
-                case EVENT_CAST_SPELL_WATERBOLT:
-                    DoCastVictim(SPELL_WATERBOLT);
-                    _events.ScheduleEvent(EVENT_CAST_SPELL_WATERBOLT, 5s);
-                    break;
-                case EVENT_WATER_ELEMENTAL_RESET:
-                    // Check if creature is not outside of building
-                    if (Creature* pBalinda = Unit::GetCreature(*me, balindaGUID))
-                        if (me->GetDistance2d(pBalinda->GetHomePosition().GetPositionX(), pBalinda->GetHomePosition().GetPositionY()) > 50)
-                            EnterEvadeMode();
-
-                    _events.ScheduleEvent(EVENT_WATER_ELEMENTAL_RESET, 5s);
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        DoMeleeAttackIfReady();
-    }
-
-private:
-    EventMap _events;
-    uint64 balindaGUID;
-};
-
 void AddSC_boss_balinda()
 {
+    new npc_water_elemental("npc_water_elemental");
     new creature_script<boss_balinda>("boss_balinda");
-    new creature_script<npc_water_elemental>("npc_water_elemental");
 };
