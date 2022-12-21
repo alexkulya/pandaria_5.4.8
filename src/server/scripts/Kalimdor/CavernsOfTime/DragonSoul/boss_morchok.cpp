@@ -334,7 +334,7 @@ class boss_morchok: public CreatureScript
                                         break;
 
                                     uint32 new_health = (me->GetHealth() + pKohcrom->GetHealth()) / 2;
-                                    std::min(new_health, me->GetMaxHealth());
+                                    new_health = std::min(new_health, me->GetMaxHealth());
                                     me->SetHealth(new_health);
                                     pKohcrom->SetHealth(new_health);
                                 }
