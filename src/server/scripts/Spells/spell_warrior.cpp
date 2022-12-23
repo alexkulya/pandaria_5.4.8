@@ -330,12 +330,11 @@ class spell_warr_unbridled_wrath : public SpellScriptLoader
 
             bool checkProc(ProcEventInfo& eventInfo)
             {
-                if (GetCaster()->HasSpell(143268))
-                    if (GetCaster()->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED))
-                return true;
-                if (GetCaster()->HasSpell(143268))
-                       if (GetCaster()->HasAuraType(SPELL_AURA_MOD_ROOT))
-                           return true;
+                if (Unit* caster = GetCaster())
+                    if (caster->HasSpell(143268) && (caster->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_STUNNED) || caster->HasAuraType(SPELL_AURA_MOD_ROOT)))
+                        return true;
+
+                return false;
             }
 
             void onProc(AuraEffect const* /*aurEff*/, ProcEventInfo& eventInfo)
