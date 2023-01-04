@@ -18,120 +18,118 @@
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 
-enum Spells
+enum DrektharSpellData
 {
-    SPELL_WHIRLWIND                               = 15589,
-    SPELL_WHIRLWIND2                              = 13736,
-    SPELL_KNOCKDOWN                               = 19128,
-    SPELL_FRENZY                                  = 8269,
-    SPELL_SWEEPING_STRIKES                        = 18765, // not sure
-    SPELL_CLEAVE                                  = 20677, // not sure
-    SPELL_WINDFURY                                = 35886, // not sure
-    SPELL_STORMPIKE                               = 51876  // not sure
+    SPELL_WHIRLWIND                         = 15589,
+    SPELL_WHIRLWIND_2                       = 13736,
+    SPELL_KNOCKDOWN                         = 19128,
+    SPELL_FRENZY                            = 8269,
+    SPELL_SWEEPING_STRIKES                  = 18765, // not sure
+    SPELL_CLEAVE                            = 20677, // not sure
+    SPELL_WINDFURY                          = 35886, // not sure
+    SPELL_STORMPIKE                         = 51876  // not sure
 };
 
-enum Yells
+enum DrektharTexts
 {
-    YELL_AGGRO                                    = 0,
-    YELL_EVADE                                    = 1,
-    YELL_RESPAWN                                  = 2,
-    YELL_RANDOM                                   = 3
+    YELL_AGGRO                              = 0,
+    YELL_EVADE                              = 1,
+    YELL_RESPAWN                            = 2,
+    YELL_RANDOM                             = 3
 };
 
-class boss_drekthar : public CreatureScript
+enum DrektharEvents
 {
-public:
-    boss_drekthar() : CreatureScript("boss_drekthar") { }
+    EVENT_CAST_SPELL_WHIRLWIND              = 1,
+    EVENT_CAST_SPELL_WHIRLWIND_2            = 2,
+    EVENT_CAST_SPELL_KNOCKDOWN              = 3,
+    EVENT_CAST_SPELL_FRENZY                 = 4,
+    EVENT_RANDOM_YELLS                      = 5,
+    EVENT_DREKTHAR_RESET                    = 6
+};
 
-    struct boss_drektharAI : public ScriptedAI
+struct boss_drekthar : public ScriptedAI
+{
+    boss_drekthar(Creature* creature) : ScriptedAI(creature) { }
+
+    void Reset() override
     {
-        boss_drektharAI(Creature* creature) : ScriptedAI(creature) { }
-
-        uint32 WhirlwindTimer;
-        uint32 Whirlwind2Timer;
-        uint32 KnockdownTimer;
-        uint32 FrenzyTimer;
-        uint32 YellTimer;
-        uint32 ResetTimer;
-
-        void Reset() override
-        {
-            WhirlwindTimer    = urand(1 * IN_MILLISECONDS, 20 * IN_MILLISECONDS);
-            Whirlwind2Timer   = urand(1 * IN_MILLISECONDS, 20 * IN_MILLISECONDS);
-            KnockdownTimer    = 12 * IN_MILLISECONDS;
-            FrenzyTimer       = 6 * IN_MILLISECONDS;
-            ResetTimer        = 5 * IN_MILLISECONDS;
-            YellTimer         = urand(20 * IN_MILLISECONDS, 30 * IN_MILLISECONDS); //20 to 30 seconds
-        }
-
-        void EnterCombat(Unit* /*who*/) override
-        {
-            Talk(YELL_AGGRO);
-        }
-
-        void JustRespawned() override
-        {
-            Reset();
-            Talk(YELL_RESPAWN);
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (WhirlwindTimer <= diff)
-            {
-                DoCastVictim(SPELL_WHIRLWIND);
-                WhirlwindTimer =  urand(8 * IN_MILLISECONDS, 18 * IN_MILLISECONDS);
-            } else WhirlwindTimer -= diff;
-
-            if (Whirlwind2Timer <= diff)
-            {
-                DoCastVictim(SPELL_WHIRLWIND2);
-                Whirlwind2Timer = urand(7 * IN_MILLISECONDS, 25 * IN_MILLISECONDS);
-            } else Whirlwind2Timer -= diff;
-
-            if (KnockdownTimer <= diff)
-            {
-                DoCastVictim(SPELL_KNOCKDOWN);
-                KnockdownTimer = urand(10 * IN_MILLISECONDS, 15 * IN_MILLISECONDS);
-            } else KnockdownTimer -= diff;
-
-            if (FrenzyTimer <= diff)
-            {
-                DoCastVictim(SPELL_FRENZY);
-                FrenzyTimer = urand(20 * IN_MILLISECONDS, 30 * IN_MILLISECONDS);
-            } else FrenzyTimer -= diff;
-
-            if (YellTimer <= diff)
-            {
-                Talk(YELL_RANDOM);
-                YellTimer = urand(20 * IN_MILLISECONDS, 30 * IN_MILLISECONDS); //20 to 30 seconds
-            } else YellTimer -= diff;
-
-            // check if creature is not outside of building
-            if (ResetTimer <= diff)
-            {
-                if (me->GetDistance2d(me->GetHomePosition().GetPositionX(), me->GetHomePosition().GetPositionY()) > 50)
-                {
-                    EnterEvadeMode();
-                    Talk(YELL_EVADE);
-                }
-                ResetTimer = 5 * IN_MILLISECONDS;
-            } else ResetTimer -= diff;
-
-            DoMeleeAttackIfReady();
-        }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new boss_drektharAI(creature);
+        _events.Reset();
     }
+
+    void EnterCombat(Unit* /*who*/) override
+    {
+        Talk(YELL_AGGRO);
+        _events.ScheduleEvent(EVENT_CAST_SPELL_WHIRLWIND, randtime(1s, 20s));
+        _events.ScheduleEvent(EVENT_CAST_SPELL_WHIRLWIND_2, randtime(1s, 20s));
+        _events.ScheduleEvent(EVENT_CAST_SPELL_KNOCKDOWN, 12s);
+        _events.ScheduleEvent(EVENT_CAST_SPELL_FRENZY, 6s);
+        _events.ScheduleEvent(EVENT_RANDOM_YELLS, randtime(20s, 30s));
+        _events.ScheduleEvent(EVENT_DREKTHAR_RESET, 5s);
+    }
+
+    void JustRespawned() override
+    {
+        Reset();
+        Talk(YELL_RESPAWN);
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (!UpdateVictim())
+            return;
+
+        _events.Update(diff);
+
+        if (me->HasUnitState(UNIT_STATE_CASTING))
+            return;
+
+        while (uint32 eventId = _events.ExecuteEvent())
+        {
+            switch (eventId)
+            {
+                case EVENT_CAST_SPELL_WHIRLWIND:
+                    DoCastVictim(SPELL_WHIRLWIND);
+                    _events.ScheduleEvent(EVENT_CAST_SPELL_WHIRLWIND, randtime(8s, 18s));
+                    break;
+                case EVENT_CAST_SPELL_WHIRLWIND_2:
+                    DoCastVictim(SPELL_WHIRLWIND_2);
+                    _events.ScheduleEvent(EVENT_CAST_SPELL_WHIRLWIND_2, randtime(7s, 25s));
+                    break;
+                case EVENT_CAST_SPELL_KNOCKDOWN:
+                    DoCastVictim(SPELL_KNOCKDOWN);
+                    _events.ScheduleEvent(EVENT_CAST_SPELL_KNOCKDOWN, randtime(10s, 15s));
+                    break;
+                case EVENT_CAST_SPELL_FRENZY:
+                    DoCastVictim(SPELL_FRENZY);
+                    _events.ScheduleEvent(EVENT_CAST_SPELL_FRENZY, randtime(20s, 30s));
+                    break;
+                case EVENT_RANDOM_YELLS:
+                    Talk(YELL_RANDOM);
+                    _events.ScheduleEvent(EVENT_RANDOM_YELLS, randtime(20s, 30s));
+                    break;
+                case EVENT_DREKTHAR_RESET:
+                    // Check if creature is not outside of building
+                    if (me->GetDistance2d(me->GetHomePosition().GetPositionX(), me->GetHomePosition().GetPositionY()) > 50)
+                    {
+                        EnterEvadeMode();
+                        Talk(YELL_EVADE);
+                    }
+                    _events.ScheduleEvent(EVENT_DREKTHAR_RESET, 5s);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        DoMeleeAttackIfReady();
+    }
+
+private:
+    EventMap _events;
 };
 
 void AddSC_boss_drekthar()
 {
-    new boss_drekthar;
+    new creature_script<boss_drekthar>("boss_drekthar");
 }
