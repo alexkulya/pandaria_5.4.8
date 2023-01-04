@@ -18,114 +18,124 @@
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 
-enum Spells
+enum GalvangarSpellData
 {
-    SPELL_CLEAVE                                  = 15284,
-    SPELL_FRIGHTENING_SHOUT                       = 19134,
-    SPELL_WHIRLWIND1                              = 15589,
-    SPELL_WHIRLWIND2                              = 13736,
-    SPELL_MORTAL_STRIKE                           = 16856
+    SPELL_CLEAVE                            = 15284,
+    SPELL_FRIGHTENING_SHOUT                 = 19134,
+    SPELL_WHIRLWIND                         = 15589,
+    SPELL_WHIRLWIND_2                       = 13736,
+    SPELL_MORTAL_STRIKE                     = 16856
 };
 
-enum Yells
+enum GalvangarTexts
 {
-    YELL_AGGRO                                    = 0,
-    YELL_EVADE                                    = 1
+    YELL_AGGRO                              = 0,
+    YELL_EVADE                              = 1,
+    YELL_HALF_HP                            = 2
 };
 
-class boss_galvangar : public CreatureScript
+enum GalvangarEvents
 {
-public:
-    boss_galvangar() : CreatureScript("boss_galvangar") { }
+    EVENT_CAST_SPELL_CLEAVE                 = 1,
+    EVENT_CAST_SPELL_FRIGHTENING_SHOUT      = 2,
+    EVENT_CAST_SPELL_WHIRLWIND              = 3,
+    EVENT_CAST_SPELL_WHIRLWIND_2            = 4,
+    EVENT_CAST_SPELL_MORTAL_STRIKE          = 5,
+    EVENT_HEALTH_CHECK                      = 6,
+    EVENT_GALVANGAR_RESET                   = 7
+};
 
-    struct boss_galvangarAI : public ScriptedAI
+struct boss_galvangar : public ScriptedAI
+{
+    boss_galvangar(Creature* creature) : ScriptedAI(creature) { }
+
+    void Reset() override
     {
-        boss_galvangarAI(Creature* creature) : ScriptedAI(creature) { }
-
-        uint32 CleaveTimer;
-        uint32 FrighteningShoutTimer;
-        uint32 Whirlwind1Timer;
-        uint32 Whirlwind2Timer;
-        uint32 MortalStrikeTimer;
-        uint32 ResetTimer;
-
-        void Reset() override
-        {
-            CleaveTimer                     = urand(1 * IN_MILLISECONDS, 9 * IN_MILLISECONDS);
-            FrighteningShoutTimer           = urand(2 * IN_MILLISECONDS, 19 * IN_MILLISECONDS);
-            Whirlwind1Timer                 = urand(1 * IN_MILLISECONDS, 13 * IN_MILLISECONDS);
-            Whirlwind2Timer                 = urand(5 * IN_MILLISECONDS, 20 * IN_MILLISECONDS);
-            MortalStrikeTimer               = urand(5 * IN_MILLISECONDS, 20 * IN_MILLISECONDS);
-            ResetTimer                      = 5 * IN_MILLISECONDS;
-        }
-
-        void EnterCombat(Unit* /*who*/) override
-        {
-            Talk(YELL_AGGRO);
-        }
-
-        void JustRespawned() override
-        {
-            Reset();
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (CleaveTimer <= diff)
-            {
-                DoCastVictim(SPELL_CLEAVE);
-                CleaveTimer =  urand(10 * IN_MILLISECONDS, 16 * IN_MILLISECONDS);
-            } else CleaveTimer -= diff;
-
-            if (FrighteningShoutTimer <= diff)
-            {
-                DoCastVictim(SPELL_FRIGHTENING_SHOUT);
-                FrighteningShoutTimer = urand(10 * IN_MILLISECONDS, 15 * IN_MILLISECONDS);
-            } else FrighteningShoutTimer -= diff;
-
-            if (Whirlwind1Timer <= diff)
-            {
-                DoCastVictim(SPELL_WHIRLWIND1);
-                Whirlwind1Timer = urand(6 * IN_MILLISECONDS, 10 * IN_MILLISECONDS);
-            } else Whirlwind1Timer -= diff;
-
-            if (Whirlwind2Timer <= diff)
-            {
-                DoCastVictim(SPELL_WHIRLWIND2);
-                Whirlwind2Timer = urand(10 * IN_MILLISECONDS, 25 * IN_MILLISECONDS);
-            } else Whirlwind2Timer -= diff;
-
-            if (MortalStrikeTimer <= diff)
-            {
-                DoCastVictim(SPELL_MORTAL_STRIKE);
-                MortalStrikeTimer = urand(10 * IN_MILLISECONDS, 30 * IN_MILLISECONDS);
-            } else MortalStrikeTimer -= diff;
-
-            // check if creature is not outside of building
-            if (ResetTimer <= diff)
-            {
-                if (me->GetDistance2d(me->GetHomePosition().GetPositionX(), me->GetHomePosition().GetPositionY()) > 50)
-                {
-                    EnterEvadeMode();
-                    Talk(YELL_EVADE);
-                }
-                ResetTimer = 5 * IN_MILLISECONDS;
-            } else ResetTimer -= diff;
-
-            DoMeleeAttackIfReady();
-        }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new boss_galvangarAI(creature);
+        _events.Reset();
     }
+
+    void EnterCombat(Unit* /*who*/) override
+    {
+        Talk(YELL_AGGRO);
+        _events.ScheduleEvent(EVENT_CAST_SPELL_CLEAVE, randtime(1s, 9s));
+        _events.ScheduleEvent(EVENT_CAST_SPELL_FRIGHTENING_SHOUT, randtime(2s, 19s));
+        _events.ScheduleEvent(EVENT_CAST_SPELL_WHIRLWIND, randtime(1s, 13s));
+        _events.ScheduleEvent(EVENT_CAST_SPELL_WHIRLWIND_2, randtime(5s, 20s));
+        _events.ScheduleEvent(EVENT_CAST_SPELL_MORTAL_STRIKE, randtime(5s, 20s));
+        _events.ScheduleEvent(EVENT_HEALTH_CHECK, 1s);
+        _events.ScheduleEvent(EVENT_GALVANGAR_RESET, 5s);
+    }
+
+    void JustRespawned() override
+    {
+        Reset();
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (!UpdateVictim())
+            return;
+
+        _events.Update(diff);
+
+        if (me->HasUnitState(UNIT_STATE_CASTING))
+            return;
+
+        while (uint32 eventId = _events.ExecuteEvent())
+        {
+            switch (eventId)
+            {
+                case EVENT_CAST_SPELL_CLEAVE:
+                    DoCastVictim(SPELL_CLEAVE);
+                    _events.ScheduleEvent(EVENT_CAST_SPELL_CLEAVE, randtime(10s, 16s));
+                    break;
+                case EVENT_CAST_SPELL_FRIGHTENING_SHOUT:
+                    DoCastVictim(SPELL_FRIGHTENING_SHOUT);
+                    _events.ScheduleEvent(EVENT_CAST_SPELL_FRIGHTENING_SHOUT, randtime(10s, 15s));
+                    break;
+                case EVENT_CAST_SPELL_WHIRLWIND:
+                    DoCastVictim(SPELL_WHIRLWIND);
+                    _events.ScheduleEvent(EVENT_CAST_SPELL_WHIRLWIND, randtime(6s, 10s));
+                    break;
+                case EVENT_CAST_SPELL_WHIRLWIND_2:
+                    DoCastVictim(SPELL_WHIRLWIND_2);
+                    _events.ScheduleEvent(EVENT_CAST_SPELL_WHIRLWIND_2, randtime(10s, 25s));
+                    break;
+                case EVENT_CAST_SPELL_MORTAL_STRIKE:
+                    DoCastVictim(SPELL_MORTAL_STRIKE);
+                    _events.ScheduleEvent(EVENT_CAST_SPELL_MORTAL_STRIKE, randtime(10s, 30s));
+                    break;
+                case EVENT_HEALTH_CHECK:
+                    if (me->GetHealthPct() < 50.0f)
+                    {
+                        Talk(YELL_HALF_HP);
+                        _events.PopEvent();
+                        break;
+                    }
+                    _events.RepeatEvent(1s);
+                    break;
+                case EVENT_GALVANGAR_RESET:
+                    // Check if creature is not outside of building
+                    if (me->GetDistance2d(me->GetHomePosition().GetPositionX(), me->GetHomePosition().GetPositionY()) > 50)
+                    {
+                        EnterEvadeMode();
+                        Talk(YELL_EVADE);
+                    }
+                    _events.ScheduleEvent(EVENT_GALVANGAR_RESET, 5s);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        DoMeleeAttackIfReady();
+    }
+
+private:
+    EventMap _events;
 };
 
 void AddSC_boss_galvangar()
 {
-    new boss_galvangar;
+    new creature_script<boss_galvangar>("boss_galvangar");
 }
