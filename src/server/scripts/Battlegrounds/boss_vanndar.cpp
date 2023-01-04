@@ -18,103 +18,108 @@
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 
-enum Yells
+enum VanndarSpellData
 {
-    YELL_AGGRO                                    = 0,
-    YELL_EVADE                                    = 1,
-  //YELL_RESPAWN1                                 = -1810010, // Missing in database
-  //YELL_RESPAWN2                                 = -1810011, // Missing in database
-    YELL_RANDOM                                   = 2,
-    YELL_SPELL                                    = 3,
+    SPELL_AVATAR                            = 19135,
+    SPELL_THUNDERCLAP                       = 15588,
+    SPELL_STORMBOLT                         = 20685  // not sure
 };
 
-enum Spells
+enum VanndarTexts
 {
-    SPELL_AVATAR                                  = 19135,
-    SPELL_THUNDERCLAP                             = 15588,
-    SPELL_STORMBOLT                               = 20685 // not sure
+    YELL_AGGRO                              = 0,
+    YELL_EVADE                              = 1,
+    YELL_RESPAWN                            = 2,
+    YELL_RANDOM                             = 3,
+    YELL_SPELL                              = 4
 };
 
-class boss_vanndar : public CreatureScript
+enum VanndarEvents
 {
-public:
-    boss_vanndar() : CreatureScript("boss_vanndar") { }
+    EVENT_CAST_SPELL_AVATAR                 = 1,
+    EVENT_CAST_SPELL_THUNDERCLAP            = 2,
+    EVENT_CAST_SPELL_STORMBOLT              = 3,
+    EVENT_RANDOM_YELLS                      = 4,
+    EVENT_VANNDAR_RESET                     = 5
+};
 
-    struct boss_vanndarAI : public ScriptedAI
+struct boss_vanndar : public ScriptedAI
+{
+    boss_vanndar(Creature* creature) : ScriptedAI(creature) { }
+
+    void Reset() override
     {
-        boss_vanndarAI(Creature* creature) : ScriptedAI(creature) { }
-
-        uint32 AvatarTimer;
-        uint32 ThunderclapTimer;
-        uint32 StormboltTimer;
-        uint32 ResetTimer;
-        uint32 YellTimer;
-
-        void Reset() override
-        {
-            AvatarTimer        = 3 * IN_MILLISECONDS;
-            ThunderclapTimer   = 4 * IN_MILLISECONDS;
-            StormboltTimer     = 6 * IN_MILLISECONDS;
-            ResetTimer         = 5 * IN_MILLISECONDS;
-            YellTimer = urand(20 * IN_MILLISECONDS, 30 * IN_MILLISECONDS);
-        }
-
-        void EnterCombat(Unit* /*who*/) override
-        {
-            Talk(YELL_AGGRO);
-        }
-
-        void UpdateAI(uint32 diff) override
-        {
-            if (!UpdateVictim())
-                return;
-
-            if (AvatarTimer <= diff)
-            {
-                DoCastVictim(SPELL_AVATAR);
-                AvatarTimer =  urand(15 * IN_MILLISECONDS, 20 * IN_MILLISECONDS);
-            } else AvatarTimer -= diff;
-
-            if (ThunderclapTimer <= diff)
-            {
-                DoCastVictim(SPELL_THUNDERCLAP);
-                ThunderclapTimer = urand(5 * IN_MILLISECONDS, 15 * IN_MILLISECONDS);
-            } else ThunderclapTimer -= diff;
-
-            if (StormboltTimer <= diff)
-            {
-                DoCastVictim(SPELL_STORMBOLT);
-                StormboltTimer = urand(10 * IN_MILLISECONDS, 25 * IN_MILLISECONDS);
-            } else StormboltTimer -= diff;
-
-            if (YellTimer <= diff)
-            {
-                Talk(YELL_RANDOM);
-                YellTimer = urand(20 * IN_MILLISECONDS, 30 * IN_MILLISECONDS); //20 to 30 seconds
-            } else YellTimer -= diff;
-
-            // check if creature is not outside of building
-            if (ResetTimer <= diff)
-            {
-                if (me->GetDistance2d(me->GetHomePosition().GetPositionX(), me->GetHomePosition().GetPositionY()) > 50)
-                {
-                    EnterEvadeMode();
-                    Talk(YELL_EVADE);
-                }
-                ResetTimer = 5 * IN_MILLISECONDS;
-            } else ResetTimer -= diff;
-
-            DoMeleeAttackIfReady();
-        }
-    };
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new boss_vanndarAI(creature);
+        _events.Reset();
     }
+
+    void EnterCombat(Unit* /*who*/) override
+    {
+        Talk(YELL_AGGRO);
+        _events.ScheduleEvent(EVENT_CAST_SPELL_AVATAR, 3s);
+        _events.ScheduleEvent(EVENT_CAST_SPELL_THUNDERCLAP, 4s);
+        _events.ScheduleEvent(EVENT_CAST_SPELL_STORMBOLT, 6s);
+        _events.ScheduleEvent(EVENT_RANDOM_YELLS, randtime(20s, 30s));
+        _events.ScheduleEvent(EVENT_VANNDAR_RESET, 5s);
+    }
+
+    void JustRespawned() override
+    {
+        Reset();
+        Talk(YELL_RESPAWN);
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (!UpdateVictim())
+            return;
+
+        _events.Update(diff);
+
+        if (me->HasUnitState(UNIT_STATE_CASTING))
+            return;
+
+        while (uint32 eventId = _events.ExecuteEvent())
+        {
+            switch (eventId)
+            {
+                case EVENT_CAST_SPELL_AVATAR:
+                    DoCastVictim(SPELL_AVATAR);
+                    _events.ScheduleEvent(EVENT_CAST_SPELL_AVATAR, randtime(15s, 20s));
+                    break;
+                case EVENT_CAST_SPELL_THUNDERCLAP:
+                    DoCastVictim(SPELL_THUNDERCLAP);
+                    _events.ScheduleEvent(EVENT_CAST_SPELL_THUNDERCLAP, randtime(5s, 15s));
+                    break;
+                case EVENT_CAST_SPELL_STORMBOLT:
+                    DoCastVictim(SPELL_STORMBOLT);
+                    _events.ScheduleEvent(EVENT_CAST_SPELL_STORMBOLT, randtime(10s, 25s));
+                    break;
+                case EVENT_RANDOM_YELLS:
+                    Talk(YELL_RANDOM);
+                    _events.ScheduleEvent(EVENT_RANDOM_YELLS, randtime(20s, 30s));
+                    break;
+                case EVENT_VANNDAR_RESET:
+                    // Check if creature is not outside of building
+                    if (me->GetDistance2d(me->GetHomePosition().GetPositionX(), me->GetHomePosition().GetPositionY()) > 50)
+                    {
+                        EnterEvadeMode();
+                        Talk(YELL_EVADE);
+                    }
+                    _events.ScheduleEvent(EVENT_VANNDAR_RESET, 5s);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        DoMeleeAttackIfReady();
+    }
+
+private:
+    EventMap _events;
 };
 
 void AddSC_boss_vanndar()
 {
-    new boss_vanndar;
+    new creature_script<boss_vanndar>("boss_vanndar");
 }
