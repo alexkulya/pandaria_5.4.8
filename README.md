@@ -7,6 +7,8 @@ Compiled exe files: https://mega.nz/file/0dxU1b4I#axVg6aXsNfgQeKcglV_RLHOPV4gXB_
 
 Geodata (RU dbc): https://mega.nz/file/EAZUmZiD#PxdHN7jcEKCA8qaIBTIWLWLGZcT5PdsKfIgkygTZgTs
 
+Pandaria 5.4.8 docker [(Thanks diff3)](https://github.com/diff3): https://github.com/diff3/pandaria_5.4.8_docker
+
 ## Requirements
 + Platform: Linux, Windows or Mac
 + Processor with SSE2 support
