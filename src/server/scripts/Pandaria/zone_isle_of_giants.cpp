@@ -69,7 +69,7 @@ struct npc_young_primal_devilsaur : public customCreatureAI
 
         while (uint32 eventId = events.ExecuteEvent())
         {
-            ExecuteTargetEvent(SPELL_SKYCALL, randtime(7s, 13s), EVENT_SKYCALL, eventId, PRIORITY_CHANNELED);
+            ExecuteTargetEvent(SPELL_SKYCALL, urand(7 * IN_MILLISECONDS, 13 * IN_MILLISECONDS), EVENT_SKYCALL, eventId, PRIORITY_CHANNELED);
             break;
         }
 
@@ -106,7 +106,7 @@ struct npc_pterrorwing_skyscreamer : public customCreatureAI
 
         while (uint32 eventId = events.ExecuteEvent())
         {
-            ExecuteTargetEvent(SPELL_CRUSH, randtime(4s + 500ms, 9s), EVENT_CRUSH, eventId);
+            ExecuteTargetEvent(SPELL_CRUSH, urand(4 * IN_MILLISECONDS + 500, 9 * IN_MILLISECONDS), EVENT_CRUSH, eventId);
             break;
         }
 
@@ -156,7 +156,7 @@ struct npc_zandalari_dinomancer_2 : public customCreatureAI
 
         while (uint32 eventId = events.ExecuteEvent())
         {
-            ExecuteTargetEvent(SPELL_DINO_MENDING, randtime(10s + 500ms, 14s + 300ms), EVENT_DINO_MENDING, eventId, PRIORITY_SELF);
+            ExecuteTargetEvent(SPELL_DINO_MENDING, urand(10 * IN_MILLISECONDS + 500, 14 * IN_MILLISECONDS + 300), EVENT_DINO_MENDING, eventId, PRIORITY_SELF);
             break;
         }
 
@@ -194,8 +194,8 @@ struct npc_primal_direhorn_hatchling : public customCreatureAI
 
         while (uint32 eventId = events.ExecuteEvent())
         {
-            ExecuteTargetEvent(SPELL_TRIPPLE_PUNCTURE, randtime(8s + 500ms, 15s), EVENT_TRIPPLE_PUNCTURE, eventId);
-            ExecuteTargetEvent(SPELL_TRIHORN_CHARGE, randtime(12s, 25s), EVENT_TRIHORN_CHARGE, eventId, PRIORITY_NOT_VICTIM);
+            ExecuteTargetEvent(SPELL_TRIPPLE_PUNCTURE, urand(8 * IN_MILLISECONDS + 500, 15 * IN_MILLISECONDS), EVENT_TRIPPLE_PUNCTURE, eventId);
+            ExecuteTargetEvent(SPELL_TRIHORN_CHARGE, urand(12 * IN_MILLISECONDS, 25 * IN_MILLISECONDS), EVENT_TRIHORN_CHARGE, eventId, PRIORITY_NOT_VICTIM);
             break;
         }
 
@@ -234,9 +234,9 @@ struct npc_primal_direhorn : public customCreatureAI
 
         while (uint32 eventId = events.ExecuteEvent())
         {
-            ExecuteTargetEvent(SPELL_TRIPPLE_PUNCTURE, randtime(8s + 500ms, 15s), EVENT_TRIPPLE_PUNCTURE, eventId);
-            ExecuteTargetEvent(SPELL_TRIHORN_CHARGE, randtime(15s, 25s), EVENT_TRIHORN_CHARGE, eventId, PRIORITY_NOT_VICTIM);
-            ExecuteTargetEvent(SPELL_DOUBLE_SWIPE, randtime(12s, 14s), EVENT_DOUBLE_SWIPE, eventId, PRIORITY_CHANNELED);
+            ExecuteTargetEvent(SPELL_TRIPPLE_PUNCTURE, urand(8 * IN_MILLISECONDS + 500, 15 * IN_MILLISECONDS), EVENT_TRIPPLE_PUNCTURE, eventId);
+            ExecuteTargetEvent(SPELL_TRIHORN_CHARGE, urand(15 * IN_MILLISECONDS, 25 * IN_MILLISECONDS), EVENT_TRIHORN_CHARGE, eventId, PRIORITY_NOT_VICTIM);
+            ExecuteTargetEvent(SPELL_DOUBLE_SWIPE, urand(12 * IN_MILLISECONDS, 14 * IN_MILLISECONDS), EVENT_DOUBLE_SWIPE, eventId, PRIORITY_CHANNELED);
             break;
         }
 

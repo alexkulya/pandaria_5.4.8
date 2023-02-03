@@ -118,6 +118,24 @@ enum Gilneas
 
     SPELL_GUARD_SHOOT                       = 48424,
 
+    EVENT_SEARCH_INVADER                    = 1,
+    EVENT_SEARCH_FOOTSOLDIER                = 2,
+    EVENT_SEARCH_WATCHMAN                   = 3,
+
+    NPC_ENTRY_INVADER                       = 34511,
+    NPC_ENTRY_FOOTSOLDIER                   = 36236,
+    NPC_ENTRY_WATCHMAN                      = 36211,
+
+    EVENT_LAUNCH_BOULDER                    = 1,
+    EVENT_DESPAWN_CATAPULT                  = 2,
+    EVENT_CHECK_PASSENGER                   = 3,
+
+    SPELL_LAUNCH_BOULDER                    = 68591,
+
+    QUEST_ENTRY_TWO_BY_SEA                  = 14382,
+
+    NPC_CATAPULT_BOULDER_TRIGGER            = 36286,
+
     SPELL_SAVE_CYNTHIA                      = 68597,
     SPELL_SAVE_ASHLEY                       = 68598,
     SPELL_SAVE_JAMES                        = 68596,
@@ -1549,6 +1567,294 @@ struct npc_saved_aranas : public ScriptedAI
     }
 };
 
+struct npc_duskhaven_watchman : public ScriptedAI
+{
+    npc_duskhaven_watchman(Creature* creature) : ScriptedAI(creature)
+    {
+        events.ScheduleEvent(EVENT_SEARCH_INVADER, 2s);
+    }
+
+    EventMap events;
+
+    void DamageTaken(Unit* who, uint32& damage)
+    {
+        if (who && who->ToCreature() && (who->GetEntry() == NPC_ENTRY_INVADER || who->GetEntry() == NPC_ENTRY_FOOTSOLDIER))
+            damage = 0;
+    }
+
+    void UpdateAI(uint32 diff)
+    {
+        events.Update(diff);
+
+        while (uint32 eventId = events.ExecuteEvent())
+        {
+            switch(eventId)
+            {
+                case EVENT_SEARCH_INVADER:
+                {
+                    if (!me->IsInCombat())
+                    {
+                        if (Creature* invader = me->FindNearestCreature(NPC_ENTRY_INVADER, 15.5f, true))
+                            AttackStart(invader);
+                    }
+                    else
+                        events.RescheduleEvent(EVENT_SEARCH_INVADER, randtime(2s, 5s));
+                    break;
+                }
+                case EVENT_SEARCH_FOOTSOLDIER:
+                {
+                    if (!me->IsInCombat())
+                    {
+                        if (Creature* footsoldier = me->FindNearestCreature(NPC_ENTRY_FOOTSOLDIER, 15.5f, true))
+                            AttackStart(footsoldier);
+                    }
+                    else
+                        events.RescheduleEvent(EVENT_SEARCH_FOOTSOLDIER, randtime(2s, 5s));
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+
+        if (!UpdateVictim())
+            return;
+
+        DoMeleeAttackIfReady();
+    }
+};
+
+struct npc_forsaken_invader : public ScriptedAI
+{
+    npc_forsaken_invader(Creature* creature) : ScriptedAI(creature)
+    {
+        events.ScheduleEvent(EVENT_SEARCH_WATCHMAN, 2s);
+    }
+
+    EventMap events;
+
+    void DamageTaken(Unit* who, uint32& damage)
+    {
+        if (who->ToCreature() && who->GetEntry() == NPC_ENTRY_WATCHMAN)
+            damage = 0;
+    }
+
+    void UpdateAI(uint32 diff)
+    {
+        events.Update(diff);
+
+        while (uint32 eventId = events.ExecuteEvent())
+        {
+            switch(eventId)
+            {
+                case EVENT_SEARCH_WATCHMAN:
+                {
+                    if (!me->IsInCombat())
+                    {
+                        if (Creature* watchman = me->FindNearestCreature(NPC_ENTRY_WATCHMAN, 15.5f, true))
+                            AttackStart(watchman);
+                    }
+                    else
+                        events.RescheduleEvent(EVENT_SEARCH_WATCHMAN, randtime(2s, 5s));
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+
+        if (!UpdateVictim())
+            return;
+
+        DoMeleeAttackIfReady();
+    }
+};
+
+struct npc_forsaken_footsoldier : public ScriptedAI
+{
+    npc_forsaken_footsoldier(Creature* creature) : ScriptedAI(creature)
+    {
+        events.ScheduleEvent(EVENT_SEARCH_WATCHMAN, 2s);
+    }
+
+    EventMap events;
+
+    void DamageTaken(Unit* who, uint32& damage)
+    {
+        if (who && who->ToCreature() && who->GetEntry() == NPC_ENTRY_WATCHMAN)
+            damage = 0;
+    }
+
+    void UpdateAI(uint32 diff)
+    {
+        events.Update(diff);
+
+        while (uint32 eventId = events.ExecuteEvent())
+        {
+            switch(eventId)
+            {
+                case EVENT_SEARCH_WATCHMAN:
+                {
+                    if (!me->IsInCombat())
+                    {
+                        if (Creature* watchman = me->FindNearestCreature(NPC_ENTRY_WATCHMAN, 15.5f, true))
+                            AttackStart(watchman);
+                    }
+                    else
+                        events.RescheduleEvent(EVENT_SEARCH_WATCHMAN, randtime(2s, 5s));
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+
+        if (!UpdateVictim())
+            return;
+
+        DoMeleeAttackIfReady();
+    }
+};
+
+class npc_forsaken_catapult : public CreatureScript
+{
+public:
+    npc_forsaken_catapult() : CreatureScript("npc_forsaken_catapult") { }
+
+    bool OnGossipHello(Player* player, Creature* creature)
+    {
+        if (player->GetQuestStatus(QUEST_ENTRY_TWO_BY_SEA) == QUEST_STATUS_INCOMPLETE)
+        {
+            if (player->GetVehicleBase())
+                return true;
+
+            player->EnterVehicle(creature, 0);
+            return true;
+        }
+        return true;
+    }
+
+    struct npc_forsaken_catapultAI : public ScriptedAI
+    {
+        npc_forsaken_catapultAI(Creature* creature) : ScriptedAI(creature)
+        {
+            events.ScheduleEvent(EVENT_LAUNCH_BOULDER, randtime(8s, 20s));
+            events.ScheduleEvent(EVENT_CHECK_PASSENGER, 5s);
+        }
+
+        EventMap events;
+
+        void OnCharmed(bool apply) { }
+
+        void Reset()
+        {
+            events.ScheduleEvent(EVENT_LAUNCH_BOULDER, randtime(8s, 20s));
+            events.ScheduleEvent(EVENT_CHECK_PASSENGER, 5s);
+            me->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+            me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+            me->setFaction(1735);
+            me->SetReactState(REACT_PASSIVE);
+        }
+
+        void UpdateAI(uint32 diff)
+        {
+            events.Update(diff);
+
+            while (uint32 eventId = events.ExecuteEvent())
+            {
+                switch(eventId)
+                {
+                    case EVENT_LAUNCH_BOULDER:
+                    {
+                        if (Unit* passenger = me->GetVehicleKit()->GetPassenger(0))
+                        {
+                            if (passenger->GetTypeId() != TYPEID_PLAYER)
+                            {
+                                if (!me->HasUnitState(UNIT_STATE_CASTING))
+                                {
+                                    DoCast(SPELL_LAUNCH_BOULDER);
+                                    events.RescheduleEvent(EVENT_LAUNCH_BOULDER, randtime(5s, 12s));
+                                }
+                                else
+                                    events.RescheduleEvent(EVENT_LAUNCH_BOULDER, 1s);
+                            }
+                        }
+                        else
+                        {
+                            events.CancelEvent(EVENT_LAUNCH_BOULDER);
+                            events.ScheduleEvent(EVENT_DESPAWN_CATAPULT, 10s);
+                        }
+                        break;
+                    }
+                    case EVENT_DESPAWN_CATAPULT:
+                    {
+                        Unit* passenger1 = me->GetVehicleKit()->GetPassenger(0);
+                        Unit* passenger2 = me->GetVehicleKit()->GetPassenger(1);
+                        
+                        if (!passenger1 && !passenger2)
+                            me->DisappearAndDie();
+                        else
+                            events.RescheduleEvent(EVENT_DESPAWN_CATAPULT, 2s);
+                        break;
+                    }
+                    case EVENT_CHECK_PASSENGER:
+                    {
+                        Unit* passenger1 = me->GetVehicleKit()->GetPassenger(0);
+                        Unit* passenger2 = me->GetVehicleKit()->GetPassenger(1);
+                        
+                        if (!passenger1 && !passenger2)
+                        {
+                            me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
+                            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
+                            me->setFaction(35);
+                            events.CancelEvent(EVENT_CHECK_PASSENGER);
+                        }
+                        else
+                            events.RescheduleEvent(EVENT_CHECK_PASSENGER, 2s + 500ms);
+                        break;
+                    }
+                    default:
+                        break;
+                }
+            }
+        }
+    };
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new npc_forsaken_catapultAI (creature);
+    }
+};
+
+class BoulderTargetCheck
+{
+public:
+    BoulderTargetCheck() { }
+
+    bool operator()(WorldObject* object)
+    {
+        return (object->ToPlayer() || (object->ToUnit() && (object->ToUnit()->GetEntry() != NPC_CATAPULT_BOULDER_TRIGGER || object->GetPositionZ() > 3.48f)));
+    }
+};
+
+class spell_catapult_boulder : public SpellScript
+{
+    PrepareSpellScript(spell_catapult_boulder);
+
+    void FilterTargets(std::list<WorldObject*>& targets)
+    {
+        if (targets.empty())
+            return;
+
+        targets.remove_if(BoulderTargetCheck());
+    }
+
+    void Register() override
+    {
+        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_catapult_boulder::FilterTargets, EFFECT_0, TARGET_UNIT_SRC_AREA_ENTRY);
+    }
+};
+
 class npc_gilneas_children : public CreatureScript
 {
     public:
@@ -2224,6 +2530,11 @@ void AddSC_gilneas()
     new npc_king_genn_greymane();
     new npc_vehicle_genn_horse();
     new creature_script<npc_saved_aranas>("npc_saved_aranas");
+    new creature_script<npc_duskhaven_watchman>("npc_duskhaven_watchman");
+    new creature_script<npc_forsaken_invader>("npc_forsaken_invader");
+    new creature_script<npc_forsaken_footsoldier>("npc_forsaken_footsoldier");
+    new npc_forsaken_catapult();
+    new spell_script<spell_catapult_boulder>("spell_catapult_boulder");
     new npc_gilneas_children("npc_james", SPELL_SAVE_JAMES, PLAYER_SAY_JAMES);
     new npc_gilneas_children("npc_ashley", SPELL_SAVE_ASHLEY, PLAYER_SAY_ASHLEY);
     new npc_gilneas_children("npc_cynthia", SPELL_SAVE_CYNTHIA, PLAYER_SAY_CYNTHIA);

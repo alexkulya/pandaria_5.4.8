@@ -1,1 +1,0 @@
-UPDATE creature_template SET ScriptName = 'npc_capacitor_totem' WHERE entry = 61245;
