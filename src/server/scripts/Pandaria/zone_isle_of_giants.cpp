@@ -20,19 +20,19 @@
 
 enum Spells
 {
-    SPELL_CRUSH              = 138765,
-    SPELL_SKYCALL            = 138817,
-    SPELL_DINO_MENDING       = 138770,
-    SPELL_DINO_FORM          = 138771,
-    SPELL_TRIPPLE_PUNCTURE   = 138768,
-    SPELL_TRIHORN_CHARGE     = 138769,
-    SPELL_TRIHORN_CHARGE_EFF = 138777,
-    SPELL_DOUBLE_SWIPE       = 138772,
+    SPELL_CRUSH                             = 138765,
+    SPELL_SKYCALL                           = 138817,
+    SPELL_DINO_MENDING                      = 138770,
+    SPELL_DINO_FORM                         = 138771,
+    SPELL_TRIPPLE_PUNCTURE                  = 138768,
+    SPELL_TRIHORN_CHARGE                    = 138769,
+    SPELL_TRIHORN_CHARGE_EFF                = 138777,
+    SPELL_DOUBLE_SWIPE                      = 138772
 };
 
 enum Events
 {
-    EVENT_CRUSH = 1,
+    EVENT_CRUSH                             = 1,
     EVENT_SKYCALL,
     EVENT_DINO_MENDING,
     EVENT_TRIPPLE_PUNCTURE,
@@ -54,7 +54,7 @@ struct npc_young_primal_devilsaur : public customCreatureAI
     void EnterCombat(Unit* /*who*/) override
     {
         me->SetCombatDistance(220.0f);
-        events.ScheduleEvent(EVENT_SKYCALL, urand(3.5 * IN_MILLISECONDS, 6 * IN_MILLISECONDS));
+        events.ScheduleEvent(EVENT_SKYCALL, randtime(3s + 500ms, 6s));
     }
 
     void UpdateAI(uint32 diff) override
@@ -69,7 +69,7 @@ struct npc_young_primal_devilsaur : public customCreatureAI
 
         while (uint32 eventId = events.ExecuteEvent())
         {
-            ExecuteTargetEvent(SPELL_SKYCALL, urand(7 * IN_MILLISECONDS, 13 * IN_MILLISECONDS), EVENT_SKYCALL, eventId, PRIORITY_CHANNELED);
+            ExecuteTargetEvent(SPELL_SKYCALL, randtime(7s, 13s), EVENT_SKYCALL, eventId, PRIORITY_CHANNELED);
             break;
         }
 
@@ -91,7 +91,7 @@ struct npc_pterrorwing_skyscreamer : public customCreatureAI
     void EnterCombat(Unit* /*who*/) override
     {
         me->SetCombatDistance(220.0f);
-        events.ScheduleEvent(EVENT_CRUSH, 2.5 * IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_CRUSH, 2s + 500ms);
     }
 
     void UpdateAI(uint32 diff) override
@@ -106,7 +106,7 @@ struct npc_pterrorwing_skyscreamer : public customCreatureAI
 
         while (uint32 eventId = events.ExecuteEvent())
         {
-            ExecuteTargetEvent(SPELL_CRUSH, urand(4.5 * IN_MILLISECONDS, 9 * IN_MILLISECONDS), EVENT_CRUSH, eventId);
+            ExecuteTargetEvent(SPELL_CRUSH, randtime(4s + 500ms, 9s), EVENT_CRUSH, eventId);
             break;
         }
 
@@ -132,7 +132,7 @@ struct npc_zandalari_dinomancer_2 : public customCreatureAI
     void EnterCombat(Unit* /*who*/) override
     {
         me->SetCombatDistance(220.0f);
-        events.ScheduleEvent(EVENT_DINO_MENDING, 8.5 * IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_DINO_MENDING, 8s + 500ms);
     }
 
     void DamageTaken(Unit* attacker, uint32& damage) override
@@ -156,7 +156,7 @@ struct npc_zandalari_dinomancer_2 : public customCreatureAI
 
         while (uint32 eventId = events.ExecuteEvent())
         {
-            ExecuteTargetEvent(SPELL_DINO_MENDING, urand(10.5 * IN_MILLISECONDS, 14.3 * IN_MILLISECONDS), EVENT_DINO_MENDING, eventId, PRIORITY_SELF);
+            ExecuteTargetEvent(SPELL_DINO_MENDING, randtime(10s + 500ms, 14s + 300ms), EVENT_DINO_MENDING, eventId, PRIORITY_SELF);
             break;
         }
 
@@ -178,8 +178,8 @@ struct npc_primal_direhorn_hatchling : public customCreatureAI
     void EnterCombat(Unit* /*who*/) override
     {
         me->SetCombatDistance(220.0f);
-        events.ScheduleEvent(EVENT_TRIPPLE_PUNCTURE, 3 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_TRIHORN_CHARGE, 8 * IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_TRIPPLE_PUNCTURE, 3s);
+        events.ScheduleEvent(EVENT_TRIHORN_CHARGE, 8s);
     }
 
     void UpdateAI(uint32 diff) override
@@ -194,8 +194,8 @@ struct npc_primal_direhorn_hatchling : public customCreatureAI
 
         while (uint32 eventId = events.ExecuteEvent())
         {
-            ExecuteTargetEvent(SPELL_TRIPPLE_PUNCTURE, urand(8.5 * IN_MILLISECONDS, 15 * IN_MILLISECONDS), EVENT_TRIPPLE_PUNCTURE, eventId);
-            ExecuteTargetEvent(SPELL_TRIHORN_CHARGE, urand(12 * IN_MILLISECONDS, 25 * IN_MILLISECONDS), EVENT_TRIHORN_CHARGE, eventId, PRIORITY_NOT_VICTIM);
+            ExecuteTargetEvent(SPELL_TRIPPLE_PUNCTURE, randtime(8s + 500ms, 15s), EVENT_TRIPPLE_PUNCTURE, eventId);
+            ExecuteTargetEvent(SPELL_TRIHORN_CHARGE, randtime(12s, 25s), EVENT_TRIHORN_CHARGE, eventId, PRIORITY_NOT_VICTIM);
             break;
         }
 
@@ -217,9 +217,9 @@ struct npc_primal_direhorn : public customCreatureAI
     void EnterCombat(Unit* /*who*/) override
     {
         me->SetCombatDistance(220.0f);
-        events.ScheduleEvent(EVENT_TRIPPLE_PUNCTURE, 3 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_TRIHORN_CHARGE, 8 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_DOUBLE_SWIPE, 6 * IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_TRIPPLE_PUNCTURE, 3s);
+        events.ScheduleEvent(EVENT_TRIHORN_CHARGE, 8s);
+        events.ScheduleEvent(EVENT_DOUBLE_SWIPE, 6s);
     }
 
     void UpdateAI(uint32 diff) override
@@ -234,9 +234,9 @@ struct npc_primal_direhorn : public customCreatureAI
 
         while (uint32 eventId = events.ExecuteEvent())
         {
-            ExecuteTargetEvent(SPELL_TRIPPLE_PUNCTURE, urand(8.5 * IN_MILLISECONDS, 15 * IN_MILLISECONDS), EVENT_TRIPPLE_PUNCTURE, eventId);
-            ExecuteTargetEvent(SPELL_TRIHORN_CHARGE, urand(15 * IN_MILLISECONDS, 25 * IN_MILLISECONDS), EVENT_TRIHORN_CHARGE, eventId, PRIORITY_NOT_VICTIM);
-            ExecuteTargetEvent(SPELL_DOUBLE_SWIPE, urand(12 * IN_MILLISECONDS, 14 * IN_MILLISECONDS), EVENT_DOUBLE_SWIPE, eventId, PRIORITY_CHANNELED);
+            ExecuteTargetEvent(SPELL_TRIPPLE_PUNCTURE, randtime(8s + 500ms, 15s), EVENT_TRIPPLE_PUNCTURE, eventId);
+            ExecuteTargetEvent(SPELL_TRIHORN_CHARGE, randtime(15s, 25s), EVENT_TRIHORN_CHARGE, eventId, PRIORITY_NOT_VICTIM);
+            ExecuteTargetEvent(SPELL_DOUBLE_SWIPE, randtime(12s, 14s), EVENT_DOUBLE_SWIPE, eventId, PRIORITY_CHANNELED);
             break;
         }
 

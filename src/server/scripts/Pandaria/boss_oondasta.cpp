@@ -114,7 +114,7 @@ class boss_oondasta : public CreatureScript
                 events.ScheduleEvent(EVENT_FRILL_BLAST, 40s);
                 events.ScheduleEvent(EVENT_PIERCING_ROAR, 20s);
                 events.ScheduleEvent(EVENT_SPIRITFIRE_BEAM, 5s);
-                events.ScheduleEvent(EVENT_SPIRITFIRE_BEAM_2, randtime(35s, 60s)); // additional spirit fire, not in chain
+                events.ScheduleEvent(EVENT_SPIRITFIRE_BEAM_2, randtime(35s, 1min)); // additional spirit fire, not in chain
                 events.ScheduleEvent(EVENT_GROWING_FURY, 18s +500ms);
             }
 
