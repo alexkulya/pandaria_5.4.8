@@ -29,39 +29,46 @@ class Player;
 class WorldPacket;
 class LogFile;
 
-#define MIN_AUCTION_TIME    (12*HOUR)
-#define MAX_AUCTION_ITEMS    32
+#define MIN_AUCTION_TIME (12 * HOUR)
+#define MAX_AUCTION_ITEMS 32
 #define AUCTION_SEARCH_DELAY 300 // time in MS till the player can search again
 
 enum AuctionError
 {
-    ERR_AUCTION_OK                  = 0,
-    ERR_AUCTION_INVENTORY           = 1,
-    ERR_AUCTION_DATABASE_ERROR      = 2,
-    ERR_AUCTION_NOT_ENOUGHT_MONEY   = 3,
-    ERR_AUCTION_ITEM_NOT_FOUND      = 4,
-    ERR_AUCTION_HIGHER_BID          = 5,
-    ERR_AUCTION_BID_INCREMENT       = 7,
-    ERR_AUCTION_BID_OWN             = 10,
-    ERR_AUCTION_RESTRICTED_ACCOUNT  = 13
+    ERR_AUCTION_OK                          = 0,
+    ERR_AUCTION_INVENTORY                   = 1,
+    ERR_AUCTION_DATABASE_ERROR              = 2,
+    ERR_AUCTION_NOT_ENOUGHT_MONEY           = 3,
+    ERR_AUCTION_ITEM_NOT_FOUND              = 4,
+    ERR_AUCTION_HIGHER_BID                  = 5,
+    ERR_AUCTION_BID_INCREMENT               = 7,
+    ERR_AUCTION_BID_OWN                     = 10,
+    ERR_AUCTION_RESTRICTED_ACCOUNT          = 13
 };
 
 enum AuctionAction
 {
-    AUCTION_SELL_ITEM   = 0,
-    AUCTION_CANCEL      = 1,
-    AUCTION_PLACE_BID   = 2
+    AUCTION_SELL_ITEM                       = 0,
+    AUCTION_CANCEL                          = 1,
+    AUCTION_PLACE_BID                       = 2
 };
 
 enum MailAuctionAnswers
 {
-    AUCTION_OUTBIDDED           = 0,
-    AUCTION_WON                 = 1,
-    AUCTION_SUCCESSFUL          = 2,
-    AUCTION_EXPIRED             = 3,
-    AUCTION_CANCELLED_TO_BIDDER = 4,
-    AUCTION_CANCELED            = 5,
-    AUCTION_SALE_PENDING        = 6
+    AUCTION_OUTBIDDED                       = 0,
+    AUCTION_WON                             = 1,
+    AUCTION_SUCCESSFUL                      = 2,
+    AUCTION_EXPIRED                         = 3,
+    AUCTION_CANCELLED_TO_BIDDER             = 4,
+    AUCTION_CANCELED                        = 5,
+    AUCTION_SALE_PENDING                    = 6
+};
+
+enum AuctionHouses
+{
+    AUCTIONHOUSE_ALLIANCE                   = 2,
+    AUCTIONHOUSE_HORDE                      = 6,
+    AUCTIONHOUSE_NEUTRAL                    = 7
 };
 
 struct AuctionEntry
@@ -72,12 +79,12 @@ struct AuctionEntry
     uint32 itemEntry;
     uint32 itemCount;
     uint32 owner;
-    uint32 startbid;                                        //maybe useless
+    uint32 startbid;                                        // maybe useless
     uint32 bid;
     uint32 buyout;
     time_t expire_time;
     uint32 bidder;
-    uint32 deposit;                                         //deposit can be calculated only when creating auction
+    uint32 deposit;                                         // deposit can be calculated only when creating auction
     AuctionHouseEntry const* auctionHouseEntry;             // in AuctionHouse.dbc
     uint32 factionTemplateId;
 
@@ -151,7 +158,7 @@ class AuctionHouseObject
 
     void AddAuction(AuctionEntry* auction, bool skipLock = false);
 
-    bool RemoveAuction(AuctionEntry* auction, uint32 itemEntry, bool skipLock = false);
+    bool RemoveAuction(AuctionEntry* auction, bool skipLock = false);
 
     void Update();
 

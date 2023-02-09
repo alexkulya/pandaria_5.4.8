@@ -13409,9 +13409,9 @@ Item* Player::_StoreItem(uint16 pos, Item* pItem, uint32 count, bool clone, bool
         if (!pItem)
             return NULL;
 
-        if (pItem->GetTemplate()->Bonding == BIND_WHEN_PICKED_UP ||
-            pItem->GetTemplate()->Bonding == BIND_QUEST_ITEM ||
-            (pItem->GetTemplate()->Bonding == BIND_WHEN_EQUIPED && IsBagPos(pos)) ||
+        if (pItem->GetTemplate()->Bonding == BIND_ON_ACQUIRE ||
+            pItem->GetTemplate()->Bonding == BIND_QUEST ||
+            (pItem->GetTemplate()->Bonding == BIND_ON_EQUIP && IsBagPos(pos)) ||
             pItem->GetTemplate()->FlagsCu & ITEM_FLAGS_CU_EQUIP_DISABLE)
             pItem->SetBinding(true);
 
@@ -13451,9 +13451,9 @@ Item* Player::_StoreItem(uint16 pos, Item* pItem, uint32 count, bool clone, bool
     }
     else
     {
-        if (pItem2->GetTemplate()->Bonding == BIND_WHEN_PICKED_UP ||
-            pItem2->GetTemplate()->Bonding == BIND_QUEST_ITEM ||
-            (pItem2->GetTemplate()->Bonding == BIND_WHEN_EQUIPED && IsBagPos(pos)) ||
+        if (pItem2->GetTemplate()->Bonding == BIND_ON_ACQUIRE ||
+            pItem2->GetTemplate()->Bonding == BIND_QUEST ||
+            (pItem2->GetTemplate()->Bonding == BIND_ON_EQUIP && IsBagPos(pos)) ||
             pItem->GetTemplate()->FlagsCu & ITEM_FLAGS_CU_EQUIP_DISABLE)
             pItem2->SetBinding(true);
 
@@ -13708,8 +13708,8 @@ void Player::VisualizeItem(uint8 slot, Item* pItem)
     if (!pItem)
         return;
 
-    // check also  BIND_WHEN_PICKED_UP and BIND_QUEST_ITEM for .additem or .additemset case by GM (not binded at adding to inventory)
-    if (pItem->GetTemplate()->Bonding == BIND_WHEN_EQUIPED || pItem->GetTemplate()->Bonding == BIND_WHEN_PICKED_UP || pItem->GetTemplate()->Bonding == BIND_QUEST_ITEM)
+    // check also  BIND_ON_ACQUIRE and BIND_QUEST for .additem or .additemset case by GM (not binded at adding to inventory)
+    if (pItem->GetTemplate()->Bonding == BIND_ON_EQUIP || pItem->GetTemplate()->Bonding == BIND_ON_ACQUIRE || pItem->GetTemplate()->Bonding == BIND_QUEST)
         pItem->SetBinding(true);
 
     TC_LOG_DEBUG("entities.player.items", "STORAGE: EquipItem slot = %u, item = %u", slot, pItem->GetEntry());
@@ -13946,7 +13946,7 @@ void Player::DestroyItem(uint8 bag, uint8 slot, bool update)
         // Delete rolled money / loot from db.
         // MUST be done before RemoveFromWorld() or GetTemplate() fails
         if (ItemTemplate const* pTmp = pItem->GetTemplate())
-            if (pTmp->Flags & ITEM_PROTO_FLAG_OPENABLE)
+            if (pTmp->Flags & ITEM_PROTO_FLAG_HAS_LOOT)
                 pItem->ItemContainerDeleteLootMoneyAndLootItemsFromDB();
 
         if (IsInWorld() && update)
@@ -17995,7 +17995,7 @@ void Player::DestroyQuestItems(uint32 questId)
 
         // Destroy items received during the quest.
         for (uint8 i = 0; i < QUEST_SOURCE_ITEM_IDS_COUNT; ++i)
-            if (quest->RequiredSourceItemId[i]  && quest->RequiredSourceItemCount[i] && sObjectMgr->GetItemTemplate(quest->RequiredSourceItemId[i])->Bonding == BIND_QUEST_ITEM)
+            if (quest->RequiredSourceItemId[i]  && quest->RequiredSourceItemCount[i] && sObjectMgr->GetItemTemplate(quest->RequiredSourceItemId[i])->Bonding == BIND_QUEST)
                 DestroyItemCount(quest->RequiredSourceItemId[i], quest->RequiredSourceItemCount[i], true, true);
     }
 }

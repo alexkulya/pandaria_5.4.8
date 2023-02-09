@@ -388,7 +388,7 @@ TransmogTrinityStrings Transmogrification::Transmogrify(Player* player, uint64 i
         itemTransmogrified->SetNotRefundable(player);
         itemTransmogrified->ClearSoulboundTradeable(player);
 
-        if (itemTransmogrifier->GetTemplate()->Bonding == BIND_WHEN_EQUIPED || itemTransmogrifier->GetTemplate()->Bonding == BIND_WHEN_USE)
+        if (itemTransmogrifier->GetTemplate()->Bonding == BIND_ON_ACQUIRE || itemTransmogrifier->GetTemplate()->Bonding == BIND_ON_USE)
             itemTransmogrifier->SetBinding(true);
 
         itemTransmogrifier->SetOwnerGUID(player->GetGUID());

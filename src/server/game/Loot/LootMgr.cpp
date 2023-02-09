@@ -2464,7 +2464,7 @@ void LoadLootTemplates_Item()
     // remove real entries and check existence loot
     ItemTemplateContainer const* its = sObjectMgr->GetItemTemplateStore();
     for (ItemTemplateContainer::const_iterator itr = its->begin(); itr != its->end(); ++itr)
-        if (lootIdSet.find(itr->second.ItemId) != lootIdSet.end() && itr->second.Flags & ITEM_PROTO_FLAG_OPENABLE)
+        if (lootIdSet.find(itr->second.ItemId) != lootIdSet.end() && itr->second.Flags & ITEM_PROTO_FLAG_HAS_LOOT)
             lootIdSet.erase(itr->second.ItemId);
 
     // output error for any still listed (not referenced from appropriate table) ids

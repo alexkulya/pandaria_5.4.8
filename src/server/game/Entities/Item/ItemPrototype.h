@@ -96,18 +96,6 @@ enum ItemSpelltriggerType
 
 #define MAX_ITEM_SPELLTRIGGER           8
 
-enum ItemBondingType
-{
-    NO_BIND                                     = 0,
-    BIND_WHEN_PICKED_UP                         = 1,
-    BIND_WHEN_EQUIPED                           = 2,
-    BIND_WHEN_USE                               = 3,
-    BIND_QUEST_ITEM                             = 4,
-    BIND_QUEST_ITEM1                            = 5         // not used in game
-};
-
-#define MAX_BIND_TYPE                             6
-
 /* /// @todo: Requiring actual cases in which using (an) item isn't allowed while shapeshifted. Else, this flag would need an implementation.
     ITEM_PROTO_FLAG_USABLE_WHEN_SHAPESHIFTED    = 0x00800000, // Item can be used in shapeshift forms */
 
@@ -115,7 +103,7 @@ enum ItemProtoFlags
 {
     ITEM_PROTO_FLAG_UNK1                        = 0x00000001, // ?
     ITEM_PROTO_FLAG_CONJURED                    = 0x00000002, // Conjured item
-    ITEM_PROTO_FLAG_OPENABLE                    = 0x00000004, // Item can be right clicked to open for loot
+    ITEM_PROTO_FLAG_HAS_LOOT                    = 0x00000004, // Item can be right clicked to open for loot
     ITEM_PROTO_FLAG_HEROIC                      = 0x00000008, // Makes green "Heroic" text appear on item
     ITEM_PROTO_FLAG_DEPRECATED                  = 0x00000010, // Cannot equip or use
     ITEM_PROTO_FLAG_INDESTRUCTIBLE              = 0x00000020, // Item can not be destroyed, except by using spell (item can be reagent for spell)
@@ -146,6 +134,17 @@ enum ItemProtoFlags
     ITEM_PROTO_FLAG_UNK11                       = 0x40000000, // ?
     ITEM_PROTO_FLAG_BOP_TRADEABLE               = 0x80000000  // bound item that can be traded
 };
+
+enum ItemBondingType
+{
+    BIND_NONE                                   = 0,
+    BIND_ON_ACQUIRE                             = 1,
+    BIND_ON_EQUIP                               = 2,
+    BIND_ON_USE                                 = 3,
+    BIND_QUEST                                  = 4,
+};
+
+#define MAX_BIND_TYPE                             5
 
 enum ItemFieldFlags
 {
@@ -812,6 +811,20 @@ struct ItemTemplate
     uint32 CalculateScalingStatValue(uint32 ilvl) const;
     uint32 CalculateArmor(uint32 ilvl) const;
     void CalculateMinMaxDamageScaling(uint32 ilvl, uint32& minDamage, uint32& maxDamage) const;
+
+    uint32 GetClass() const { return Class; }
+    uint32 GetSubClass() const { return SubClass; }
+    uint32 GetQuality() const { return Quality; }
+    uint32 GetFlags() const { return Flags; }
+    uint32 GetBuyCount() const { return std::max(BuyCount, 1u); }
+    uint32 GetBuyPrice() const { return BuyPrice; }
+    uint32 GetSellPrice() const { return SellPrice; }
+    uint32 GetBaseItemLevel() const { return ItemLevel; }
+    uint32 GetRequiredLevel() const { return RequiredLevel; }
+    uint32 GetRequiredSkill() const { return RequiredSkill; }
+    uint32 GetRequiredSkillRank() const { return RequiredSkillRank; }    
+    ItemBondingType GetBonding() const { return ItemBondingType(Bonding); }
+    uint32 GetLockID() const { return LockID; }
 };
 
 // Benchmarked: Faster than std::map (insert/find)

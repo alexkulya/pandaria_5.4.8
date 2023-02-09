@@ -822,7 +822,7 @@ void WorldSession::SendListInventory(uint64 vendorGuid, uint32 vendorEntry)
             if (!_player->IsGameMaster()) // ignore conditions if GM on
             {
                 // Respect allowed class
-                if (!(itemTemplate->AllowableClass & _player->getClassMask()) && itemTemplate->Bonding == BIND_WHEN_PICKED_UP)
+                if (!(itemTemplate->AllowableClass & _player->getClassMask()) && itemTemplate->Bonding == BIND_ON_ACQUIRE)
                     continue;
 
                 // Only display items in vendor lists for the team the player is on
@@ -1954,7 +1954,7 @@ void WorldSession::HandleTransmogrifyItems(WorldPacket& recvData)
             itemTransmogrified->SetNotRefundable(player);
             itemTransmogrified->ClearSoulboundTradeable(player);
 
-            if (itemTransmogrifier && (itemTransmogrifier->GetTemplate()->Bonding == BIND_WHEN_EQUIPED || itemTransmogrifier->GetTemplate()->Bonding == BIND_WHEN_USE))
+            if (itemTransmogrifier && (itemTransmogrifier->GetTemplate()->Bonding == BIND_ON_EQUIP || itemTransmogrifier->GetTemplate()->Bonding == BIND_ON_USE))
                 itemTransmogrifier->SetBinding(true);
 
             if (itemTransmogrifier)

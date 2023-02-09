@@ -14,6 +14,7 @@ file(GLOB_RECURSE sources_Addons Addons/*.cpp Addons/*.h)
 file(GLOB_RECURSE sources_AI AI/*.cpp AI/*.h)
 file(GLOB_RECURSE sources_Anticheat Anticheat/*.cpp Anticheat/*.h)
 file(GLOB_RECURSE sources_AuctionHouse AuctionHouse/*.cpp AuctionHouse/*.h)
+file(GLOB_RECURSE sources_AuctionHouseBot AuctionHouseBot/*.cpp AuctionHouse/*.h)
 file(GLOB_RECURSE sources_Battlefield Battlefield/*.cpp Battlefield/*.h)
 file(GLOB_RECURSE sources_Battlegrounds Battlegrounds/*.cpp Battlegrounds/*.h)
 file(GLOB_RECURSE sources_BattlePay BattlePay/*.cpp BattlePay/*.h)
@@ -52,6 +53,7 @@ file(GLOB_RECURSE sources_Services Services/*.cpp Services/*.h)
 file(GLOB_RECURSE sources_Skills Skills/*.cpp Skills/*.h)
 file(GLOB_RECURSE sources_Spells Spells/*.cpp Spells/*.h)
 file(GLOB_RECURSE sources_Texts Texts/*.cpp Texts/*.h)
+file(GLOB_RECURSE sources_Time Time/*.cpp Time/*.h)
 file(GLOB_RECURSE sources_Tools Tools/*.cpp Tools/*.h)
 file(GLOB_RECURSE sources_Tickets Tickets/*.cpp Tickets/*.h)
 file(GLOB_RECURSE sources_Vignette Vignette/*.cpp Vignette/*.h)
@@ -66,6 +68,7 @@ source_group(Addons FILES ${sources_Addons})
 source_group(AI FILES ${sources_AI})
 source_group(Anticheat FILES ${sources_Anticheat})
 source_group(AuctionHouse FILES ${sources_AuctionHouse})
+source_group(AuctionHouseBot FILES ${sources_AuctionHouseBot})
 source_group(Battlefield FILES ${sources_Battlefield})
 source_group(Battlegrounds FILES ${sources_Battlegrounds})
 source_group(BattlePay FILES ${sources_BattlePay})
@@ -104,6 +107,7 @@ source_group(Services FILES ${sources_Services})
 source_group(Skills FILES ${sources_Skills})
 source_group(Spells FILES ${sources_Spells})
 source_group(Texts FILES ${sources_Texts})
+source_group(Time FILES ${sources_Time})
 source_group(Tools FILES ${sources_Tools})
 source_group(Tickets FILES ${sources_Tickets})
 source_group(Warden FILES ${sources_Warden})
@@ -124,6 +128,7 @@ set(game_STAT_SRCS
   ${sources_AI}
   ${sources_Anticheat}
   ${sources_AuctionHouse}
+  ${sources_AuctionHouseBot}
   ${sources_Battlefield}
   ${sources_Battlegrounds}
   ${sources_BattlePay}
@@ -161,6 +166,7 @@ set(game_STAT_SRCS
   ${sources_Skills}
   ${sources_Spells}
   ${sources_Texts}
+  ${sources_Time}
   ${sources_Tools}
   ${sources_Tickets}
   ${sources_Vignette}
@@ -205,6 +211,7 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/AI/SmartScripts
   ${CMAKE_CURRENT_SOURCE_DIR}/Anticheat
   ${CMAKE_CURRENT_SOURCE_DIR}/AuctionHouse
+  ${CMAKE_CURRENT_SOURCE_DIR}/AuctionHouseBot
   ${CMAKE_CURRENT_SOURCE_DIR}/Battlefield
   ${CMAKE_CURRENT_SOURCE_DIR}/Battlefield/Zones
   ${CMAKE_CURRENT_SOURCE_DIR}/Battlegrounds
@@ -268,6 +275,7 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/Spells
   ${CMAKE_CURRENT_SOURCE_DIR}/Spells/Auras
   ${CMAKE_CURRENT_SOURCE_DIR}/Texts
+  ${CMAKE_CURRENT_SOURCE_DIR}/Time
   ${CMAKE_CURRENT_SOURCE_DIR}/Tools
   ${CMAKE_CURRENT_SOURCE_DIR}/Tickets
   ${CMAKE_CURRENT_SOURCE_DIR}/Vignette

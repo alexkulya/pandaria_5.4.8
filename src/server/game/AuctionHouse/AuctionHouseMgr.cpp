@@ -615,7 +615,7 @@ void AuctionHouseObject::AddAuction(AuctionEntry* auction, bool skipLock)
         AuctionsMapLock.release();
 }
 
-bool AuctionHouseObject::RemoveAuction(AuctionEntry* auction, uint32 /*itemEntry*/, bool skipLock)
+bool AuctionHouseObject::RemoveAuction(AuctionEntry* auction, bool skipLock)
 {
     if (!skipLock)
         AuctionsMapLock.acquire_write();
@@ -686,7 +686,7 @@ void AuctionHouseObject::Update()
         CharacterDatabase.CommitTransaction(trans);
 
         sAuctionMgr->RemoveAItem(auction->itemGUIDLow);
-        RemoveAuction(auction, itemEntry, true);
+        RemoveAuction(auction, true);
     }
     while (result->NextRow());
 }
