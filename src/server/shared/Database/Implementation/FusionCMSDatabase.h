@@ -16,7 +16,7 @@
 */
 
 #ifndef _FUSIONCMSDATABASE_H
-#define _FUSIONCMDATABASE_H
+#define _FUSIONCMSDATABASE_H
 
 #include "DatabaseWorkerPool.h"
 #include "MySQLConnection.h"

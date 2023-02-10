@@ -31,11 +31,19 @@ Pandaria 5.4.8 docker [(Thanks diff3)](https://github.com/diff3): https://github
 + command cmake (replace XX by your clang version) :
 + ```bash
   $ cmake ../ -DCMAKE_INSTALL_PREFIX=$HOME/yourUser/folder -DCMAKE_C_COMPILER=/usr/bin/clang-XX -DCMAKE_CXX_COMPILER=/usr/bin/clang++-XX -DSCRIPTS=static
-  (Replace n by the number of cores you have)
-  $ make -jn
+  
+  $ make -j $(nproc)
   $ make install
   (if permission denied, use sudo make install)
   ```
+- if you want to build the tools to extracting data from MoP client, you need to add a compiler flag to cmake.
+
+  ```bash
+  cmake ../ -DCMAKE_INSTALL_PREFIX=$HOME/yourUser/folder -DCMAKE_C_COMPILER=/usr/bin/clang-XX -DCMAKE_CXX_COMPILER=/usr/bin/clang++-XX -DCMAKE_CXX_FLAGS=-pthread -DSCRIPTS=static
+  ```
+
+  
+
 ### Enjoy
 
 ## Copyright
