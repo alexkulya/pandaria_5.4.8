@@ -24,7 +24,7 @@
 #define WRATHION_MAX_WP_Q4 7
 #define FEL_METEORS_RANGE 6.0f
 #define SHA_TOUCHED_GEM_RANGE 10.0f
-#define WRATHION_GOSSIP "Let`s talk..."
+#define WRATHION_GOSSIP "Давай поговорим..."
 
 // Legend in the making
 const Position ScenarioPoint  = { 826.33f, -169.69f, 415.26f, 2.61f };
@@ -513,8 +513,10 @@ class npc_wrathion : public CreatureScript
             if (creature->IsQuestGiver())
                 player->PrepareQuestMenu(creature->GetGUID());
 
-            if (player->GetQuestStatus(QUEST_LEGEND_IN_THE_MAKING) == QUEST_STATUS_INCOMPLETE)
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, WRATHION_GOSSIP, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            if (!player->FindNearestCreature(NPC_TONG_THE_FIXER, 40.0f) && player->GetQuestStatus(QUEST_LEGEND_IN_THE_MAKING) == QUEST_STATUS_INCOMPLETE)
+			{
+					player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, WRATHION_GOSSIP, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+			}
 
             if (player->GetQuestStatus(QUEST_MEASURE_OF_THE_LEADER_A) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(QUEST_MEASURE_OF_THE_LEADER_H) == QUEST_STATUS_INCOMPLETE)
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, WRATHION_GOSSIP, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
@@ -595,6 +597,7 @@ class npc_tong_the_fixer_legend_in_the_making : public CreatureScript
                                 me->m_Events.Schedule(delay += me->GetSplineDuration() + 2500, EVENT_TONG_MOVE_HOME, [this]()
                                 {
                                     me->GetMotionMaster()->MovePoint(0, me->GetHomePosition());
+                                    me->DespawnOrUnsummon(30000);
                                 });
                             });
                         });
