@@ -24,7 +24,7 @@
 #define WRATHION_MAX_WP_Q4 7
 #define FEL_METEORS_RANGE 6.0f
 #define SHA_TOUCHED_GEM_RANGE 10.0f
-#define WRATHION_GOSSIP "Давай поговорим..."
+#define WRATHION_GOSSIP "Let`s talk..."
 
 // Legend in the making
 const Position ScenarioPoint  = { 826.33f, -169.69f, 415.26f, 2.61f };
