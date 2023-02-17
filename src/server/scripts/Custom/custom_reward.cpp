@@ -39,10 +39,10 @@ public:
             {
                 ChatHandler(player->GetSession()).PSendSysMessage(GetText(player, "Бонус за проведенное в игре время.", "Bonus for played time."));
 
-                PreparedStatement* stmt = FusionCMSDatabase.GetPreparedStatement(FUSION_UPD_BATTLEPAY_VP_COINS);
+                PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_BATTLEPAY_VP_COINS);
                 stmt->setUInt32(0, sConfigMgr->GetIntDefault("PlayedTimeReward.vp", 0));
                 stmt->setUInt32(1, player->GetSession()->GetAccountId());
-                FusionCMSDatabase.Query(stmt);                
+                LoginDatabase.Query(stmt);                
             }
         }
     }

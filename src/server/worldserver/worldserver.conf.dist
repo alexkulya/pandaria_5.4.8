@@ -95,13 +95,11 @@ LogsDir = "Logs"
 #        Default:     "127.0.0.1;3306;skyfire;skyfire;auth"       - (LoginDatabaseInfo)
 #                     "127.0.0.1;3306;skyfire;skyfire;world"      - (WorldDatabaseInfo)
 #                     "127.0.0.1;3306;skyfire;skyfire;characters" - (CharacterDatabaseInfo)
-#                     "127.0.0.1;3306;skyfire;skyfire;FusionCMS"  - (FusionCMSDatabaseInfo)
 
 LoginDatabaseInfo     = "127.0.0.1;3306;root;root;auth"
 WorldDatabaseInfo     = "127.0.0.1;3306;root;root;world"
 CharacterDatabaseInfo = "127.0.0.1;3306;root;root;characters"
 ArchiveDatabaseInfo   = "127.0.0.1;3306;root;root;archive"
-FusionCMSDatabaseInfo = "127.0.0.1;3306;root;root;fusion"
 
 #
 #    LoginDatabase.WorkerThreads
@@ -113,13 +111,11 @@ FusionCMSDatabaseInfo = "127.0.0.1;3306;root;root;fusion"
 #        Default:     1 - (LoginDatabase.WorkerThreads)
 #                     1 - (WorldDatabase.WorkerThreads)
 #                     1 - (CharacterDatabase.WorkerThreads)
-#                     1 - (FusionCMSDatabase.WorkerThreads)
 
 LoginDatabase.WorkerThreads     = 1
 WorldDatabase.WorkerThreads     = 1
 CharacterDatabase.WorkerThreads = 1
 ArchiveDatabase.WorkerThreads   = 1
-FusionCMSDatabase.WorkerThreads = 1
 
 #
 #    LoginDatabase.SynchThreads
@@ -129,13 +125,11 @@ FusionCMSDatabase.WorkerThreads = 1
 #        Default:     1 - (LoginDatabase.WorkerThreads)
 #                     1 - (WorldDatabase.WorkerThreads)
 #                     2 - (CharacterDatabase.WorkerThreads)
-#                     1 - (FusionCMSDatabase.WorkerThreads)
 
 LoginDatabase.SynchThreads     = 1
 WorldDatabase.SynchThreads     = 1
 CharacterDatabase.SynchThreads = 2
 ArchiveDatabase.SynchThreads   = 1
-FusionCMSDatabase.SynchThreads = 1
 
 #
 #    MaxPingTime

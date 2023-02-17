@@ -53,7 +53,6 @@ WorldDatabaseWorkerPool WorldDatabase;                      ///< Accessor to the
 CharacterDatabaseWorkerPool CharacterDatabase;              ///< Accessor to the character database
 LoginDatabaseWorkerPool LoginDatabase;                      ///< Accessor to the realm/login database
 ArchiveDatabaseWorkerPool ArchiveDatabase;
-FusionCMSDatabaseWorkerPool FusionCMSDatabase;              ///< Accessor to the fusioncms database
 
 RealmNameMap realmNameStore;
 uint32 realmID;                                             ///< Id of the realm

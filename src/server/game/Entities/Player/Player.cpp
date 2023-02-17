@@ -11734,10 +11734,10 @@ bool Player::IsValidPos(uint8 bag, uint8 slot, bool explicit_pos)
 
 uint64 Player::GetDonateTokens() const
 {
-    PreparedStatement* stmt = FusionCMSDatabase.GetPreparedStatement(FUSION_SEL_BATTLEPAY_COINS);
+    PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_BATTLEPAY_COINS);
     stmt->setUInt32(0, GetSession()->GetAccountId());
 
-    PreparedQueryResult result_don = FusionCMSDatabase.Query(stmt);
+    PreparedQueryResult result_don = LoginDatabase.Query(stmt);
 
     if (!result_don)
         return 0;
@@ -11750,19 +11750,19 @@ uint64 Player::GetDonateTokens() const
 
 void Player::DestroyDonateTokenCount(uint64 count)
 {
-    PreparedStatement* stmt = FusionCMSDatabase.GetPreparedStatement(FUSION_UPD_BATTLEPAY_DECREMENT_COINS);
+    PreparedStatement* stmt = FLoginDatabase.GetPreparedStatement(LOGIN_UPD_BATTLEPAY_DECREMENT_COINS);
     stmt->setUInt32(0, count);
     stmt->setUInt32(1, GetSession()->GetAccountId());    
-    FusionCMSDatabase.Query(stmt);
+    LoginDatabase.Query(stmt);
 }
 
 void Player::AddDonateTokenCount(uint64 count)
 {
     // add coins
-    PreparedStatement* stmt = FusionCMSDatabase.GetPreparedStatement(FUSION_UPD_BATTLEPAY_INCREMENT_COINS);
+    PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_BATTLEPAY_INCREMENT_COINS);
     stmt->setUInt32(0, count);
     stmt->setUInt32(1, GetSession()->GetAccountId());    
-    FusionCMSDatabase.Query(stmt);
+    LoginDatabase.Query(stmt);
     
     // Register the wow token
     PreparedStatement* stmt2 = LoginDatabase.GetPreparedStatement(LOGIN_INS_WOW_TOKEN);

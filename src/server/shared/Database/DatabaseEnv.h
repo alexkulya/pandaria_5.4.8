@@ -37,12 +37,10 @@
 #include "Implementation/CharacterDatabase.h"
 #include "Implementation/WorldDatabase.h"
 #include "Implementation/ArchiveDatabase.h"
-#include "Implementation/FusionCMSDatabase.h"
 
 extern WorldDatabaseWorkerPool WorldDatabase;
 extern CharacterDatabaseWorkerPool CharacterDatabase;
 extern LoginDatabaseWorkerPool LoginDatabase;
 extern ArchiveDatabaseWorkerPool ArchiveDatabase;
-extern FusionCMSDatabaseWorkerPool FusionCMSDatabase;
 #endif
 

@@ -460,10 +460,10 @@ void BattlePayMgr::UpdatePointsBalance(WorldSession* session, uint64 points)
     }
     else
     {
-        PreparedStatement* stmt = FusionCMSDatabase.GetPreparedStatement(FUSION_UPD_BATTLEPAY_DECREMENT_COINS);
+        PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_BATTLEPAY_DECREMENT_COINS);
         stmt->setUInt32(0, points);
         stmt->setUInt32(1, session->GetAccountId());    
-        FusionCMSDatabase.Query(stmt);
+        LoginDatabase.Query(stmt);
     }
 }
 
@@ -485,9 +485,9 @@ bool BattlePayMgr::HasPointsBalance(WorldSession* session, uint64 points)
     }
     else
     {
-        PreparedStatement* stmt = FusionCMSDatabase.GetPreparedStatement(FUSION_SEL_BATTLEPAY_COINS);
+        PreparedStatement* stmt = LoginCMSDatabase.GetPreparedStatement(LOGIN_SEL_BATTLEPAY_COINS);
         stmt->setUInt32(0, session->GetAccountId());
-        PreparedQueryResult result_don = FusionCMSDatabase.Query(stmt);
+        PreparedQueryResult result_don = LoginDatabase.Query(stmt);
 
         if (!result_don)
             return false;
