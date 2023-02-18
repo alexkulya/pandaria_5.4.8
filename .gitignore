@@ -3,5 +3,3 @@
 /out/build
 /.vs
 build
-cmake
-.gitignore
