@@ -704,7 +704,7 @@ class WorldObject : public Object, public WorldLocation
         virtual void Update (uint32 /*time_diff*/) { }
 
         void _Create(uint32 guidlow, HighGuid guidhigh, uint32 phaseMask);
-        virtual void RemoveFromWorld();
+        virtual void RemoveFromWorld() override;
 
         void GetNearPoint2D(float &x, float &y, float distance, float absAngle) const;
         void GetNearPoint(WorldObject const* searcher, float &x, float &y, float &z, float searcher_size, float distance2d, float absAngle) const;
@@ -871,7 +871,7 @@ class WorldObject : public Object, public WorldLocation
         void DestroyForNearbyPlayers();
         virtual void UpdateObjectVisibility(bool forced = true);
         void UpdateStealthVisibility(uint32 diff);
-        void BuildUpdate(UpdateDataMapType&);
+        void BuildUpdate(UpdateDataMapType&) override;
 
         bool isActiveObject() const { return m_isActive; }
         void setActive(bool on, ActiveFlags flag = ActiveFlags::InCombat);

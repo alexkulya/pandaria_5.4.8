@@ -448,11 +448,11 @@ class Creature : public Unit, public GridObject<Creature>, public MapObject
         explicit Creature(bool isWorldObject = false);
         virtual ~Creature();
 
-        void AddToWorld();
-        void RemoveFromWorld();
+        void AddToWorld() override;
+        void RemoveFromWorld() override;
 
-        void SetObjectScale(float scale);
-        void SetDisplayId(uint32 modelId);
+        void SetObjectScale(float scale) override;
+        void SetDisplayId(uint32 modelId) override;
 
         void DisappearAndDie();
 
@@ -463,7 +463,7 @@ class Creature : public Unit, public GridObject<Creature>, public MapObject
 
         uint32 GetDBTableGUIDLow() const { return m_DBTableGuid; }
 
-        void Update(uint32 time);                         // overwrited Unit::Update
+        void Update(uint32 time) override;                         // overwrited Unit::Update
         void GetRespawnPosition(float &x, float &y, float &z, float* ori = NULL, float* dist =NULL) const;
 
         void SetCorpseDelay(uint32 delay) { m_corpseDelay = delay; }
@@ -474,7 +474,7 @@ class Creature : public Unit, public GridObject<Creature>, public MapObject
         bool IsGuard() const { return GetCreatureTemplate()->flags_extra & CREATURE_FLAG_EXTRA_GUARD; }
         bool CanWalk() const { return GetInhabitType() & INHABIT_GROUND; }
         bool CanSwim() const { return GetInhabitType() & INHABIT_WATER || IsPet(); }
-        bool CanFly()  const { return GetInhabitType() & INHABIT_AIR; }
+        bool CanFly()  const override { return GetInhabitType() & INHABIT_AIR; }
 
         // Used to dynamically change allowed path generator and movement flags behavior during scripts.
         // Can be used to allow ground-only creatures to temporarily fly, restrict flying creatures to the ground etc.
@@ -499,13 +499,13 @@ class Creature : public Unit, public GridObject<Creature>, public MapObject
         bool isCanTrainingAndResetTalentsOf(Player* player) const;
         bool CanCreatureAttack(Unit const* victim, bool force = true) const;
         bool IsImmunedToSpell(SpellInfo const* spellInfo, uint32 effectMask) const override;
-        bool IsImmunedToSpellEffect(SpellInfo const* spellInfo, uint32 index) const; // override Unit::IsImmunedToSpellEffect
+        bool IsImmunedToSpellEffect(SpellInfo const* spellInfo, uint32 index) const override; // override Unit::IsImmunedToSpellEffect
         bool isElite() const;
         bool isWorldBoss() const;
 
         bool IsDungeonBoss() const;
 
-        uint8 getLevelForTarget(WorldObject const* target) const; // overwrite Unit::getLevelForTarget for boss level support
+        uint8 getLevelForTarget(WorldObject const* target) const override; // overwrite Unit::getLevelForTarget for boss level support
 
         bool IsInEvadeMode() const { return HasUnitState(UNIT_STATE_EVADE); }
 
@@ -514,7 +514,7 @@ class Creature : public Unit, public GridObject<Creature>, public MapObject
 
         CreatureAI* AI() const { return reinterpret_cast<CreatureAI*>(i_AI); }
 
-        SpellSchoolMask GetMeleeDamageSchoolMask() const { return m_meleeDamageSchoolMask; }
+        SpellSchoolMask GetMeleeDamageSchoolMask() const override { return m_meleeDamageSchoolMask; }
         void SetMeleeDamageSchool(SpellSchools school) { m_meleeDamageSchoolMask = SpellSchoolMask(1 << school); }
 
         void _AddCreatureSpellCooldown(uint32 spell_id, time_t end_time);
@@ -523,28 +523,28 @@ class Creature : public Unit, public GridObject<Creature>, public MapObject
         bool HasSpellCooldown(uint32 spell_id) const;
         bool HasCategoryCooldown(uint32 spell_id) const;
         uint32 GetCreatureSpellCooldownDelay(uint32 spellId) const;
-        virtual void ProhibitSpellSchool(SpellSchoolMask idSchoolMask, uint32 unTimeMs);
+        virtual void ProhibitSpellSchool(SpellSchoolMask idSchoolMask, uint32 unTimeMs) override;
 
         // For spells with Cone targets
         void PrepareChanneledCast(float facing, uint32 spellId = 0, bool triggered = false);
         void RemoveChanneledCast(uint64 target = 0);
         void FixateOnTarget(uint64 targetGUID, uint32 timer = 0);
 
-        bool HasSpell(uint32 spellID) const;
+        bool HasSpell(uint32 spellID) const override;
 
         bool UpdateEntry(uint32 entry, uint32 team=ALLIANCE, const CreatureData* data=NULL);
 
         void UpdateMovementFlags(bool force = false);
         void SetFlying(bool enable);
 
-        bool UpdateStats(Stats stat);
-        bool UpdateAllStats();
-        void UpdateResistances(uint32 school);
-        void UpdateArmor();
-        void UpdateMaxHealth();
-        void UpdateMaxPower(Powers power);
-        void UpdateAttackPowerAndDamage(bool ranged = false);
-        void UpdateDamagePhysical(WeaponAttackType attType);
+        bool UpdateStats(Stats stat) override;
+        bool UpdateAllStats() override;
+        void UpdateResistances(uint32 school) override;
+        void UpdateArmor() override;
+        void UpdateMaxHealth() override;
+        void UpdateMaxPower(Powers power) override;
+        void UpdateAttackPowerAndDamage(bool ranged = false) override;
+        void UpdateDamagePhysical(WeaponAttackType attType) override;
 
         int8 GetOriginalEquipmentId() const { return m_originalEquipmentId; }
         uint8 GetCurrentEquipmentId() { return m_equipmentId; }
@@ -577,9 +577,9 @@ class Creature : public Unit, public GridObject<Creature>, public MapObject
         uint32 GetScriptId() const;
 
         // override WorldObject function for proper name localization
-        std::string const& GetNameForLocaleIdx(LocaleConstant locale_idx) const;
+        std::string const& GetNameForLocaleIdx(LocaleConstant locale_idx) const override;
 
-        void setDeathState(DeathState s);                   // override virtual Unit::setDeathState
+        void setDeathState(DeathState s) override;                   // override virtual Unit::setDeathState
 
         bool LoadFromDB(uint32 guid, Map* map) { return LoadCreatureFromDB(guid, map, false); }
         bool LoadCreatureFromDB(uint32 guid, Map* map, bool addToMap = true);
@@ -653,7 +653,7 @@ class Creature : public Unit, public GridObject<Creature>, public MapObject
         time_t GetRespawnTimeEx() const;
         void SetRespawnTime(uint32 respawn) { m_respawnTime = respawn ? time(NULL) + respawn : 0; }
         void Respawn(bool force = false);
-        void SaveRespawnTime();
+        void SaveRespawnTime() override;
 
         uint32 GetRespawnDelay() const { return m_respawnDelay; }
         uint32 GetRespawnDelayMax() const { return m_respawnDelayMax; }
@@ -672,8 +672,8 @@ class Creature : public Unit, public GridObject<Creature>, public MapObject
         void SetInCombatWithZone();
         void SetCombatDistance(float dist) { m_CombatDistance = dist < 5.0f ? 5.0f : dist; }
 
-        bool hasQuest(uint32 quest_id) const;
-        bool hasInvolvedQuest(uint32 quest_id)  const;
+        bool hasQuest(uint32 quest_id) const override;
+        bool hasInvolvedQuest(uint32 quest_id)  const override;
 
         bool isRegeneratingHealth() { return m_regenHealth; }
         void setRegeneratingHealth(bool regenHealth) { m_regenHealth = regenHealth; }
@@ -727,7 +727,7 @@ class Creature : public Unit, public GridObject<Creature>, public MapObject
         bool m_isTempWorldObject; //true when possessed
 
         // Handling caster facing during spellcast
-        void SetTarget(uint64 guid);
+        void SetTarget(uint64 guid) override;
         void FocusTarget(Spell const* focusSpell, WorldObject const* target);
         void ReleaseFocus(Spell const* focusSpell);
 
@@ -798,8 +798,8 @@ class Creature : public Unit, public GridObject<Creature>, public MapObject
         uint16 m_LootMode;                                  // Bitmask (default: LOOT_MODE_DEFAULT) that determines what loot will be lootable
         uint32 guid_transport;
 
-        bool IsInvisibleDueToDespawn() const;
-        bool CanAlwaysSee(WorldObject const* obj) const;
+        bool IsInvisibleDueToDespawn() const override;
+        bool CanAlwaysSee(WorldObject const* obj) const override;
 
         uint32 dynamicHealthPlayersCount;
 

@@ -11750,7 +11750,7 @@ uint64 Player::GetDonateTokens() const
 
 void Player::DestroyDonateTokenCount(uint64 count)
 {
-    PreparedStatement* stmt = FLoginDatabase.GetPreparedStatement(LOGIN_UPD_BATTLEPAY_DECREMENT_COINS);
+    PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_BATTLEPAY_DECREMENT_COINS);
     stmt->setUInt32(0, count);
     stmt->setUInt32(1, GetSession()->GetAccountId());    
     LoginDatabase.Query(stmt);
