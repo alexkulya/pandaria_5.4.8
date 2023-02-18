@@ -485,7 +485,7 @@ bool BattlePayMgr::HasPointsBalance(WorldSession* session, uint64 points)
     }
     else
     {
-        PreparedStatement* stmt = LoginCMSDatabase.GetPreparedStatement(LOGIN_SEL_BATTLEPAY_COINS);
+        PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_BATTLEPAY_COINS);
         stmt->setUInt32(0, session->GetAccountId());
         PreparedQueryResult result_don = LoginDatabase.Query(stmt);
 
