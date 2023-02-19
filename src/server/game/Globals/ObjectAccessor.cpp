@@ -441,7 +441,6 @@ void ObjectAccessor::UnloadAll()
 /// Define the static members of HashMapHolder
 
 template <class T> std::unordered_map< uint64, T* > HashMapHolder<T>::m_objectMap = LockType();
-// template <class T> typename HashMapHolder<T>::LockType HashMapHolder<T>::i_lock;
 template <class T> typename HashMapHolder<T>::LockType HashMapHolder<T>::i_lock = LockType();
 
 
@@ -460,3 +459,4 @@ template Creature* ObjectAccessor::GetObjectInWorld<Creature>(uint32 mapid, floa
 template Corpse* ObjectAccessor::GetObjectInWorld<Corpse>(uint32 mapid, float x, float y, uint64 guid, Corpse* /*fake*/);
 template GameObject* ObjectAccessor::GetObjectInWorld<GameObject>(uint32 mapid, float x, float y, uint64 guid, GameObject* /*fake*/);
 template DynamicObject* ObjectAccessor::GetObjectInWorld<DynamicObject>(uint32 mapid, float x, float y, uint64 guid, DynamicObject* /*fake*/);
+
