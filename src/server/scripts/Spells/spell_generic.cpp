@@ -4857,5 +4857,5 @@ void AddSC_generic_spell_scripts()
     new aura_script<spell_carrying_seaforium>("spell_carrying_seaforium");
     new aura_script<spell_gen_surgical_alterations>("spell_gen_surgical_alterations");
     new spell_script<spell_gen_deserter>("spell_gen_deserter");
-	new spell_script<spell_gen_rocket_barrage>("spell_gen_rocket_barrage");
+    new spell_script<spell_gen_rocket_barrage>("spell_gen_rocket_barrage");
 }

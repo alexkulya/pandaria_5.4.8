@@ -24,7 +24,8 @@
 #define WRATHION_MAX_WP_Q4 7
 #define FEL_METEORS_RANGE 6.0f
 #define SHA_TOUCHED_GEM_RANGE 10.0f
-#define WRATHION_GOSSIP "Let`s talk..."
+#define WRATHION_GOSSIP_EN "Let`s talk..."
+#define WRATHION_GOSSIP_RU "Давай поговорим..."
 
 // Legend in the making
 const Position ScenarioPoint  = { 826.33f, -169.69f, 415.26f, 2.61f };
@@ -510,16 +511,18 @@ class npc_wrathion : public CreatureScript
 
         bool OnGossipHello(Player* player, Creature* creature) override
         {
+            bool ru = player->GetSession()->GetSessionDbLocaleIndex() == LOCALE_ruRU; // alexkulya: реализовать через БД позже
+
             if (creature->IsQuestGiver())
                 player->PrepareQuestMenu(creature->GetGUID());
 
             if (!player->FindNearestCreature(NPC_TONG_THE_FIXER, 40.0f) && player->GetQuestStatus(QUEST_LEGEND_IN_THE_MAKING) == QUEST_STATUS_INCOMPLETE)
-			{
-					player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, WRATHION_GOSSIP, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-			}
+            {
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, ru ? WRATHION_GOSSIP_RU : WRATHION_GOSSIP_EN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            }
 
             if (player->GetQuestStatus(QUEST_MEASURE_OF_THE_LEADER_A) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(QUEST_MEASURE_OF_THE_LEADER_H) == QUEST_STATUS_INCOMPLETE)
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, WRATHION_GOSSIP, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, ru ? WRATHION_GOSSIP_RU : WRATHION_GOSSIP_EN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
 
             player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
             return true;
