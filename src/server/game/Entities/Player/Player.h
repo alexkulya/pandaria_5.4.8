@@ -1511,7 +1511,7 @@ class Player : public Unit, public GridObject<Player>
     {
         return m_isInWater;
     }
-    bool IsUnderWater() const;
+    bool IsUnderWater() const override;
 
     void SendInitialPacketsBeforeAddToMap();
     void SendInitialPacketsAfterAddToMap();
@@ -3851,7 +3851,7 @@ protected:
     Runes *m_runes;
     EquipmentSets m_EquipmentSets;
 
-    bool CanAlwaysSee(WorldObject const* obj) const;
+    bool CanAlwaysSee(WorldObject const* obj) const override;
 
     bool IsAlwaysDetectableFor(WorldObject const* seer) const override;
 

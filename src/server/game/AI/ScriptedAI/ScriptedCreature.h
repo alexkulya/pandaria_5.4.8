@@ -649,7 +649,7 @@ struct SpellDummyAI : public ScriptedAI
     }
 
     void UpdateAI(uint32) override { }
-    void EnterEvadeMode() { }
+    void EnterEvadeMode() override { }
 };
 
 enum TargetPriority
