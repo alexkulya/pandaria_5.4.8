@@ -2681,13 +2681,6 @@ Calculate.Creature.Zone.Area.Data = 0
 
 Calculate.Gameoject.Zone.Area.Data = 0
 
-#    Wow.Token
-#        Description: Enable or disable the wow token
-#        Default:     0 - (Disabled)
-#                     1 - (Enabled)
-
-Wow.Token = 1
-
 #    AUTOMATIC EQUIPMENT LEVEL SCALE LEVEL 90
 #
 #    Ilvl.Scaling.PvE.Enable

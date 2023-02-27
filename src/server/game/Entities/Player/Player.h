@@ -1751,10 +1751,13 @@ class Player : public Unit, public GridObject<Player>
     {
         SetByteValue(PLAYER_FIELD_REST_STATE, 2, count);
     }
-    //BattlePay
-    uint64 GetDonateTokens() const;
-    void DestroyDonateTokenCount(uint64 count);
-    void AddDonateTokenCount(uint64 count);
+    // Battle Pay
+    uint64 GetDonatePoints() const;
+    void DeleteDonatePointsCount(uint64 count);
+    void AddDonatePointsCount(uint64 count);
+    uint64 GetVirtualPoints() const;
+    void DeleteVirtualPointsCount(uint64 count);
+    void AddVirtualPointsCount(uint64 count);
     bool HasItemCount(uint32 item, uint32 count = 1, bool inBankAlso = false) const;
     bool HasItemFitToSpellRequirements(SpellInfo const* spellInfo, Item const* ignoreItem = NULL) const;
     bool CanNoReagentCast(SpellInfo const* spellInfo) const;

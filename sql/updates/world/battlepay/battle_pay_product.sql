@@ -1,10 +1,10 @@
 TRUNCATE TABLE `battle_pay_product`;
 INSERT INTO `battle_pay_product` (`id`, `title`, `description`, `icon`, `price`, `discount`, `displayId`, `type`, `choiceType`, `flags`, `flagsInfo`) VALUES
-(1, "Shop: WoW Token - 01", "01 point for the Pandaria-WoW shop", 939375, 2, 0, 0, 0, 1, 47, 0),
-(2, "Shop: WoW Token - 02", "02 point for the Pandaria-WoW shop", 939375, 3, 0, 0, 0, 1, 47, 0),
-(3, "Shop: WoW Token - 05", "05 point for the Pandaria-WoW shop", 939375, 7, 0, 0, 0, 1, 47, 0),
-(4, "Shop: WoW Token - 10", "10 point for the Pandaria-WoW shop", 939375, 13, 0, 0, 0, 1, 47, 0),
-(13, "Shop: Foror's Crate of Endless Resist Gear Sto", "Bag of 36 slot", 132764, 12, 0, 0, 0, 1, 47, 0),
+(1, "Shop: Pandaria Token (Value: 01)", "Adds 1 virtual point for the Pandaria 5.4.8 shop", 939375, 2, 0, 0, 0, 1, 47, 0),
+(2, "Shop: Pandaria Token (Value: 02)", "Adds 2 virtual points for the Pandaria 5.4.8 shop", 939375, 3, 0, 0, 0, 1, 47, 0),
+(3, "Shop: Pandaria Token (Value: 05)", "Adds 5 virtual points for the Pandaria 5.4.8 shop", 939375, 7, 0, 0, 0, 1, 47, 0),
+(4, "Shop: Pandaria Token (Value: 10)", "Adds 10 virtual points for the Pandaria 5.4.8 shop", 939375, 13, 0, 0, 0, 1, 47, 0),
+(13, "Shop: Foror's Crate of Endless Resist Gear Storage", "Bag of 36 slot", 132764, 12, 0, 0, 0, 1, 47, 0),
 (14, "Shop: Royal Satchel", "Bag of 28 slot", 348521, 9, 0, 0, 0, 1, 47, 0),
 (15, "Shop: Lure Master Tackle Box", "Bag of 36 slot", 466035, 8, 0, 0, 0, 1, 47, 0),
 (16, "Shop: Otherworldly Bag", "Bag of 32 slot", 348521, 8, 0, 0, 0, 1, 47, 0),

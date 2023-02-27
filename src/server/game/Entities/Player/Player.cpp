@@ -11732,40 +11732,70 @@ bool Player::IsValidPos(uint8 bag, uint8 slot, bool explicit_pos)
     return false;
 }
 
-uint64 Player::GetDonateTokens() const
+uint64 Player::GetDonatePoints() const
 {
-    PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_BATTLEPAY_COINS);
+    PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_BATTLEPAY_DONATE_POINTS);
     stmt->setUInt32(0, GetSession()->GetAccountId());
 
-    PreparedQueryResult result_don = LoginDatabase.Query(stmt);
+    PreparedQueryResult result_donate = LoginDatabase.Query(stmt);
 
-    if (!result_don)
+    if (!result_donate)
         return 0;
 
-    Field* fields = result_don->Fetch();
-    uint64 balans = fields[0].GetUInt32();
+    Field* fields = result_donate->Fetch();
+    uint64 balance = fields[0].GetUInt32();
 
-    return balans;
+    return balance;
 }
 
-void Player::DestroyDonateTokenCount(uint64 count)
+void Player::DeleteDonatePointsCount(uint64 count)
 {
-    PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_BATTLEPAY_DECREMENT_COINS);
+    PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_BATTLEPAY_DECREMENT_DONATE_POINTS);
+    stmt->setUInt32(0, count);
+    stmt->setUInt32(1, GetSession()->GetAccountId());
+    LoginDatabase.Query(stmt);
+}
+
+void Player::AddDonatePointsCount(uint64 count)
+{
+    PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_BATTLEPAY_INCREMENT_DONATE_POINTS);
+    stmt->setUInt32(0, count);
+    stmt->setUInt32(1, GetSession()->GetAccountId());
+    LoginDatabase.Query(stmt);
+}
+
+uint64 Player::GetVirtualPoints() const
+{
+    PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_BATTLEPAY_VIRTUAL_POINTS);
+    stmt->setUInt32(0, GetSession()->GetAccountId());
+
+    PreparedQueryResult result_virtual = LoginDatabase.Query(stmt);
+
+    if (!result_virtual)
+        return 0;
+
+    Field* fields = result_virtual->Fetch();
+    uint64 balance = fields[0].GetUInt32();
+
+    return balance;
+}
+
+void Player::DeleteVirtualPointsCount(uint64 count)
+{
+    PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_BATTLEPAY_DECREMENT_VIRTUAL_POINTS);
     stmt->setUInt32(0, count);
     stmt->setUInt32(1, GetSession()->GetAccountId());    
     LoginDatabase.Query(stmt);
 }
 
-void Player::AddDonateTokenCount(uint64 count)
+void Player::AddVirtualPointsCount(uint64 count)
 {
-    // add coins
-    PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_BATTLEPAY_INCREMENT_COINS);
+    PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_BATTLEPAY_INCREMENT_VIRTUAL_POINTS);
     stmt->setUInt32(0, count);
     stmt->setUInt32(1, GetSession()->GetAccountId());    
     LoginDatabase.Query(stmt);
-    
-    // Register the wow token
-    PreparedStatement* stmt2 = LoginDatabase.GetPreparedStatement(LOGIN_INS_WOW_TOKEN);
+
+    PreparedStatement* stmt2 = LoginDatabase.GetPreparedStatement(LOGIN_INS_PANDARIA_TOKEN);
     stmt2->setUInt32(0, GetSession()->GetAccountId());
     stmt2->setUInt32(1, GetGUID());
     stmt2->setUInt32(2, realmID);

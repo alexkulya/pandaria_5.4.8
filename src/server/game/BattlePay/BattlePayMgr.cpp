@@ -327,7 +327,7 @@ void BattlePayMgr::LoadEntriesFromDb()
         std::string description = fields[5].GetString();
         uint32 icon             = fields[6].GetUInt32();
         uint32 displayId        = fields[7].GetUInt32();
-        uint8 banner           = fields[8].GetUInt8();
+        uint8 banner            = fields[8].GetUInt8();
         uint32 flags            = fields[9].GetUInt32();
 
         if (HasEntryId(id))
@@ -443,8 +443,8 @@ void BattlePayMgr::SendPointsBalance(WorldSession* session)
     if (Player* player = session->GetPlayer())
     {
         std::ostringstream data;
-        data << float(player->GetDonateTokens()) / BATTLE_PAY_CURRENCY_PRECISION;
-        player->SendBattlePayMessage(sObjectMgr->GetTrinityString(15005, session->GetSessionDbLocaleIndex()),data);
+        data << float(player->GetDonatePoints()) / BATTLE_PAY_CURRENCY_PRECISION;
+        player->SendBattlePayMessage(sObjectMgr->GetTrinityString(15005, session->GetSessionDbLocaleIndex()), data);
     }
 }
 
@@ -452,15 +452,15 @@ void BattlePayMgr::UpdatePointsBalance(WorldSession* session, uint64 points)
 {
     if (Player* player = session->GetPlayer())
     {
-        player->DestroyDonateTokenCount(points);
+        player->DeleteDonatePointsCount(points);
 
         std::ostringstream data1;
-        data1 << float(player->GetDonateTokens()) / BATTLE_PAY_CURRENCY_PRECISION;
-        player->SendBattlePayMessage(sObjectMgr->GetTrinityString(15006, session->GetSessionDbLocaleIndex()),data1);
+        data1 << float(player->GetDonatePoints()) / BATTLE_PAY_CURRENCY_PRECISION;
+        player->SendBattlePayMessage(sObjectMgr->GetTrinityString(15006, session->GetSessionDbLocaleIndex()), data1);
     }
     else
     {
-        PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_BATTLEPAY_DECREMENT_COINS);
+        PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_BATTLEPAY_DECREMENT_DONATE_POINTS);
         stmt->setUInt32(0, points);
         stmt->setUInt32(1, session->GetAccountId());    
         LoginDatabase.Query(stmt);
@@ -471,7 +471,7 @@ bool BattlePayMgr::HasPointsBalance(WorldSession* session, uint64 points)
 {
     if(Player* player = session->GetPlayer())
     {
-        uint64 balance = player->GetDonateTokens();
+        uint64 balance = player->GetDonatePoints();
 
         if(balance >= points)
         {
@@ -485,7 +485,7 @@ bool BattlePayMgr::HasPointsBalance(WorldSession* session, uint64 points)
     }
     else
     {
-        PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_BATTLEPAY_COINS);
+        PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_SEL_BATTLEPAY_DONATE_POINTS);
         stmt->setUInt32(0, session->GetAccountId());
         PreparedQueryResult result_don = LoginDatabase.Query(stmt);
 
@@ -493,9 +493,9 @@ bool BattlePayMgr::HasPointsBalance(WorldSession* session, uint64 points)
             return false;
 
         Field* fields = result_don->Fetch();
-        uint64 balans = fields[0].GetUInt32();
+        uint64 balance = fields[0].GetUInt32();
 
-        if(balans >= points)
+        if(balance >= points)
             return true;
 
         return false;

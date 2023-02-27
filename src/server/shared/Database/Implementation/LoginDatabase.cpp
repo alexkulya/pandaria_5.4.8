@@ -122,23 +122,23 @@ void LoginDatabaseConnection::DoPrepareStatements()
     //PrepareStatement(LOGIN_UPD_BNET_GAME_ACCOUNT_LINK, "UPDATE account SET battlenet_account = ?, battlenet_index = ? WHERE id = ?", CONNECTION_ASYNC);
     //PrepareStatement(LOGIN_SEL_BNET_MAX_ACCOUNT_INDEX, "SELECT MAX(battlenet_index) FROM account WHERE battlenet_account = ?", CONNECTION_SYNCH);
 
-    // boost
+    // Boost
     PrepareStatement(LOGIN_SEL_ACCOUNT_BOOST, "SELECT counter FROM account_boost WHERE id = ? AND realmid = ?", CONNECTION_SYNCH);
     PrepareStatement(LOGIN_INS_ACCOUNT_BOOST, "REPLACE INTO account_boost (id, realmid, counter) VALUES (?, ?, ?)", CONNECTION_ASYNC);
     PrepareStatement(LOGIN_DEL_ACCOUNT_BOOST, "DELETE FROM account_boost WHERE id = ? AND realmid = ?", CONNECTION_ASYNC);
 
-    // BattlePay
-    PrepareStatement(LOGIN_SEL_BATTLEPAY_COINS, "SELECT dp FROM account WHERE id = ?", CONNECTION_SYNCH);
-    PrepareStatement(LOGIN_UPD_BATTLEPAY_INCREMENT_COINS, "UPDATE account SET dp = dp - ? WHERE id = ?;", CONNECTION_SYNCH);
-    PrepareStatement(LOGIN_UPD_BATTLEPAY_DECREMENT_COINS, "UPDATE account SET dp = dp - ? WHERE id = ?;", CONNECTION_SYNCH);
+    // Battle Pay
+    PrepareStatement(LOGIN_SEL_BATTLEPAY_DONATE_POINTS, "SELECT dp FROM account WHERE id = ?", CONNECTION_SYNCH);
+    PrepareStatement(LOGIN_UPD_BATTLEPAY_INCREMENT_DONATE_POINTS, "UPDATE account SET dp = dp + ? WHERE id = ?;", CONNECTION_SYNCH);
+    PrepareStatement(LOGIN_UPD_BATTLEPAY_DECREMENT_DONATE_POINTS, "UPDATE account SET dp = dp - ? WHERE id = ?;", CONNECTION_SYNCH);
 
-    // Custom Reward
-    PrepareStatement(LOGIN_UPD_BATTLEPAY_VP_COINS, "UPDATE account SET vp = vp + ? WHERE id = ?;", CONNECTION_SYNCH);
-    
-    // WoW-Token
-    PrepareStatement(LOGIN_INS_WOW_TOKEN, "INSERT INTO wow_token (accountId, characterGuid, realm, coins) VALUES (?, ?, ?, ?)", CONNECTION_SYNCH);
+    PrepareStatement(LOGIN_SEL_BATTLEPAY_VIRTUAL_POINTS, "SELECT vp FROM account WHERE id = ?", CONNECTION_SYNCH);
+    PrepareStatement(LOGIN_UPD_BATTLEPAY_INCREMENT_VIRTUAL_POINTS, "UPDATE account SET vp = vp + ? WHERE id = ?;", CONNECTION_SYNCH);
+    PrepareStatement(LOGIN_UPD_BATTLEPAY_DECREMENT_VIRTUAL_POINTS, "UPDATE account SET vp = vp - ? WHERE id = ?;", CONNECTION_SYNCH);
 
-    // project
+    PrepareStatement(LOGIN_INS_PANDARIA_TOKEN, "INSERT INTO pandaria_token (account_id, character_guid, realm, vp_count) VALUES (?, ?, ?, ?)", CONNECTION_SYNCH);
+
+    // Project
     PrepareStatement(LOGIN_SEL_project_MEMBER_PREMIUM, "SELECT unsetdate FROM project_member_premiums WHERE (member_id = ? OR member_id = 0) AND active = 1 ORDER BY unsetdate DESC", CONNECTION_SYNCH);
     PrepareStatement(LOGIN_SEL_ACCOUNT_VERIFIED, "SELECT 1 FROM account WHERE project_member_id = ? AND project_verified LIMIT 1", CONNECTION_SYNCH);
     PrepareStatement(LOGIN_SEL_project_MEMBER_SETTINGS, "SELECT setting, value FROM project_member_settings WHERE member_id = ?", CONNECTION_SYNCH);
