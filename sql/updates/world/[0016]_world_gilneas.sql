@@ -1068,3 +1068,83 @@ INSERT INTO `conditions` (`SourceTypeOrReferenceId`, `SourceGroup`, `SourceEntry
 DELETE FROM `spell_script_names` WHERE `spell_id` = 68591;
 INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES
 (68591, "spell_catapult_boulder");
+
+DELETE FROM `creature` WHERE `id` = 37078;
+DELETE FROM `creature_addon` WHERE `guid` IN (221468, 221486, 221848, 221850, 221852, 221854, 221868, 221870, 221874, 221878,
+                                              221882, 221919, 221920, 221923, 221924);
+
+UPDATE `creature_template` SET `AIName` = "SmartAI" WHERE `entry` IN (37067, 37078, );
+DELETE FROM `smart_scripts` WHERE `entryorguid` IN (37067, 37078) AND `source_type` = 0;
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+(37067, 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 11, 69854, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Crash Survivor - On Respawn - Cast Spell 'Summon Swamp Crocolisk'"),
+(37067, 0, 1, 0, 38, 0, 100, 0, 1, 1, 0, 0, 41, 1000, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Crash Survivor - On Data Set 1 1 - Despawn Self (1000 ms)"),
+
+(37078, 0, 0, 0, 54, 0, 100, 0, 0, 0, 0, 0, 49, 0, 0, 0, 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, "Swamp Crocolisk - On Just Summoned - Start Attack Summoner"),
+(37078, 0, 1, 0, 6, 0, 100, 0, 0, 0, 0, 0, 45, 1, 1, 0, 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, "Swamp Crocolisk - On Death - Set Data 1 1 To Summoner");
+
+DELETE FROM `creature` WHERE `guid` IN (221936, 221930, 221926, 221937);
+DELETE FROM `creature_addon` WHERE `guid` IN (221936, 221930, 221926, 221937);
+UPDATE `creature` SET `position_x` = -2339.306396, `position_y` = 1930.966919, `position_z` = 74.015625, `orientation` = 5.139883, `wander_distance` = 0, `movement_type` = 0 WHERE `guid` = 221856;
+UPDATE `creature` SET `position_x` = -2286.466553, `position_y` = 1884.088257, `position_z` = 55.521866, `orientation` = 2.803326, `wander_distance` = 0, `movement_type` = 0 WHERE `guid` = 221897;
+UPDATE `creature` SET `position_x` = -2395.204590, `position_y` = 1779.870361, `position_z` = 7.679942 WHERE `guid` = 221862;
+
+UPDATE `creature` SET `wander_distance` = 10, `movement_type` = 1 WHERE `guid` IN (221503, 221929, 221928, 221890, 221883, 221862, 221860, 221859);
+
+UPDATE `creature_template` SET `ScriptName` = "", `AIName` = "SmartAI" WHERE `entry` = 36293;
+DELETE FROM `smart_scripts` WHERE `entryorguid` = 36293 AND `source_type` = 0;
+INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
+(36293, 0, 0, 0, 0, 0, 100, 0, 1000, 1000, 22000, 22000, 11, 75436, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, "Ogre Minion - In Combat - Cast Spell 'Clubbed'");
+
+DELETE FROM `waypoint_data` WHERE `id` IN (221894, 221931);
+INSERT INTO `waypoint_data` (`id`, `point`, `position_x`, `position_y`, `position_z`, `orientation`, `delay`, `move_flag`, `entry`) VALUES
+(221894, 1, -2308.86, 1908.56, 65.4409, 0, 0, 0, 36293),
+(221894, 2, -2314.25, 1910.11, 67.799, 0, 0, 0, 36293),
+(221894, 3, -2321.66, 1912.95, 70.396, 0, 0, 0, 36293),
+(221894, 4, -2327.66, 1915.25, 71.8246, 0, 0, 0, 36293),
+(221894, 5, -2323.28, 1913.63, 70.808, 0, 0, 0, 36293),
+(221894, 6, -2315.6, 1910.85, 68.4194, 0, 0, 0, 36293),
+(221894, 7, -2309.13, 1908.51, 65.5213, 0, 0, 0, 36293),
+(221894, 8, -2305.96, 1906.76, 63.9355, 0, 0, 0, 36293),
+(221894, 9, -2302.31, 1902.21, 61.4081, 0, 0, 0, 36293),
+(221894, 10, -2300.41, 1897.44, 59.2782, 0, 0, 0, 36293),
+(221894, 11, -2300.81, 1892.9, 57.2984, 0, 0, 0, 36293),
+(221894, 12, -2303.89, 1887.14, 54.1629, 0, 0, 0, 36293),
+(221894, 13, -2307.43, 1880.97, 50.422, 0, 0, 0, 36293),
+(221894, 14, -2310.5, 1876.28, 47.4981, 0, 0, 0, 36293),
+(221894, 15, -2313.97, 1871.02, 44.3631, 0, 0, 0, 36293),
+(221894, 16, -2317.35, 1864.75, 41.2313, 0, 0, 0, 36293),
+(221894, 17, -2314.36, 1870.3, 43.9829, 0, 0, 0, 36293),
+(221894, 18, -2310.46, 1876.81, 47.7428, 0, 0, 0, 36293),
+(221894, 19, -2306.67, 1883.38, 51.7263, 0, 0, 0, 36293),
+(221894, 20, -2303.57, 1889.67, 55.4044, 0, 0, 0, 36293),
+(221894, 21, -2301.26, 1894.37, 57.859, 0, 0, 0, 36293),
+(221894, 22, -2301.48, 1898.8, 59.8318, 0, 0, 0, 36293),
+
+(221931, 1, -2362.76, 1945.55, 70.5878, 0, 0, 0, 36293),
+(221931, 2, -2357.93, 1938.96, 71.4194, 0, 0, 0, 36293),
+(221931, 3, -2353.2, 1934.47, 72.1952, 0, 0, 0, 36293),
+(221931, 4, -2347.79, 1928.82, 72.694, 0, 0, 0, 36293),
+(221931, 5, -2341.27, 1924.45, 72.9031, 0, 0, 0, 36293),
+(221931, 6, -2333.41, 1918.77, 72.6257, 0, 0, 0, 36293),
+(221931, 7, -2338.73, 1921.92, 72.8214, 0, 0, 0, 36293),
+(221931, 8, -2345.86, 1927.71, 72.7615, 0, 0, 0, 36293),
+(221931, 9, -2353.54, 1934.35, 72.1783, 0, 0, 0, 36293),
+(221931, 10, -2359.1, 1939.34, 71.3042, 0, 0, 0, 36293),
+(221931, 11, -2364.15, 1945.92, 70.4688, 0, 0, 0, 36293),
+(221931, 12, -2367.79, 1950.92, 70.1898, 0, 0, 0, 36293),
+(221931, 13, -2370.44, 1958.15, 70.3021, 0, 0, 0, 36293),
+(221931, 14, -2371.21, 1965.58, 70.4445, 0, 0, 0, 36293),
+(221931, 15, -2372.09, 1975.92, 71.1363, 0, 0, 0, 36293),
+(221931, 16, -2372.9, 1981.7, 71.5089, 0, 0, 0, 36293),
+(221931, 17, -2372.02, 1975.93, 71.1434, 0, 0, 0, 36293),
+(221931, 18, -2370.64, 1966.22, 70.4738, 0, 0, 0, 36293),
+(221931, 19, -2369.98, 1961.61, 70.3646, 0, 0, 0, 36293),
+(221931, 20, -2368.81, 1956.61, 70.3314, 0, 0, 0, 36293);
+
+UPDATE `gameobject_template` SET `ScriptName` = "go_koroth_banner" WHERE `entry` = 201594;
+UPDATE `creature_template` SET `ScriptName` = "npc_koroth_the_hillbreaker" WHERE `entry` = 36294;
+
+DELETE FROM `creature_text` WHERE `entry` = 36294;
+INSERT INTO `creature_text` (`entry`, `text_group`, `id`, `text`, `text_female`, `type`, `language`, `probability`, `emote`, `duration`, `sound`, `comment`) VALUES
+(36294, 0, 0, "Who dares to touch Koroth's banner!?", "", 14, 0, 100, 0, 0, 0, "Koroth the Hillbreaker"),
+(36294, 1, 0, "You puny thief! Koroth find you! Koroth smash your face in!", "", 14, 0, 100, 0, 0, 0, "Koroth the Hillbreaker");

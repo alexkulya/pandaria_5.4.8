@@ -20,6 +20,7 @@
 #include "ScriptedEscortAI.h"
 #include "PassiveAI.h"
 #include "Vehicle.h"
+#include "GameObjectAI.h"
 #include "TaskScheduler.h"
 
 enum Gilneas
@@ -199,7 +200,14 @@ enum Gilneas
     ACTION_START_WP                         = 1,
 
     GO_FIRST_GATE                           = 196401,
-    GO_KINGS_GATE                           = 196412
+    GO_KINGS_GATE                           = 196412,
+
+    NPC_KOROTH_THE_HILLBREAKER              = 36294,
+
+    ACTION_START_KOROTH_EVENT               = 1,
+
+    SAY_KOROTH_THE_HILLBREAKER_1            = 0,
+    SAY_KOROTH_THE_HILLBREAKER_2            = 1
 };
 
 Position const runt2SummonJumpPos = { -1671.915f, 1446.734f, 52.28712f };
@@ -527,6 +535,15 @@ Position const childrenBasementPath[][childrenBasementPathLenght] =
         { -1879.062378f, 2546.958984f, -0.130342f, 0.0f },
         { -1873.854980f, 2550.903564f, -5.898719f, 0.0f },
         { -1868.589844f, 2536.521240f, -6.365717f, 0.0f },
+    },
+};
+
+uint8 const KorothPathLenght = 2;
+Position const KorothPath[][KorothPathLenght] =
+{
+    {
+        { -2271.431f, 1963.941f, 99.342613f, 0.0f },
+        { -2284.237f, 1963.801f, 95.656654f, 0.0f },
     },
 };
 
@@ -1100,7 +1117,7 @@ class spell_gilneas_pull_to : public SpellScript
 class npc_lorna_crowley_basement : public CreatureScript
 {
 public:
-    npc_lorna_crowley_basement(const char *ScriptName) : CreatureScript(ScriptName) { }
+    npc_lorna_crowley_basement(const char* ScriptName) : CreatureScript(ScriptName) { }
 
     bool OnQuestAccept(Player* player, Creature* creature, Quest const* quest)
     {
@@ -1975,7 +1992,7 @@ class npc_gilneas_children : public CreatureScript
 class npc_wahl : public CreatureScript
 {
 public:
-    npc_wahl(const char *ScriptName) : CreatureScript(ScriptName) { }
+    npc_wahl(const char* ScriptName) : CreatureScript(ScriptName) { }
 
     struct npc_wahlAI : public npc_escortAI
     {
@@ -2032,7 +2049,7 @@ public:
 class npc_lucius_the_cruel : public CreatureScript
 {
 public:
-    npc_lucius_the_cruel(const char *ScriptName) : CreatureScript(ScriptName) { }
+    npc_lucius_the_cruel(const char* ScriptName) : CreatureScript(ScriptName) { }
 
     struct npc_lucius_the_cruelAI : public ScriptedAI
     {
@@ -2219,7 +2236,7 @@ struct npc_chance_the_cat : public ScriptedAI
 class npc_mountain_horse : public CreatureScript
 {
 public:
-    npc_mountain_horse(const char *ScriptName) : CreatureScript(ScriptName) { }
+    npc_mountain_horse(const char* ScriptName) : CreatureScript(ScriptName) { }
 
     bool OnGossipHello(Player* player, Creature* creature)
     {
@@ -2367,7 +2384,7 @@ class spell_gilneas_test_telescope : public SpellScript
 class npc_stagecoach_carriage_exodus : public CreatureScript
 {
 public:
-    npc_stagecoach_carriage_exodus(const char *ScriptName) : CreatureScript(ScriptName) { }
+    npc_stagecoach_carriage_exodus(const char* ScriptName) : CreatureScript(ScriptName) { }
 
     bool OnGossipHello(Player* player, Creature* creature)
     {
@@ -2435,7 +2452,7 @@ public:
 class npc_stagecoach_harness : public CreatureScript
 {
 public:
-    npc_stagecoach_harness(const char *ScriptName) : CreatureScript(ScriptName) { }
+    npc_stagecoach_harness(const char* ScriptName) : CreatureScript(ScriptName) { }
 
     struct npc_stagecoach_harnessAI : public npc_escortAI
     {
@@ -2513,6 +2530,66 @@ public:
     }
 };
 
+struct npc_koroth_the_hillbreaker : public ScriptedAI
+{
+    npc_koroth_the_hillbreaker(Creature* creature) : ScriptedAI(creature) { }
+
+    void DoAction(int32 const action) override
+    {
+        switch (action)
+        {
+            case ACTION_START_KOROTH_EVENT:
+                Talk(SAY_KOROTH_THE_HILLBREAKER_1);
+				me->GetMotionMaster()->MoveSplinePath(KorothPath[0], KorothPathLenght, false, true, 0.f, false, false);
+                TalkWithDelay(me->GetSplineDuration(), SAY_KOROTH_THE_HILLBREAKER_2);
+
+                me->m_Events.AddLambdaEventAtOffset([this]()
+                {
+                    me->GetMotionMaster()->MoveTargetedHome();
+                }, me->GetSplineDuration() + 3500);
+                break;
+        }
+    }
+
+    void UpdateAI(uint32 const diff) override
+    {
+        if (!UpdateVictim())
+            return;
+
+        DoMeleeAttackIfReady();
+    }
+};
+
+class go_koroth_banner : public GameObjectScript
+{
+public:
+    go_koroth_banner(const char* ScriptName) : GameObjectScript(ScriptName) { }
+
+    struct go_koroth_bannerAI : public GameObjectAI
+    {
+        go_koroth_bannerAI(GameObject* go) : GameObjectAI(go) { }
+
+        void OnStateChanged(uint32 state, Unit* /*unit*/) override
+        {
+            if (state != GO_JUST_DEACTIVATED)
+                return;
+
+            if (Creature* koroth = go->FindNearestCreature(NPC_KOROTH_THE_HILLBREAKER, 30.0f))
+            {
+                if (koroth->IsAIEnabled)
+                {
+                    koroth->GetAI()->DoAction(ACTION_START_KOROTH_EVENT);
+                }
+            }
+        }
+    };
+
+    GameObjectAI* GetAI(GameObject* go) const override
+    {
+        return new go_koroth_bannerAI(go);
+    }
+};
+
 void AddSC_gilneas()
 {
     new creature_script<npc_gilneas_crow>("npc_gilneas_crow");
@@ -2546,4 +2623,6 @@ void AddSC_gilneas()
     new spell_script<spell_gilneas_test_telescope>("spell_gilneas_test_telescope");
     new npc_stagecoach_carriage_exodus("npc_stagecoach_carriage_exodus");
     new npc_stagecoach_harness("npc_stagecoach_harness");
+    new creature_script<npc_koroth_the_hillbreaker>("npc_koroth_the_hillbreaker");
+    new go_koroth_banner("go_koroth_banner");
 }
