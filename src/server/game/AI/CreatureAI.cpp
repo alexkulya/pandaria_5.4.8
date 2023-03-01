@@ -46,6 +46,36 @@ void CreatureAI::Talk(uint8 id, WorldObject const* whisperTarget /*= nullptr*/)
     sCreatureTextMgr->SendChat(me, id, whisperTarget);
 }
 
+void CreatureAI::TalkWithDelay(uint32 delay, uint32 groupId, WorldObject const* whisperTarget /*= nullptr*/)
+{
+    class TalkDelayEvent : public BasicEvent
+    {
+    public:
+        TalkDelayEvent(Creature* _me, uint32 _groupId, WorldObject const* _whisperTarget) : me(_me), groupId(_groupId), whisperTarget(_whisperTarget) { }
+
+        bool Execute(uint64 /*execTime*/, uint32 /*diff*/)
+        {
+            if (whisperTarget != 0 && me && me->IsInWorld())
+            {
+                if (Unit* target = ObjectAccessor::GetUnit(*me, whisperTarget->GetGUID()))
+                    if (target->IsInWorld() && target->IsInMap(me))
+                        me->AI()->Talk(groupId, whisperTarget);
+            }
+            else
+                me->AI()->Talk(groupId);
+            return true;
+        }
+
+    private:
+        Creature* me;
+        uint32 groupId;
+        WorldObject const* whisperTarget;
+    };
+
+    if (me)
+        me->m_Events.AddEvent(new TalkDelayEvent(me, groupId, whisperTarget), me->m_Events.CalculateTime(delay));
+}
+
 void CreatureAI::TalkToMap(uint8 id, WorldObject const* whisperTarget /*= nullptr*/)
 {
     sCreatureTextMgr->SendChat(me, id, whisperTarget, CHAT_MSG_ADDON, LANG_ADDON, TEXT_RANGE_MAP);

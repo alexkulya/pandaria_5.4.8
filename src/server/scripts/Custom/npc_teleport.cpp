@@ -289,7 +289,7 @@ enum TeleportData
     TELEPORT_COUNT  = sizeof Tele/sizeof(*Tele)
 };
 
-#define ARE_YOU_SURE "Вы уверены, что вы хотите попасть в\n"
+#define ARE_YOU_SURE "Вы уверены, что вы хотите попасть\nна локацию:\n\n\n"
 #define ERROR_COMBAT "|cffff0000Вы в бою!|r"
 
 bool Custom_FactCheck (uint32 Fact, unsigned char Key)
