@@ -46,7 +46,7 @@ public:
 
                 if (TR_Item)
                 {
-					player->AddItem(TR_Item_ID, TR_Item_Count);
+                    player->AddItem(TR_Item_ID, TR_Item_Count);
                 }
                 else
                 {
