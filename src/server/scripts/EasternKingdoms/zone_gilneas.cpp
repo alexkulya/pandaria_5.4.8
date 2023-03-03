@@ -2540,7 +2540,7 @@ struct npc_koroth_the_hillbreaker : public ScriptedAI
         {
             case ACTION_START_KOROTH_EVENT:
                 Talk(SAY_KOROTH_THE_HILLBREAKER_1);
-				me->GetMotionMaster()->MoveSplinePath(KorothPath[0], KorothPathLenght, false, true, 0.f, false, false);
+                me->GetMotionMaster()->MoveSplinePath(KorothPath[0], KorothPathLenght, false, true, 0.f, false, false);
                 TalkWithDelay(me->GetSplineDuration(), SAY_KOROTH_THE_HILLBREAKER_2);
 
                 me->m_Events.AddLambdaEventAtOffset([this]()

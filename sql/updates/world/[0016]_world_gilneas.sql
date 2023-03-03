@@ -1,9 +1,20 @@
 /*
- Вороны не взлетают
- 35112 - не запускается скипт при взятии квеста
+ Теневые воргены - эмоции
+ Озлобленный ворген - атака на принца, RP
+ Вороны не взлетают (в некоторых местах)
  Скрипт энрейджа для воргенов - квест на крыше с волнами
  Скрипт для сцены с пушкой
- Текст после квеста спасение Аранаса
+ Волны воргенов, нападающих на стражников
+ Текст после квеста спасение Аранаса, аггро воргенов на лошадь
+ Скрипт для обратившихся горожан, выбегающих из домов и нападающих на стражников + тексты (волны)
+ Аггро воргенов от факела на лошадь Краули
+ Прыжки через препятствия на вайпоинтах
+ Скрипт для воргенов, бегущих на часовню (волны)
+ Исправить статик погоду для Гилнеаса и деревни
+ Скрипт для квеста с капитанами
+ Проверить наличие и фазы всех ворот в Гилнеасе и деревне
+ Скрипт для квеста с караваном
+ End event скрипт после квеста со знаменем и ограми
 */
 
 UPDATE `creature` SET `position_x` = -1494.238, `position_y` = 1336.437, `position_z` = 58.767, `orientation` = 1.931 WHERE `guid` = 219545 AND `id` = 34867;
@@ -1073,14 +1084,30 @@ DELETE FROM `creature` WHERE `id` = 37078;
 DELETE FROM `creature_addon` WHERE `guid` IN (221468, 221486, 221848, 221850, 221852, 221854, 221868, 221870, 221874, 221878,
                                               221882, 221919, 221920, 221923, 221924);
 
-UPDATE `creature_template` SET `AIName` = "SmartAI" WHERE `entry` IN (37067, 37078, );
+UPDATE `creature` SET `equipment_id` = -1 WHERE `id` = 37067;
+
+DELETE FROM `creature_equip_template` WHERE `entry` = 37067;
+INSERT INTO `creature_equip_template` (`entry`, `id`, `itemEntry1`, `itemEntry2`, `itemEntry3`) VALUES
+(37067, 1, 2695, 0, 0),
+(37067, 2, 3346, 0, 0),
+(37067, 3, 3367, 0, 0);
+
+UPDATE `creature_template` SET `AIName` = "SmartAI" WHERE `entry` IN (37067, 37078);
 DELETE FROM `smart_scripts` WHERE `entryorguid` IN (37067, 37078) AND `source_type` = 0;
 INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_type`, `event_phase_mask`, `event_chance`, `event_flags`, `event_param1`, `event_param2`, `event_param3`, `event_param4`, `action_type`, `action_param1`, `action_param2`, `action_param3`, `action_param4`, `action_param5`, `action_param6`, `target_type`, `target_param1`, `target_param2`, `target_param3`, `target_x`, `target_y`, `target_z`, `target_o`, `comment`) VALUES 
-(37067, 0, 0, 0, 11, 0, 100, 0, 0, 0, 0, 0, 11, 69854, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Crash Survivor - On Respawn - Cast Spell 'Summon Swamp Crocolisk'"),
-(37067, 0, 1, 0, 38, 0, 100, 0, 1, 1, 0, 0, 41, 1000, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Crash Survivor - On Data Set 1 1 - Despawn Self (1000 ms)"),
+(37067, 0, 0, 0, 11, 0, 100, 1, 0, 0, 0, 0, 11, 69854, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Crash Survivor - On Respawn - Cast Spell 'Summon Swamp Crocolisk' (No Repeat)"),
+(37067, 0, 1, 0, 38, 0, 100, 0, 1, 1, 0, 0, 41, 2000, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Crash Survivor - On Data Set 1 1 - Despawn Self (2000 ms)"),
+(37067, 0, 2, 0, 38, 0, 20, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, "Crash Survivor - On Data Set 1 1 - Say Text Line 0 (20% Chance)"),
 
 (37078, 0, 0, 0, 54, 0, 100, 0, 0, 0, 0, 0, 49, 0, 0, 0, 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, "Swamp Crocolisk - On Just Summoned - Start Attack Summoner"),
 (37078, 0, 1, 0, 6, 0, 100, 0, 0, 0, 0, 0, 45, 1, 1, 0, 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, "Swamp Crocolisk - On Death - Set Data 1 1 To Summoner");
+
+DELETE FROM `creature_text` WHERE `entry` = 37067;
+INSERT INTO `creature_text` (`entry`, `text_group`, `id`, `text`, `type`, `language`, `probability`, `emote`, `duration`, `sound`, `comment`) VALUES
+(37067, 0, 1, "I wasn't ready to die in a marsh. Thanks again!", 12, 0, 100, 0, 0, 0, "Crash Survivor"),
+(37067, 0, 2, "Let's get out of this marsh!", 12, 0, 100, 0, 0, 0, "Crash Survivor"),
+(37067, 0, 3, "Time to run!", 12, 0, 100, 0, 0, 0, "Crash Survivor"),
+(37067, 0, 4, "You got here just in time. Thanks!", 12, 0, 100, 0, 0, 0, "Crash Survivor");
 
 DELETE FROM `creature` WHERE `guid` IN (221936, 221930, 221926, 221937);
 DELETE FROM `creature_addon` WHERE `guid` IN (221936, 221930, 221926, 221937);
@@ -1148,3 +1175,10 @@ DELETE FROM `creature_text` WHERE `entry` = 36294;
 INSERT INTO `creature_text` (`entry`, `text_group`, `id`, `text`, `text_female`, `type`, `language`, `probability`, `emote`, `duration`, `sound`, `comment`) VALUES
 (36294, 0, 0, "Who dares to touch Koroth's banner!?", "", 14, 0, 100, 0, 0, 0, "Koroth the Hillbreaker"),
 (36294, 1, 0, "You puny thief! Koroth find you! Koroth smash your face in!", "", 14, 0, 100, 0, 0, 0, "Koroth the Hillbreaker");
+
+
+
+
+UPDATE `creature_template` SET `ScriptName` = "" WHERE `entry` = 37065;
+UPDATE `creature_template` SET `ScriptName` = "" WHERE `entry` = 37806;
+UPDATE `creature_template` SET `ScriptName` = "" WHERE `entry` = 37808;
