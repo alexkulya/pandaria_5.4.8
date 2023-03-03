@@ -1362,8 +1362,20 @@ void World::LoadConfigSettings(bool reload)
     m_float_configs[CONFIG_STATS_LIMITS_CRIT] = sConfigMgr->GetFloatDefault("Stats.Limits.Crit", 95.0f);
 
     // Bonus played time reward
-    m_bool_configs[CONFIG_BONUS_TIME_REWARD] = sConfigMgr->GetBoolDefault("PlayedTimeReward.Enabled", false);
-    m_int_configs[CONFIG_PLAYED_TIME_REWARD] = sConfigMgr->GetIntDefault("PlayedTimeReward.Interval", 1200);
+    m_bool_configs[CONFIG_TIME_REWARD_ENABLED] = sConfigMgr->GetBoolDefault("Played.Time.Reward.Enabled", true);
+    m_bool_configs[CONFIG_TIME_REWARD_ITEM_ENABLED] = sConfigMgr->GetBoolDefault("Played.Time.Reward.Item.Enabled", false);
+    m_int_configs[CONFIG_TIME_REWARD_INTERVAL] = sConfigMgr->GetIntDefault("Played.Time.Reward.Interval", 1200);
+
+    m_int_configs[CONFIG_TIME_REWARD_ITEM_ID] = sConfigMgr->GetIntDefault("Played.Time.Reward.Item.ID", 49426);
+    m_int_configs[CONFIG_TIME_REWARD_ITEM_COUNT] = sConfigMgr->GetIntDefault("Played.Time.Reward.Item.Count", 1);
+
+    if (m_int_configs[CONFIG_TIME_REWARD_ITEM_COUNT] < 1)
+        m_int_configs[CONFIG_TIME_REWARD_ITEM_COUNT] = 1;
+
+    m_int_configs[CONFIG_TIME_REWARD_VP_COUNT] = sConfigMgr->GetIntDefault("Played.Time.Reward.VP.Count", 1);
+
+    if (m_int_configs[CONFIG_TIME_REWARD_VP_COUNT] < 1)
+        m_int_configs[CONFIG_TIME_REWARD_VP_COUNT] = 1;
 
     // Packet spoof punishment
     m_int_configs[CONFIG_PACKET_SPOOF_POLICY] = sConfigMgr->GetIntDefault("PacketSpoof.Policy", (uint32)WorldSession::DosProtection::POLICY_KICK);

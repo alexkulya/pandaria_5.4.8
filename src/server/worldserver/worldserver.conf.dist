@@ -2704,21 +2704,47 @@ Ilvl.Scaling.PvE = 463
 Ilvl.Scaling.PvP.Enable = true
 Ilvl.Scaling.PvP = 463
 
-#    PlayedTimeReward.Enabled
+#    Played.Time.Reward.Enabled
 #        Description: Enable or disable bonus for time played
+#        Default:   1 - (Enabled)
+#                   0 - (Disabled)
+
+Played.Time.Reward.Enabled = 1
+
+#    Played.Time.Reward.Item.Enabled
+#        Description: Enable or disable giving item for time played. If this option is disabled, are giving virtual points
 #        Default:   0 - (Disabled)
 #                   1 - (Enabled)
 
-PlayedTimeReward.Enabled = 1
+Played.Time.Reward.Item.Enabled = 0
 
-#    PlayedTimeReward.Interval
+#    Played.Time.Reward.Interval
 #        Description: Interval of bonus for time played
-#        Default:    1200 - (20 minutes)
+#        Default:     1200 - (20 minutes)
 #
-#        PlayedTimeReward.vp = 1 --> 1 voting point
 
-PlayedTimeReward.Interval = 1200
-PlayedTimeReward.vp = 1
+Played.Time.Reward.Interval = 1200
+
+#    Played.Time.Reward.Item.ID
+#        Description: ID of items a character will receive
+#        Default:     49426 - (Emblem of Frost)
+#
+
+Played.Time.Reward.Item.ID = 49426
+
+#    Played.Time.Reward.Item.Count
+#        Description: Number of items a character will receive
+#        Default:     1
+#
+
+Played.Time.Reward.Item.Count = 1
+
+#    Played.Time.Reward.VP.Count
+#        Description: Number of virtual points a character will receive
+#        Default:     1 - (1 virtual point)
+#
+
+Played.Time.Reward.VP.Count = 1
 
 #   FirstOfTheKingdom
 #        Description: grants a facility to complete the pandaria bands (need restart)

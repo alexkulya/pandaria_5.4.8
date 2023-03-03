@@ -16,9 +16,14 @@
 */
 
 #include "Chat.h"
-#include "Config.h"
 
 #define GetText(a, b, c) a->GetSession()->GetSessionDbLocaleIndex() == LOCALE_ruRU ? b : c
+
+#define TR_Enabled sWorld->getBoolConfig(CONFIG_TIME_REWARD_ENABLED)
+#define TR_Item sWorld->getBoolConfig(CONFIG_TIME_REWARD_ITEM_ENABLED)
+#define TR_Item_ID sWorld->getIntConfig(CONFIG_TIME_REWARD_ITEM_ID)
+#define TR_Item_Count sWorld->getIntConfig(CONFIG_TIME_REWARD_ITEM_COUNT)
+#define TR_VP_Count sWorld->getIntConfig(CONFIG_TIME_REWARD_VP_COUNT)
 
 class played_time_reward : public PlayerScript
 {
@@ -35,14 +40,21 @@ public:
         {
             timeInterval -= player->ptr_Interval;
 
-            if (player->IsInWorld() && sWorld->getBoolConfig(CONFIG_BONUS_TIME_REWARD))
+            if (player->IsInWorld() && TR_Enabled)
             {
                 ChatHandler(player->GetSession()).PSendSysMessage(GetText(player, "Бонус за проведенное в игре время.", "Bonus for played time."));
 
-                PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_BATTLEPAY_INCREMENT_VIRTUAL_POINTS);
-                stmt->setUInt32(0, sConfigMgr->GetIntDefault("PlayedTimeReward.vp", 0));
-                stmt->setUInt32(1, player->GetSession()->GetAccountId());
-                LoginDatabase.Query(stmt);                
+                if (TR_Item)
+                {
+					player->AddItem(TR_Item_ID, TR_Item_Count);
+                }
+                else
+                {
+                    PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_BATTLEPAY_INCREMENT_VIRTUAL_POINTS);
+                    stmt->setUInt32(0, TR_VP_Count);
+                    stmt->setUInt32(1, player->GetSession()->GetAccountId());
+                    LoginDatabase.Query(stmt);
+                }
             }
         }
     }
