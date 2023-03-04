@@ -20,7 +20,7 @@
 #define GetText(a, b, c) a->GetSession()->GetSessionDbLocaleIndex() == LOCALE_ruRU ? b : c
 
 #define TR_Enabled sWorld->getBoolConfig(CONFIG_TIME_REWARD_ENABLED)
-#define TR_Item sWorld->getBoolConfig(CONFIG_TIME_REWARD_ITEM_ENABLED)
+#define TR_Item_Enabled sWorld->getBoolConfig(CONFIG_TIME_REWARD_ITEM_ENABLED)
 #define TR_Item_ID sWorld->getIntConfig(CONFIG_TIME_REWARD_ITEM_ID)
 #define TR_Item_Count sWorld->getIntConfig(CONFIG_TIME_REWARD_ITEM_COUNT)
 #define TR_VP_Count sWorld->getIntConfig(CONFIG_TIME_REWARD_VP_COUNT)
@@ -44,7 +44,7 @@ public:
             {
                 ChatHandler(player->GetSession()).PSendSysMessage(GetText(player, "Бонус за проведенное в игре время.", "Bonus for played time."));
 
-                if (TR_Item)
+                if (TR_Item_Enabled)
                 {
                     player->AddItem(TR_Item_ID, TR_Item_Count);
                 }
