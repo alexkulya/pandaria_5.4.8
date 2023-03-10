@@ -1,4 +1,4 @@
-UPDATE `creature_template` SET `modelid1` = 51676, `modelid2` = 0, `name` = "Teleport", `ScriptName` = "npc_teleport" WHERE `entry` = 190000;
+UPDATE `creature_template` SET `modelid1` = 31833, `modelid2` = 0, `name` = "Teleport", `ScriptName` = "npc_teleport" WHERE `entry` = 190000;
 
 DELETE FROM `npc_text` WHERE `ID` IN (300000, 300001, 300002, 300003, 300004);
 INSERT INTO `npc_text` (`ID`, `text0_0`, `text0_1`) VALUES
