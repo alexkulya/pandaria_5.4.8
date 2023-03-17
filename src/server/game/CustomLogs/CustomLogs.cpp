@@ -59,7 +59,7 @@ namespace logs
                 return;
         }
 
-        PreparedStatement* stmt = ArchiveDatabase.GetPreparedStatement(ARCH_INS_CURRENCY_TRANSACTIONS);
+        PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_INS_CURRENCY_TRANSACTIONS);
         uint32 index = 0;
         stmt->setUInt32(index, player->GetGUIDLow());
         stmt->setUInt32(++index, time(nullptr));
@@ -70,7 +70,7 @@ namespace logs
         stmt->setUInt64(++index, player->GetMoney());
         stmt->setUInt32(++index, realmID);
 
-        ArchiveDatabase.Execute(stmt);
+        LoginDatabase.Execute(stmt);
     }
 
     static std::unordered_map<uint32, std::unique_ptr<LogFile>> ItemLogMap;

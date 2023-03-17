@@ -32,11 +32,12 @@
 #include "World.h"
 
 #ifndef _TRINITY_CORE_CONFIG
-# define _TRINITY_CORE_CONFIG  "worldserver.conf"
+#define _TRINITY_CORE_CONFIG  "worldserver.conf"
 #endif
 
 #ifdef _WIN32
 #include "ServiceWin32.h"
+
 char serviceName[] = "worldserver";
 char serviceLongName[] = "SkyFire world service";
 char serviceDescription[] = "SkyFire World of Warcraft emulator world service";
@@ -47,12 +48,12 @@ char serviceDescription[] = "SkyFire World of Warcraft emulator world service";
  *  2 - paused
  */
 int m_ServiceStatus = -1;
+
 #endif
 
 WorldDatabaseWorkerPool WorldDatabase;                      ///< Accessor to the world database
 CharacterDatabaseWorkerPool CharacterDatabase;              ///< Accessor to the character database
 LoginDatabaseWorkerPool LoginDatabase;                      ///< Accessor to the realm/login database
-ArchiveDatabaseWorkerPool ArchiveDatabase;
 
 RealmNameMap realmNameStore;
 uint32 realmID;                                             ///< Id of the realm

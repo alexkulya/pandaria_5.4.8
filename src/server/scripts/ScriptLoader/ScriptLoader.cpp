@@ -2135,7 +2135,6 @@ void AddBattlegroundScripts()
 void AddSC_npc_teleport();
 void AddSC_custom_reward();
 void AddSC_battle_pay_items();
-void AddSC_solocraft_system();
 
 void AddCustomScripts()
 {
@@ -2144,7 +2143,6 @@ void AddCustomScripts()
 AddSC_npc_teleport();
 AddSC_custom_reward();
 AddSC_battle_pay_items();
-AddSC_solocraft_system();
 
 #endif
     AddSC_Anticheat();

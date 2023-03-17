@@ -349,8 +349,6 @@ void App::OpenDatabases()
     _worldConn.reset(new SQLConnection(MySQLConnectionInfo{ dbstr }));
     dbstr = sConfigMgr->GetStringDefault("LoginDatabaseInfo", "");
     _loginConn.reset(new SQLConnection(MySQLConnectionInfo{ dbstr }));
-    //dbstr = sConfigMgr->GetStringDefault("ArchiveDatabaseInfo", "");
-    //_archiveConn.reset(new SQLConnection(MySQLConnectionInfo{ dbstr }));
 }
 
 void App::Report(std::string const& msg)

@@ -496,29 +496,6 @@ bool Master::_StartDB()
         return false;
     }
 
-    dbString = sConfigMgr->GetStringDefault("ArchiveDatabaseInfo", "");
-    if (dbString.empty())
-    {
-        TC_LOG_ERROR("server.worldserver", "Archive database not specified in configuration file");
-        return false;
-    }
-
-    asyncThreads = uint8(sConfigMgr->GetIntDefault("ArchiveDatabase.WorkerThreads", 1));
-    if (asyncThreads < 1 || asyncThreads > 32)
-    {
-        TC_LOG_ERROR("server.worldserver", "Archive database: invalid number of worker threads specified. "
-            "Please pick a value between 1 and 32.");
-        return false;
-    }
-
-    synchThreads = uint8(sConfigMgr->GetIntDefault("ArchiveDatabase.SynchThreads", 1));
-    ///- Initialise the login database
-    if (!ArchiveDatabase.Open(dbString, asyncThreads, synchThreads))
-    {
-        TC_LOG_ERROR("server.worldserver", "Cannot connect to archive database %s", dbString.c_str());
-        return false;
-    }
-
     ///- Get the realm Id from the configuration file
     realmID = sConfigMgr->GetIntDefault("RealmID", 0);
     if (!realmID)

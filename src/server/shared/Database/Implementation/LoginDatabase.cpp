@@ -138,6 +138,8 @@ void LoginDatabaseConnection::DoPrepareStatements()
 
     PrepareStatement(LOGIN_INS_PANDARIA_TOKEN, "INSERT INTO pandaria_token (account_id, character_guid, realm, vp_count) VALUES (?, ?, ?, ?)", CONNECTION_SYNCH);
 
+    PrepareStatement(LOGIN_INS_CURRENCY_TRANSACTIONS, "INSERT INTO `currency_transactions` (`guid`, `unix_time`, `operation`, `param`, `attachments`, `amount_before`, `amount_after`, `realmid`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)", CONNECTION_ASYNC);
+
     // Project
     PrepareStatement(LOGIN_SEL_project_MEMBER_PREMIUM, "SELECT unsetdate FROM project_member_premiums WHERE (member_id = ? OR member_id = 0) AND active = 1 ORDER BY unsetdate DESC", CONNECTION_SYNCH);
     PrepareStatement(LOGIN_SEL_ACCOUNT_VERIFIED, "SELECT 1 FROM account WHERE project_member_id = ? AND project_verified LIMIT 1", CONNECTION_SYNCH);
