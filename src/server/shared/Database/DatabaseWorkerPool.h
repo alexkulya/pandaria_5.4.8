@@ -32,8 +32,13 @@
 #include "AdhocStatement.h"
 #include "Task.h"
 
+#if MARIADB_VERSION_ID >= 100600
+#define MIN_MYSQL_SERVER_VERSION 100500u
+#define MIN_MYSQL_CLIENT_VERSION 30203u
+#else
 #define MIN_MYSQL_SERVER_VERSION 50100u
 #define MIN_MYSQL_CLIENT_VERSION 50100u
+#endif
 
 class PingOperation : public SQLOperation
 {
@@ -62,7 +67,7 @@ class DatabaseWorkerPool
         DatabaseWorkerPool()
         {
             WPFatal(mysql_thread_safe(), "Used MySQL library isn't thread-safe.");
-            WPFatal(mysql_get_client_version() >= MIN_MYSQL_CLIENT_VERSION, "TrinityCore does not support MySQL versions below 5.1");
+            WPFatal(mysql_get_client_version() >= MIN_MYSQL_CLIENT_VERSION, "This core does not support MySQL versions below 5.1 or MariaDB versions below 10.5");
         }
 
         ~DatabaseWorkerPool()
