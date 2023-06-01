@@ -1580,33 +1580,33 @@ public:
 
     bool IsPetGuardianStuff() const { return m_unitTypeMask & (UNIT_MASK_SUMMON | UNIT_MASK_GUARDIAN | UNIT_MASK_PET | UNIT_MASK_HUNTER_PET | UNIT_MASK_TOTEM); }
 
-    uint8 getLevel() const
+    uint8 GetLevel() const
     {
         return uint8(GetUInt32Value(UNIT_FIELD_LEVEL));
     }
-    uint8 getLevelForTarget(WorldObject const* /*target*/) const override
+    uint8 GetLevelForTarget(WorldObject const* /*target*/) const override
     {
-        return getLevel();
+        return GetLevel();
     }
     void SetLevel(uint8 lvl);
 
-    uint8 getRace() const
+    uint8 GetRace() const
     {
         return GetByteValue(UNIT_FIELD_SEX, 0);
     }
-    uint32 getRaceMask() const
+    uint32 GetRaceMask() const
     {
-        return 1 << (getRace() - 1);
+        return 1 << (GetRace() - 1);
     }
-    uint8 getClass() const
+    uint8 GetClass() const
     {
         return GetByteValue(UNIT_FIELD_SEX, 1);
     }
-    uint32 getClassMask() const
+    uint32 GetClassMask() const
     {
-        return 1 << (getClass() - 1);
+        return 1 << (GetClass() - 1);
     }
-    uint8 getGender() const
+    uint8 GetGender() const
     {
         return GetByteValue(UNIT_FIELD_SEX, 3);
     }
@@ -1748,11 +1748,11 @@ public:
     }
 
     // faction template id
-    uint32 getFaction() const
+    uint32 GetFaction() const
     {
         return GetUInt32Value(UNIT_FIELD_FACTION_TEMPLATE);
     }
-    void setFaction(uint32 faction)
+    void SetFaction(uint32 faction)
     {
         SetUInt32Value(UNIT_FIELD_FACTION_TEMPLATE, faction);
     }
@@ -1820,7 +1820,7 @@ public:
 
     uint16 GetMaxSkillValueForLevel(Unit const* target = NULL) const
     {
-        return (target ? getLevelForTarget(target) : getLevel()) * 5;
+        return (target ? GetLevelForTarget(target) : GetLevel()) * 5;
     }
     void DealDamageMods(Unit* victim, uint32 &damage, uint32* absorb);
     uint32 DealDamage(Unit* victim, uint32 damage, CleanDamage const* cleanDamage = NULL, DamageEffectType damagetype = DIRECT_DAMAGE, SpellSchoolMask damageSchoolMask = SPELL_SCHOOL_MASK_NORMAL, SpellInfo const* spellProto = NULL, bool durabilityLoss = true);

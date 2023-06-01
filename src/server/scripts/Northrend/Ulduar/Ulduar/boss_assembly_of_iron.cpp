@@ -801,7 +801,7 @@ class npc_rune_of_power : public CreatureScript
 
                 me->SetInCombatWithZone();
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
-                me->setFaction(16); // Same faction as bosses
+                me->SetFaction(16); // Same faction as bosses
                 me->CastSpell(me, SPELL_RUNE_OF_POWER, true, nullptr, nullptr, me->GetInstanceScript()->GetData64(BOSS_MOLGEIM));
 
                 me->DespawnOrUnsummon(60000);

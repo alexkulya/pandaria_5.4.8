@@ -369,22 +369,22 @@ void WorldSession::HandleWhoOpcode(WorldPacket& recvData)
             continue;
 
         // check if target's level is in level range
-        uint8 level = target->getLevel();
+        uint8 level = target->GetLevel();
         if (level < levelMin || level > levelMax)
             continue;
 
         // check if class matches classmask
-        uint8 class_ = target->getClass();
+        uint8 class_ = target->GetClass();
         if (!(classMask & (1 << class_)))
             continue;
 
         // check if race matches racemask
-        uint32 race = target->getRace();
+        uint32 race = target->GetRace();
         if (!(raceMask & (1 << race)))
             continue;
 
         uint32 zoneId = target->GetZoneId();
-        uint8 gender = target->getGender();
+        uint8 gender = target->GetGender();
 
         bool z_show = true;
         for (uint32 i = 0; i < zonesCount; ++i)
@@ -2561,7 +2561,7 @@ void WorldSession::HandleSelectFactionOpcode(WorldPacket& recvPacket)
 {
     uint32 choice = recvPacket.read<uint32>();
 
-    if (_player->getRace() != RACE_PANDAREN_NEUTRAL)
+    if (_player->GetRace() != RACE_PANDAREN_NEUTRAL)
         return;
 
     if (_player->GetQuestStatus(31450) == QUEST_STATUS_INCOMPLETE)

@@ -150,7 +150,7 @@ class npc_zerekethvoidzone : public CreatureScript
             void Reset() override
             {
                 me->SetUInt32Value(UNIT_FIELD_NPC_FLAGS, 0);
-                me->setFaction(16);
+                me->SetFaction(16);
 
                 DoCast(me, SPELL_VOID_ZONE_DAMAGE);
             }

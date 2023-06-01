@@ -264,7 +264,7 @@ public:
     {
         boss_kelthuzadAI(Creature* creature) : BossAI(creature, BOSS_KELTHUZAD), spawns(creature)
         {
-            uiFaction = me->getFaction();
+            uiFaction = me->GetFaction();
         }
 
         uint32 Phase;
@@ -301,7 +301,7 @@ public:
             PortalsGUID[0] = PortalsGUID[1] = PortalsGUID[2] = PortalsGUID[3] = 0;
             KTTriggerGUID = 0;
 
-            me->setFaction(35);
+            me->SetFaction(35);
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_DISABLE_MOVE | UNIT_FLAG_NOT_SELECTABLE);
 
             ResetPlayerScale();
@@ -352,7 +352,7 @@ public:
 
         void EnterCombat(Unit* /*who*/) override
         {
-            me->setFaction(uiFaction);
+            me->SetFaction(uiFaction);
 
             _EnterCombat();
             FindGameObjects();
@@ -538,7 +538,7 @@ public:
 
                                     if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO, 0, NotCharmedTargetSelector()))
                                     {
-                                        switch (player->getClass())
+                                        switch (player->GetClass())
                                         {
                                             case CLASS_DRUID:
                                                 if (urand(0, 1))

@@ -89,7 +89,7 @@ public:
             if (sender == GOSSIP_ID && action == GOSSIP_OPTION_ID)
             {
                 player->CLOSE_GOSSIP_MENU();
-                me->setFaction(113);
+                me->SetFaction(113);
                 npc_escortAI::Start(true, true, player->GetGUID());
             }
         }

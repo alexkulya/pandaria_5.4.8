@@ -174,7 +174,7 @@ namespace Trinity
                 gain = 0;
             else
             {
-                gain = BaseGain(player->getLevel(), u->getLevel(), GetContentLevelsForMapAndZone(u->GetMapId(), u->GetZoneId()));
+                gain = BaseGain(player->GetLevel(), u->GetLevel(), GetContentLevelsForMapAndZone(u->GetMapId(), u->GetZoneId()));
 
                 if (gain != 0 && u->GetTypeId() == TYPEID_UNIT && ((Creature*)u)->isElite())
                 {

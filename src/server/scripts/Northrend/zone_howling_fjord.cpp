@@ -58,10 +58,10 @@ public:
             switch (player->GetTeam())
             {
                 case ALLIANCE:
-                    creature->setFaction(FACTION_ESCORTEE_A);
+                    creature->SetFaction(FACTION_ESCORTEE_A);
                     break;
                 case HORDE:
-                    creature->setFaction(FACTION_ESCORTEE_H);
+                    creature->SetFaction(FACTION_ESCORTEE_H);
                     break;
             }
             CAST_AI(npc_escortAI, (creature->AI()))->Start(true, false, player->GetGUID());

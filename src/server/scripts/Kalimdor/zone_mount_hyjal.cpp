@@ -241,7 +241,7 @@ class npc_marion_wormswing : public CreatureScript
                             owner->KilledMonsterCredit(41169, 0);
                             owner->KilledMonsterCredit(41170, 0);
                         }
-                    me->setFaction(35);
+                    me->SetFaction(35);
                     me->DespawnOrUnsummon(5000);
                 }
             }

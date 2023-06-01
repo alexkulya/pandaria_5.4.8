@@ -255,7 +255,7 @@ void WorldSession::SendLfgPlayerLockInfo()
     ObjectGuid guid = GetPlayer()->GetGUID();
 
     // Get Random dungeons that can be done at a certain level and expansion
-    uint8 level = GetPlayer()->getLevel();
+    uint8 level = GetPlayer()->GetLevel();
     lfg::LfgDungeonSet const& randomDungeons = sLFGMgr->GetRandomAndSeasonalDungeons(level, GetPlayer()->GetSession()->Expansion());
 
     // Get player locked Dungeons
@@ -379,7 +379,7 @@ void WorldSession::SendLfgPlayerLockInfo()
 
         data.WriteBits(quest ? quest->GetRewCurrencyCount() : 0, 21);
 
-        lfgData << uint32(GetPlayer()->getLevel() == DEFAULT_MAX_LEVEL ? 0 : (quest ? quest->XPValue(GetPlayer()) : 0));
+        lfgData << uint32(GetPlayer()->GetLevel() == DEFAULT_MAX_LEVEL ? 0 : (quest ? quest->XPValue(GetPlayer()) : 0));
 
         for (uint32 i = 0; i < cta_shortage_size; ++i)
         {
@@ -726,7 +726,7 @@ void WorldSession::SendLfgRoleCheckUpdate(lfg::LfgRoleCheck const& roleCheck)
         data.WriteBit(roles > 0);                                // Ready
         data.WriteGuidMask(guid, 3, 0, 5, 2, 7, 1, 4, 6);        // Guid Bits
 
-        groupData << uint8(player ? player->getLevel() : 0);     // Level
+        groupData << uint8(player ? player->GetLevel() : 0);     // Level
         groupData.WriteGuidBytes(guid, 3, 6);                    // Guid Bytes
         groupData << uint32(roles);                              // Roles
         groupData.WriteGuidBytes(guid, 2, 4, 0, 1, 5, 7);        // Guid Bytes
@@ -743,7 +743,7 @@ void WorldSession::SendLfgRoleCheckUpdate(lfg::LfgRoleCheck const& roleCheck)
             data.WriteBit(roles > 0);                            // Ready
             data.WriteGuidMask(guid, 3, 0, 5, 2, 7, 1, 4, 6);    // Guid Bits
 
-            groupData << uint8(player ? player->getLevel() : 0); // Level
+            groupData << uint8(player ? player->GetLevel() : 0); // Level
             groupData.WriteGuidBytes(guid, 3, 6);                // Guid Bytes
             groupData << uint32(roles);                          // Roles
             groupData.WriteGuidBytes(guid, 2, 4, 0, 1, 5, 7);    // Guid Bytes

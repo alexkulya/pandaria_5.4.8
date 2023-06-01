@@ -1809,14 +1809,14 @@ public:
             accId             = target->GetSession()->GetAccountId();
             money             = target->GetMoney();
             totalPlayerTime   = target->GetTotalPlayedTime();
-            level             = target->getLevel();
+            level             = target->GetLevel();
             latency           = target->GetSession()->GetLatency();
-            raceid            = target->getRace();
-            classid           = target->getClass();
+            raceid            = target->GetRace();
+            classid           = target->GetClass();
             mapId             = target->GetMapId();
             areaId            = target->GetAreaId();
             alive             = target->IsAlive() ? "Yes" : "No";
-            gender            = target->getGender();
+            gender            = target->GetGender();
             phase             = target->GetPhaseMask();
         }
         // get additional information from DB
@@ -3082,14 +3082,14 @@ public:
             handler->PSendSysMessage(LANG_COMMAND_FREEZE, name.c_str());
 
             // stop combat + make player unattackable + duel stop + stop some spells
-            player->setFaction(35);
+            player->SetFaction(35);
             player->CombatStop();
             if (player->IsNonMeleeSpellCasted(true))
                 player->InterruptNonMeleeSpells(true);
             player->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
             // if player class = hunter || warlock remove pet if alive
-            if ((player->getClass() == CLASS_HUNTER) || (player->getClass() == CLASS_WARLOCK))
+            if ((player->GetClass() == CLASS_HUNTER) || (player->GetClass() == CLASS_WARLOCK))
                 player->RemovePet(PET_REMOVE_DISMISS, PET_REMOVE_FLAG_RESET_CURRENT);
 
             if (SpellInfo const* spellInfo = sSpellMgr->GetSpellInfo(9454))
@@ -3126,7 +3126,7 @@ public:
             handler->PSendSysMessage(LANG_COMMAND_UNFREEZE, name.c_str());
 
             // Reset player faction + allow combat + allow duels
-            player->setFactionForRace(player->getRace());
+            player->setFactionForRace(player->GetRace());
             player->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
             // Remove Freeze spell (allowing movement and spells)
@@ -4216,7 +4216,7 @@ public:
                 ObjectMgr::GetLocaleString(locale->Name, handler->GetSession()->GetSessionDbLocaleIndex(), name);
 
             std::stringstream ss;
-            ss << "|c" << std::hex << ItemQualityColors[proto->Quality] << std::dec << "|Hitem:" << proto->ItemId << ":0:0:0:0:0:" << info.randomPropertyId << ":0:" << uint32(handler->GetSession()->GetPlayer()->getLevel()) << "|h[" << name << "]|h|r";
+            ss << "|c" << std::hex << ItemQualityColors[proto->Quality] << std::dec << "|Hitem:" << proto->ItemId << ":0:0:0:0:0:" << info.randomPropertyId << ":0:" << uint32(handler->GetSession()->GetPlayer()->GetLevel()) << "|h[" << name << "]|h|r";
             name = ss.str();
         }
         if (revert)

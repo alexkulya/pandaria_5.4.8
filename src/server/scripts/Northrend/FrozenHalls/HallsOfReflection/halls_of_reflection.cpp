@@ -1398,7 +1398,7 @@ class npc_frostworn_general : public CreatureScript
                             pReflection->SetName(unit->GetName());
                             unit->CastSpell(pReflection, SPELL_CLONE_NAME, true);
                             unit->CastSpell(pReflection, SPELL_CLONE_MODEL, true);
-                            pReflection->setFaction(me->getFaction());
+                            pReflection->SetFaction(me->GetFaction());
                             pReflection->AI()->AttackStart(unit);
                         }
                     }

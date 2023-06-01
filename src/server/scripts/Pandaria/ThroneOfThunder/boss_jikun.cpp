@@ -1434,7 +1434,7 @@ class spell_incubate_visual_eff : public SpellScript
         {
             target->CastSpell(target, target->GetEntry() == NPC_MATURE_EGG_OF_JIKUN ? SPELL_INCUBATION_HIGH_NEST : SPELL_INCUBATION_LOW_NEST, true);
             target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-            target->setFaction(14);
+            target->SetFaction(14);
         }
     }
 

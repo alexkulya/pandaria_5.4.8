@@ -80,7 +80,7 @@ class boss_broggok : public CreatureScript
 
             void JustSummoned(Creature* summoned) override
             {
-                summoned->setFaction(16);
+                summoned->SetFaction(16);
                 summoned->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 summoned->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                 summoned->CastSpell(summoned, SPELL_POISON, false, 0, 0, me->GetGUID());

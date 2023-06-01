@@ -267,7 +267,7 @@ class npc_lord_hiram_creed : public CreatureScript
                         if (target->GetTypeId() != TYPEID_PLAYER)
                             return false;
 
-                        if (target->getClass() == CLASS_ROGUE)
+                        if (target->GetClass() == CLASS_ROGUE)
                             return false;
 
                         return true;

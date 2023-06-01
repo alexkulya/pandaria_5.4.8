@@ -80,7 +80,7 @@ class boss_commander_stoutbeard : public CreatureScript
                 uiFrighteningShout_Timer = urand(10000, 12500);
                 uiWhirlwind_Timer = 10000;
                 uiWhirlwindAdd_Timer = 10500;
-                me->setFaction(16);
+                me->SetFaction(16);
 
                 IsWhirlwindTime = false;
 
@@ -201,7 +201,7 @@ class npc_alliance_cleric : public CreatureScript
                 uiFlashHeal_Timer = urand(9000, 10500);
                 uiShadowWordDeath_Timer = urand(5500, 8500);
                 uiPowerWordShield_Timer = urand(2000, 4000);
-                me->setFaction(16);
+                me->SetFaction(16);
             }
 
             void EnterCombat(Unit* /*who*/) override
@@ -277,7 +277,7 @@ class npc_alliance_ranger : public CreatureScript
                 uiRapidShot_Timer = urand(12500, 14000);
                 uiIncendiaryShot_Timer = urand(6500, 8000);
                 uiShoot_Timer = urand(2500, 3000);
-                me->setFaction(16);
+                me->SetFaction(16);
 
                 //me->CastSpell(me, SPELL_FROZEN_PRISON, true);
             }
@@ -367,7 +367,7 @@ class npc_alliance_berserker : public CreatureScript
                 uiBloodlust_Timer = urand(5000, 7500);
                 uiFrenzy_Timer = urand(2500, 4000);
                 uiWarStomp_Timer = urand(6000, 8000);
-                me->setFaction(16);
+                me->SetFaction(16);
             }
 
             void JustReachedHome() override

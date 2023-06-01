@@ -101,7 +101,7 @@ static bool ActAsMainPet(Unit const* summon, Unit const* mainpet, uint32 spellId
     if (summon->GetEntry() == 24207) // Army of the Dead Ghoul
         return true;
 
-    return mainpet->GetEntry() == summon->GetEntry() && owner->getClass() != CLASS_WARLOCK; // Prevent Grimoire of Serivce;
+    return mainpet->GetEntry() == summon->GetEntry() && owner->GetClass() != CLASS_WARLOCK; // Prevent Grimoire of Serivce;
 }
 
 void WorldSession::HandlePetAction(WorldPacket& recvData) //  sub_68C8FD [5.4.8 18291]
@@ -898,7 +898,7 @@ void WorldSession::HandlePetAbandon(WorldPacket& recvData)
         if (pet->IsPet())
         {
             _player->RemovePet(PET_REMOVE_ABANDON);
-            if (GetPlayer()->getClass() == CLASS_HUNTER)
+            if (GetPlayer()->GetClass() == CLASS_HUNTER)
                 SendPetList(0, PET_SLOT_ACTIVE_FIRST, PET_SLOT_ACTIVE_LAST);
         }
         else if (pet->GetGUID() == _player->GetCharmGUID())
@@ -1365,7 +1365,7 @@ void WorldSession::HandleLearnPetSpecialization(WorldPacket& recvData)
     recvData.ReadGuidMask(guid, 5, 7, 3, 0, 6, 4, 1, 2);
     recvData.ReadGuidBytes(guid, 7, 5, 4, 3, 0, 2, 6, 1);
 
-    if (_player->getClass() != CLASS_HUNTER || _player->IsInCombat())
+    if (_player->GetClass() != CLASS_HUNTER || _player->IsInCombat())
         return;
 
     uint32 specializationId = 0;

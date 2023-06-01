@@ -1313,7 +1313,7 @@ class npc_shado_pan_sentinel : public CreatureScript
 
                 creature->m_Events.Schedule(delay += 1000, [creature, player]()
                 {
-                    creature->setFaction(14);
+                    creature->SetFaction(14);
                     creature->Attack(player, true);
                 });
             }
@@ -1327,7 +1327,7 @@ class npc_shado_pan_sentinel : public CreatureScript
 
             void Reset() override
             {
-                me->setFaction(me->GetCreatureTemplate()->faction_A);
+                me->SetFaction(me->GetCreatureTemplate()->faction_A);
             }
         };
 
@@ -1916,7 +1916,7 @@ struct celestial_experience_sha : public ScriptedAI
 
     void IsSummonedBy(Unit* summoner) override
     {
-        me->setFaction(16);
+        me->SetFaction(16);
         me->SetPhaseMask(2, true);
         summonerGUID = summoner->GetGUID();
         victimGUID = 0;

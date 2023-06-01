@@ -160,7 +160,7 @@ void ServiceMgr::HandleReplaceSkill(Player* player, uint32 oldSkill, uint32 newS
     player->RemoveSpell(oldProf->Rank[0].SpellID);
 
     int32 rank = 7;
-    while (rank > 0 && newProf->Rank[rank].Level > player->getLevel())
+    while (rank > 0 && newProf->Rank[rank].Level > player->GetLevel())
         --rank;
     uint32 maxValue = (rank + 1) * 75;
     value = std::min(value, maxValue);
@@ -602,9 +602,9 @@ void ServiceMgr::_LoadPremium()
 Creature* ServiceMgr::GetPremiumAuc(Player *player)
 {
     uint8 faction;
-    if (player->getRaceMask() & RACEMASK_ALLIANCE)
+    if (player->GetRaceMask() & RACEMASK_ALLIANCE)
         faction = TEAM_ALLIANCE;
-    else if (player->getRaceMask() & RACEMASK_HORDE)
+    else if (player->GetRaceMask() & RACEMASK_HORDE)
         faction = TEAM_HORDE;
     else // just in case
         return nullptr;

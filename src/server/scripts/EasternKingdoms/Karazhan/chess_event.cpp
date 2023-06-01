@@ -457,8 +457,8 @@ class npc_chess_piece : public CreatureScript
                 // cancel move timer for player faction npcs or for friendly games
                 if (instance)
                 {
-                    if (dynamic_cast<karazhan_accessor*>(instance)->GetPlayerTeam() == ALLIANCE && me->getFaction() == FACTION_ID_CHESS_ALLIANCE ||
-                        dynamic_cast<karazhan_accessor*>(instance)->GetPlayerTeam() == HORDE && me->getFaction() == FACTION_ID_CHESS_HORDE ||
+                    if (dynamic_cast<karazhan_accessor*>(instance)->GetPlayerTeam() == ALLIANCE && me->GetFaction() == FACTION_ID_CHESS_ALLIANCE ||
+                        dynamic_cast<karazhan_accessor*>(instance)->GetPlayerTeam() == HORDE && me->GetFaction() == FACTION_ID_CHESS_HORDE ||
                         instance->GetData(TYPE_CHESS) == DONE || instance->GetData(TYPE_CHESS) == SPECIAL)
                         moveCommandTimer = facingCommandTimer = 0;
 
@@ -633,11 +633,11 @@ class npc_chess_piece : public CreatureScript
                 if (!instance)
                     return nullptr;
 
-                uint32 team = me->getFaction() == FACTION_ID_CHESS_ALLIANCE ? FACTION_ID_CHESS_HORDE : FACTION_ID_CHESS_ALLIANCE;
+                uint32 team = me->GetFaction() == FACTION_ID_CHESS_ALLIANCE ? FACTION_ID_CHESS_HORDE : FACTION_ID_CHESS_ALLIANCE;
 
                 // get friendly list for this type
                 if (type == TARGET_TYPE_FRIENDLY)
-                    team = me->getFaction();
+                    team = me->GetFaction();
 
                 // Get the list of enemies
                 std::vector<Creature*> targets;
@@ -691,7 +691,7 @@ class npc_chess_piece : public CreatureScript
                 // Get the list of enemies
                 std::list<Creature*> enemies;
 
-                for (auto&& guid : dynamic_cast<karazhan_accessor*>(instance)->GetChessPiecesByFaction(me->getFaction() == FACTION_ID_CHESS_ALLIANCE ? FACTION_ID_CHESS_HORDE : FACTION_ID_CHESS_ALLIANCE))
+                for (auto&& guid : dynamic_cast<karazhan_accessor*>(instance)->GetChessPiecesByFaction(me->GetFaction() == FACTION_ID_CHESS_ALLIANCE ? FACTION_ID_CHESS_HORDE : FACTION_ID_CHESS_ALLIANCE))
                     if (Creature* target = ObjectAccessor::GetCreature(*me, guid))
                         if (target->IsAlive())
                             enemies.push_back(target);

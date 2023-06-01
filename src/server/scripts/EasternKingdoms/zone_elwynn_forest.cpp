@@ -264,7 +264,7 @@ struct npc_blackrock_battle_worg : public ScriptedAI
     {
         tSeek = urand(1 * TimeConstants::IN_MILLISECONDS, 2 * TimeConstants::IN_MILLISECONDS);
         tGrowl = urand(8 * TimeConstants::IN_MILLISECONDS + 500, 10 * TimeConstants::IN_MILLISECONDS);
-        me->setFaction(ElwynnForest::WORG_FACTION_RESTORE);
+        me->SetFaction(ElwynnForest::WORG_FACTION_RESTORE);
     }
 
     void DamageTaken(Unit* who, uint32& damage)
@@ -298,7 +298,7 @@ struct npc_blackrock_battle_worg : public ScriptedAI
             if ((me->IsAlive()) && (!me->IsInCombat() && (me->GetDistance2d(me->GetHomePosition().GetPositionX(), me->GetHomePosition().GetPositionY()) <= 1.0f)))
                 if (Creature* enemy = me->FindNearestCreature(ElwynnForest::NPC_STORMWIND_INFANTRY, 1.0f, true))
                 {
-                    me->setFaction(ElwynnForest::WORG_FIGHTING_FACTION);
+                    me->SetFaction(ElwynnForest::WORG_FIGHTING_FACTION);
                     me->AI()->AttackStart(enemy);
                     tSeek = urand(1 * TimeConstants::IN_MILLISECONDS, 2 * TimeConstants::IN_MILLISECONDS);
                 }
@@ -321,7 +321,7 @@ struct npc_blackrock_battle_worg : public ScriptedAI
         }
         else
         {
-            me->setFaction(ElwynnForest::WORG_FACTION_RESTORE);
+            me->SetFaction(ElwynnForest::WORG_FACTION_RESTORE);
             return;
         }
     }
@@ -805,7 +805,7 @@ class npc_varian_wrynn_alliance_way_quest : public CreatureScript
 
                     me->m_Events.Schedule(delay += 11000, 20, [this]()
                     {
-                        me->setFaction(16);
+                        me->SetFaction(16);
                         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED);
                         Talk(SAY_SPECIAL_15);
                     });
@@ -834,7 +834,7 @@ class npc_varian_wrynn_alliance_way_quest : public CreatureScript
                         }
 
                         me->CombatStop();
-                        me->setFaction(35);
+                        me->SetFaction(35);
                     });
 
                     me->m_Events.Schedule(delay += 3500, 25, [this]()

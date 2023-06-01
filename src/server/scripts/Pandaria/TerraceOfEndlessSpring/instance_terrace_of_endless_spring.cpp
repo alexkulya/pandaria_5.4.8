@@ -359,7 +359,7 @@ class instance_terrace_of_endless_spring : public InstanceMapScript
 
                             if (Creature* leiShi = instance->GetCreature(leiShiGuid))
                             {
-                                leiShi->setFaction(35);
+                                leiShi->SetFaction(35);
                                 leiShi->SetVisible(false);
 
                                 if (Creature* leiShiReflection = instance->GetCreature(leiShiReflectionGuid))

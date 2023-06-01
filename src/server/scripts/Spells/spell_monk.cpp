@@ -381,7 +381,7 @@ class spell_monk_grapple_weapon : public SpellScriptLoader
                         }
                         else if (target->GetTypeId() == TYPEID_UNIT)
                         {
-                            if (target->getLevel() > _player->getLevel())
+                            if (target->GetLevel() > _player->GetLevel())
                             {
                                 switch (_player->GetTalentSpecialization())
                                 {

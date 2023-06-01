@@ -93,7 +93,7 @@ public:
         {
             SendItemTimer = 0;
             SwitchFactionTimer = 10000;
-            me->setFaction(35);
+            me->SetFaction(35);
             isFriendly = true;
 
             AquaJetTimer = 5000;
@@ -127,7 +127,7 @@ public:
             {
                 if (SwitchFactionTimer <= diff)
                 {
-                    me->setFaction(91);
+                    me->SetFaction(91);
                     isFriendly = false;
                 } else SwitchFactionTimer -= diff;
             }
@@ -366,7 +366,7 @@ public:
     {
         if (quest->GetQuestId() == Q_OOX17)
         {
-            creature->setFaction(113);
+            creature->SetFaction(113);
             creature->SetFullHealth();
             creature->SetUInt32Value(UNIT_FIELD_ANIM_TIER, 0);
             creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);

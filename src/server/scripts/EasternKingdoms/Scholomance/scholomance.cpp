@@ -483,7 +483,7 @@ class npc_shatter_soul_fragment : public CreatureScript
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 
-                me->setFaction(16);
+                me->SetFaction(16);
 
                 me->DespawnOrUnsummon(8000);
             }
@@ -493,7 +493,7 @@ class npc_shatter_soul_fragment : public CreatureScript
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 
-                me->setFaction(16);
+                me->SetFaction(16);
 
                 me->DespawnOrUnsummon(8000);
             }

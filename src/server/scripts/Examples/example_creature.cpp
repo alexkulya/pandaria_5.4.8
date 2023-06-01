@@ -281,7 +281,7 @@ class example_creature : public CreatureScript
             {
                 player->CLOSE_GOSSIP_MENU();
                 //Set our faction to hostile towards all
-                creature->setFaction(FACTION_WORGEN);
+                creature->SetFaction(FACTION_WORGEN);
                 creature->AI()->AttackStart(player);
             }
 

@@ -252,7 +252,7 @@ void QueueAnnounceContext::Announce() const
             continue;
 
         // Don't show to players in the wrong level range
-        if (bracket && (player->getLevel() < bracket->minLevel || player->getLevel() > bracket->maxLevel))
+        if (bracket && (player->GetLevel() < bracket->minLevel || player->GetLevel() > bracket->maxLevel))
             continue;
 
         Show setting = info->GetSetting(isArena ? projectMemberInfo::Setting::QueueAnnounceArenaHorizon : projectMemberInfo::Setting::QueueAnnounceBattlegroundHorizon).As<Show>();
@@ -1304,7 +1304,7 @@ void BattlegroundQueue::BattlegroundQueueUpdate(uint32 /*diff*/, BattlegroundTyp
 SoloPlayer::SoloPlayer(Player* player)
     : Target(player)
 {
-    Class = player->getClass();
+    Class = player->GetClass();
     Specialization = Specializations(player->GetTalentSpecialization());
     Role = SoloQueue::GetRole(Specialization);
 }

@@ -1146,7 +1146,7 @@ struct npc_dagger_in_dark_darkhatched_lizard_lord : public customCreatureAI
     void JustSummoned(Creature* summon) override
     {
         summons.Summon(summon);
-        summon->setFaction(1375); // required for water jets hit
+        summon->SetFaction(1375); // required for water jets hit
     }
 
     void JustDied(Unit* /*killer*/) override
@@ -1485,7 +1485,7 @@ struct npc_dagger_in_dark_rakgor_bloodrazor : public customCreatureAI
                     {
                         me->SetHomePosition(*me);
                         Talk(TALK_SPECIAL_5);
-                        me->setFaction(14);
+                        me->SetFaction(14);
                         me->SetInCombatWithZone();
 
                         // our guardians too
@@ -1494,7 +1494,7 @@ struct npc_dagger_in_dark_rakgor_bloodrazor : public customCreatureAI
 
                         for (auto&& itr : korkronGuardians)
                         {
-                            itr->setFaction(14);
+                            itr->SetFaction(14);
                             itr->SetInCombatWithZone();
                         }
                     });

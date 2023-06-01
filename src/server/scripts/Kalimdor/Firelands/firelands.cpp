@@ -564,7 +564,7 @@ class npc_firelands_molten_lord : public CreatureScript
                                 if (!target->IsAtGroupRewardDistance(me))
                                     continue;
 
-                                if (target->getClass() == CLASS_MAGE || target->getClass() == CLASS_PRIEST || target->getClass() == CLASS_WARLOCK || target->GetTalentSpecialization() == SPEC_MONK_MISTWEAVER ||
+                                if (target->GetClass() == CLASS_MAGE || target->GetClass() == CLASS_PRIEST || target->GetClass() == CLASS_WARLOCK || target->GetTalentSpecialization() == SPEC_MONK_MISTWEAVER ||
                                     target->GetTalentSpecialization() == SPEC_DRUID_BALANCE || target->GetTalentSpecialization() == SPEC_DRUID_RESTORATION ||
                                     target->GetTalentSpecialization() == SPEC_SHAMAN_ELEMENTAL || target->GetTalentSpecialization() == SPEC_SHAMAN_RESTORATION)
                                 {
@@ -1183,7 +1183,7 @@ class npc_blazing_monstrosity : public CreatureScript
 
                 // Our passenger is another vehicle (boardable by players)
                 DoCast(who, SPELL_SHARE_HEALTH, true);
-                who->setFaction(35);
+                who->SetFaction(35);
                 who->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
 
                 // Hack to relocate vehicle on vehicle so exiting players are not moved under map

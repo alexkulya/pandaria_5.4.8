@@ -1257,7 +1257,7 @@ void Battleground::EndBattleground(uint32 winner)
 
             if (player)
             {
-                classID = player->getClass();
+                classID = player->GetClass();
             }
             else
             {
@@ -1430,7 +1430,7 @@ void Battleground::RemovePlayerAtLeave(uint64 guid, bool Transport, bool SendPac
                 deserter = true; // player already removed
 
         if (IsSoloQueueMatch())
-            player->setFactionForRace(player->getRace());
+            player->setFactionForRace(player->GetRace());
     }
 
     RemovePlayer(player, guid, team);                           // BG subclass specific code
@@ -1645,7 +1645,7 @@ void Battleground::AddPlayer(Player* player)
             SendPacketToTeam(team, &data);
 
         if (IsSoloQueueMatch() && sWorld->getBoolConfig(CONFIG_SOLO_QUEUE_INTERFACTIONAL_TEAMS))
-            player->setFaction(team == ALLIANCE ? 1 : 2);
+            player->SetFaction(team == ALLIANCE ? 1 : 2);
     }
     else
     {
@@ -1722,7 +1722,7 @@ void Battleground::EventPlayerLoggedIn(Player* player)
         player->CastSpell(player, spell, true);
     }
     if (IsSoloQueueMatch() && sWorld->getBoolConfig(CONFIG_SOLO_QUEUE_INTERFACTIONAL_TEAMS))
-        player->setFaction(player->GetBGTeam() == ALLIANCE ? 1 : 2);
+        player->SetFaction(player->GetBGTeam() == ALLIANCE ? 1 : 2);
 
     PlayerAddedToBGCheckIfBGIsRunning(player);
     // if battleground is starting, then add preparation aura
@@ -2763,7 +2763,7 @@ void Battleground::RemovePlayer(Player* player, uint64 guid, uint32 team)
         return;
     if (sWorld->getBoolConfig(CONFIG_BATTLEGROUND_IGNORE_FACTION))
     {
-        player->setFactionForRace(player->getRace());
+        player->setFactionForRace(player->GetRace());
         player->InitDisplayIds();
         player->RemoveAurasDueToSpell(200002);
         player->RemoveAurasDueToSpell(200003);

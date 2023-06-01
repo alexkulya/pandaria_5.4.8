@@ -624,7 +624,7 @@ class npc_zombified_corpse : public CreatureScript
 
             void InitializeAI() override 
             {
-                me->setFaction(1962);
+                me->SetFaction(1962);
                 attacked = false;
             }
 

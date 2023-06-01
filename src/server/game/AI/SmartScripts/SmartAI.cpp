@@ -583,7 +583,7 @@ void SmartAI::JustRespawned()
     mDespawnState = 0;
     mEscortState = SMART_ESCORT_NONE;
     me->SetVisible(true);
-    if (me->getFaction() != me->GetCreatureTemplate()->faction_A)
+    if (me->GetFaction() != me->GetCreatureTemplate()->faction_A)
         me->RestoreFaction();
     GetScript()->ProcessEventsFor(SMART_EVENT_RESPAWN);
     Reset();

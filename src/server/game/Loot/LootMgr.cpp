@@ -690,7 +690,7 @@ bool Loot::FillLoot(Object* source, uint32 lootId, LootStore const& store, Playe
         if (auto const* loot = sLootMgr->GetWorldDrop(creature))
         {
             for (auto&& itr : *loot)
-                if (itr.second.GetChance(creature->getLevel()) > 0.0f)
+                if (itr.second.GetChance(creature->GetLevel()) > 0.0f)
                     items.push_back(LootItem{ itr.second });
         }
     }
@@ -1008,7 +1008,7 @@ void Loot::FillFFALoot(Player* player)
                         toRoll[itr->second.Group].push_back({ i, &itr->second });
                     else
                     {
-                        float chance = itr->second.GetChance(creature->getLevel());
+                        float chance = itr->second.GetChance(creature->GetLevel());
                         if (creature->isElite())
                             AddPct(chance, 20.0f);
                         if (roll_chance_f(chance))
@@ -1023,7 +1023,7 @@ void Loot::FillFFALoot(Player* player)
             for (auto&& itr : toRoll)
             {
                 auto& rolled = itr.second[urand(0, itr.second.size() - 1)];
-                float chance = rolled.Item->GetChance(creature->getLevel());
+                float chance = rolled.Item->GetChance(creature->GetLevel());
                 if (creature->isElite())
                     AddPct(chance, 20.0f);
                 if (roll_chance_f(chance))

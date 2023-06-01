@@ -1025,7 +1025,7 @@ struct npc_black_harvest_kanrethad_ebonlocke : public customCreatureAI
     {
         if (actionId == ACTION_KANRETHAD_DEFEATED)
         {
-            me->setFaction(35);
+            me->SetFaction(35);
             me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
         }
     }

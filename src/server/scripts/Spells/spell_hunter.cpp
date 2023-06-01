@@ -1017,7 +1017,7 @@ class spell_hun_tame_beast : public SpellScriptLoader
             SpellCastResult CheckCast()
             {
                 Player* caster = GetCaster()->ToPlayer();
-                if (!caster || caster->getClass() != CLASS_HUNTER)
+                if (!caster || caster->GetClass() != CLASS_HUNTER)
                     return SPELL_FAILED_DONT_REPORT;
 
                 if (!GetExplTargetUnit())
@@ -1033,7 +1033,7 @@ class spell_hun_tame_beast : public SpellScriptLoader
                     return SPELL_FAILED_DONT_REPORT;
                 }
 
-                if (target->getLevel() > caster->getLevel())
+                if (target->GetLevel() > caster->GetLevel())
                 {
                     SendPetTameError(caster, PET_TAME_ERROR_TOO_HIGH_LEVEL);
                     return SPELL_FAILED_DONT_REPORT;
@@ -1140,7 +1140,7 @@ class spell_hunt_ice_trap : public SpellScript
     {
         if (Unit* owner = GetCaster()->GetOwner())
         {
-            uint32 spellId = owner->getClass() == CLASS_DRUID ? SPELL_DRUID_ICE_TRAP : SPELL_HUNTER_ICE_TRAP;
+            uint32 spellId = owner->GetClass() == CLASS_DRUID ? SPELL_DRUID_ICE_TRAP : SPELL_HUNTER_ICE_TRAP;
             owner->CastSpell(*GetCaster(), spellId, true);
             if (owner->HasAura(SPELL_HUNTER_GLYPH_OF_BLACK_ICE))
                 owner->CastSpell(*GetCaster(), SPELL_HUNTER_GLYPH_OF_BLACK_ICE_SUMMON_AT, true);

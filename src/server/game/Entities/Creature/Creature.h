@@ -505,7 +505,7 @@ class Creature : public Unit, public GridObject<Creature>, public MapObject
 
         bool IsDungeonBoss() const;
 
-        uint8 getLevelForTarget(WorldObject const* target) const override; // overwrite Unit::getLevelForTarget for boss level support
+        uint8 GetLevelForTarget(WorldObject const* target) const override; // overwrite Unit::GetLevelForTarget for boss level support
 
         bool IsInEvadeMode() const { return HasUnitState(UNIT_STATE_EVADE); }
 

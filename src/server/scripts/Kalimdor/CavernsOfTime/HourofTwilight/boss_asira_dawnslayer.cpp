@@ -353,7 +353,7 @@ class spell_asira_dawnslayer_mark_of_silence : public SpellScriptLoader
                         if (unit->GetTypeId() != TYPEID_PLAYER)
                             return true;
                         
-                        switch (unit->ToPlayer()->getClass())
+                        switch (unit->ToPlayer()->GetClass())
                         {
                             case CLASS_WARRIOR:
                             case CLASS_DEATH_KNIGHT:

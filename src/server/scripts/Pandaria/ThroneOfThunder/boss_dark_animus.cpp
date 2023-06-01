@@ -414,7 +414,7 @@ class npc_anima_orb : public CreatureScript
 
                 me->SetDisplayId(me->GetCreatureTemplate()->Modelid2);
                 DoCast(me, SPELL_ANIMA_ORB_VISUAL, true);
-                me->setFaction(14);
+                me->SetFaction(14);
                 me->SetMaxHealth(1);
                 me->SetVisible(true);
                 me->SetReactState(REACT_PASSIVE);

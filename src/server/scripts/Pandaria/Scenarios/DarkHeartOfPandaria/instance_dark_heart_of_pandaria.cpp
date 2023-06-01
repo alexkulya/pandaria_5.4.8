@@ -82,7 +82,7 @@ class instance_dark_heart_of_pandaria : public InstanceMapScript
             {
                 // Alliance players to goblin
                 if (player && player->GetTeam() == ALLIANCE)
-                    player->CastSpell(player, player->getGender() == GENDER_MALE ? SPELL_GOBLIN_ILLUSION_MALE : SPELL_GOBLIN_ILLISION_FEMALE, true);
+                    player->CastSpell(player, player->GetGender() == GENDER_MALE ? SPELL_GOBLIN_ILLUSION_MALE : SPELL_GOBLIN_ILLISION_FEMALE, true);
 
                 // Init Scenario
                 sScenarioMgr->SendScenarioState(player, 1144, STEP_TALK_WITH_LEADER, 0);

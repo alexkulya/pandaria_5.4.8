@@ -64,9 +64,9 @@ public:
             creature->SetStandState(UNIT_STAND_STATE_STAND);
 
             if (player->GetTeam() == ALLIANCE)
-                creature->setFaction(FACTION_ESCORTEE_A);
+                creature->SetFaction(FACTION_ESCORTEE_A);
             else if (player->GetTeam() == HORDE)
-                creature->setFaction(FACTION_ESCORTEE_H);
+                creature->SetFaction(FACTION_ESCORTEE_H);
 
             creature->AI()->Talk(SAY_OOX_START, player);
 

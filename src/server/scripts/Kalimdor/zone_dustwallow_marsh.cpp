@@ -340,7 +340,7 @@ public:
     bool OnQuestAccept(Player* /*player*/, Creature* creature, const Quest* quest) override
     {
         if (quest->GetQuestId() == QUEST_MISSING_DIPLO_PT16)
-            creature->setFaction(FACTION_HOSTILE);
+            creature->SetFaction(FACTION_HOSTILE);
 
         return true;
     }
@@ -500,7 +500,7 @@ public:
          {
              if (npc_stinkyAI* pEscortAI = CAST_AI(npc_stinky::npc_stinkyAI, creature->AI()))
              {
-                 creature->setFaction(FACTION_ESCORT_N_NEUTRAL_ACTIVE);
+                 creature->SetFaction(FACTION_ESCORT_N_NEUTRAL_ACTIVE);
                  creature->SetStandState(UNIT_STAND_STATE_STAND);
                  creature->AI()->Talk(SAY_QUEST_ACCEPTED);
                  pEscortAI->Start(false, false, player->GetGUID());

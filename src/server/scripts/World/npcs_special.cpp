@@ -338,7 +338,7 @@ public:
         void Reset() override
         {
             ResetFlagTimer = 120000;
-            me->setFaction(FACTION_CHICKEN);
+            me->SetFaction(FACTION_CHICKEN);
             me->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
         }
 
@@ -370,7 +370,7 @@ public:
                     if (player->GetQuestStatus(QUEST_CLUCK) == QUEST_STATUS_NONE && rand() % 30 == 1)
                     {
                         me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
-                        me->setFaction(FACTION_FRIENDLY);
+                        me->SetFaction(FACTION_FRIENDLY);
                         Talk(player->GetTeam() == HORDE ? EMOTE_HELLO_H : EMOTE_HELLO_A);
                     }
                     break;
@@ -378,7 +378,7 @@ public:
                     if (player->GetQuestStatus(QUEST_CLUCK) == QUEST_STATUS_COMPLETE)
                     {
                         me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
-                        me->setFaction(FACTION_FRIENDLY);
+                        me->SetFaction(FACTION_FRIENDLY);
                         Talk(EMOTE_CLUCK_TEXT);
                     }
                     break;
@@ -1163,7 +1163,7 @@ public:
             player->PrepareQuestMenu(creature->GetGUID());
 
         bool canBuy = false;
-        uint8 race = player->getRace();
+        uint8 race = player->GetRace();
 
         switch (creature->GetEntry())
         {
@@ -1283,16 +1283,16 @@ public:
         if (creature->IsTrainer())
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_TRAINER, GOSSIP_TEXT_TRAIN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_TRAIN);
 
-        if (player->getClass() == CLASS_ROGUE)
+        if (player->GetClass() == CLASS_ROGUE)
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_TRAINER, GOSSIP_HELLO_ROGUE1, GOSSIP_SENDER_MAIN, GOSSIP_OPTION_UNLEARNTALENTS);
 
-        if (player->getClass() == CLASS_ROGUE)
+        if (player->GetClass() == CLASS_ROGUE)
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_TRAINER, GOSSIP_HELLO_ROGUE4, GOSSIP_SENDER_MAIN, GOSSIP_OPTION_UNLEARN_SPEC);
 
-        if (player->GetSpecsCount() == 1 && player->getLevel() >= sWorld->getIntConfig(CONFIG_MIN_DUALSPEC_LEVEL))
+        if (player->GetSpecsCount() == 1 && player->GetLevel() >= sWorld->getIntConfig(CONFIG_MIN_DUALSPEC_LEVEL))
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_TRAINER, GOSSIP_HELLO_ROGUE3, GOSSIP_SENDER_MAIN, GOSSIP_OPTION_LEARNDUALSPEC);
 
-        if (player->getClass() == CLASS_ROGUE && player->getLevel() >= 24 && !player->HasItemCount(17126) && !player->GetQuestRewardStatus(6681))
+        if (player->GetClass() == CLASS_ROGUE && player->GetLevel() >= 24 && !player->HasItemCount(17126) && !player->GetQuestRewardStatus(6681))
         {
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_HELLO_ROGUE2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
             player->SEND_GOSSIP_MENU(5996, creature->GetGUID());
@@ -1323,7 +1323,7 @@ public:
                 player->SendTalentWipeConfirm(creature->GetGUID(), true);
                 break;
             case GOSSIP_OPTION_LEARNDUALSPEC:
-                if (player->GetSpecsCount() == 1 && !(player->getLevel() < sWorld->getIntConfig(CONFIG_MIN_DUALSPEC_LEVEL)))
+                if (player->GetSpecsCount() == 1 && !(player->GetLevel() < sWorld->getIntConfig(CONFIG_MIN_DUALSPEC_LEVEL)))
                 {
                     if (!player->HasEnoughMoney(uint64(10000000)))
                     {
@@ -1883,7 +1883,7 @@ public:
         if (creature->IsQuestGiver())
             player->PrepareQuestMenu(creature->GetGUID());
 
-        if (player->getClass() == CLASS_HUNTER)
+        if (player->GetClass() == CLASS_HUNTER)
         {
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_PET1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
             if (player->GetPet() && player->GetPet()->getPetType() == HUNTER_PET)

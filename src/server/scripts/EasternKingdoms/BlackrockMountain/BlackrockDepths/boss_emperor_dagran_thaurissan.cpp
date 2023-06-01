@@ -76,7 +76,7 @@ public:
             if (Creature* Moira = ObjectAccessor::GetCreature(*me, instance ? instance->GetData64(DATA_MOIRA) : 0))
             {
                 Moira->AI()->EnterEvadeMode();
-                Moira->setFaction(35);
+                Moira->SetFaction(35);
             }
         }
 

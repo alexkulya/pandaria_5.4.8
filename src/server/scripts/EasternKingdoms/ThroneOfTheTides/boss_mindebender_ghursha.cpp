@@ -113,7 +113,7 @@ class boss_erunak_stonespeaker : public CreatureScript
                 events.Reset();
                 summons.DespawnAll(2000);
                 if (instance->GetBossState(DATA_MINDBENDER_GHURSHA) == DONE || bPhase)
-                    me->setFaction(35);
+                    me->SetFaction(35);
             }
 
             void KilledUnit(Unit* /*victim*/) override
@@ -160,7 +160,7 @@ class boss_erunak_stonespeaker : public CreatureScript
                 {
                     bPhase = true;
                     events.Reset();
-                    me->setFaction(35);
+                    me->SetFaction(35);
                     EnterEvadeMode();
                     if (Creature* pGhursha = ObjectAccessor::GetCreature(*me, instance->GetData64(DATA_MINDBENDER_GHURSHA)))
                         pGhursha->AI()->DoAction(ACTION_GHURSHA_START);

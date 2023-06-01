@@ -149,7 +149,7 @@ class boss_master_snowdrift : public CreatureScript
 
                     if (instance->GetBossState(DATA_MASTER_SNOWDRIFT) == DONE)
                     {
-                        me->setFaction(35);
+                        me->SetFaction(35);
                         me->SetReactState(REACT_PASSIVE);
                         me->SetStandState(UNIT_STAND_STATE_KNEEL);
                         nonCombatEvents.ScheduleEvent(EVENT_POSSESIONS, 1 * IN_MILLISECONDS);
@@ -325,7 +325,7 @@ class boss_master_snowdrift : public CreatureScript
                         _JustDied();
                         Talk(TALK_DEATH);
                         me->StopMoving();
-                        me->setFaction(35);
+                        me->SetFaction(35);
                         me->RemoveAllAuras();
                         me->CombatStop(true);
                         me->DeleteThreatList();
@@ -872,7 +872,7 @@ class npc_snowdrift_novice : public CreatureScript
                     damage = 0;
                     stillInFight = false;
                     me->StopMoving();
-                    me->setFaction(35);
+                    me->SetFaction(35);
                     me->RemoveAllAuras();
                     me->CombatStop(true);
                     me->DeleteThreatList();
@@ -1071,7 +1071,7 @@ class npc_snowdrift_miniboss : public CreatureScript
                     damage = 0;
                     stillInFight = false;
                     me->StopMoving();
-                    me->setFaction(35);
+                    me->SetFaction(35);
                     me->RemoveAllAuras();
                     me->CombatStop(true);
                     me->DeleteThreatList();

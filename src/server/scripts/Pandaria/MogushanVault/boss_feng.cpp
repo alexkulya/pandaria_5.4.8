@@ -1033,7 +1033,7 @@ class npc_soul_fragment : public CreatureScript
 
                 events.ScheduleEvent(EVENT_SOUL_WALK, 2000);
                 events.ScheduleEvent(EVENT_SOUL_GROW, 100);
-                me->setFaction(16);
+                me->SetFaction(16);
                 me->SetReactState(REACT_PASSIVE);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED);
                 CanMove = false;

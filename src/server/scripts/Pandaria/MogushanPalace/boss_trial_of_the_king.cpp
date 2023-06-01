@@ -806,7 +806,7 @@ class boss_kuai_the_brute : public CreatureScript
                 if (sum)
                 {
                     pet_guid = sum->GetGUID();
-                    sum->setFaction(me->getFaction());
+                    sum->SetFaction(me->GetFaction());
                 }
 
                 me->SetHomePosition(pTrialHomePositions[TYPE_KUAI]);
@@ -2102,7 +2102,7 @@ class CorrectUnitCheck
 
         bool operator ()(WorldObject const* target) const
         {
-            return target && ((target->ToCreature() && target->ToCreature()->getFaction() != 16) || target->ToPlayer() || target->GetGUID() == casterGuid);
+            return target && ((target->ToCreature() && target->ToCreature()->GetFaction() != 16) || target->ToPlayer() || target->GetGUID() == casterGuid);
         }
 
     private:

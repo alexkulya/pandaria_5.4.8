@@ -121,7 +121,7 @@ public:
             anchorGUID = 0;
             phase = PHASE_CHAINED;
             events.Reset();
-            me->setFaction(7);
+            me->SetFaction(7);
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
             me->SetUInt32Value(UNIT_FIELD_ANIM_TIER, 8);
             me->LoadEquipment(0, true);
@@ -226,7 +226,7 @@ public:
                         wait_timer -= diff;
                     else
                     {
-                        me->setFaction(14);
+                        me->SetFaction(14);
                         me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
                         phase = PHASE_ATTACKING;
 
@@ -585,7 +585,7 @@ public:
                 {
                     if (m_uiDuelTimer <= uiDiff)
                     {
-                        me->setFaction(FACTION_HOSTILE);
+                        me->SetFaction(FACTION_HOSTILE);
 
                         if (Unit* unit = Unit::GetUnit(*me, m_uiDuelerGUID))
                             AttackStart(unit);
@@ -749,7 +749,7 @@ public:
                         {
                             charmer->RemoveAurasDueToSpell(SPELL_EFFECT_STOLEN_HORSE);
                             caster->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
-                            caster->setFaction(35);
+                            caster->SetFaction(35);
                             DoCast(caster, SPELL_CALL_DARK_RIDER, true);
                             if (Creature* Dark_Rider = me->FindNearestCreature(28654, 15))
                                 CAST_AI(npc_dark_rider_of_acherus::npc_dark_rider_of_acherusAI, Dark_Rider->AI())->InitDespawnHorse(caster);
@@ -837,7 +837,7 @@ public:
             {
                 deathcharger->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
                 deathcharger->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                deathcharger->setFaction(2096);
+                deathcharger->SetFaction(2096);
             }
         }
     };

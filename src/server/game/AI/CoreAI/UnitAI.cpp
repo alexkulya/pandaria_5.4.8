@@ -339,7 +339,7 @@ bool CasterSpecTargetSelector::operator()(WorldObject* target) const
     if (target->ToPlayer()->IsGameMaster())
         return false;
 
-    switch (target->ToPlayer()->getClass())
+    switch (target->ToPlayer()->GetClass())
     {
         case CLASS_MAGE:
         case CLASS_PRIEST:
@@ -376,7 +376,7 @@ bool MeeleSpecTargetSelector::operator()(WorldObject* target) const
     if (target->ToPlayer()->IsGameMaster())
         return false;
 
-    switch (target->ToPlayer()->getClass())
+    switch (target->ToPlayer()->GetClass())
     {
         case CLASS_ROGUE:
             return _spellId ? !target->ToPlayer()->HasAura(_spellId) : true;

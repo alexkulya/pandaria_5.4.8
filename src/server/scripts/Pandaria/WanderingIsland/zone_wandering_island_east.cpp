@@ -107,7 +107,7 @@ class npc_tushui_monk : public CreatureScript
                 for (auto&& creature: poleList)
                     me->EnterVehicle(creature);
 
-                me->setFaction(2357);
+                me->SetFaction(2357);
             }
 
             void JustDied(Unit* /*killer*/) override

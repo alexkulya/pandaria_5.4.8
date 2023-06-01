@@ -120,7 +120,7 @@ class npc_sergeant_bly : public CreatureScript
                 ShieldBash_Timer = 5000;
                 Revenge_Timer = 8000;
 
-                me->setFaction(FACTION_FRIENDLY);
+                me->SetFaction(FACTION_FRIENDLY);
             }
 
             void DamageTaken(Unit* attacker, uint32& damage) override
@@ -149,7 +149,7 @@ class npc_sergeant_bly : public CreatureScript
                             Text_Timer = 5000;
                             break;
                         case 3:
-                            me->setFaction(FACTION_HOSTILE);
+                            me->SetFaction(FACTION_HOSTILE);
                             if (Player* target = ObjectAccessor::GetPlayer(*me, PlayerGUID))
                                 AttackStart(target);
 
@@ -197,7 +197,7 @@ class npc_sergeant_bly : public CreatureScript
             {
                 if (Creature* crew = instance->instance->GetCreature(instance->GetData64(entry)))
                     if (crew->IsAlive())
-                        crew->setFaction(FACTION_HOSTILE);
+                        crew->SetFaction(FACTION_HOSTILE);
             }
         };
 
@@ -357,7 +357,7 @@ class npc_weegli_blastfuse : public CreatureScript
             {
                 if (me->IsAlive())
                 {
-                    me->setFaction(FACTION_FRIENDLY);
+                    me->SetFaction(FACTION_FRIENDLY);
                     me->GetMotionMaster()->MovePoint(0, 1858.57f, 1146.35f, 14.745f);
                     me->SetHomePosition(1858.57f, 1146.35f, 14.745f, 3.85f); // in case he gets interrupted
                     Talk(SAY_WEEGLI_OK_I_GO);
@@ -423,7 +423,7 @@ class npc_sandfury_executioner : public CreatureScript
                     crew->SetWalk(true);
                     crew->SetHomePosition(x, y, z, 0);
                     crew->GetMotionMaster()->MovePoint(1, x, y, z);
-                    crew->setFaction(FACTION_FREED);
+                    crew->SetFaction(FACTION_FREED);
                 }
             }
 
@@ -664,7 +664,7 @@ class at_zumrah : public AreaTriggerScript
             if (!pZumrah)
                 return false;
 
-            pZumrah->setFaction(ZUMRAH_HOSTILE_FACTION);
+            pZumrah->SetFaction(ZUMRAH_HOSTILE_FACTION);
             return true;
         }
 };

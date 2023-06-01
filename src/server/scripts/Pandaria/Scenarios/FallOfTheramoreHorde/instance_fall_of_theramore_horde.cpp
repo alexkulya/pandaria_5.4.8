@@ -91,7 +91,7 @@ class instance_fall_of_theramore_horde : public InstanceMapScript
                             creature->SetVisible(false);
                         }
                         else
-                            creature->setFaction(1077);
+                            creature->SetFaction(1077);
                         break;
                     case NPC_THALEN_SONGWEAVER:
                         TheramoreEncounters.insert(std::pair<uint32, uint64>(creature->GetEntry(), creature->GetGUID()));

@@ -1027,7 +1027,7 @@ class spell_dk_death_gate : public SpellScriptLoader
 
             SpellCastResult CheckClass()
             {
-                if (GetCaster()->getClass() != CLASS_DEATH_KNIGHT)
+                if (GetCaster()->GetClass() != CLASS_DEATH_KNIGHT)
                 {
                     SetCustomCastResultMessage(SPELL_CUSTOM_ERROR_MUST_BE_DEATH_KNIGHT);
                     return SPELL_FAILED_CUSTOM_ERROR;
@@ -1492,8 +1492,8 @@ class spell_dk_death_coil : public SpellScript
 
     void HandleHit(SpellEffIndex)
     {
-        uint32 healSpell = GetCaster()->getClass() == CLASS_DRUID ? SPELL_DRUID_DEATH_COIL_HEAL : SPELL_DK_DEATH_COIL_HEAL;
-        uint32 dmgSpell = GetCaster()->getClass() == CLASS_DRUID ? SPELL_DRUID_DEATH_COIL_DAMAGE : SPELL_DK_DEATH_COIL_DAMAGE;
+        uint32 healSpell = GetCaster()->GetClass() == CLASS_DRUID ? SPELL_DRUID_DEATH_COIL_HEAL : SPELL_DK_DEATH_COIL_HEAL;
+        uint32 dmgSpell = GetCaster()->GetClass() == CLASS_DRUID ? SPELL_DRUID_DEATH_COIL_DAMAGE : SPELL_DK_DEATH_COIL_DAMAGE;
         Unit* dk = GetCaster();
         Unit* target = GetHitUnit();
         if (dk->IsValidAssistTarget(target))
@@ -1794,7 +1794,7 @@ class spell_dk_rune_converter : public AuraScript
     bool Load() override
     {
         dk = GetOwner()->ToPlayer();
-        return dk && dk->getClass() == CLASS_DEATH_KNIGHT;
+        return dk && dk->GetClass() == CLASS_DEATH_KNIGHT;
     }
 
     bool CheckProc(ProcEventInfo& eventInfo)
@@ -2905,7 +2905,7 @@ class spell_dk_t16_blood_4p_bonus : public AuraScript
 
     bool Load() override
     {
-        return GetOwner()->GetTypeId() == TYPEID_PLAYER && GetUnitOwner()->getClass() == CLASS_DEATH_KNIGHT;
+        return GetOwner()->GetTypeId() == TYPEID_PLAYER && GetUnitOwner()->GetClass() == CLASS_DEATH_KNIGHT;
     }
 
     void HandleProc(ProcEventInfo& eventInfo)

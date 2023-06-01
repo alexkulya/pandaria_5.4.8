@@ -52,7 +52,7 @@ PetAI::PetAI(Creature* c) : CreatureAI(c), i_tracker(TIME_INTERVAL_LOOK)
     UpdateAllies();
 
     if (Unit* owner = me->GetOwner())
-        if (owner->GetTypeId() == TYPEID_PLAYER && owner->getClass() == CLASS_MAGE)
+        if (owner->GetTypeId() == TYPEID_PLAYER && owner->GetClass() == CLASS_MAGE)
             m_pureCaster = true;
     switch (me->GetEntry())
     {

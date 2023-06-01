@@ -353,7 +353,7 @@ class npc_gunship_boss : public CreatureScript
                 me->SetReactState(REACT_AGGRESSIVE);
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
                 me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
-                me->setFaction(AH(1802, 1801));
+                me->SetFaction(AH(1802, 1801));
                 me->m_SightDistance = 50.0f;
                 me->m_CombatDistance = 50.0f;
 

@@ -1381,7 +1381,7 @@ class npc_lord_victor_nefarius_heroic : public CreatureScript
             {
                 me->SetCanFly(true);
                 me->SetReactState(REACT_PASSIVE);
-                me->setFaction(16);
+                me->SetFaction(16);
                 bAllowCast = true;
                 summons.DespawnAll();
                 events.Reset();

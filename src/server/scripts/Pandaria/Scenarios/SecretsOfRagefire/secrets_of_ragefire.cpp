@@ -239,7 +239,7 @@ struct npc_ragefire_grit : public ScriptedAI
                                 if (Creature* detonator = ObjectAccessor::GetCreature(*me, me->GetInstanceScript() ? me->GetInstanceScript()->GetData64(NPC_DETONATOR) : 0))
                                 {
                                     detonator->SetVisible(true);
-                                    detonator->setFaction(35);
+                                    detonator->SetFaction(35);
                                     detonator->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
                                 }
                             });

@@ -409,8 +409,8 @@ class boss_alar : public CreatureScript
                                 Summoned->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                                 Summoned->SetObjectScale(Summoned->GetObjectScale() * 2.5f);
                                 Summoned->SetDisplayId(11686);
-                                Summoned->setFaction(me->getFaction());
-                                Summoned->SetLevel(me->getLevel());
+                                Summoned->SetFaction(me->GetFaction());
+                                Summoned->SetLevel(me->GetLevel());
                                 Summoned->CastSpell(Summoned, SPELL_FLAME_PATCH, false);
                             }
                         }

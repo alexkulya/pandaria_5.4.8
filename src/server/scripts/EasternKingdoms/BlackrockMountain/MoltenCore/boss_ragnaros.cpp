@@ -175,7 +175,7 @@ class boss_ragnaros : public CreatureScript
                         {
                             //Become unbanished again
                             me->SetReactState(REACT_AGGRESSIVE);
-                            me->setFaction(14);
+                            me->SetFaction(14);
                             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                             me->HandleEmoteStateCommand(0);
                             me->HandleEmoteCommand(EMOTE_ONESHOT_EMERGE);
@@ -254,7 +254,7 @@ class boss_ragnaros : public CreatureScript
                                     me->InterruptNonMeleeSpells(false);
                                     //Root self
                                     //DoCast(me, 23973);
-                                    me->setFaction(35);
+                                    me->SetFaction(35);
                                     me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                                     me->HandleEmoteStateCommand(EMOTE_STATE_SUBMERGED);
                                     me->HandleEmoteCommand(EMOTE_ONESHOT_SUBMERGE);

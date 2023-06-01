@@ -548,7 +548,7 @@ class boss_ra_den : public CreatureScript
 
                 me->CombatStop();
                 me->SetReactState(REACT_PASSIVE);
-                me->setFaction(35);
+                me->SetFaction(35);
                 me->RemoveAllAuras();
 
                 me->GetMotionMaster()->Clear();

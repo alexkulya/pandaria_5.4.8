@@ -176,7 +176,7 @@ public:
         npc_argent_valiantAI(Creature* creature) : ScriptedAI(creature)
         {
             creature->GetMotionMaster()->MovePoint(0, 8599.258f, 963.951f, 547.553f);
-            creature->setFaction(35); //wrong faction in db?
+            creature->SetFaction(35); //wrong faction in db?
         }
 
         uint32 uiChargeTimer;
@@ -193,7 +193,7 @@ public:
             if (uiType != POINT_MOTION_TYPE)
                 return;
 
-            me->setFaction(14);
+            me->SetFaction(14);
         }
 
         void DamageTaken(Unit* pDoneBy, uint32& uiDamage) override
@@ -202,7 +202,7 @@ public:
             {
                 uiDamage = 0;
                 pDoneBy->CastSpell(pDoneBy, SPELL_KILL_CREDIT, true);
-                me->setFaction(35);
+                me->SetFaction(35);
                 me->DespawnOrUnsummon(5000);
                 me->SetHomePosition(me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), me->GetOrientation());
                 EnterEvadeMode();
@@ -1096,7 +1096,7 @@ class npc_margrave_dhakar : public CreatureScript
                             if (Creature* morbidus = me->FindNearestCreature(NPC_MORBIDUS, 50.0f, true))
                             {
                                 morbidus->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_ATTACKABLE_1 | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_DISABLE_MOVE);
-                                morbidus->setFaction(FACTION_HOSTILE);
+                                morbidus->SetFaction(FACTION_HOSTILE);
                             }
 
                             break;
@@ -1136,7 +1136,7 @@ class npc_morbidus : public CreatureScript
                 // this will prevent the event to start without morbidus being alive
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 me->SetReactState(REACT_PASSIVE);
-                me->setFaction(FACTION_BASIC);
+                me->SetFaction(FACTION_BASIC);
             }
         };
 

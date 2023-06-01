@@ -147,7 +147,7 @@ class boss_black_knight : public CreatureScript
                 if (isAttacked)
                 {
                     me->GetMotionMaster()->MovePoint(1, 743.396f, 635.411f, 411.575f);
-                    me->setFaction(14);
+                    me->SetFaction(14);
                     me->SetReactState(REACT_AGGRESSIVE);
                     me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE);
                 }

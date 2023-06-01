@@ -2633,9 +2633,9 @@ class spell_pri_shadowy_appartion : public SpellScript
             { RACE_PANDAREN_HORDE,      { 33589, 33590 } },
         };
 
-        auto it = visual.find(GetCaster()->getRace());
+        auto it = visual.find(GetCaster()->GetRace());
         if (it != visual.end() && GetExplTargetUnit())
-            GetCaster()->SendPlaySpellVisual(it->second[GetCaster()->getGender()], GetExplTargetUnit()->GetGUID(), GetSpellInfo()->Speed);
+            GetCaster()->SendPlaySpellVisual(it->second[GetCaster()->GetGender()], GetExplTargetUnit()->GetGUID(), GetSpellInfo()->Speed);
     }
 
     void Register() override

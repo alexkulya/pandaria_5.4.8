@@ -599,7 +599,7 @@ class Game
                     if (m_gamePlayers.find(guid) != m_gamePlayers.end())
                     {
                         --playersRemaining;
-                        SendMapWideSystemMessage(Format("%s %s из игры. Осталось в живых: %u", player->GetName().c_str(), player->getGender() == GENDER_MALE ? "выбыл" : "выбыла", playersRemaining));
+                        SendMapWideSystemMessage(Format("%s %s из игры. Осталось в живых: %u", player->GetName().c_str(), player->GetGender() == GENDER_MALE ? "выбыл" : "выбыла", playersRemaining));
                     }
 
                     LeaveGame(player);
@@ -632,7 +632,7 @@ class Game
                     SendMapWideSystemMessage(Format("%s %s%s. Осталось в живых: %u",
                         player->GetName().c_str(),
                         roll_chance_i(5) ? (RAND<char const*>("трагически ", "поэтически ", "глупо ", "позорно ", "смешно ", "бездарно ", "уныло ", "- представляете? - ", "грациозно ", "красиво ", "филигранно ")) : "",
-                        player->getGender() == GENDER_MALE ? "умер" : "умерла",
+                        player->GetGender() == GENDER_MALE ? "умер" : "умерла",
                         playersRemaining));
 
                     player->SendPlaySpellVisualKit(player->GetGUID(), 1, SPELL_VISUAL_KIT_DEATH);
@@ -649,7 +649,7 @@ class Game
                     m_deadPlayers.erase(guid);
 
                     ++playersRemaining;
-                    SendMapWideSystemMessage(Format("%s %s. Осталось в живых: %u", player->GetName().c_str(), player->getGender() == GENDER_MALE ? "ожил" : "ожила", playersRemaining));
+                    SendMapWideSystemMessage(Format("%s %s. Осталось в живых: %u", player->GetName().c_str(), player->GetGender() == GENDER_MALE ? "ожил" : "ожила", playersRemaining));
 
                     player->RemoveAurasDueToSpell(SPELL_LEAVING_GAME);
                     player->MonsterWhisper("Вы ожили! Это чудо! Продолжаем играть...", player, true);
@@ -726,7 +726,7 @@ class Game
                     }
                     player->MonsterWhisper("Вы победили!", player, true);
 
-                    SendMapWideSystemMessage(Format("%s %s в битве!", player->GetName().c_str(), player->getGender() == GENDER_MALE ? "победил" : "победила"));
+                    SendMapWideSystemMessage(Format("%s %s в битве!", player->GetName().c_str(), player->GetGender() == GENDER_MALE ? "победил" : "победила"));
 
                     uint32 minutes = ((m_gameTime / IN_MILLISECONDS) + MINUTE - 1) / MINUTE;
                     sWorld->SendGlobalText(Format("Лучший игрец на рояле за %s %u |4минуту:минуты:минут;: %s", (minutes % 10) == 1 ? "последнюю" : "последние", minutes, player->GetName().c_str()).c_str(), player->GetSession());
@@ -751,7 +751,7 @@ class Game
                                 ItemQualityColors[proto->Quality],
                                 count > 1 ? Format("%u x ", count).c_str() : "",
                                 icon,
-                                proto->ItemId, 0, 0, 0, 0, 0, 0, 0, uint32(player->getLevel()),
+                                proto->ItemId, 0, 0, 0, 0, 0, 0, 0, uint32(player->GetLevel()),
                                 name.c_str()).c_str(), player, true);
                         }
 

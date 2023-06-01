@@ -822,7 +822,7 @@ void WorldSession::SendListInventory(uint64 vendorGuid, uint32 vendorEntry)
             if (!_player->IsGameMaster()) // ignore conditions if GM on
             {
                 // Respect allowed class
-                if (!(itemTemplate->AllowableClass & _player->getClassMask()) && itemTemplate->Bonding == BIND_ON_ACQUIRE)
+                if (!(itemTemplate->AllowableClass & _player->GetClassMask()) && itemTemplate->Bonding == BIND_ON_ACQUIRE)
                     continue;
 
                 // Only display items in vendor lists for the team the player is on
@@ -2380,7 +2380,7 @@ void WorldSession::HandleSetLootSpecialization(WorldPacket& recvData)
             return;
         }
 
-        if (GetPlayer()->getClass() != specializationEntry->classId)
+        if (GetPlayer()->GetClass() != specializationEntry->classId)
         {
             TC_LOG_DEBUG("network", "Player tried to set their loot specialization to %u which isn't valid for their class!", lootSpecialization);
             return;

@@ -191,7 +191,7 @@ class boss_ormorok : public CreatureScript
                             for (; i != me->getThreatManager().getThreatList().end(); ++i)
                             {
                                 Unit* pTemp = Unit::GetUnit(*me,(*i)->getUnitGuid());
-                                if (pTemp && pTemp->GetTypeId() == TYPEID_PLAYER && pTemp->getClass() == Healer)
+                                if (pTemp && pTemp->GetTypeId() == TYPEID_PLAYER && pTemp->GetClass() == Healer)
                                 {
                                     target = pTemp;
                                     break;

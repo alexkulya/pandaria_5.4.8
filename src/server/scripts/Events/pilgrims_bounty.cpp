@@ -61,7 +61,7 @@ struct npc_lonely_turkey : public ScriptedAI
         if (timer <= diff)
         {
             DoCast(SPELL_COSMETIC_HEARTBROKEN);
-            me->setFaction(31);
+            me->SetFaction(31);
         }
         timer -= diff;
     }

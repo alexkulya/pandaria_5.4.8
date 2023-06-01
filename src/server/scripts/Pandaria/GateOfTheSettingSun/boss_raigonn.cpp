@@ -143,7 +143,7 @@ class boss_raigonn : public CreatureScript
                             if (Creature* weakPoint = instance->instance->GetCreature(instance->GetData64(NPC_WEAK_SPOT)))
                             {
                                 instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, weakPoint);
-                                weakPoint->setFaction(16);
+                                weakPoint->SetFaction(16);
                                 weakPoint->ClearUnitState(UNIT_STATE_UNATTACKABLE);
                                 weakPoint->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
                             }

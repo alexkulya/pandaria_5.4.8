@@ -155,7 +155,7 @@ class npc_torek : public CreatureScript
             {
                 /// @todo find companions, make them follow Torek, at any time (possibly done by core/database in future?)
                 creature->AI()->Talk(SAY_READY, player);
-                creature->setFaction(113);
+                creature->SetFaction(113);
 
                 if (npc_escortAI* pEscortAI = CAST_AI(npc_torekAI, creature->AI()))
                     pEscortAI->Start(true, true, player->GetGUID());
@@ -256,7 +256,7 @@ class npc_ruul_snowhoof : public CreatureScript
         {
             if (quest->GetQuestId() == QUEST_FREEDOM_TO_RUUL)
             {
-                creature->setFaction(113);
+                creature->SetFaction(113);
 
                 if (npc_escortAI* pEscortAI = CAST_AI(npc_ruul_snowhoofAI, (creature->AI())))
                     pEscortAI->Start(true, false, player->GetGUID());
@@ -445,7 +445,7 @@ class npc_muglash : public CreatureScript
                 if (npc_muglashAI* pEscortAI = CAST_AI(npc_muglashAI, creature->AI()))
                 {
                     creature->AI()->Talk(SAY_MUG_START1);
-                    creature->setFaction(113);
+                    creature->SetFaction(113);
 
                     pEscortAI->Start(true, false, player->GetGUID());
                 }

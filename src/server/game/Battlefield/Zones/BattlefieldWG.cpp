@@ -239,7 +239,7 @@ void BattlefieldWG::OnBattleStart()
         if (Creature* creature = GetCreature(*itr))
         {
             ShowNpc(creature, true);
-            creature->setFaction(WintergraspFaction[GetDefenderTeam()]);
+            creature->SetFaction(WintergraspFaction[GetDefenderTeam()]);
         }
     }
 
@@ -320,7 +320,7 @@ void BattlefieldWG::OnBattleEnd(bool endByTimer)
         if (Creature* creature = GetCreature(*itr))
         {
             if (!endByTimer)
-                creature->setFaction(WintergraspFaction[GetDefenderTeam()]);
+                creature->SetFaction(WintergraspFaction[GetDefenderTeam()]);
             HideNpc(creature);
         }
     }
@@ -573,9 +573,9 @@ void BattlefieldWG::OnCreatureRemove(Creature* /*creature*/)
             case NPC_WINTERGRASP_DEMOLISHER:
             {
                 uint8 team;
-                if (creature->getFaction() == WintergraspFaction[TEAM_ALLIANCE])
+                if (creature->GetFaction() == WintergraspFaction[TEAM_ALLIANCE])
                     team = TEAM_ALLIANCE;
-                else if (creature->getFaction() == WintergraspFaction[TEAM_HORDE])
+                else if (creature->GetFaction() == WintergraspFaction[TEAM_HORDE])
                     team = TEAM_HORDE;
                 else
                     return;
@@ -1005,7 +1005,7 @@ void BattlefieldWG::UpdateTenacity()
     {
         for (GuidSet::const_iterator itr = m_players[team].begin(); itr != m_players[team].end(); ++itr)
             if (Player* player = sObjectAccessor->FindPlayer(*itr))
-                if (player->getLevel() >= m_MinLevel)
+                if (player->GetLevel() >= m_MinLevel)
                     player->RemoveAurasDueToSpell(SPELL_TENACITY);
 
         for (GuidSet::const_iterator itr = m_vehicles[team].begin(); itr != m_vehicles[team].end(); ++itr)

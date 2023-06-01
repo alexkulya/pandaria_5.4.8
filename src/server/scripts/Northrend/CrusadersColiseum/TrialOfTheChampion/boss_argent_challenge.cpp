@@ -245,7 +245,7 @@ class boss_eadric : public CreatureScript
 
                     _done = true;
                     EnterEvadeMode();
-                    me->setFaction(35);
+                    me->SetFaction(35);
 
                     Talk(SAY_COMMON_DEATH);
 
@@ -552,7 +552,7 @@ class boss_paletress : public CreatureScript
                     }
 
                     EnterEvadeMode();
-                    me->setFaction(35);
+                    me->SetFaction(35);
 
                     Talk(SAY_COMMON_DEATH);
 

@@ -57,7 +57,7 @@ struct zanvess_assault_typeAI : public ScriptedAI
         me->setActive(true);
         Reset();
 
-        AssaultByType(me->getFaction() == 2550 ? true : false);
+        AssaultByType(me->GetFaction() == 2550 ? true : false);
     }
 
     void DamageTaken(Unit* attacker, uint32& damage) override

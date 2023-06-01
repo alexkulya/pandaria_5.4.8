@@ -620,7 +620,7 @@ class npc_greenstone_village_brewmaster_tzu : public CreatureScript
                     case ACTION_INTRO:
                     {
                         me->SetVisible(true);
-                        me->setFaction(2110);
+                        me->SetFaction(2110);
 
                         // Select any monstrosity
                         uint32 m_uiMonstrosity = urand(0, 1) ? NPC_BEAST_OF_JADE : NPC_JADE_DESTROYER;
@@ -628,7 +628,7 @@ class npc_greenstone_village_brewmaster_tzu : public CreatureScript
                         if (Creature* monstrosity = ObjectAccessor::GetCreature(*me, instance ? instance->GetData64(m_uiMonstrosity) : 0))
                         {
                             monstrosity->SetVisible(true);
-                            monstrosity->setFaction(16);
+                            monstrosity->SetFaction(16);
                         }
                         break;
                     }
@@ -942,7 +942,7 @@ class npc_greenstone_vengeful_hui : public CreatureScript
                 if (actionId == ACTION_INTRO)
                 {
                     me->SetVisible(true);
-                    me->setFaction(16);
+                    me->SetFaction(16);
                     Talk(TALK_INTRO);
                     Talk(TALK_PROTECTED); // ann
 

@@ -566,9 +566,9 @@ int32 SpellEffectInfo::CalcValue(Unit const* caster, int32 const* bp, Unit const
                 if (auto const existing = _spellInfo->GetSpellScaling())
                     scalingEntry = *existing;
 
-                uint32 level = caster->getLevel();
+                uint32 level = caster->GetLevel();
                 if (target && _spellInfo->IsPositiveEffect(_effIndex) && (Effect == SPELL_EFFECT_APPLY_AURA) && _spellInfo->Id != 774) // Hack Fix Rejuvenation, doesn't use the target level for basepoints
-                    level = target->getLevel();
+                    level = target->GetLevel();
 
                 auto const gtKeyBase = (scalingEntry.ScalingClass <= -1)
                     ? MAX_CLASSES - 2 - scalingEntry.ScalingClass
@@ -607,7 +607,7 @@ int32 SpellEffectInfo::CalcValue(Unit const* caster, int32 const* bp, Unit const
     {
         if (caster)
         {
-            int32 level = int32(caster->getLevel());
+            int32 level = int32(caster->GetLevel());
             if (level > int32(_spellInfo->MaxLevel) && _spellInfo->MaxLevel > 0)
                 level = int32(_spellInfo->MaxLevel);
             if (level >= int32(_spellInfo->BaseLevel))
@@ -650,7 +650,7 @@ int32 SpellEffectInfo::CalcValue(Unit const* caster, int32 const* bp, Unit const
         if (!_spellInfo->GetSpellScaling() && !basePointsPerLevel && (_spellInfo->Attributes & SPELL_ATTR0_LEVEL_DAMAGE_CALCULATION && _spellInfo->SpellLevel))
         {
             if (Effect == SPELL_EFFECT_SCHOOL_DAMAGE || ApplyAuraName == SPELL_AURA_PERIODIC_DAMAGE)
-                value *= 0.25f * exp(caster->getLevel() * (90 - _spellInfo->SpellLevel) / 1000.0f);
+                value *= 0.25f * exp(caster->GetLevel() * (90 - _spellInfo->SpellLevel) / 1000.0f);
         }
     }
 
@@ -713,7 +713,7 @@ float SpellEffectInfo::CalcRadius(Unit* caster, Spell* spell) const
     float radius = entry->RadiusMin;
     if (caster)
     {
-        radius += entry->RadiusPerLevel * caster->getLevel();
+        radius += entry->RadiusPerLevel * caster->GetLevel();
         radius = std::min(radius, entry->RadiusMax);
         if (Player* modOwner = caster->GetSpellModOwner())
             modOwner->ApplySpellMod(_spellInfo->Id, SPELLMOD_RADIUS, radius, spell);
@@ -2513,7 +2513,7 @@ uint32 SpellInfo::CalcCastTime(uint8 level, Spell* spell /*= NULL*/) const
 {
     int32 castTime = 0;
     if (!level && spell)
-        level = spell->GetCaster()->getLevel();
+        level = spell->GetCaster()->GetLevel();
 
     // not all spells have cast time index and this is all is pasiive abilities
     if (!SpellScalingId || ScalingClass == 1000
@@ -2738,7 +2738,7 @@ int32 SpellInfo::CalcPowerCost(Unit const* caster, SpellSchoolMask schoolMask, i
         if (Attributes & SPELL_ATTR0_LEVEL_DAMAGE_CALCULATION)
         {
             GtNPCManaCostScalerEntry const* spellScaler = sGtNPCManaCostScalerStore.LookupEntry(SpellLevel - 1);
-            GtNPCManaCostScalerEntry const* casterScaler = sGtNPCManaCostScalerStore.LookupEntry(caster->getLevel() - 1);
+            GtNPCManaCostScalerEntry const* casterScaler = sGtNPCManaCostScalerStore.LookupEntry(caster->GetLevel() - 1);
             if (spellScaler && casterScaler)
                 powerCost *= casterScaler->ratio / spellScaler->ratio;
         }

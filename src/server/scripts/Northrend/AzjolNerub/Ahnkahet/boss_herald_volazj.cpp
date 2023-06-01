@@ -402,7 +402,7 @@ class npc_twisted_visage : public CreatureScript
 
                 if (Player* player = summoner->ToPlayer())
                 {
-                    _class = player->getClass();
+                    _class = player->GetClass();
 
                     if (_class == CLASS_DRUID && player->HasAura(768) || player->HasAura(9634))
                         DoCast(me, SPELL_CAT_FORM);

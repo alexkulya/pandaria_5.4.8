@@ -365,7 +365,7 @@ class npc_zao : public CreatureScript
                 {
                     attacker->ToCreature()->DespawnOrUnsummon();
                     isCorrupted = true;
-                    me->setFaction(14);
+                    me->SetFaction(14);
                     me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                     me->CastSpell(me, SPELL_SHA_CORRUPTION, false);
 
@@ -591,7 +591,7 @@ class npc_strife_peril : public CreatureScript
             void InitializeAI() override
             {
                 isInfight = false;
-                me->setFaction(14);
+                me->SetFaction(14);
                 instance = me->GetInstanceScript();  
                 me->CastSpell(me, SPELL_SHA_CORRUPTION_SP, false);
             }

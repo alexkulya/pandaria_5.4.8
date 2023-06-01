@@ -97,7 +97,7 @@ class npc_raz_the_crazed : public CreatureScript
                 {
                     case EVENT_JUMP:
                         me->SetHomePosition(*me);
-                        me->setFaction(1665);
+                        me->SetFaction(1665);
                         Talk(TALK_INTRO);
                         me->SetAnimationTier(UnitAnimationTier::Ground);
                         me->OverrideInhabitType(INHABIT_GROUND);
@@ -133,7 +133,7 @@ class npc_raz_the_crazed : public CreatureScript
                     case 3:
                         if (SecondEvent)
                         {
-                            me->setFaction(35);
+                            me->SetFaction(35);
                             me->GetMotionMaster()->MovementExpired();
                             me->GetMotionMaster()->Clear();
                             me->GetMotionMaster()->MoveJump(RazSecondBridgePath[wp], 45.0f, 45.0f, EVENT_JUMP + 3);

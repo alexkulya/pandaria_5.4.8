@@ -344,7 +344,7 @@ Creature* BattlegroundAV::AddAVCreature(uint16 cinfoid, uint16 type)
     {
         if (Creature* trigger = AddCreature(WORLD_TRIGGER, triggerSpawnID, BG_AV_CreatureInfo[creature->GetEntry()].Team, BG_AV_CreaturePos[triggerSpawnID]))
         {
-            trigger->setFaction(newFaction);
+            trigger->SetFaction(newFaction);
             trigger->CastSpell(trigger, SPELL_HONORABLE_DEFENDER_25Y, false);
         }
     }
@@ -449,7 +449,7 @@ void BattlegroundAV::AddPlayer(Player* player)
 
     PlayerScores[player->GetGUID()] = sc;
     if (m_maxLevel == 0)
-        m_maxLevel=(player->getLevel()%10 == 0)? player->getLevel() : (player->getLevel()-(player->getLevel()%10))+10; /// @todo just look at the code \^_^/ --but queue-info should provide this information..
+        m_maxLevel=(player->GetLevel()%10 == 0)? player->GetLevel() : (player->GetLevel()-(player->GetLevel()%10))+10; /// @todo just look at the code \^_^/ --but queue-info should provide this information..
 
     if (GetStatus() == STATUS_IN_PROGRESS)
         player->StartCriteria(CRITERIA_START_TYPE_EVENT, EVENT_START_BATTLE_AV, (TimeValue::Now() - m_doorOpeningTime).ToMilliseconds());
@@ -769,7 +769,7 @@ void BattlegroundAV::PopulateNode(BG_AV_Nodes node)
             DelCreature(node + 302);
             return;
         }
-        trigger->setFaction(owner == ALLIANCE ? 84 : 83);
+        trigger->SetFaction(owner == ALLIANCE ? 84 : 83);
         trigger->CastSpell(trigger, SPELL_HONORABLE_DEFENDER_25Y, false);
     }
 }

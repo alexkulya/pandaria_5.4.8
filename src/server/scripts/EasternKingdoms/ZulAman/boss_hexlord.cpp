@@ -311,7 +311,7 @@ class boss_hex_lord_malacrass : public CreatureScript
                         case EVENT_SIPHON_SOUL:
                             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0.0f, true))
                             {
-                                PlayerClass = target->getClass() - 1;
+                                PlayerClass = target->GetClass() - 1;
                                 if (PlayerClass == CLASS_DRUID-1)
                                     PlayerClass = CLASS_DRUID;
                                 else if (PlayerClass == CLASS_PRIEST-1 && target->HasSpell(15473))

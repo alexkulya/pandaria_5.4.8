@@ -730,7 +730,7 @@ public:
             {
                 CAST_AI(npc_escort::npc_escortAI, (creature->AI()))->Start(true, false, player->GetGUID());
                 instance->SetData(DATA_QUEST_JAIL_BREAK, ENCOUNTER_STATE_IN_PROGRESS);
-                creature->setFaction(11);
+                creature->SetFaction(11);
             }
         }
         return false;
@@ -756,7 +756,7 @@ public:
                     IsOnHold = true;
                     break;
                 case 10:
-                    me->setFaction(534);
+                    me->SetFaction(534);
                     break;
                 case 12:
                     me->Say(SAY_WINDSOR_6, LANG_UNIVERSAL, PlayerGUID);
@@ -767,7 +767,7 @@ public:
                     break;
                 case 14:
                     instance->SetData(DATA_GATE_SR, 0);
-                    me->setFaction(11);
+                    me->SetFaction(11);
                     break;
                 case 16:
                     me->Say(SAY_WINDSOR_9, LANG_UNIVERSAL, PlayerGUID);
@@ -932,7 +932,7 @@ public:
             switch (waypointId)
             {
                 case 0:
-                    me->setFaction(11);
+                    me->SetFaction(11);
                     me->Say(SAY_REGINALD_WINDSOR_0_1, LANG_UNIVERSAL, PlayerGUID);
                     break;
                 case 1:
@@ -1317,7 +1317,7 @@ public:
                     //spell by trap has effect61, this indicate the bar go hostile
 
                     if (Unit* tmp = Unit::GetUnit(*me, instance->GetData64(DATA_PHALANX)))
-                        tmp->setFaction(14);
+                        tmp->SetFaction(14);
 
                     //for later, this event(s) has alot more to it.
                     //optionally, DONE can trigger bar to go hostile.

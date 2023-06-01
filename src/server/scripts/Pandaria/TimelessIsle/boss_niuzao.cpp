@@ -105,7 +105,7 @@ class boss_niuzao : public CreatureScript
 
                 me->SetCombatDistance(500.0f);
 
-                if (me->getFaction() == FACTION_HOSTILE_NEUTRAL)
+                if (me->GetFaction() == FACTION_HOSTILE_NEUTRAL)
                     me->SetFacingTo(MIDDLE_FACING_ANGLE);
 
                 me->RemoveAllAuras();
@@ -163,7 +163,7 @@ class boss_niuzao : public CreatureScript
 
                     RewardPlayers(me);
 
-                    me->setFaction(FACTION_FRIENDLY);
+                    me->SetFaction(FACTION_FRIENDLY);
 
                     me->StopMoving();
                     me->RemoveAllAuras();
@@ -212,7 +212,7 @@ class boss_niuzao : public CreatureScript
                     case 1:
                     {
                         nonCombatEvents.ScheduleEvent(EVENT_NIUZAO_SHAO_DO_INTRO, CELESTIAL_COURT_BOSS_INTRO_TIMER_1);
-                        me->setFaction(FACTION_HOSTILE_NEUTRAL);
+                        me->SetFaction(FACTION_HOSTILE_NEUTRAL);
                         me->SetFacingTo(MIDDLE_FACING_ANGLE);
                         me->SetHomePosition(_timelessIsleMiddle);
                         break;

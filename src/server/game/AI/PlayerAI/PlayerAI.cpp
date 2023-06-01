@@ -390,7 +390,7 @@ bool PlayerAI::IsPlayerHealer(Player const* who)
     if (!who)
         return false;
 
-    switch (who->getClass())
+    switch (who->GetClass())
     {
         case CLASS_WARRIOR:
         case CLASS_HUNTER:
@@ -416,7 +416,7 @@ bool PlayerAI::IsPlayerRangedAttacker(Player const* who)
     if (!who)
         return false;
 
-    switch (who->getClass())
+    switch (who->GetClass())
     {
         case CLASS_WARRIOR:
         case CLASS_ROGUE:
@@ -585,7 +585,7 @@ void PlayerAI::DoRangedAttackIfReady()
 void PlayerAI::DoAutoAttackIfReady()
 {
     /*
-    if (IsRangedAttacker() && me->getClass() != CLASS_HUNTER) // Auto Shot is started by charmer's client
+    if (IsRangedAttacker() && me->GetClass() != CLASS_HUNTER) // Auto Shot is started by charmer's client
         DoRangedAttackIfReady();
     else
         DoMeleeAttackIfReady();
@@ -652,7 +652,7 @@ PlayerAI::TargetedSpell SimpleCharmedPlayerAI::SelectAppropriateCastForSpec()
 {
     PossibleSpellVector spells;
 
-    switch (me->getClass())
+    switch (me->GetClass())
     {
         case CLASS_WARRIOR:
             if (!me->IsWithinMeleeRange(me->GetVictim()))
@@ -1269,7 +1269,7 @@ void SimpleCharmedPlayerAI::HandleCasts(uint32 const diff)
                 _castCheckTimer = 0;
             else
             {
-                if (target && me->getClass() == CLASS_HUNTER && !me->GetCurrentSpell(CURRENT_AUTOREPEAT_SPELL))
+                if (target && me->GetClass() == CLASS_HUNTER && !me->GetCurrentSpell(CURRENT_AUTOREPEAT_SPELL))
                     DoCast(target, SPELL_AUTO_SHOT);
 
                 if (IsRangedAttacker() && !IsHealer() && target)

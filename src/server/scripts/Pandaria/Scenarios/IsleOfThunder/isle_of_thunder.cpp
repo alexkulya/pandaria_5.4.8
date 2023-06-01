@@ -2558,7 +2558,7 @@ struct npc_shanze_slaver : public customCreatureAI
         if (Creature* slave = me->GetCreature(*me, slaveGUID))
         {
             slave->CastSpell(slave, 136703);
-            slave->setFaction(35);
+            slave->SetFaction(35);
             slave->DespawnOrUnsummon(30 * IN_MILLISECONDS);
             slaveGUID = 0;
         }

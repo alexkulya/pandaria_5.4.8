@@ -4189,7 +4189,7 @@ class spell_dru_symbiosis : public SpellScript
     SpellCastResult CheckCast()
     {
         Player* target = GetExplTargetUnit() ? GetExplTargetUnit()->ToPlayer() : nullptr;
-        if (!target || target->getClass() == CLASS_DRUID || target->GetSpecialization() == SPEC_NONE)
+        if (!target || target->GetClass() == CLASS_DRUID || target->GetSpecialization() == SPEC_NONE)
             return SPELL_FAILED_BAD_TARGETS;
         if (!GetCaster()->IsInRaidWith(target))
             return SPELL_FAILED_TARGET_NOT_IN_PARTY;
@@ -4225,7 +4225,7 @@ class spell_dru_symbiosis : public SpellScript
     {
         Specializations specId = GetCaster()->ToPlayer()->GetSpecialization();
 
-        switch (target->getClass())
+        switch (target->GetClass())
         {
             case CLASS_DEATH_KNIGHT:
             {
@@ -4664,7 +4664,7 @@ class spell_dru_glyph_of_the_chameleon : public AuraScript
                         { RACE_WORGEN,   { 33662, 33661, 33664, 33663, 33660 } },
                         { RACE_TAUREN,   { 29409, 29410, 29411, 29412, 8571  } },
                     };
-                    auto itr = catModels.find(GetUnitOwner()->getRace());
+                    auto itr = catModels.find(GetUnitOwner()->GetRace());
                     if (itr == catModels.end())
                         return;
                     models = itr->second;
@@ -4678,7 +4678,7 @@ class spell_dru_glyph_of_the_chameleon : public AuraScript
                         { RACE_WORGEN,   { 33652, 33651, 33654, 33653, 33650 } },
                         { RACE_TAUREN,   { 29418, 29419, 29420, 29421, 2289  } },
                     };
-                    auto itr = bearModels.find(GetUnitOwner()->getRace());
+                    auto itr = bearModels.find(GetUnitOwner()->GetRace());
                     if (itr == bearModels.end())
                         return;
                     models = itr->second;

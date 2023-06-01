@@ -1388,7 +1388,7 @@ void boss_julianne::boss_julianneAI::UpdateAI(const uint32 diff)
         {
             Talk(SAY_JULIANNE_AGGRO);
             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-            me->setFaction(16);
+            me->SetFaction(16);
             AggroYellTimer = 0;
         } else AggroYellTimer -= diff;
     }
@@ -1416,7 +1416,7 @@ void boss_julianne::boss_julianneAI::UpdateAI(const uint32 diff)
                 CAST_AI(boss_romulo::boss_romuloAI, pRomulo->AI())->Phase = PHASE_ROMULO;
                 DoZoneInCombat(pRomulo);
 
-                pRomulo->setFaction(16);
+                pRomulo->SetFaction(16);
             }
             SummonedRomulo = true;
         } else SummonRomuloTimer -= diff;

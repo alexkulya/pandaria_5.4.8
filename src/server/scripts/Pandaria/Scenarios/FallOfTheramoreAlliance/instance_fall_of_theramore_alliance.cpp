@@ -105,7 +105,7 @@ class instance_fall_of_theramore_alliance : public InstanceMapScript
                             creature->SetVisible(false);
                         }
                         else
-                            creature->setFaction(14);
+                            creature->SetFaction(14);
 
                         break;
                     case NPC_JAINA_PROUDMOORE:

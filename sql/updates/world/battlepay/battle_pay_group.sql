@@ -11,6 +11,4 @@ INSERT INTO `battle_pay_group` (`id`, `idx`, `name`, `icon`, `type`) VALUES
 (9, 9, "Gold", 939377, 0),
 (10, 10, "Tokens and currency", 940869, 0),
 (11, 11, "Gaming Services", 939382, 0),
-(12, 12, "Family Heirlooms", 940862, 0),
-(13, 13, "Mogushan-HM", 940856, 0),
-(14, 14, "Heart of Fear-NM", 939381, 0);
+(12, 12, "Family Heirlooms", 940862, 0);

@@ -79,7 +79,7 @@ public:
                     me->HandleEmoteStateCommand(EMOTE_STATE_STUN);
                     me->CombatStop();                   //stop combat
                     me->DeleteThreatList();             //unsure of this
-                    me->setFaction(83);                 //horde generic
+                    me->SetFaction(83);                 //horde generic
 
                     bReset = true;
                     Reset_Timer = 60000;
@@ -97,7 +97,7 @@ public:
                 {
                     EnterEvadeMode();
                     bReset = false;
-                    me->setFaction(28);                     //troll, bloodscalp
+                    me->SetFaction(28);                     //troll, bloodscalp
                     return;
                 }
 

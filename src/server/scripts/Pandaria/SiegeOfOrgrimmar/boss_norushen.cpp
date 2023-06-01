@@ -1591,7 +1591,7 @@ struct npc_purifying_light_orb : public ScriptedAI
     {
         hasClick = false;
         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-        me->setFaction(35);
+        me->SetFaction(35);
         me->SetReactState(REACT_PASSIVE);
 
         me->AddAura(SPELL_LOOK_WITHIN_PERIODIC, me);

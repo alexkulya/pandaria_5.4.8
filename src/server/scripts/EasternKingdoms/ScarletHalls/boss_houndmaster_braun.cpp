@@ -307,7 +307,7 @@ class npc_obediend_hound : public CreatureScript
                     case ACTION_FINISH_HIM:
                         events.Reset();
                         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IN_COMBAT);
-                        me->setFaction(35);
+                        me->SetFaction(35);
 
                         if (_instance)
                         {

@@ -733,7 +733,7 @@ class boss_illidan_stormrage : public CreatureScript
                         Creature* flame = me->SummonCreature(FLAME_OF_AZZINOTH, GlaivePosition[i+2].x, GlaivePosition[i+2].y, GlaivePosition[i+2].z, 0, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 5000);
                         if (flame)
                         {
-                            flame->setFaction(me->getFaction()); // Just in case the database has it as a different faction
+                            flame->SetFaction(me->GetFaction()); // Just in case the database has it as a different faction
                             flame->SetMeleeDamageSchool(SPELL_SCHOOL_FIRE);
                             FlameGUID[i] = flame->GetGUID(); // Record GUID in order to check if they're dead later on to move to the next phase
                             CAST_AI(npc_flame_of_azzinoth::flame_of_azzinothAI, flame->AI())->SetGlaiveGUID(GlaiveGUID[i]);
@@ -789,7 +789,7 @@ class boss_illidan_stormrage : public CreatureScript
                                 GlaiveGUID[i] = glaive->GetGUID();
                                 glaive->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                                 //glaive->SetDisplayId(11686); // idk how it must works, but glaive shoud not be invisible
-                                glaive->setFaction(me->getFaction());
+                                glaive->SetFaction(me->GetFaction());
                                 DoCast(glaive, SPELL_THROW_GLAIVE2);
                             }
                         }
@@ -805,7 +805,7 @@ class boss_illidan_stormrage : public CreatureScript
                                 GlaiveGUID[i] = glaive->GetGUID();
                                 glaive->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                                 //glaive->SetDisplayId(11686); // idk how it must works, but glaive shoud not be invisible
-                                glaive->setFaction(me->getFaction());
+                                glaive->SetFaction(me->GetFaction());
                                 DoCast(glaive, SPELL_THROW_GLAIVE, true);
                             }
                         }

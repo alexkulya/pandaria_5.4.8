@@ -114,7 +114,7 @@ class instance_brewing_storm : public InstanceMapScript
 
                         for (auto&& itr : villagerGUIDs)
                             if (Creature* villager = instance->GetCreature(itr))
-                                villager->setFaction(1812);
+                                villager->SetFaction(1812);
 
                         for (auto&& itr : defendersSpawnPos)
                             instance->SummonCreature(NPC_THUNDERPAW_GUARDIAN, { itr.GetPositionX(), itr.GetPositionY(), itr.GetPositionZ(), itr.GetOrientation() });

@@ -80,7 +80,7 @@ public:
             Shock_Timer = 5000;
 
             me->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
-            me->setFaction(FACTION_FRIENDLY);
+            me->SetFaction(FACTION_FRIENDLY);
 
             Talk(SAY_SUMMON);
         }
@@ -91,7 +91,7 @@ public:
             {
                 if (Faction_Timer <= diff)
                 {
-                    me->setFaction(FACTION_HOSTILE);
+                    me->SetFaction(FACTION_HOSTILE);
                     Faction_Timer = 0;
                 } else Faction_Timer -= diff;
             }
@@ -101,7 +101,7 @@ public:
 
             if (HealthBelowPct(30))
             {
-                me->setFaction(FACTION_FRIENDLY);
+                me->SetFaction(FACTION_FRIENDLY);
                 me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER);
                 me->RemoveAllAuras();
                 me->DeleteThreatList();
@@ -374,7 +374,7 @@ public:
                 pEscortAI->Start(true, false, player->GetGUID());
 
             // Change faction so mobs attack
-            creature->setFaction(775);
+            creature->SetFaction(775);
         }
 
         return true;

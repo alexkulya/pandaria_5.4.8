@@ -1003,7 +1003,7 @@ struct npc_mercurial_guardian : public customCreatureAI
     void Reset() override
     {
         events.Reset();
-        me->setFaction(35);
+        me->SetFaction(35);
         me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
         targetGUID = 0;
         hasTriggered = false;
@@ -1022,7 +1022,7 @@ struct npc_mercurial_guardian : public customCreatureAI
         scheduler
             .Schedule(Milliseconds(2000), [this](TaskContext context)
         {
-            me->setFaction(14);
+            me->SetFaction(14);
 
             if (Unit* target = ObjectAccessor::GetUnit(*me, targetGUID))
                 AttackStart(target);

@@ -244,7 +244,7 @@ class npc_apothecary_hummel : public CreatureScript
                     case START_FIGHT:
                     {
                         _phase = PHASE_NORMAL;
-                        me->setFaction(FACTION_HOSTILE);
+                        me->SetFaction(FACTION_HOSTILE);
                         me->SetReactState(REACT_AGGRESSIVE);
                         me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                         SetInCombat(me);
@@ -276,7 +276,7 @@ class npc_apothecary_hummel : public CreatureScript
                         uint8 i = urand(0, 3);
                         if (Creature* crazed = me->SummonCreature(NPC_CRAZED_APOTHECARY, Loc[i], TEMPSUMMON_CORPSE_TIMED_DESPAWN, 3*IN_MILLISECONDS))
                         {
-                            crazed->setFaction(FACTION_HOSTILE);
+                            crazed->SetFaction(FACTION_HOSTILE);
                             crazed->SetReactState(REACT_PASSIVE);
                             crazed->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                             crazed->GetMotionMaster()->MovePoint(1, Loc[i + 4]);
@@ -439,7 +439,7 @@ class npc_apothecary_baxter : public CreatureScript
                             hummel->AI()->Talk(SAY_CALL_BAXTER);
 
                         _phase = PHASE_NORMAL;
-                        me->setFaction(FACTION_HOSTILE);
+                        me->SetFaction(FACTION_HOSTILE);
                         SetInCombat(me);
                         break;
                     }
@@ -561,7 +561,7 @@ class npc_apothecary_frye : public CreatureScript
                             hummel->AI()->Talk(SAY_CALL_FRYE);
 
                         _phase = PHASE_NORMAL;
-                        me->setFaction(FACTION_HOSTILE);
+                        me->SetFaction(FACTION_HOSTILE);
                         SetInCombat(me);
                         break;
                     }
@@ -575,7 +575,7 @@ class npc_apothecary_frye : public CreatureScript
 
                 if (Creature* bunny = me->SummonCreature(NPC_VIAL_BUNNY, *target, TEMPSUMMON_TIMED_DESPAWN, 25*IN_MILLISECONDS))
                 {
-                    bunny->setFaction(FACTION_HOSTILE);
+                    bunny->SetFaction(FACTION_HOSTILE);
                     bunny->SetReactState(REACT_PASSIVE);
                     bunny->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE | UNIT_FLAG_NON_ATTACKABLE |UNIT_FLAG_NOT_SELECTABLE);
                     bunny->CastSpell(bunny, perfume ? SPELL_ALLURING_PERFUME_SPILL : SPELL_IRRESISTIBLE_COLOGNE_SPILL, true, NULL, NULL, me->GetGUID());

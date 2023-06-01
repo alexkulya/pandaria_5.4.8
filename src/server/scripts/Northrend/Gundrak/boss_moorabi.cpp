@@ -254,9 +254,9 @@ class npc_drakkari_inciter : public CreatureScript
                         earthshakerGuids[earthshaker->GetPositionY() > me->GetPositionY() ? 1 : 0] = earthshaker->GetGUID();
 
                     if (Creature* left = GetLeftEarthshaker())
-                        left->setFaction(1692);
+                        left->SetFaction(1692);
                     if (Creature* right = GetRightEarthshaker())
-                        right->setFaction(1693);
+                        right->SetFaction(1693);
 
                     std::list<Creature*> spectators;
                     GetCreatureListWithEntryInGrid(spectators, me, NPC_DRAKKARI_LANCER, 40.0f);
@@ -512,7 +512,7 @@ class npc_drakkari_earthshaker : public CreatureScript
 
             void StopSparring()
             {
-                me->setFaction(me->GetCreatureTemplate()->faction_A);
+                me->SetFaction(me->GetCreatureTemplate()->faction_A);
 
                 if (me->GetVictim() && me->GetVictim()->GetTypeId() == TYPEID_UNIT && me->GetVictim()->GetEntry() == NPC_DRAKKARI_EARTHSHAKER)
                 {

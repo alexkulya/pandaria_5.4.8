@@ -219,7 +219,7 @@ class instance_trial_of_the_champion : public InstanceMapScript
                         {
                             if (Creature* pBlackKnight =  instance->GetCreature(uiBlackKnightGUID))
                             {
-                                pBlackKnight->setFaction(14);
+                                pBlackKnight->SetFaction(14);
                                 pBlackKnight->SetReactState(REACT_AGGRESSIVE);
                                 pBlackKnight->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE);
                                 AggroAllPlayers(pBlackKnight);
@@ -228,7 +228,7 @@ class instance_trial_of_the_champion : public InstanceMapScript
                                     pAnnouncer->DisappearAndDie();
                                     if (Creature* pGhoul = pAnnouncer->SummonCreature(NPC_RISEN_JAEREN,pAnnouncer->GetPositionX(),pAnnouncer->GetPositionY(),pAnnouncer->GetPositionZ(),pAnnouncer->GetOrientation()))
                                     {
-                                        pGhoul->setFaction(14);
+                                        pGhoul->SetFaction(14);
                                         AggroAllPlayers(pGhoul);
                                     }
                                 }
@@ -285,7 +285,7 @@ class instance_trial_of_the_champion : public InstanceMapScript
                                 boss->GetMotionMaster()->MovePoint(0, 746.88f, 618.74f, 411.06f);
                                 boss->RemoveFlag(UNIT_FIELD_FLAGS,UNIT_FLAG_NON_ATTACKABLE);
                                 boss->SetReactState(REACT_AGGRESSIVE);
-                                boss->setFaction(16);
+                                boss->SetFaction(16);
                             }
                         }
                         break;

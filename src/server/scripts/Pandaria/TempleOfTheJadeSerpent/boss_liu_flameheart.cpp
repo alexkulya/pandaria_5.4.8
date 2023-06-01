@@ -394,7 +394,7 @@ class boss_yu_lon_tjs : public CreatureScript
                         case EVENT_LEAVE:
                              {
                                  Talk(TALK_LEAVE);
-                                 me->setFaction(35);
+                                 me->SetFaction(35);
                                  Movement::MoveSplineInit init(me);
                                  for (uint8 i = 0; i < 3; ++i)
                                  {

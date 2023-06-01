@@ -97,7 +97,7 @@ class boss_chi_ji : public CreatureScript
             {
                 events.Reset();
 
-                if (me->getFaction() == FACTION_HOSTILE_NEUTRAL)
+                if (me->GetFaction() == FACTION_HOSTILE_NEUTRAL)
                     me->SetFacingTo(MIDDLE_FACING_ANGLE);
 
                 me->SetCombatDistance(500.0f);
@@ -148,7 +148,7 @@ class boss_chi_ji : public CreatureScript
 
                     RewardPlayers(me);
 
-                    me->setFaction(FACTION_FRIENDLY);
+                    me->SetFaction(FACTION_FRIENDLY);
 
                     me->StopMoving();
                     me->RemoveAllAuras();
@@ -206,7 +206,7 @@ class boss_chi_ji : public CreatureScript
                 {
                     nonCombatEvents.ScheduleEvent(EVENT_SHAO_DO_INTRO, CELESTIAL_COURT_BOSS_INTRO_TIMER_1);
                     me->SetFacingTo(MIDDLE_FACING_ANGLE);
-                    me->setFaction(FACTION_HOSTILE_NEUTRAL);
+                    me->SetFaction(FACTION_HOSTILE_NEUTRAL);
                     me->SetHomePosition(_timelessIsleMiddle);
                 }
             }

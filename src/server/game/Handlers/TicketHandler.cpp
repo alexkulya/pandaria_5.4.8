@@ -35,7 +35,7 @@ void WorldSession::HandleGMTicketCreateOpcode(WorldPacket& recvData)
     if (sTicketMgr->GetGmTicketSystemStatus() == GMTICKET_QUEUE_STATUS_DISABLED)
         return;
 
-    if (GetPlayer()->getLevel() < sWorld->getIntConfig(CONFIG_TICKET_LEVEL_REQ))
+    if (GetPlayer()->GetLevel() < sWorld->getIntConfig(CONFIG_TICKET_LEVEL_REQ))
     {
         SendNotification(GetTrinityString(LANG_TICKET_REQ), sWorld->getIntConfig(CONFIG_TICKET_LEVEL_REQ));
         return;
@@ -291,7 +291,7 @@ void WorldSession::HandleSubmitBugOpcode(WorldPacket& recvPacket)
     if (!sTicketMgr->GetFeedBackSystemStatus())
         return;
 
-    if (GetPlayer()->getLevel() < sWorld->getIntConfig(CONFIG_TICKET_LEVEL_REQ))
+    if (GetPlayer()->GetLevel() < sWorld->getIntConfig(CONFIG_TICKET_LEVEL_REQ))
     {
         SendNotification(GetTrinityString(LANG_TICKET_REQ), sWorld->getIntConfig(CONFIG_TICKET_LEVEL_REQ));
         return;

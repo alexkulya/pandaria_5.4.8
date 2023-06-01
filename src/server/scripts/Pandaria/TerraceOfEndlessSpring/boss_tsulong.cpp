@@ -248,7 +248,7 @@ class boss_tsulong : public CreatureScript
                     {
                         phase = PHASE_DAY;
                         me->SetDisplayId(DISPLAY_TSULON_DAY);
-                        me->setFaction(35);
+                        me->SetFaction(35);
                         me->HandleEmoteStateCommand(35);
                     }
                     else if (landing)
@@ -256,7 +256,7 @@ class boss_tsulong : public CreatureScript
                         me->SetReactState(REACT_AGGRESSIVE);
                         me->RemoveAurasDueToSpell(SPELL_GOLD_ACTIVE);
                         me->RemoveAurasDueToSpell(SPELL_SUMMON_SHA_PERIODIC);
-                        me->setFaction(FACTION_NIGHT);
+                        me->SetFaction(FACTION_NIGHT);
                         me->SetHealth(me->GetMaxHealth());
                         events.SetPhase(PHASE_NONE);
                         phase = PHASE_NONE;
@@ -402,7 +402,7 @@ class boss_tsulong : public CreatureScript
                             victimGUID = victim->GetGUID();
 
                         me->SetReactState(REACT_PASSIVE);
-                        me->setFaction(FACTION_DAY);
+                        me->SetFaction(FACTION_DAY);
                         me->GetMotionMaster()->Clear();
                         me->GetMotionMaster()->MoveIdle();
                         me->AttackStop();
@@ -431,7 +431,7 @@ class boss_tsulong : public CreatureScript
                         me->RemoveAurasDueToSpell(SPELL_GOLD_ACTIVE);
                         me->RemoveAurasDueToSpell(SPELL_SUMMON_SHA_PERIODIC);
                         DoCast(me, SPELL_SHA_ACTIVE, true);
-                        me->setFaction(FACTION_NIGHT);
+                        me->SetFaction(FACTION_NIGHT);
 
                         events.Reset();
                         events.ScheduleEvent(EVENT_SWITCH_TO_NIGHT_PHASE, 0, 0, PHASE_NIGHT);
@@ -494,7 +494,7 @@ class boss_tsulong : public CreatureScript
                 
                 me->CombatStop();
                 me->SetReactState(REACT_PASSIVE);
-                me->setFaction(FACTION_DAY);
+                me->SetFaction(FACTION_DAY);
                 me->RemoveAllAuras();
 
                 me->GetMotionMaster()->Clear();
@@ -639,7 +639,7 @@ class boss_tsulong : public CreatureScript
                                 case EVENT_FLY:
                                     me->setActive(true);
                                     me->UpdateObjectVisibility(true);
-                                    me->setFaction(FACTION_NIGHT);
+                                    me->SetFaction(FACTION_NIGHT);
                                     me->SetReactState(REACT_PASSIVE);
                                     me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
                                     me->HandleEmoteStateCommand(EMOTE_STATE_NONE);
@@ -690,7 +690,7 @@ class boss_tsulong : public CreatureScript
                         {
                             case EVENT_SWITCH_TO_NIGHT_PHASE:
                                 //me->SetDisplayId(DISPLAY_TSULON_NIGHT);
-                                me->setFaction(FACTION_NIGHT);
+                                me->SetFaction(FACTION_NIGHT);
                                 me->CastSpell(me, SPELL_DREAD_SHADOWS, true);
                                 break;
                             case EVENT_SPAWN_SUNBEAM:
@@ -1031,7 +1031,7 @@ class npc_unstable_sha : public CreatureScript
                 if (!cast && target == me && spell->Id == SPELL_INSTABILITY_TRANSFORM)
                     if (Unit* summoner = Unit::GetUnit(*me, summonerGUID))
                     {
-                        DoCast(summoner, (summoner->getFaction() == FACTION_DAY) ? SPELL_INSTABILITY_DAMAGE : SPELL_INSTABILITY_HEAL);
+                        DoCast(summoner, (summoner->GetFaction() == FACTION_DAY) ? SPELL_INSTABILITY_DAMAGE : SPELL_INSTABILITY_HEAL);
                         cast = true;
                         me->DespawnOrUnsummon(500);
                     }

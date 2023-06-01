@@ -245,7 +245,7 @@ class npc_tushui_trainee : public CreatureScript
                 isInCombat = false;
 
                 me->SetReactState(REACT_DEFENSIVE);
-                me->setFaction(2357);
+                me->SetFaction(2357);
                 me->SetFullHealth();
             }
 
@@ -253,7 +253,7 @@ class npc_tushui_trainee : public CreatureScript
             {
                 if (me->HealthBelowPctDamaged(16, damage))
                 {
-                    me->setFaction(35);
+                    me->SetFaction(35);
 
                     if (attacker && attacker->GetTypeId() == TYPEID_PLAYER)
                         attacker->ToPlayer()->KilledMonsterCredit(54586, 0);
@@ -344,7 +344,7 @@ class npc_huojin_trainee : public CreatureScript
                 isInCombat = false;
 
                 me->SetReactState(REACT_DEFENSIVE);
-                me->setFaction(2357);
+                me->SetFaction(2357);
                 me->SetFullHealth();
             }
 
@@ -352,7 +352,7 @@ class npc_huojin_trainee : public CreatureScript
             {
                 if (me->HealthBelowPctDamaged(16, damage))
                 {
-                    me->setFaction(35);
+                    me->SetFaction(35);
 
                     if (attacker && attacker->GetTypeId() == TYPEID_PLAYER)
                         attacker->ToPlayer()->KilledMonsterCredit(54586, 0);
@@ -441,7 +441,7 @@ class boss_jaomin_ro : public CreatureScript
             {
                 isInFalcon = false;
                 me->SetDisplayId(39755);
-                me->setFaction(2357); //mechant!
+                me->SetFaction(2357); //mechant!
             }
 
             void MoveInLineOfSight(Unit*  who)
@@ -485,7 +485,7 @@ class boss_jaomin_ro : public CreatureScript
 
                     Talk(1);
                     EnterEvadeMode();
-                    me->setFaction(35);
+                    me->SetFaction(35);
                     me->SetFullHealth();
                     me->HandleEmoteCommand(EMOTE_ONESHOT_SALUTE);
                     events.Reset();
@@ -771,7 +771,7 @@ class npc_aysa : public CreatureScript
                 timer = 0;
                 lifeiGUID = 0;
                 me->SetReactState(REACT_DEFENSIVE);
-                me->setFaction(2263);
+                me->SetFaction(2263);
             }
 
             EventMap events;

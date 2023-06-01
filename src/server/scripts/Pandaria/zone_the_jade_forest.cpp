@@ -957,7 +957,7 @@ class npc_pandriarch_windfur : public CreatureScript
             {
                 if (player->GetQuestStatus(29920) == QUEST_STATUS_INCOMPLETE)
                 {
-                    creature->setFaction(14);
+                    creature->SetFaction(14);
                     creature->SetReactState(REACT_DEFENSIVE);
                     creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
                     creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
@@ -996,7 +996,7 @@ class npc_pandriarch_windfur : public CreatureScript
                         damage = 0;
                         me->CombatStop();
                         me->GetMotionMaster()->MovePoint(0, 1996.76001f, -2216.780029f, 247.725006f);
-                        me->setFaction(35);
+                        me->SetFaction(35);
                         me->SetFullHealth();
                         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
                         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
@@ -1018,7 +1018,7 @@ class npc_pandriarch_windfur : public CreatureScript
                     else
                     {
                         me->CombatStop();
-                        me->setFaction(35);
+                        me->SetFaction(35);
                     }
                 }
             }
@@ -1106,7 +1106,7 @@ class npc_pandriarch_bramblestaff : public CreatureScript
             {
                 if (player->GetQuestStatus(29920) == QUEST_STATUS_INCOMPLETE)
                 {
-                    creature->setFaction(14);
+                    creature->SetFaction(14);
                     creature->SetReactState(REACT_DEFENSIVE);
                     creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
                     creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
@@ -1147,7 +1147,7 @@ class npc_pandriarch_bramblestaff : public CreatureScript
                         damage = 0;
                         me->CombatStop();
                         me->GetMotionMaster()->MovePoint(0, 1862.300049f, -2325.060059f, 257.062012f);
-                        me->setFaction(35);
+                        me->SetFaction(35);
                         me->SetFullHealth();
                         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
                         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
@@ -1166,7 +1166,7 @@ class npc_pandriarch_bramblestaff : public CreatureScript
                     else
                     {
                         me->CombatStop();
-                        me->setFaction(35);
+                        me->SetFaction(35);
                     }
                 }
             }
@@ -1258,7 +1258,7 @@ class npc_pandriarch_goldendraft : public CreatureScript
             {
                 if (player->GetQuestStatus(29920) == QUEST_STATUS_INCOMPLETE)
                 {
-                    creature->setFaction(14);
+                    creature->SetFaction(14);
                     creature->SetReactState(REACT_DEFENSIVE);
                     creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
                     creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
@@ -1296,7 +1296,7 @@ class npc_pandriarch_goldendraft : public CreatureScript
                         damage = 0;
                         me->CombatStop();
                         me->GetMotionMaster()->MovePoint(0, 1942.630005f, -2290.530029f, 240.429001f);
-                        me->setFaction(35);
+                        me->SetFaction(35);
                         me->SetFullHealth();
                         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
                         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC);
@@ -1315,7 +1315,7 @@ class npc_pandriarch_goldendraft : public CreatureScript
                     else
                     {
                         me->CombatStop();
-                        me->setFaction(35);
+                        me->SetFaction(35);
                     }
                 }
             }
@@ -1399,7 +1399,7 @@ class npc_big_bao : public CreatureScript
             {
                 if (player->GetQuestStatus(31718) == QUEST_STATUS_INCOMPLETE)
                 {
-                    creature->setFaction(14);
+                    creature->SetFaction(14);
                     creature->SetReactState(REACT_DEFENSIVE);
                     creature->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                     creature->AI()->Reset();
@@ -1437,7 +1437,7 @@ class npc_big_bao : public CreatureScript
                     else
                     {
                         me->CombatStop();
-                        me->setFaction(35);
+                        me->SetFaction(35);
                     }
                 }
             }
@@ -1451,7 +1451,7 @@ class npc_big_bao : public CreatureScript
                         damage = 0;
                         me->CombatStop();
                         me->GetMotionMaster()->MovePoint(0, 1604.75f, -2562.139893f, 153.134003f);
-                        me->setFaction(35);
+                        me->SetFaction(35);
                         me->SetFullHealth();
                         me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                         player->KilledMonsterCredit(58508);
@@ -3053,7 +3053,7 @@ class spell_q30063 : public SpellScriptLoader
             {
                 if (GetCaster()->GetTypeId() == TYPEID_PLAYER)
                     if (Player* player = GetCaster()->ToPlayer())
-                        player->MonsterWhisper(sCreatureTextMgr->GetLocalizedChatString(NPC_ELDER_SAGE_STORM_SING, 0, urand(0, 7), Gender(player->getGender()), player->GetSession()->GetSessionDbLocaleIndex()).c_str(), player, false);
+                        player->MonsterWhisper(sCreatureTextMgr->GetLocalizedChatString(NPC_ELDER_SAGE_STORM_SING, 0, urand(0, 7), Gender(player->GetGender()), player->GetSession()->GetSessionDbLocaleIndex()).c_str(), player, false);
             }
 
             void Register() override
@@ -3147,7 +3147,7 @@ class spell_q29637 : public SpellScriptLoader
                             player->GetRandomNearPosition(pos, 15.0f);
                             if (Creature* spawn = myang->SummonCreature(j == 0 ? NPC_RUMPUS_COMBATANT : NPC_RUMPUS_BRUTE, pos, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 60000))
                             {
-                                spawn->setFaction(14); // hack, with default faction npcs cant be attackable
+                                spawn->SetFaction(14); // hack, with default faction npcs cant be attackable
                                 spawn->AI()->AttackStart(player);
                             }
                         }
@@ -3193,7 +3193,7 @@ class spell_q29637 : public SpellScriptLoader
                 {
                     if (removeMode == AURA_REMOVE_BY_EXPIRE)
                     {
-                        spawn->setFaction(spawn->GetCreatureTemplate()->faction_A); // hack, see above
+                        spawn->SetFaction(spawn->GetCreatureTemplate()->faction_A); // hack, see above
                         spawn->AttackStop();
                         spawn->SetReactState(REACT_PASSIVE);
                         spawn->HandleEmoteCommand(EMOTE_ONESHOT_BOW);
@@ -3239,7 +3239,7 @@ class npc_rumpus_spawn : public CreatureScript
                 {
                     damage = 0;
 
-                    me->setFaction(me->GetCreatureTemplate()->faction_A); // hack, see above
+                    me->SetFaction(me->GetCreatureTemplate()->faction_A); // hack, see above
                     me->AttackStop();
                     me->SetReactState(REACT_PASSIVE);
                     me->HandleEmoteCommand(EMOTE_ONESHOT_BOW);

@@ -783,7 +783,7 @@ void WorldSession::HandleCharCreateCallback(PreparedQueryResult result, Characte
             std::string IP_str = GetRemoteAddress();
             TC_LOG_INFO("entities.player.character", "Account: %d (IP: %s) Create Character:[%s] (GUID: %u)", GetAccountId(), IP_str.c_str(), createInfo->Name.c_str(), newChar.GetGUIDLow());
             sScriptMgr->OnPlayerCreate(&newChar);
-            sWorld->AddCharacterNameData(newChar.GetGUIDLow(), newChar.GetName(), newChar.getGender(), newChar.getRace(), newChar.getClass(), newChar.getLevel());
+            sWorld->AddCharacterNameData(newChar.GetGUIDLow(), newChar.GetName(), newChar.GetGender(), newChar.GetRace(), newChar.GetClass(), newChar.GetLevel());
 
             newChar.CleanupsBeforeDelete();
             delete createInfo;
@@ -1095,11 +1095,11 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
     {
         pCurrChar->setCinematic(1);
 
-        if (ChrClassesEntry const* cEntry = sChrClassesStore.LookupEntry(pCurrChar->getClass()))
+        if (ChrClassesEntry const* cEntry = sChrClassesStore.LookupEntry(pCurrChar->GetClass()))
         {
             if (cEntry->CinematicSequence)
                 pCurrChar->SendCinematicStart(cEntry->CinematicSequence);
-            else if (ChrRacesEntry const* rEntry = sChrRacesStore.LookupEntry(pCurrChar->getRace()))
+            else if (ChrRacesEntry const* rEntry = sChrRacesStore.LookupEntry(pCurrChar->GetRace()))
                 pCurrChar->SendCinematicStart(rEntry->CinematicSequence);
 
             // send new char string if not empty
@@ -1167,7 +1167,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
     if (pCurrChar->m_deathState != ALIVE)
     {
         // not blizz like, we must correctly save and load player instead...
-        if (pCurrChar->getRace() == RACE_NIGHTELF)
+        if (pCurrChar->GetRace() == RACE_NIGHTELF)
             pCurrChar->CastSpell(pCurrChar, 20584, true, 0);// auras SPELL_AURA_INCREASE_SPEED(+speed in wisp form), SPELL_AURA_INCREASE_SWIM_SPEED(+swim speed in wisp form), SPELL_AURA_TRANSFORM (to wisp form)
         pCurrChar->CastSpell(pCurrChar, 8326, true, 0);     // auras SPELL_AURA_GHOST, SPELL_AURA_INCREASE_SPEED(why?), SPELL_AURA_INCREASE_SWIM_SPEED(why?)
 
@@ -1208,7 +1208,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
     {
         pCurrChar->RemoveAtLoginFlag(AT_LOGIN_FIRST);
 
-        if (pCurrChar->getClass() == CLASS_HUNTER)
+        if (pCurrChar->GetClass() == CLASS_HUNTER)
         {
             static uint32 const HunterCreatePetSpells[MAX_RACES] =
             {
@@ -1228,13 +1228,13 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
                 0       /* Pandaren Horde*/
             };
 
-            pCurrChar->CastSpell(pCurrChar, HunterCreatePetSpells[pCurrChar->getRace()], true);
+            pCurrChar->CastSpell(pCurrChar, HunterCreatePetSpells[pCurrChar->GetRace()], true);
         }
 
-        if (pCurrChar->getRace() == RACE_UNDEAD_PLAYER && pCurrChar->getClass() != CLASS_DEATH_KNIGHT)
+        if (pCurrChar->GetRace() == RACE_UNDEAD_PLAYER && pCurrChar->GetClass() != CLASS_DEATH_KNIGHT)
             pCurrChar->CastSpell(pCurrChar, 73523, true); // Undead - Rigor Mortis
 
-        if (pCurrChar->getRace() == RACE_PANDAREN_NEUTRAL)
+        if (pCurrChar->GetRace() == RACE_PANDAREN_NEUTRAL)
         {
             static uint32 const PandarenStartingQuestSpells[MAX_CLASSES] =
             {
@@ -1247,7 +1247,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
             };
 
             pCurrChar->CastSpell(pCurrChar, 100750, true); // Launch Starting Quest
-            pCurrChar->CastSpell(pCurrChar, PandarenStartingQuestSpells[pCurrChar->getClass()], true);
+            pCurrChar->CastSpell(pCurrChar, PandarenStartingQuestSpells[pCurrChar->GetClass()], true);
 
             static uint32 const PandarenRemoveWeaponSpells[MAX_CLASSES] =
             {
@@ -1259,7 +1259,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
                 108060, /* Monk */         0       /* Druid */
             };
 
-            pCurrChar->CastSpell(pCurrChar, PandarenRemoveWeaponSpells[pCurrChar->getClass()], true);
+            pCurrChar->CastSpell(pCurrChar, PandarenRemoveWeaponSpells[pCurrChar->GetClass()], true);
         }
     }
 
@@ -1297,7 +1297,7 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
 
     std::string IP_str = GetRemoteAddress();
     TC_LOG_INFO("entities.player.character", "Account: %d (IP: %s) Login Character:[%s] (GUID: %u) Level: %d HWID: %s",
-        GetAccountId(), IP_str.c_str(), pCurrChar->GetName().c_str(), pCurrChar->GetGUIDLow(), pCurrChar->getLevel(), hwid.c_str());
+        GetAccountId(), IP_str.c_str(), pCurrChar->GetName().c_str(), pCurrChar->GetGUIDLow(), pCurrChar->GetLevel(), hwid.c_str());
 
     if (!pCurrChar->IsStandState() && !pCurrChar->HasUnitState(UNIT_STATE_STUNNED))
         pCurrChar->SetStandState(UNIT_STAND_STATE_STAND);
@@ -1700,17 +1700,17 @@ void WorldSession::HandleAlterAppearance(WorldPacket& recvData)
 
     BarberShopStyleEntry const* bs_hair = sBarberShopStyleStore.LookupEntry(Hair);
 
-    if (!bs_hair || bs_hair->type != 0 || bs_hair->race != _player->getRace() || bs_hair->gender != _player->getGender())
+    if (!bs_hair || bs_hair->type != 0 || bs_hair->race != _player->GetRace() || bs_hair->gender != _player->GetGender())
         return;
 
     BarberShopStyleEntry const* bs_facialHair = sBarberShopStyleStore.LookupEntry(FacialHair);
 
-    if (!bs_facialHair || bs_facialHair->type != 2 || bs_facialHair->race != _player->getRace() || bs_facialHair->gender != _player->getGender())
+    if (!bs_facialHair || bs_facialHair->type != 2 || bs_facialHair->race != _player->GetRace() || bs_facialHair->gender != _player->GetGender())
         return;
 
     BarberShopStyleEntry const* bs_skinColor = sBarberShopStyleStore.LookupEntry(SkinColor);
 
-    if (bs_skinColor && (bs_skinColor->type != 3 || bs_skinColor->race != _player->getRace() || bs_skinColor->gender != _player->getGender()))
+    if (bs_skinColor && (bs_skinColor->type != 3 || bs_skinColor->race != _player->GetRace() || bs_skinColor->gender != _player->GetGender()))
         return;
 
     GameObject* go = _player->FindNearestGameObjectOfType(GAMEOBJECT_TYPE_BARBER_CHAIR, 5.0f);
@@ -2838,11 +2838,11 @@ void WorldSession::HandleOpeningCinematic(WorldPacket& /*recvData*/)
     if (_player->GetUInt32Value(PLAYER_FIELD_XP))
         return;
 
-    if (ChrClassesEntry const* classEntry = sChrClassesStore.LookupEntry(_player->getClass()))
+    if (ChrClassesEntry const* classEntry = sChrClassesStore.LookupEntry(_player->GetClass()))
     {
         if (classEntry->CinematicSequence)
             _player->SendCinematicStart(classEntry->CinematicSequence);
-        else if (ChrRacesEntry const* raceEntry = sChrRacesStore.LookupEntry(_player->getRace()))
+        else if (ChrRacesEntry const* raceEntry = sChrRacesStore.LookupEntry(_player->GetRace()))
             _player->SendCinematicStart(raceEntry->CinematicSequence);
     }
 }

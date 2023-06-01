@@ -173,7 +173,7 @@ public:
     {
         if (quest->GetQuestId() == QUEST_ESCAPE_FROM_THE_CATACOMBS)
         {
-            creature->setFaction(113);
+            creature->SetFaction(113);
 
             if (npc_escortAI* pEscortAI = CAST_AI(npc_ranger_lilatha::npc_ranger_lilathaAI, creature->AI()))
                 pEscortAI->Start(true, false, player->GetGUID());

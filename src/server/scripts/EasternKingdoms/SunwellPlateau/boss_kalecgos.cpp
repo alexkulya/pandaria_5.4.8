@@ -137,7 +137,7 @@ class boss_kalecgos : public CreatureScript
                         Sath->AI()->EnterEvadeMode();
                 }
 
-                me->setFaction(14);
+                me->SetFaction(14);
                 if (!justReset) //first reset at create
                 {
                     me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE + UNIT_FLAG_NOT_SELECTABLE);
@@ -366,7 +366,7 @@ class boss_kalecgos : public CreatureScript
                 switch (talkSequence)
                 {
                     case 1:
-                        me->setFaction(35);
+                        me->SetFaction(35);
                         talkTimer = 1000;
                         break;
                     case 2:

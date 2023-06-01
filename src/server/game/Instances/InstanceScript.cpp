@@ -843,7 +843,7 @@ void InstanceScript::UpdateEncounterState(EncounterCreditType type, uint32 credi
             {
                 if (member->FindMap() == instance)
                 {
-                    level += member->getLevel();
+                    level += member->GetLevel();
                     ++count;
                 }
             }

@@ -1691,10 +1691,10 @@ void GameObject::Use(Unit* user)
                 return;
 
             //required lvl checks!
-            uint8 level = player->getLevel();
+            uint8 level = player->GetLevel();
             if (level < info->meetingstone.minLevel)
                 return;
-            level = targetPlayer->getLevel();
+            level = targetPlayer->GetLevel();
             if (level < info->meetingstone.minLevel)
                 return;
 
@@ -1885,7 +1885,7 @@ void GameObject::CastSpell(Unit* target, uint32 spellId)
 
     if (Unit* owner = GetOwner())
     {
-        trigger->setFaction(owner->getFaction());
+        trigger->SetFaction(owner->GetFaction());
         // needed for GO casts for proper target validation checks
         trigger->SetOwnerGUID(owner->GetGUID());
         if (owner->HasFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PVP_ATTACKABLE))
@@ -1896,7 +1896,7 @@ void GameObject::CastSpell(Unit* target, uint32 spellId)
     }
     else
     {
-        trigger->setFaction(14);
+        trigger->SetFaction(14);
         // Set owner guid for target if no owner available - needed by trigger auras
         // - trigger gets despawned and there's no caster avalible (see AuraEffect::TriggerSpell())
         trigger->CastSpell(target ? target : trigger, spellInfo, true, 0, 0, target ? target->GetGUID() : 0);

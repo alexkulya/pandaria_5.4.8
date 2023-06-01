@@ -164,8 +164,8 @@ void FollowerAI::JustRespawned()
     if (!IsCombatMovementAllowed())
         SetCombatMovement(true);
 
-    if (me->getFaction() != me->GetCreatureTemplate()->faction_A)
-        me->setFaction(me->GetCreatureTemplate()->faction_A);
+    if (me->GetFaction() != me->GetCreatureTemplate()->faction_A)
+        me->SetFaction(me->GetCreatureTemplate()->faction_A);
 
     Reset();
 }
@@ -302,7 +302,7 @@ void FollowerAI::StartFollow(Player* player, uint32 factionForFollower, const Qu
     m_uiLeaderGUID = player->GetGUID();
 
     if (factionForFollower)
-        me->setFaction(factionForFollower);
+        me->SetFaction(factionForFollower);
 
     m_pQuestForFollow = quest;
 

@@ -1267,7 +1267,7 @@ void WorldSession::BuildPartyMemberStatsChangedPacket(Player* player, WorldPacke
         dataBuffer << uint16(player->GetMaxPower(powerType));
 
     if (mask & GROUP_UPDATE_FLAG_LEVEL)
-        dataBuffer << uint16(player->getLevel());
+        dataBuffer << uint16(player->GetLevel());
 
     if (mask & GROUP_UPDATE_FLAG_AREA)
         dataBuffer << uint16(player->GetAreaId());

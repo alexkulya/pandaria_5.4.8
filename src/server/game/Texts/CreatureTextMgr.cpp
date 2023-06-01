@@ -36,7 +36,7 @@ class CreatureTextBuilder
 
         void operator()(WorldPacket* data, LocaleConstant locale, uint64 guid) const
         {
-            std::string const& text = sCreatureTextMgr->GetLocalizedChatString(_source->GetEntry(), _textGroup, _textId, _source->isType(TYPEMASK_UNIT) ? (Gender)_source->ToUnit()->getGender() : GENDER_NONE, locale);
+            std::string const& text = sCreatureTextMgr->GetLocalizedChatString(_source->GetEntry(), _textGroup, _textId, _source->isType(TYPEMASK_UNIT) ? (Gender)_source->ToUnit()->GetGender() : GENDER_NONE, locale);
             ObjectGuid receiverGuid = guid ? guid : _target ? _target->GetGUID() : 0;
             
             ChatHandler::BuildChatPacket(*data, _msgType, Language(_language), _source->GetGUID(), receiverGuid, text, 0,
@@ -62,7 +62,7 @@ class PlayerTextBuilder
 
         void operator()(WorldPacket* data, LocaleConstant locale, uint64 guid) const
         {
-            std::string const& text = sCreatureTextMgr->GetLocalizedChatString(_source->GetEntry(), _textGroup, _textId, _source->isType(TYPEMASK_UNIT) ? (Gender)_talker->ToUnit()->getGender() : GENDER_NONE, locale);
+            std::string const& text = sCreatureTextMgr->GetLocalizedChatString(_source->GetEntry(), _textGroup, _textId, _source->isType(TYPEMASK_UNIT) ? (Gender)_talker->ToUnit()->GetGender() : GENDER_NONE, locale);
             ObjectGuid receiverGuid = guid ? guid : _target ? _target->GetGUID() : 0;
             ChatHandler::BuildChatPacket(*data, _msgType, Language(_language), _source->GetGUID(), receiverGuid, text, 0,
                 _source->GetNameForLocaleIdx(locale), _target ? _target->GetNameForLocaleIdx(locale) : "");

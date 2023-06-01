@@ -605,7 +605,7 @@ public:
             return false;
         }
 
-        creature->setFaction(factionId);
+        creature->SetFaction(factionId);
 
         // Faction is set in creature_template - not inside creature
 
@@ -725,7 +725,7 @@ public:
 
         CreatureTemplate const* cInfo = target->GetCreatureTemplate();
 
-        uint32 faction = target->getFaction();
+        uint32 faction = target->GetFaction();
         uint32 npcflags = target->GetUInt32Value(UNIT_FIELD_NPC_FLAGS);
         uint32 mechanicImmuneMask = cInfo->MechanicImmuneMask;
         uint32 displayid = target->GetDisplayId();
@@ -740,7 +740,7 @@ public:
         std::string defRespawnDelayMaxStr = target->GetRespawnDelayMax() ? secsToTimeString(target->GetRespawnDelayMax(), true) : defRespawnDelayStr;
 
         handler->PSendSysMessage(LANG_NPCINFO_CHAR,  target->GetDBTableGUIDLow(), target->GetGUIDLow(), faction, npcflags, Entry, displayid, nativeid);
-        handler->PSendSysMessage(LANG_NPCINFO_LEVEL, target->getLevel());
+        handler->PSendSysMessage(LANG_NPCINFO_LEVEL, target->GetLevel());
         handler->PSendSysMessage(LANG_NPCINFO_EQUIPMENT, target->GetCurrentEquipmentId(), target->GetOriginalEquipmentId());
         handler->PSendSysMessage(LANG_NPCINFO_HEALTH, target->GetCreateHealth(), target->GetMaxHealth(), target->GetHealth());
 
@@ -752,9 +752,9 @@ public:
             if (target->GetUInt32Value(UNIT_FIELD_FLAGS) & unitFlags[i].Value)
                 handler->PSendSysMessage("%s (0x%X)", unitFlags[i].Name, unitFlags[i].Value);
 
-        handler->PSendSysMessage(LANG_NPCINFO_FLAGS2, target->GetUInt32Value(UNIT_FIELD_FLAGS2), target->GetUInt32Value(OBJECT_FIELD_DYNAMIC_FLAGS), target->getFaction());
+        handler->PSendSysMessage(LANG_NPCINFO_FLAGS2, target->GetUInt32Value(UNIT_FIELD_FLAGS2), target->GetUInt32Value(OBJECT_FIELD_DYNAMIC_FLAGS), target->GetFaction());
 
-        handler->PSendSysMessage(LANG_COMMAND_RAWPAWNTIMES, defRespawnDelayStr.c_str(), defRespawnDelayMaxStr.c_str(),  curRespawnDelayStr.c_str());
+        handler->PSendSysMessage(LANG_COMMAND_RAWPAWNTIMES, defRespawnDelayStr.c_str(), defRespawnDelayMaxStr.c_str(), curRespawnDelayStr.c_str());
         handler->PSendSysMessage(LANG_NPCINFO_LOOT,  cInfo->lootid, cInfo->pickpocketLootId, cInfo->SkinLootId);
         handler->PSendSysMessage(LANG_NPCINFO_DUNGEON_ID, target->GetInstanceId(), target->GetMap()->GetDifficulty());
         handler->PSendSysMessage(LANG_NPCINFO_PHASEMASK, target->GetPhaseMask());
@@ -1436,7 +1436,7 @@ public:
         pet->SetReactState(REACT_DEFENSIVE);
 
         // calculate proper level
-        uint8 level = (creatureTarget->getLevel() < (player->getLevel() - 5)) ? (player->getLevel() - 5) : creatureTarget->getLevel();
+        uint8 level = (creatureTarget->GetLevel() < (player->GetLevel() - 5)) ? (player->GetLevel() - 5) : creatureTarget->GetLevel();
 
         // prepare visual effect for levelup
         pet->SetUInt32Value(UNIT_FIELD_LEVEL, level - 1);

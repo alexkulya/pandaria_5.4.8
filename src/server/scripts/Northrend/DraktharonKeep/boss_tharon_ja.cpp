@@ -281,7 +281,7 @@ class cond_draktharon_keep_drakkari_infighting : public ConditionScript
             if (source.mConditionTargets[1])
                 if (Unit* unit = source.mConditionTargets[1]->ToUnit())
                     if (Unit* victim = unit->GetVictim())
-                        if (victim->getFaction() == 1814 || victim->getFaction() == 1965)
+                        if (victim->GetFaction() == 1814 || victim->GetFaction() == 1965)
                             return true;
 
             return false;

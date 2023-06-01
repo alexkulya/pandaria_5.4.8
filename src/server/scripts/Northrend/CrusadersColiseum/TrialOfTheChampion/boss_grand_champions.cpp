@@ -348,7 +348,7 @@ class boss_grand_champion_toc5 : public CreatureScript
                 _phase = 0;
                 _phaseChangeTimer = 20000;
                 EnterEvadeMode();
-                me->setFaction(35);
+                me->SetFaction(35);
             }
 
             void SetData(uint32 type, uint32 /*data*/) override

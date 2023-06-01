@@ -576,7 +576,7 @@ class npc_orphaned_whelp : public CreatureScript
                 me->SetReactState(REACT_PASSIVE);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                me->setFaction(35);
+                me->SetFaction(35);
                 me->SetCanFly(false);
             }
 
@@ -586,7 +586,7 @@ class npc_orphaned_whelp : public CreatureScript
                 {
                     me->SetReactState(REACT_AGGRESSIVE);
                     me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
-                    me->setFaction(16);
+                    me->SetFaction(16);
                     if (Creature* proto = me->FindNearestCreature(NPC_PROTO_BEHEMOTH, 200.0f))
                         DoCast(proto, SPELL_ATROPHIC_POISON, true);
 
@@ -705,7 +705,7 @@ class npc_halfus_dragon : public CreatureScript
                 me->SetReactState(REACT_PASSIVE);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                me->setFaction(35);
+                me->SetFaction(35);
                 me->SetCanFly(false);
                 me->RemoveUnitMovementFlag(MOVEMENTFLAG_FLYING);
                 me->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);

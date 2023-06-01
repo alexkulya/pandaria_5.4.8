@@ -354,7 +354,7 @@ void Custom_GetMenu (Player* pPlayer, Creature* pCreature, uint32 Key)
         if (ENDMENU && Tele[i].menu_id != Key)
             break;
 
-        if (Tele[i].menu_id == Key && pPlayer->getLevel() >= Tele[i].level && Custom_FactCheck(pPlayer->GetTeam(), i))
+        if (Tele[i].menu_id == Key && pPlayer->GetLevel() >= Tele[i].level && Custom_FactCheck(pPlayer->GetTeam(), i))
         {
             if (Tele[i].next_menu_id != 0)
                 pPlayer->ADD_GOSSIP_ITEM_EXTENDED(Tele[i].icon, Tele[i].name, GOSSIP_SENDER_MAIN, i, "", Tele[i].cost, false);

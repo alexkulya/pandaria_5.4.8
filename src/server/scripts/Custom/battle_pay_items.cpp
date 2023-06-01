@@ -226,7 +226,7 @@ public:
         {
             player->GetSession()->SendNotification(GetText(player, "Вы не можете использовать этот жетон, пока находитесь в бою, на арене или поле боя.", "You may not use this token whilst you are in combat or present in an arena or battleground."));
         }
-        else if (Level <= player->getLevel())
+        else if (Level <= player->GetLevel())
         {
             ChatHandler(player->GetSession()).SendSysMessage(GetText(player, "Текущий уровень вашего персонажа слишком высокий.", "Your current character level is too high."));
         }

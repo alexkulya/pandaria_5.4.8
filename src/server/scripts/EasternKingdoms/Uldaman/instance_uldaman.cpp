@@ -156,7 +156,7 @@ class instance_uldaman : public InstanceMapScript
 
             void SetFrozenState(Creature* creature)
             {
-                creature->setFaction(35);
+                creature->SetFaction(35);
                 creature->RemoveAllAuras();
                 //creature->RemoveFlag (UNIT_FIELD_FLAGS, UNIT_FLAG_ANIMATION_FROZEN);
                 creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
@@ -191,7 +191,7 @@ class instance_uldaman : public InstanceMapScript
                         if (!target || !target->IsAlive())
                             continue;
                         target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
-                        target->setFaction(14);
+                        target->SetFaction(14);
                         target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                         return;        // only want the first one we find
                     }
@@ -210,13 +210,13 @@ class instance_uldaman : public InstanceMapScript
                 for (std::vector<uint64>::const_iterator i = archaedasWallMinions.begin(); i != archaedasWallMinions.end(); ++i)
                 {
                     Creature* target = instance->GetCreature(*i);
-                    if (!target || !target->IsAlive() || target->getFaction() == 14)
+                    if (!target || !target->IsAlive() || target->GetFaction() == 14)
                         continue;
                     archaedas->CastSpell(target, SPELL_AWAKEN_VAULT_WALKER, true);
                     target->CastSpell(target, SPELL_ARCHAEDAS_AWAKEN, true);
                     target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
                     target->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                    target->setFaction(14);
+                    target->SetFaction(14);
                     return;        // only want the first one we find
                 }
             }
@@ -228,7 +228,7 @@ class instance_uldaman : public InstanceMapScript
                 for (std::vector<uint64>::const_iterator i = archaedasWallMinions.begin(); i != archaedasWallMinions.end(); ++i)
                 {
                     Creature* target = instance->GetCreature(*i);
-                    if (!target || target->isDead() || target->getFaction() != 14)
+                    if (!target || target->isDead() || target->GetFaction() != 14)
                         continue;
                     target->setDeathState(JUST_DIED);
                     target->RemoveCorpse();
@@ -238,7 +238,7 @@ class instance_uldaman : public InstanceMapScript
                 for (std::vector<uint64>::const_iterator i = vaultWalkers.begin(); i != vaultWalkers.end(); ++i)
                 {
                     Creature* target = instance->GetCreature(*i);
-                    if (!target || target->isDead() || target->getFaction() != 14)
+                    if (!target || target->isDead() || target->GetFaction() != 14)
                         continue;
                     target->setDeathState(JUST_DIED);
                     target->RemoveCorpse();
@@ -248,7 +248,7 @@ class instance_uldaman : public InstanceMapScript
                 for (std::vector<uint64>::const_iterator i = earthenGuardians.begin(); i != earthenGuardians.end(); ++i)
                 {
                     Creature* target = instance->GetCreature(*i);
-                    if (!target || target->isDead() || target->getFaction() != 14)
+                    if (!target || target->isDead() || target->GetFaction() != 14)
                         continue;
                     target->setDeathState(JUST_DIED);
                     target->RemoveCorpse();
@@ -274,7 +274,7 @@ class instance_uldaman : public InstanceMapScript
                 if (!ironaya)
                     return;
 
-                ironaya->setFaction(415);
+                ironaya->SetFaction(415);
                 ironaya->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
                 ironaya->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
             }

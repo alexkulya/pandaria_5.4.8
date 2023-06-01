@@ -193,7 +193,7 @@ int32 DoHighUnlearnCost(Player* /*player*/)                //tailor, alchemy
 
 int32 DoMedUnlearnCost(Player* player)                     //blacksmith, leatherwork
 {
-    uint8 level = player->getLevel();
+    uint8 level = player->GetLevel();
     if (level < 51)
         return 250000;
     else if (level < 66)
@@ -204,7 +204,7 @@ int32 DoMedUnlearnCost(Player* player)                     //blacksmith, leather
 
 int32 DoLowUnlearnCost(Player* player)                     //blacksmith
 {
-    uint8 level = player->getLevel();
+    uint8 level = player->GetLevel();
     if (level < 66)
         return 50000;
     else
@@ -392,7 +392,7 @@ public:
         if (creature->IsTrainer())
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_TRAINER, GOSSIP_TEXT_TRAIN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_TRAIN);
 
-        if (player->HasSkill(SKILL_ALCHEMY) && player->GetBaseSkillValue(SKILL_ALCHEMY) >= 350 && player->getLevel() > 67)
+        if (player->HasSkill(SKILL_ALCHEMY) && player->GetBaseSkillValue(SKILL_ALCHEMY) >= 350 && player->GetLevel() > 67)
         {
             if (player->GetQuestRewardStatus(10899) || player->GetQuestRewardStatus(10902) || player->GetQuestRewardStatus(10897))
             {
@@ -583,7 +583,7 @@ public:
             }
         }
         //WEAPONSMITH SPEC
-        if (player->HasSpell(S_WEAPON) && player->getLevel() > 49 && player->GetBaseSkillValue(SKILL_BLACKSMITHING) >= 250)
+        if (player->HasSpell(S_WEAPON) && player->GetLevel() > 49 && player->GetBaseSkillValue(SKILL_BLACKSMITHING) >= 250)
         {
             switch (creatureId)
             {
@@ -896,7 +896,7 @@ public:
         if (creature->IsTrainer())
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_TRAINER, GOSSIP_TEXT_TRAIN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_TRAIN);
 
-        if (player->HasSkill(SKILL_LEATHERWORKING) && player->GetBaseSkillValue(SKILL_LEATHERWORKING) >= 250 && player->getLevel() > 49)
+        if (player->HasSkill(SKILL_LEATHERWORKING) && player->GetBaseSkillValue(SKILL_LEATHERWORKING) >= 250 && player->GetLevel() > 49)
         {
             switch (creature->GetEntry())
             {
@@ -1020,7 +1020,7 @@ public:
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_TRAINER, GOSSIP_TEXT_TRAIN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_TRAIN);
 
                                                                 //TAILORING SPEC
-        if (player->HasSkill(SKILL_TAILORING) && player->GetBaseSkillValue(SKILL_TAILORING) >= 350 && player->getLevel() > 59)
+        if (player->HasSkill(SKILL_TAILORING) && player->GetBaseSkillValue(SKILL_TAILORING) >= 350 && player->GetLevel() > 59)
         {
             if (player->GetQuestRewardStatus(10831) || player->GetQuestRewardStatus(10832) || player->GetQuestRewardStatus(10833))
             {

@@ -128,7 +128,7 @@ class npc_starving_hound : public CreatureScript
                 if (CanAttackMyOwner() && !attacked)
                 {
                     attacked = true;
-                    me->setFaction(15);
+                    me->SetFaction(15);
 
                     if (Unit* owner = GetClosestCreatureWithEntry(me, NPC_VIGILANT_WATCHMAN, 30.0f, true))
                         me->Attack(owner, true);

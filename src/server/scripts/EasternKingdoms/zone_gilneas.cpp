@@ -1123,7 +1123,7 @@ public:
     {
         if (quest->GetQuestId() == QUEST_FROM_THE_SHADOWS)
         {
-            if (player->getClass() == CLASS_HUNTER)
+            if (player->GetClass() == CLASS_HUNTER)
                 player->UnsummonPetTemporaryIfAny();
 
             player->CastSpell(player, SPELL_SUMMON_MASTIFF, false);
@@ -1140,7 +1140,7 @@ public:
                     if (Creature* mastiff = charm->ToCreature())
                         mastiff->DespawnOrUnsummon();
 
-        if (player->getClass() == CLASS_HUNTER)
+        if (player->GetClass() == CLASS_HUNTER)
             player->ResummonPetTemporaryUnSummonedIfAny();
 
         return true;
@@ -1769,7 +1769,7 @@ public:
             events.ScheduleEvent(EVENT_CHECK_PASSENGER, 5s);
             me->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-            me->setFaction(1735);
+            me->SetFaction(1735);
             me->SetReactState(REACT_PASSIVE);
         }
 
@@ -1823,7 +1823,7 @@ public:
                         {
                             me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                            me->setFaction(35);
+                            me->SetFaction(35);
                             events.CancelEvent(EVENT_CHECK_PASSENGER);
                         }
                         else

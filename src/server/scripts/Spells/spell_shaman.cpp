@@ -2508,7 +2508,7 @@ class spell_sha_stormlash_totem : public AuraScript
         if (!player)
             return;
 
-        WeaponAttackType attack = actor->getClass() == CLASS_HUNTER ? RANGED_ATTACK : BASE_ATTACK;
+        WeaponAttackType attack = actor->GetClass() == CLASS_HUNTER ? RANGED_ATTACK : BASE_ATTACK;
         if (eventInfo.GetTypeMask() & PROC_FLAG_DONE_OFFHAND_ATTACK)
             attack = OFF_ATTACK;
 
@@ -2522,7 +2522,7 @@ class spell_sha_stormlash_totem : public AuraScript
 
         if (eventInfo.GetSpellInfo() && eventInfo.GetSpellInfo()->Id != actor->GetAutoAttackSpell(attack))
         {
-            uint32 castTime = eventInfo.GetSpellInfo()->CalcCastTime(actor->getLevel());
+            uint32 castTime = eventInfo.GetSpellInfo()->CalcCastTime(actor->GetLevel());
             if (castTime > 1500)
                 damage *= castTime / 1500.0f;
             switch (eventInfo.GetSpellInfo()->Id)
@@ -2807,7 +2807,7 @@ class spell_sha_t16_restoration_4p_heal_trigger : public AuraScript
 
         if (!(eventInfo.GetSpellInfo()->GetExplicitTargetMask() & TARGET_FLAG_UNIT_MASK))   // Targeted
             return false;
-        return eventInfo.GetSpellInfo()->CalcCastTime(GetUnitOwner()->getLevel()) > 0;      // With cast time
+        return eventInfo.GetSpellInfo()->CalcCastTime(GetUnitOwner()->GetLevel()) > 0;      // With cast time
     }
 
     void HandleProc(ProcEventInfo& eventInfo)
@@ -3215,7 +3215,7 @@ class spell_sha_summon_elemental_familiar : public SpellScript
             if (TempSummon* familiar = GetCaster()->GetMap()->SummonCreature(familiars[urand(0, familiars.size() - 1)], pos, sSummonPropertiesStore.LookupEntry(64)))
             {
                 familiar->SetTempSummonType(TEMPSUMMON_MANUAL_DESPAWN);
-                familiar->setFaction(GetCaster()->getFaction());
+                familiar->SetFaction(GetCaster()->GetFaction());
                 familiar->SetOwnerGUID(GetCaster()->GetGUID());
                 familiar->SetUInt64Value(UNIT_FIELD_DEMON_CREATOR, GetCaster()->GetGUID());
                 familiar->AI()->EnterEvadeMode();

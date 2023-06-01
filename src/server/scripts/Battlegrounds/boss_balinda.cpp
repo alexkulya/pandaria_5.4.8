@@ -167,7 +167,7 @@ struct boss_balinda : public ScriptedAI
     {
         CAST_AI(npc_water_elemental::npc_water_elementalAI, summoned->AI())->balindaGUID = me->GetGUID();
         summoned->AI()->AttackStart(SelectTarget(SELECT_TARGET_RANDOM, 0, 50, true));
-        summoned->setFaction(me->getFaction());
+        summoned->SetFaction(me->GetFaction());
         summons.Summon(summoned);
     }
 

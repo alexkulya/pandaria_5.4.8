@@ -435,7 +435,7 @@ class npc_magmaw_head : public CreatureScript
                             me->SetMaxHealth(pMagmaw->GetMaxHealth());
                             me->SetHealth(pMagmaw->GetHealth());
                         }
-                        me->setFaction(16);
+                        me->SetFaction(16);
                         me->AddAura(SPELL_POINT_OF_VULNERABILITY, me);
                         break;
                     case ACTION_HEAD_END:

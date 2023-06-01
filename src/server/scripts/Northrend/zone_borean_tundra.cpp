@@ -424,11 +424,11 @@ public:
             switch (me->GetOwner()->ToPlayer()->GetTeamId())
             {
                 case TEAM_ALLIANCE:
-                    me->setFaction(FACTION_ESCORT_A_NEUTRAL_ACTIVE);
+                    me->SetFaction(FACTION_ESCORT_A_NEUTRAL_ACTIVE);
                     break;
                 default:
                 case TEAM_HORDE:
-                    me->setFaction(FACTION_ESCORT_H_NEUTRAL_ACTIVE);
+                    me->SetFaction(FACTION_ESCORT_H_NEUTRAL_ACTIVE);
                     break;
             }
         }
@@ -785,11 +785,11 @@ public:
             switch (player->GetTeam())
             {
                 case ALLIANCE:
-                    creature->setFaction(FACTION_ESCORTEE_A);
+                    creature->SetFaction(FACTION_ESCORTEE_A);
                     break;
                 default:
                 case HORDE:
-                    creature->setFaction(FACTION_ESCORTEE_H);
+                    creature->SetFaction(FACTION_ESCORTEE_H);
                     break;
             }
 
@@ -893,7 +893,7 @@ public:
                 }
             }
 
-            if ((me->getFaction() == 35) && (!me->HasAura(SPELL_SUBDUED)))
+            if ((me->GetFaction() == 35) && (!me->HasAura(SPELL_SUBDUED)))
             {
                 HarpoonerGUID = 0;
                 me->DisappearAndDie();
@@ -1068,7 +1068,7 @@ public:
                         if (talbot)
                         {
                             talbot->UpdateEntry(NPC_PRINCE_VALANAR, ALLIANCE);
-                            talbot->setFaction(14);
+                            talbot->SetFaction(14);
                             talbot->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                             talbot->SetReactState(REACT_PASSIVE);
                         }
@@ -1790,10 +1790,10 @@ public:
             switch (player->GetTeam())
             {
             case ALLIANCE:
-                creature->setFaction(FACTION_ESCORTEE_A);
+                creature->SetFaction(FACTION_ESCORTEE_A);
                 break;
             case HORDE:
-                creature->setFaction(FACTION_ESCORTEE_H);
+                creature->SetFaction(FACTION_ESCORTEE_H);
                 break;
             }
             creature->SetStandState(UNIT_STAND_STATE_STAND);
@@ -2398,7 +2398,7 @@ public:
 
         void AttackPlayer()
         {
-            me->setFaction(14);
+            me->SetFaction(14);
             if (Player* player = ObjectAccessor::GetPlayer(*me, uiPlayerGUID))
                 me->AI()->AttackStart(player);
         }

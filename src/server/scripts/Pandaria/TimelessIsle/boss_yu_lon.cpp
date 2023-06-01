@@ -117,7 +117,7 @@ class boss_yu_lon : public CreatureScript
             {
                 events.Reset();
 
-                if (me->getFaction() == FACTION_HOSTILE_NEUTRAL)
+                if (me->GetFaction() == FACTION_HOSTILE_NEUTRAL)
                     me->SetFacingTo(MIDDLE_FACING_ANGLE);
 
                 me->SetCombatDistance(500.0f);
@@ -162,7 +162,7 @@ class boss_yu_lon : public CreatureScript
 
                     RewardPlayers(me);
 
-                    me->setFaction(FACTION_FRIENDLY);
+                    me->SetFaction(FACTION_FRIENDLY);
 
                     me->StopMoving();
                     me->RemoveAllAuras();
@@ -194,7 +194,7 @@ class boss_yu_lon : public CreatureScript
                 {
                     nonCombatEvents.ScheduleEvent(EVENT_TIMER_SHAO_DO_INTRO, CELESTIAL_COURT_BOSS_INTRO_TIMER_1);
                     me->SetFacingTo(MIDDLE_FACING_ANGLE);
-                    me->setFaction(FACTION_HOSTILE_NEUTRAL);
+                    me->SetFaction(FACTION_HOSTILE_NEUTRAL);
                     me->SetHomePosition(_timelessIsleMiddle);
                 }
             }

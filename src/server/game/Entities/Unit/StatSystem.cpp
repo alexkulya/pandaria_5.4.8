@@ -358,7 +358,7 @@ void Player::UpdateSpellDamageAndHealingBonus()
         if (it->IsPetGuardianStuff())
             it->UpdateAttackPowerAndDamage();
 
-    if (getClass() == CLASS_MONK && HasAuraType(SPELL_AURA_OVERRIDE_ATTACK_POWER_BY_SPD))    // Prevents recursive call if some jerk apply both ap -> spd and spd -> ap auras
+    if (GetClass() == CLASS_MONK && HasAuraType(SPELL_AURA_OVERRIDE_ATTACK_POWER_BY_SPD))    // Prevents recursive call if some jerk apply both ap -> spd and spd -> ap auras
         UpdateAttackPowerAndDamage();
 
     SetFloatValue(PLAYER_FIELD_OVERRIDE_SPELL_POWER_BY_APPERCENT, float(GetMaxPositiveAuraModifier(SPELL_AURA_OVERRIDE_SPELL_POWER_BY_AP_PCT)));
@@ -454,7 +454,7 @@ float Player::GetHealthBonusFromStamina()
 {
     // Taken from PaperDollFrame.lua - 4.3.4.15595
     float ratio = 10.0f;
-    if (gtOCTHpPerStaminaEntry const* hpBase = sGtOCTHpPerStaminaStore.LookupEntry(getLevel()))
+    if (gtOCTHpPerStaminaEntry const* hpBase = sGtOCTHpPerStaminaStore.LookupEntry(GetLevel()))
         ratio = hpBase->ratio;
 
     float stamina = GetStat(STAT_STAMINA);
@@ -498,9 +498,9 @@ void Player::UpdateMaxPower(Powers power)
 void Player::UpdateAttackPowerAndDamage(bool ranged)
 {
     float val2 = 0.0f;
-    float level = float(getLevel());
+    float level = float(GetLevel());
 
-    ChrClassesEntry const* entry = sChrClassesStore.LookupEntry(getClass());
+    ChrClassesEntry const* entry = sChrClassesStore.LookupEntry(GetClass());
     UnitMods unitMod = ranged ? UNIT_MOD_ATTACK_POWER_RANGED : UNIT_MOD_ATTACK_POWER;
 
     uint16 index = UNIT_FIELD_ATTACK_POWER;
@@ -526,7 +526,7 @@ void Player::UpdateAttackPowerAndDamage(bool ranged)
             apPerLevel = 3;
         }
 
-        val2 = strengthValue + agilityValue + getLevel() * apPerLevel;
+        val2 = strengthValue + agilityValue + GetLevel() * apPerLevel;
     }
 
     SetModifierValue(unitMod, BASE_VALUE, val2);
@@ -568,7 +568,7 @@ void Player::UpdateAttackPowerAndDamage(bool ranged)
         UpdateDamagePhysical(BASE_ATTACK);
         if (CanDualWield() && HasOffhandWeapon())           //allow update offhand damage only if player knows DualWield Spec and has equipped offhand weapon
             UpdateDamagePhysical(OFF_ATTACK);
-        if (getClass() == CLASS_SHAMAN || getClass() == CLASS_PALADIN)                      // mental quickness
+        if (GetClass() == CLASS_SHAMAN || GetClass() == CLASS_PALADIN)                      // mental quickness
             UpdateSpellDamageAndHealingBonus();
 
         if (pet && pet->IsPetGhoul()) // At melee attack power change for DK pet
@@ -900,13 +900,13 @@ void Player::UpdateParryPercentage()
 
     // No parry
     float value = 0.0f;
-    uint32 pclass = getClass()-1;
+    uint32 pclass = GetClass()-1;
     if (CanParry() && parryCap[pclass] > 0.0f)
     {
         float b = GetCreateStat(STAT_STRENGTH);
-        float q = DodgeOrParryPerStat[getLevel() - 1];
-        float c = parryCap[getClass() - 1];
-        float k = DodgeOrParryScalingFactor[getClass() - 1];
+        float q = DodgeOrParryPerStat[GetLevel() - 1];
+        float c = parryCap[GetClass() - 1];
+        float k = DodgeOrParryScalingFactor[GetClass() - 1];
         float t = GetStat(STAT_STRENGTH);
         float r = GetRatingBonusValue(CR_PARRY);
 
@@ -939,9 +939,9 @@ void Player::UpdateDodgePercentage()
     };
 
     float b = GetCreateStat(STAT_AGILITY);
-    float q = DodgeOrParryPerStat[getLevel() - 1];
-    float c = dodgeCap[getClass() - 1];
-    float k = DodgeOrParryScalingFactor[getClass() - 1];
+    float q = DodgeOrParryPerStat[GetLevel() - 1];
+    float c = dodgeCap[GetClass() - 1];
+    float k = DodgeOrParryScalingFactor[GetClass() - 1];
     float t = GetStat(STAT_AGILITY);
     float r = GetRatingBonusValue(CR_DODGE);
 
@@ -1071,7 +1071,7 @@ void Player::UpdateManaRegen()
 
     // 5% of base mana per 5 seconds for mage and warlock. 2% for others.
     float basepct;
-    switch (getClass())
+    switch (GetClass())
     {
         case CLASS_WARLOCK:     // Mage has +400% and -60% auras. Idk wtf is this.
             basepct = 0.05f;
@@ -1344,7 +1344,7 @@ bool Guardian::UpdateStats(Stats stat)
 
             if (IsPetGhoul() || GetEntry() == 27829)
                 mod = 0.45f;
-            else if (owner->getClass() == CLASS_WARLOCK && IsPet())
+            else if (owner->GetClass() == CLASS_WARLOCK && IsPet())
                 mod = 0.75f;
             else
                 mod = 0.7f;
@@ -1364,12 +1364,12 @@ bool Guardian::UpdateStats(Stats stat)
         }
         case STAT_INTELLECT:
         {
-            if (owner->getClass() == CLASS_WARLOCK || owner->getClass() == CLASS_MAGE)
+            if (owner->GetClass() == CLASS_WARLOCK || owner->GetClass() == CLASS_MAGE)
             {
                 mod = 0.3f;
                 ownersBonus = owner->GetStat(stat) * mod;
             }
-            else if (owner->getClass() == CLASS_DEATH_KNIGHT && GetEntry() == 31216)
+            else if (owner->GetClass() == CLASS_DEATH_KNIGHT && GetEntry() == 31216)
             {
                 mod = 0.3f;
                 ownersBonus = owner->GetStat(stat) * mod;
@@ -1442,7 +1442,7 @@ void Guardian::UpdateArmor()
     {
         if (IsHunterPet())
             bonusArmor = float(CalculatePct(m_owner->GetArmor(), 170));
-        else if (ToPet()->GetOwner()->getClass() == CLASS_WARLOCK)
+        else if (ToPet()->GetOwner()->GetClass() == CLASS_WARLOCK)
         {
             if (GetEntry() == 1860 || GetEntry() == 58960)
                 bonusArmor = float(CalculatePct(m_owner->GetArmor(), 400));
@@ -1476,7 +1476,7 @@ void Guardian::UpdateMaxHealth()
         float ownerPct = 0.0f;
         if (auto petScaling = sObjectMgr->GetPetScaling(GetEntry()))
             ownerPct = petScaling->HpPerHp;
-        if (owner->getClass() == CLASS_HUNTER && IsPet())
+        if (owner->GetClass() == CLASS_HUNTER && IsPet())
             ownerPct = 0.7f;
         if (ownerPct)
         {
@@ -1532,13 +1532,13 @@ void Guardian::UpdateAttackPowerAndDamage(bool ranged)
                 if (val > spd)
                     spd = val;
 
-        float ap = owner->GetTotalAttackPowerValue(owner->getClass() == CLASS_HUNTER ? RANGED_ATTACK : BASE_ATTACK);
+        float ap = owner->GetTotalAttackPowerValue(owner->GetClass() == CLASS_HUNTER ? RANGED_ATTACK : BASE_ATTACK);
         float apPerSpd = 0.0f;
         float apPerAp = 0.0f;
         float spdPerSpd = 1.0f;
         float spdPerAp = 0.0f;
 
-        if (IsPet() && owner->getClass() == CLASS_HUNTER)
+        if (IsPet() && owner->GetClass() == CLASS_HUNTER)
         {
             apPerAp = 1.0f;
             spdPerAp = 0.5f;
@@ -1614,7 +1614,7 @@ void Pet::UpdateMaxPower(Powers power)
     if (GetPowerIndex(power) == MAX_POWERS)
         return;
 
-    if (GetOwner()->getClass() == CLASS_MAGE)
+    if (GetOwner()->GetClass() == CLASS_MAGE)
     {
         float pct = GetMaxPower(POWER_MANA) ? 100.0f * GetPower(POWER_MANA) / GetMaxPower(POWER_MANA) : 0;
         SetCreateMana(GetOwner()->GetMaxPower(POWER_MANA));

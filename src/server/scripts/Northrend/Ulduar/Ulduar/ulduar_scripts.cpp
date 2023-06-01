@@ -1570,7 +1570,7 @@ class npc_arachnopod_destroyer : public CreatureScript
                 if (damaged)
                 {
                     // Can be reset to default on exit vehicle
-                    me->setFaction(FACTION_ARACHNOPOD_FRIENDLY);
+                    me->SetFaction(FACTION_ARACHNOPOD_FRIENDLY);
                     me->SetReactState(REACT_PASSIVE);
                 }
 
@@ -1591,7 +1591,7 @@ class npc_arachnopod_destroyer : public CreatureScript
                     DoCast(me, SPELL_EJECT_ALL_PASSENGERS, true);
                     DoCast(me, SPELL_DAMAGED, true);
                     me->setRegeneratingHealth(false);
-                    me->setFaction(FACTION_ARACHNOPOD_FRIENDLY);
+                    me->SetFaction(FACTION_ARACHNOPOD_FRIENDLY);
                     me->SetReactState(REACT_PASSIVE);
                     me->CombatStop(true);
                     return;

@@ -312,7 +312,7 @@ public:
 
         if (!pfactionid)
         {
-            uint32 factionid = target->getFaction();
+            uint32 factionid = target->GetFaction();
             uint32 flag      = target->GetUInt32Value(UNIT_FIELD_FLAGS);
             uint32 npcflag   = target->GetUInt32Value(UNIT_FIELD_NPC_FLAGS);
             uint32 dyflag    = target->GetUInt32Value(OBJECT_FIELD_DYNAMIC_FLAGS);
@@ -354,7 +354,7 @@ public:
 
         handler->PSendSysMessage(LANG_YOU_CHANGE_FACTION, target->GetGUIDLow(), factionid, flag, npcflag, dyflag);
 
-        target->setFaction(factionid);
+        target->SetFaction(factionid);
         target->SetUInt32Value(UNIT_FIELD_FLAGS, flag);
         target->SetUInt32Value(UNIT_FIELD_NPC_FLAGS, npcflag);
         target->SetUInt32Value(OBJECT_FIELD_DYNAMIC_FLAGS, dyflag);
@@ -1277,7 +1277,7 @@ public:
             return false;
         }
 
-        PlayerInfo const* info = sObjectMgr->GetPlayerInfo(target->getRace(), target->getClass());
+        PlayerInfo const* info = sObjectMgr->GetPlayerInfo(target->GetRace(), target->GetClass());
         if (!info)
             return false;
 
@@ -1288,14 +1288,14 @@ public:
 
         if (!strncmp(gender_str, "male", gender_len))            // MALE
         {
-            if (target->getGender() == GENDER_MALE)
+            if (target->GetGender() == GENDER_MALE)
                 return true;
 
             gender = GENDER_MALE;
         }
         else if (!strncmp(gender_str, "female", gender_len))    // FEMALE
         {
-            if (target->getGender() == GENDER_FEMALE)
+            if (target->GetGender() == GENDER_FEMALE)
                 return true;
 
             gender = GENDER_FEMALE;

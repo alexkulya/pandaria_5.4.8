@@ -184,7 +184,7 @@ public:
             if (npc_maghar_captiveAI* pEscortAI = dynamic_cast<npc_maghar_captiveAI*>(creature->AI()))
             {
                 creature->SetStandState(UNIT_STAND_STATE_STAND);
-                creature->setFaction(232);
+                creature->SetFaction(232);
 
                 pEscortAI->Start(true, false, player->GetGUID(), quest);
 

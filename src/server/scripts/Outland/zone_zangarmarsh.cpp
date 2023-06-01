@@ -176,7 +176,7 @@ public:
     {
         npc_cooshcooshAI(Creature* creature) : ScriptedAI(creature)
         {
-            m_uiNormFaction = creature->getFaction();
+            m_uiNormFaction = creature->GetFaction();
         }
 
         uint32 m_uiNormFaction;
@@ -185,8 +185,8 @@ public:
         void Reset() override
         {
             LightningBolt_Timer = 2000;
-            if (me->getFaction() != m_uiNormFaction)
-                me->setFaction(m_uiNormFaction);
+            if (me->GetFaction() != m_uiNormFaction)
+                me->SetFaction(m_uiNormFaction);
         }
 
         void EnterCombat(Unit* /*who*/) override { }
@@ -226,7 +226,7 @@ public:
         if (action == GOSSIP_ACTION_INFO_DEF)
         {
             player->CLOSE_GOSSIP_MENU();
-            creature->setFaction(FACTION_HOSTILE_CO);
+            creature->SetFaction(FACTION_HOSTILE_CO);
             creature->AI()->AttackStart(player);
         }
         return true;

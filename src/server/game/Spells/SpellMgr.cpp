@@ -1029,11 +1029,11 @@ SpellAreaForAreaMapBounds SpellMgr::GetSpellAreaForAreaMapBounds(uint32 area_id)
 bool SpellArea::IsFitToRequirements(Player const* player, uint32 newZone, uint32 newArea) const
 {
     if (gender != GENDER_NONE)                   // not in expected gender
-        if (!player || gender != player->getGender())
+        if (!player || gender != player->GetGender())
             return false;
 
     if (raceMask)                                // not in expected race
-        if (!player || !(raceMask & player->getRaceMask()))
+        if (!player || !(raceMask & player->GetRaceMask()))
             return false;
 
     if (areaId)                                  // not in expected zone
@@ -8060,7 +8060,7 @@ void SpellMgr::LoadSpellInfoCorrections()
                 case 100117: // AFD Royale - Drop
                     spellInfo->AuraInterruptFlags[0] |= AURA_INTERRUPT_FLAG_LANDING;
                     break;
-                case 88343: // 
+                case 88343: // Loot
                     spellInfo->CastTimeEntry = sSpellCastTimesStore.LookupEntry(4);
                     spellInfo->RangeEntry = sSpellRangeStore.LookupEntry(1);
                     break;

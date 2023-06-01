@@ -639,7 +639,7 @@ class spell_pal_blessing_of_faith : public SpellScriptLoader
                 if (Unit* unitTarget = GetHitUnit())
                 {
                     uint32 spell_id = 0;
-                    switch (unitTarget->getClass())
+                    switch (unitTarget->GetClass())
                     {
                         case CLASS_DRUID:   spell_id = SPELL_BLESSING_OF_LOWER_CITY_DRUID; break;
                         case CLASS_PALADIN: spell_id = SPELL_BLESSING_OF_LOWER_CITY_PALADIN; break;

@@ -57,7 +57,7 @@ void Totem::InitStats(uint32 duration)
     if (GetOwner()->GetTypeId() == TYPEID_PLAYER && m_slot >= SUMMON_SLOT_TOTEM && m_slot < SUMMON_SLOT_MAX_TOTEM)
     {
         // set display id depending on caster's race
-        if (GetOwner()->getClass() == CLASS_SHAMAN)
+        if (GetOwner()->GetClass() == CLASS_SHAMAN)
         {
             uint32 modelId = GetOwner()->GetModelForTotem(PlayerTotemType(m_Properties->Id));
             if (modelId)
@@ -69,12 +69,12 @@ void Totem::InitStats(uint32 duration)
 
     // Get spell cast by totem
     if (SpellInfo const* totemSpell = sSpellMgr->GetSpellInfo(GetSpell()))
-        if (totemSpell->CalcCastTime(getLevel()))   // If spell has cast time -> its an active totem
+        if (totemSpell->CalcCastTime(GetLevel()))   // If spell has cast time -> its an active totem
             m_type = TOTEM_ACTIVE;
 
     m_duration = duration;
 
-    SetLevel(GetOwner()->getLevel());
+    SetLevel(GetOwner()->GetLevel());
 }
 
 void Totem::InitSummon()

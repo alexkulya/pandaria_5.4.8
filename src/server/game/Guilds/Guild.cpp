@@ -639,12 +639,12 @@ void Guild::BankTab::SendText(Guild const* guild, WorldSession* session) const
 void Guild::Member::SetStats(Player* player)
 {
     m_name      = player->GetName();
-    m_level     = player->getLevel();
-    m_class     = player->getClass();
+    m_level     = player->GetLevel();
+    m_class     = player->GetClass();
     m_zoneId    = player->GetZoneId();
     m_accountId = player->GetSession()->GetAccountId();
     m_achievementPoints = player->GetAchievementPoints();
-    m_gender    = player->getGender();
+    m_gender    = player->GetGender();
     m_reputation = player->GetReputationMgr().GetReputation(GUILD_REPUTATION_ID);
 
     SetProfessions(player, true);
@@ -2085,7 +2085,7 @@ void Guild::HandleInviteMember(WorldSession* session, std::string const& name)
     if (pInvitee->GetSocial()->HasIgnore(player->GetGUIDLow()))
         return;
 
-    if ((!sWorld->getBoolConfig(CONFIG_ALLOW_TWO_SIDE_INTERACTION_GUILD) && pInvitee->GetTeam() != player->GetTeam()) || pInvitee->getRace() == RACE_PANDAREN_NEUTRAL)
+    if ((!sWorld->getBoolConfig(CONFIG_ALLOW_TWO_SIDE_INTERACTION_GUILD) && pInvitee->GetTeam() != player->GetTeam()) || pInvitee->GetRace() == RACE_PANDAREN_NEUTRAL)
     {
         SendCommandResult(session, GUILD_COMMAND_INVITE, ERR_GUILD_NOT_ALLIED, name);
         return;

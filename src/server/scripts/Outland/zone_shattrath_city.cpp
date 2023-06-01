@@ -63,7 +63,7 @@ public:
         if (action == GOSSIP_ACTION_INFO_DEF+1)
         {
             player->CLOSE_GOSSIP_MENU();
-            creature->setFaction(FACTION_HOSTILE_RD);
+            creature->SetFaction(FACTION_HOSTILE_RD);
             creature->AI()->AttackStart(player);
         }
         return true;
@@ -87,7 +87,7 @@ public:
     {
         npc_raliq_the_drunkAI(Creature* creature) : ScriptedAI(creature)
         {
-            m_uiNormFaction = creature->getFaction();
+            m_uiNormFaction = creature->GetFaction();
         }
 
         uint32 m_uiNormFaction;
@@ -142,7 +142,7 @@ public:
     {
         if (player->GetQuestStatus(QUEST_10004) == QUEST_STATUS_INCOMPLETE)
         {
-            creature->setFaction(FACTION_HOSTILE_SA);
+            creature->SetFaction(FACTION_HOSTILE_SA);
             creature->AI()->AttackStart(player);
         }
         else

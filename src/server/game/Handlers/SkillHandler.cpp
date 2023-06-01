@@ -38,7 +38,7 @@ void WorldSession::HandeSetTalentSpecialization(WorldPacket& recvData)
     if (_player->GetTalentSpecialization(_player->GetActiveSpec()))
         return;
 
-    uint32 specializationId = dbc::GetClassSpecializations(_player->getClass())[specializationTabId];
+    uint32 specializationId = dbc::GetClassSpecializations(_player->GetClass())[specializationTabId];
     uint32 specializationSpell = 0;
 
     _player->SetTalentSpecialization(_player->GetActiveSpec(), Specializations(specializationId));

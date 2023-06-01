@@ -174,7 +174,7 @@ struct npc_feralas_hippogryph : public ScriptedAI
                     _playerGUID = player->GetGUID();
                     _hippogryph_called = true;
                     me->GetMotionMaster()->MoveIdle();
-                    me->setFaction(35);
+                    me->SetFaction(35);
                     me->SetFacingTo(me->GetAngle(player->GetPositionX(), player->GetPositionY()));
                     player->KilledMonsterCredit(NPC_FORCES_01_HIPPOGRYPH_KILL_CREDIT_BUNNY);
 
@@ -387,7 +387,7 @@ struct npc_feralas_horde_poacher : public ScriptedAI
         _cd_spell_shot = false;
         _cd_spell_aimed_shot = false;
         _talk_done = false;
-        me->setFaction(14);
+        me->SetFaction(14);
         me->SetReactState(REACT_AGGRESSIVE);
     }
 

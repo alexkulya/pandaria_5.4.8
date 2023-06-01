@@ -437,7 +437,7 @@ class npc_orange_painted_turnip : public CreatureScript
             npc_orange_painted_turnipAI(Creature* creature) : ScriptedAI(creature)
             {
                 creature->SetReactState(REACT_PASSIVE);
-                creature->setFaction(35);
+                creature->SetFaction(35);
             }
 
             uint32 timer;

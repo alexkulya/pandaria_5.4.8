@@ -723,7 +723,7 @@ class spell_aura_of_despair_aura : public SpellScriptLoader // Spell 62692
 
                 Player* target = GetTarget()->ToPlayer();
 
-                if (target->getClass() == CLASS_SHAMAN && target->HasSpell(SPELL_SHAMANTIC_RAGE))
+                if (target->GetClass() == CLASS_SHAMAN && target->HasSpell(SPELL_SHAMANTIC_RAGE))
                     target->CastSpell(target, SPELL_CORRUPTED_RAGE, true);
 
                 target->CastSpell(target, SPELL_AURA_OF_DESPAIR_EFFECT_DESPAIR, true);

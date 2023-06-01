@@ -104,7 +104,7 @@ class instance_scarlet_monastery : public InstanceMapScript
                         break;
                     case NPC_SCARLET_JUDICATOR:
                         if (!creature->HasAura(128800)) // drunked at holl must be neutral [set like default]
-                            creature->setFaction(67);
+                            creature->SetFaction(67);
                         break;
                     case NPC_PILE_OF_CORPSES:
                     case NPC_SCARLET_FLAMETHOWER:

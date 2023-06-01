@@ -231,7 +231,7 @@ void WorldSession::SendTrainerList(uint64 guid, const std::string& strTitle, boo
             if (!tSpell->learnedSpell[i])
                 continue;
             if (!_player->IsSpellFitByClassAndRace(tSpell->learnedSpell[i]) ||
-                (tSpell->learnedSpell[i] == 40120 && _player->getClass() != CLASS_DRUID)) // Idk why it hasn't class mask
+                (tSpell->learnedSpell[i] == 40120 && _player->GetClass() != CLASS_DRUID)) // Idk why it hasn't class mask
             {
                 valid = false;
                 break;
@@ -416,7 +416,7 @@ void WorldSession::HandleGossipHelloOpcode(WorldPacket& recvData)
     }
 
     // set faction visible if needed
-    if (FactionTemplateEntry const* factionTemplateEntry = sFactionTemplateStore.LookupEntry(unit->getFaction()))
+    if (FactionTemplateEntry const* factionTemplateEntry = sFactionTemplateStore.LookupEntry(unit->GetFaction()))
         _player->GetReputationMgr().SetVisible(factionTemplateEntry);
 
     GetPlayer()->RemoveAurasWithInterruptFlags(AURA_INTERRUPT_FLAG_TALK);
@@ -658,7 +658,7 @@ void WorldSession::SendPetList(uint64 guid, uint8 first, uint8 last)
             modelId = cInfo->Modelid1 ? cInfo->Modelid1 : cInfo->Modelid2;
 
         buff << uint32(petData.Entry);
-        buff << uint32(_player->getLevel());    // All pets have equal level
+        buff << uint32(_player->GetLevel());    // All pets have equal level
         buff << uint8(petStableState);
         buff << uint32(modelId);
         buff.WriteString(petData.Name);

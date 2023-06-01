@@ -267,7 +267,7 @@ public:
                     if (Spell)
                         creature->CastSpell(player, Spell, false);
                     else
-                        TC_LOG_ERROR("scripts", "go_ethereum_prison summoned Creature (entry %u) but faction (%u) are not expected by script.", creature->GetEntry(), creature->getFaction());
+                        TC_LOG_ERROR("scripts", "go_ethereum_prison summoned Creature (entry %u) but faction (%u) are not expected by script.", creature->GetEntry(), creature->GetFaction());
                 }
             }
         }
@@ -1029,7 +1029,7 @@ public:
             Creature* target = GetClosestCreatureWithEntry(player, NPC_OUTHOUSE_BUNNY, 3.0f);
             if (target)
             {
-                target->AI()->SetData(1, player->getGender());
+                target->AI()->SetData(1, player->GetGender());
                 go->CastSpell(target, SPELL_INDISPOSED_III);
             }
             go->CastSpell(player, SPELL_INDISPOSED);

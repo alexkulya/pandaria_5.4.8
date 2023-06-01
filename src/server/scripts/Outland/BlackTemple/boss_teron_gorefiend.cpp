@@ -431,7 +431,7 @@ class boss_teron_gorefiend : public CreatureScript
                         if (doomBlossom)
                         {
                             doomBlossom->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                            doomBlossom->setFaction(me->getFaction());
+                            doomBlossom->SetFaction(me->GetFaction());
                             doomBlossom->AddThreat(target, 1.0f);
                             CAST_AI(npc_doom_blossom::npc_doom_blossomAI, doomBlossom->AI())->SetTeronGUID(me->GetGUID());
                             target->CombatStart(doomBlossom);

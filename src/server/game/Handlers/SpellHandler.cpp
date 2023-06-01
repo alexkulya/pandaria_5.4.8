@@ -1131,7 +1131,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
     // auto-selection buff level base at target level (in spellInfo)
     if (targets.GetUnitTarget())
     {
-        SpellInfo const* actualSpellInfo = spellInfo->GetAuraRankForLevel(targets.GetUnitTarget()->getLevel());
+        SpellInfo const* actualSpellInfo = spellInfo->GetAuraRankForLevel(targets.GetUnitTarget()->GetLevel());
 
         // if rank not found then function return NULL but in explicit cast case original spell can be casted and later failed with appropriate error message
         if (actualSpellInfo)
@@ -1517,7 +1517,7 @@ void WorldSession::HandleMirrorImageDataRequest(WorldPacket& recvData)
         data << uint8(player->GetByteValue(PLAYER_FIELD_HAIR_COLOR_ID, 2)); // hair 
         data.WriteByteSeq(guid[2]);
         data.WriteByteSeq(guid[0]);
-        data << uint8(player->getRace());
+        data << uint8(player->GetRace());
         data << uint8(player->GetByteValue(PLAYER_FIELD_HAIR_COLOR_ID, 0)); // skin
         data.WriteByteSeq(guildGuid[7]);
 
@@ -1556,8 +1556,8 @@ void WorldSession::HandleMirrorImageDataRequest(WorldPacket& recvData)
         }
 
         data.WriteByteSeq(guid[4]);
-        data << uint8(player->getClass());
-        data << uint8(player->getGender());
+        data << uint8(player->GetClass());
+        data << uint8(player->GetGender());
         data << uint8(player->GetByteValue(PLAYER_FIELD_HAIR_COLOR_ID, 1)); // face
         data.WriteByteSeq(guid[5]);
         data.WriteByteSeq(guildGuid[3]);

@@ -339,7 +339,7 @@ class boss_hodir : public CreatureScript
                 me->GetMotionMaster()->MoveIdle();
                 me->SetControlled(true, UNIT_STATE_STUNNED);
                 me->CombatStop(true);
-                me->setFaction(35);
+                me->SetFaction(35);
 
                 me->DespawnOrUnsummon(10000);
                 _JustDied();
@@ -355,7 +355,7 @@ class boss_hodir : public CreatureScript
 
             void UpdateAI(uint32 diff) override
             {
-                if (!UpdateVictim() && me->getFaction() != 35)
+                if (!UpdateVictim() && me->GetFaction() != 35)
                     return;
 
                 if (me->GetPositionY() < -300 || me->GetPositionY() > -155)

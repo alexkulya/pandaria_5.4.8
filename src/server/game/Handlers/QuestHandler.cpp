@@ -956,7 +956,7 @@ uint32 WorldSession::getDialogStatus(Player* player, Object* questgiver, uint32 
                 {
                     if (!sWorld->getBoolConfig(CONFIG_QUEST_IGNORE_AUTO_COMPLETE) && quest->GetQuestMethod() == 0)
                         result2 = DIALOG_STATUS_REWARD_REP;
-                    else if (player->getLevel() <= ((player->GetQuestLevel(quest) == -1) ? player->getLevel() : player->GetQuestLevel(quest) + sWorld->getIntConfig(CONFIG_QUEST_LOW_LEVEL_HIDE_DIFF)))
+                    else if (player->GetLevel() <= ((player->GetQuestLevel(quest) == -1) ? player->GetLevel() : player->GetQuestLevel(quest) + sWorld->getIntConfig(CONFIG_QUEST_LOW_LEVEL_HIDE_DIFF)))
                     {
                         if (quest->HasFlag(QUEST_FLAGS_DAILY) || quest->HasFlag(QUEST_FLAGS_WEEKLY))
                             result2 = DIALOG_STATUS_AVAILABLE_REP;

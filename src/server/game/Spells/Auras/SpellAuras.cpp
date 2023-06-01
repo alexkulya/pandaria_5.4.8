@@ -566,7 +566,7 @@ Aura::Aura(SpellInfo const* spellproto, WorldObject* owner, Unit* caster, Item* 
 m_spellInfo(spellproto), m_casterGuid(casterGUID ? casterGUID : caster->GetGUID()),
 m_castItemGuid(castItem ? castItem->GetGUID() : 0), m_applyTime(time(NULL)),
 m_owner(owner), m_powerTakeTimer(0), m_updateTargetMapInterval(0),
-m_casterLevel(caster ? caster->getLevel() : m_spellInfo->SpellLevel), m_procCharges(0), m_stackAmount(1),
+m_casterLevel(caster ? caster->GetLevel() : m_spellInfo->SpellLevel), m_procCharges(0), m_stackAmount(1),
 m_isRemoved(false), m_isBoundToCaster(false), m_isUsingCharges(false)
 {
     // Before effects construction

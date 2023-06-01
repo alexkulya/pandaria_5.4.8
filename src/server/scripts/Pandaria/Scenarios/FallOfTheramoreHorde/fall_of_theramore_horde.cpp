@@ -161,11 +161,11 @@ struct theramore_guard_typeAI : public ScriptedAI
                     case NPC_KNIGHT_OF_THERAMORE:
                     case NPC_HEDRIC_EVENCANE:
                     case NPC_BIG_BESSA:
-                        me->setFaction(1077); // sniff data
+                        me->SetFaction(1077); // sniff data
                         break;
                     case NPC_BALDRUC:
                         Talk(TALK_INTRO);
-                        me->setFaction(1077); // sniff data
+                        me->SetFaction(1077); // sniff data
                         break;
                 }
                 break;

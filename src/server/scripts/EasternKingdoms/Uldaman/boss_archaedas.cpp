@@ -88,7 +88,7 @@ class boss_archaedas : public CreatureScript
                     if (GameObject* altar = ObjectAccessor::GetGameObject(*me, instance->GetData64(GO_ARCHAEDAS_ALTAR)))
                         altar->RemoveFlag(GAMEOBJECT_FIELD_FLAGS, GO_FLAG_INTERACT_COND);
                 }
-                me->setFaction(35);
+                me->SetFaction(35);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_DISABLE_MOVE);
             }
 
@@ -102,13 +102,13 @@ class boss_archaedas : public CreatureScript
                     minion->CastSpell(minion, SPELL_ARCHAEDAS_AWAKEN, true);
                     minion->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                     minion->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
-                    minion->setFaction(14);
+                    minion->SetFaction(14);
                 }
             }
 
             void EnterCombat(Unit* /*who*/) override
             {
-                me->setFaction(14);
+                me->SetFaction(14);
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
             }
@@ -247,7 +247,7 @@ class npc_archaedas_minions : public CreatureScript
                 bWakingUp = false;
                 bAmIAwake = false;
 
-                me->setFaction(35);
+                me->SetFaction(35);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
                 me->RemoveAllAuras();
@@ -255,7 +255,7 @@ class npc_archaedas_minions : public CreatureScript
 
             void EnterCombat(Unit* /*who*/) override
             {
-                me->setFaction (14);
+                me->SetFaction (14);
                 me->RemoveAllAuras();
                 me->RemoveFlag (UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                 me->RemoveFlag (UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
@@ -331,7 +331,7 @@ class npc_stonekeepers : public CreatureScript
 
             void Reset() override
             {
-                me->setFaction(35);
+                me->SetFaction(35);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
                 me->RemoveAllAuras();
@@ -339,7 +339,7 @@ class npc_stonekeepers : public CreatureScript
 
             void EnterCombat(Unit* /*who*/) override
             {
-                me->setFaction(14);
+                me->SetFaction(14);
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE);
             }
@@ -411,7 +411,7 @@ class go_altar_of_stonekeepers : public GameObjectScript
             if (Creature* stoneKeeper = Trinity::Containers::SelectRandomContainerElement(stonekeepersList))
             {
                 stoneKeeper->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_DISABLE_MOVE | UNIT_FLAG_IMMUNE_TO_PC);
-                stoneKeeper->setFaction(14);
+                stoneKeeper->SetFaction(14);
             }
             return false;
     }

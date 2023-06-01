@@ -392,14 +392,14 @@ class npc_yang_ironclaw : public CreatureScript
                 instance = me->GetInstanceScript();
                 encounterInProgress = false;
                 AmberWingGUID = 0;
-                me->setFaction(1665);
+                me->SetFaction(1665);
                 me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                 ResetEncounter();
             }
 
             void Reset() override
             {
-                me->setFaction(35);
+                me->SetFaction(35);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC);
                 if (instance->GetBossState(BOSS_VOJAK) == DONE)
                     me->DespawnOrUnsummon(500);
@@ -621,7 +621,7 @@ class npc_yang_ironclaw : public CreatureScript
                     liChu->AI()->DoAction(ACTION_ENGAGE_COMBAT);
 
                 me->SetReactState(REACT_PASSIVE);
-                me->setFaction(35);
+                me->SetFaction(35);
             }
 
             void UpdateAI(uint32 diff) override
@@ -1149,7 +1149,7 @@ class npc_chu_helper : public CreatureScript
             void InitializeAI() override
             {
                 side = (me->GetEntry() == NPC_LO_CHU) ? SIDE_RIGHT : SIDE_LEFT;
-                me->setFaction(1665);
+                me->SetFaction(1665);
                 barrelTargetGUID = 0;
                 barrelGUID = 0;
                 eventInProgress = false;
@@ -1204,7 +1204,7 @@ class npc_chu_helper : public CreatureScript
                         events.ScheduleEvent(EVENT_MOVE_TO_POOL, side ? 1000 : 2000);
                         barrelTargetGUID = 0;
                         me->SetReactState(REACT_PASSIVE);
-                        me->setFaction(35);
+                        me->SetFaction(35);
                         break;
                     case ACTION_RESET_COMBAT:
                         //me->RemoveAllAuras();

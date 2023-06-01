@@ -3058,7 +3058,7 @@ struct npc_siege_of_orgrimmar_corrupted_skullsplitter : public customCreatureAI
         scheduler.CancelAll();
         me->SetReactState(REACT_AGGRESSIVE);
         targetGUID = 0;
-        me->setFaction(14);
+        me->SetFaction(14);
     }
 
     void JustSummoned(Creature* summon) override
@@ -3075,7 +3075,7 @@ struct npc_siege_of_orgrimmar_corrupted_skullsplitter : public customCreatureAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        me->setFaction(1375);
+        me->SetFaction(1375);
         events.ScheduleEvent(EVENT_ARCING_BLAST, urand(6 * IN_MILLISECONDS, 8 * IN_MILLISECONDS));
     }
 
@@ -4699,7 +4699,7 @@ struct npc_siege_of_orgrimmar_gamon : public customCreatureAI
                     .Schedule(Milliseconds(delay += 5000), [this](TaskContext context)
                 {
                     Talk(TALK_SPECIAL_6);
-                    me->setFaction(1665);
+                    me->SetFaction(1665);
 
                     // Move to Nazgrim
                     Movement::MoveSplineInit init(me);
@@ -4841,7 +4841,7 @@ struct npc_siege_of_orgrimmar_korkron_prisoners : public ScriptedAI
     {
         if (actionId == ACTION_START_INTRO)
         {
-            me->setFaction(35);
+            me->SetFaction(35);
             scheduler.CancelAll();
 
             if (me->GetEntry() == NPC_SHIMRA)
@@ -4894,7 +4894,7 @@ struct npc_siege_of_orgrimmar_theramore_prisoners : public ScriptedAI
     {
         if (actionId == ACTION_START_INTRO)
         {
-            me->setFaction(35);
+            me->SetFaction(35);
             me->RemoveAurasDueToSpell(SPELL_SLAVE_CHAINS);
 
             if (me->GetHomePosition().GetPositionX() > 1599.0f)

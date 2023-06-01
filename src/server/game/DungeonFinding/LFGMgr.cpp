@@ -115,7 +115,7 @@ void QueueAnnounceContextLFG::Announce() const
             continue;
 
         // Don't show to players in the wrong level range
-        if (dungeon && (player->getLevel() < dungeon->minlevel || player->getLevel() > dungeon->maxlevel))
+        if (dungeon && (player->GetLevel() < dungeon->minlevel || player->GetLevel() > dungeon->maxlevel))
             continue;
 
         Show setting = info->GetSetting(projectMemberInfo::Setting::QueueAnnounceRaidFinder).As<Show>();
@@ -547,7 +547,7 @@ void LFGMgr::InitializeLockedDungeons(Player* player, uint8 level /* = 0 */)
 {
     uint64 guid = player->GetGUID();
     if (!level)
-        level = player->getLevel();
+        level = player->GetLevel();
     uint8 expansion = player->GetSession()->Expansion();
     LfgDungeonSet const& dungeons = GetDungeonsByRandom(0);
     LfgLockMap lock;
@@ -2283,7 +2283,7 @@ void LFGMgr::FinishDungeon(uint64 gguid, uint32 dungeonId, Map* map)
         if (dungeon->difficulty == DUNGEON_DIFFICULTY_HEROIC)
             player->UpdateAchievementCriteria(ACHIEVEMENT_CRITERIA_TYPE_USE_LFD_TO_GROUP_WITH_PLAYERS, 1);
 
-        LfgReward const* reward = GetRandomDungeonReward(rDungeonId, player->getLevel());
+        LfgReward const* reward = GetRandomDungeonReward(rDungeonId, player->GetLevel());
         if (!reward)
             continue;
 

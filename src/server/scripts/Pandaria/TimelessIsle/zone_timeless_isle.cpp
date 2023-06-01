@@ -4150,7 +4150,7 @@ class go_cursed_grave : public GameObjectScript
 
             if (Creature* captain = go->SummonCreature(NPC_CAPTAIN, -213.352f, -4715.245f, 13.070f, 4.343475f))
             {
-                captain->setFaction(35);
+                captain->SetFaction(35);
                 captain->AI()->Talk(0);
                 captain->m_Events.Schedule(5000,  [captain]() { captain->AI()->Talk(1); });
                 captain->m_Events.Schedule(10000, [captain]() { captain->AI()->Talk(2); });

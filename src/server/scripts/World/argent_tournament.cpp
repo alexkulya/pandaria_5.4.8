@@ -137,7 +137,7 @@ struct npc_ring_rider_base : ScriptedAI
 
     void Reset()
     {
-        me->setFaction(35);
+        me->SetFaction(35);
         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC);
     }
 
@@ -160,7 +160,7 @@ struct npc_ring_rider_base : ScriptedAI
 
     void DoEvade()
     {
-        me->setFaction(35);
+        me->SetFaction(35);
         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC);
         EnterEvadeMode();
     }
@@ -294,7 +294,7 @@ public:
         {
             if (type != POINT_MOTION_TYPE || id != POINT_INTRO)
                 return;
-            me->setFaction(14);
+            me->SetFaction(14);
             center.Relocate(*me);
         }
 
@@ -397,7 +397,7 @@ public:
         {
             if (type != POINT_MOTION_TYPE || id != POINT_INTRO)
                 return;
-            me->setFaction(14);
+            me->SetFaction(14);
             center.Relocate(*me);
             me->CastSpell(me, SPELL_DEFEND, true);
             me->CastSpell(me, SPELL_DEFEND, true);

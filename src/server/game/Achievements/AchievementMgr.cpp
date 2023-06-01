@@ -319,17 +319,17 @@ bool AchievementCriteriaData::Meets(uint32 criteria_id, Player const* source, Un
         case ACHIEVEMENT_CRITERIA_DATA_TYPE_T_PLAYER_CLASS_RACE:
             if (!target || target->GetTypeId() != TYPEID_PLAYER)
                 return false;
-            if (classRace.class_id && classRace.class_id != target->ToPlayer()->getClass())
+            if (classRace.class_id && classRace.class_id != target->ToPlayer()->GetClass())
                 return false;
-            if (classRace.race_id && classRace.race_id != target->ToPlayer()->getRace())
+            if (classRace.race_id && classRace.race_id != target->ToPlayer()->GetRace())
                 return false;
             return true;
         case ACHIEVEMENT_CRITERIA_DATA_TYPE_S_PLAYER_CLASS_RACE:
             if (!source || source->GetTypeId() != TYPEID_PLAYER)
                 return false;
-            if (classRace.class_id && classRace.class_id != source->ToPlayer()->getClass())
+            if (classRace.class_id && classRace.class_id != source->ToPlayer()->GetClass())
                 return false;
-            if (classRace.race_id && classRace.race_id != source->ToPlayer()->getRace())
+            if (classRace.race_id && classRace.race_id != source->ToPlayer()->GetRace())
                 return false;
             return true;
         case ACHIEVEMENT_CRITERIA_DATA_TYPE_T_PLAYER_LESS_HEALTH:
@@ -351,11 +351,11 @@ bool AchievementCriteriaData::Meets(uint32 criteria_id, Player const* source, Un
         case ACHIEVEMENT_CRITERIA_DATA_TYPE_T_LEVEL:
             if (!target)
                 return false;
-            return target->getLevel() >= level.minlevel;
+            return target->GetLevel() >= level.minlevel;
         case ACHIEVEMENT_CRITERIA_DATA_TYPE_T_GENDER:
             if (!target)
                 return false;
-            return target->getGender() == gender.gender;
+            return target->GetGender() == gender.gender;
         case ACHIEVEMENT_CRITERIA_DATA_TYPE_SCRIPT:
             return sScriptMgr->OnCriteriaCheck(ScriptId, const_cast<Player*>(source), const_cast<Unit*>(target));
         case ACHIEVEMENT_CRITERIA_DATA_TYPE_MAP_PLAYER_COUNT:
@@ -757,7 +757,7 @@ void PlayerAchievementMgr::LoadFromDB(PreparedQueryResult achievementResult, Pre
         {
             uint32 index;
             if (achievement->ID == 1793 || achievement->ID == 8397)
-                index = GetOwner()->getGender() == GENDER_MALE ? 0 : 1;
+                index = GetOwner()->GetGender() == GENDER_MALE ? 0 : 1;
             else
                 index = GetOwner()->GetTeam() == ALLIANCE ? 0 : 1;
             if (uint32 titleId = reward->TitleId[index])
@@ -850,10 +850,10 @@ void PlayerAchievementMgr::LoadFromDB(PreparedQueryResult achievementResult, Pre
 
     // After loading
 
-    for (auto&& achievementId : sAchievementMgr->GetAchievementsWithTitle(Player::TeamForRace(GetOwner()->getRace())))
+    for (auto&& achievementId : sAchievementMgr->GetAchievementsWithTitle(Player::TeamForRace(GetOwner()->GetRace())))
         if (AchievementEntry const* achievement = sAchievementMgr->GetAchievement(achievementId))
             if (AchievementReward const* reward = sAchievementMgr->GetAchievementReward(achievement))
-                if (uint32 titleId = reward->TitleId[Player::TeamForRace(GetOwner()->getRace()) == ALLIANCE ? 0 : 1])
+                if (uint32 titleId = reward->TitleId[Player::TeamForRace(GetOwner()->GetRace()) == ALLIANCE ? 0 : 1])
                     if (CharTitlesEntry const* titleEntry = sCharTitlesStore.LookupEntry(titleId))
                         if (GetOwner()->HasTitle(titleEntry) && !GetOwner()->HasAchieved(achievementId, !titleEntry->Unk1))
                             GetOwner()->SetTitle(titleEntry, true);
@@ -1599,7 +1599,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, ui
                 SetCriteriaProgress(achievementCriteria, miscValue1, referencePlayer, PROGRESS_HIGHEST);
                 break;
             case ACHIEVEMENT_CRITERIA_TYPE_REACH_LEVEL:
-                SetCriteriaProgress(achievementCriteria, referencePlayer->getLevel(), referencePlayer, PROGRESS_HIGHEST);
+                SetCriteriaProgress(achievementCriteria, referencePlayer->GetLevel(), referencePlayer, PROGRESS_HIGHEST);
                 break;
             case ACHIEVEMENT_CRITERIA_TYPE_REACH_SKILL_LEVEL:
                 if (uint32 skillvalue = referencePlayer->GetBaseSkillValue(achievementCriteria->Entry->Asset.SkillID))
@@ -2432,7 +2432,7 @@ void AchievementMgr::CompletedAchievement(AchievementEntry const* achievement, P
     //! condition fields to the condition system.
     uint32 index;
     if (achievement->ID == 1793 || achievement->ID == 8397)
-        index = referencePlayer->getGender() == GENDER_MALE ? 0 : 1;
+        index = referencePlayer->GetGender() == GENDER_MALE ? 0 : 1;
     else
         index = referencePlayer->GetTeam() == ALLIANCE ? 0 : 1;
     if (uint32 titleId = reward->TitleId[index])
@@ -3580,19 +3580,19 @@ bool AchievementMgr::AdditionalRequirementsSatisfied(ModifierTreeNode const* tre
             case ACHIEVEMENT_CRITERIA_ADDITIONAL_CONDITION_ARENA_TYPE:
                 return reqValue == miscValue2;
             case ACHIEVEMENT_CRITERIA_ADDITIONAL_CONDITION_SOURCE_RACE: // 25
-                if (referencePlayer->getRace() != reqValue)
+                if (referencePlayer->GetRace() != reqValue)
                     return false;
                 break;
             case ACHIEVEMENT_CRITERIA_ADDITIONAL_CONDITION_SOURCE_CLASS: // 26
-                if (referencePlayer->getClass() != reqValue)
+                if (referencePlayer->GetClass() != reqValue)
                     return false;
                 break;
             case ACHIEVEMENT_CRITERIA_ADDITIONAL_CONDITION_TARGET_RACE: // 27
-                if (!unit || unit->GetTypeId() != TYPEID_PLAYER || unit->getRace() != reqValue)
+                if (!unit || unit->GetTypeId() != TYPEID_PLAYER || unit->GetRace() != reqValue)
                     return false;
                 break;
             case ACHIEVEMENT_CRITERIA_ADDITIONAL_CONDITION_TARGET_CLASS: // 28
-                if (!unit || unit->GetTypeId() != TYPEID_PLAYER || unit->getClass() != reqValue)
+                if (!unit || unit->GetTypeId() != TYPEID_PLAYER || unit->GetClass() != reqValue)
                     return false;
                 break;
             case ACHIEVEMENT_CRITERIA_ADDITIONAL_CONDITION_MAX_GROUP_MEMBERS: // 29
@@ -3637,11 +3637,11 @@ bool AchievementMgr::AdditionalRequirementsSatisfied(ModifierTreeNode const* tre
                     return false;
                 break;
             case ACHIEVEMENT_CRITERIA_ADDITIONAL_CONDITION_SOURCE_LEVEL: // 39
-                if (referencePlayer->getLevel() != reqValue)
+                if (referencePlayer->GetLevel() != reqValue)
                     return false;
                 break;
             case ACHIEVEMENT_CRITERIA_ADDITIONAL_CONDITION_TARGET_LEVEL: // 40
-                if (!unit || unit->getLevel() != reqValue)
+                if (!unit || unit->GetLevel() != reqValue)
                     return false;
                 break;
             case ACHIEVEMENT_CRITERIA_ADDITIONAL_CONDITION_TARGET_ZONE: // 41
@@ -3713,7 +3713,7 @@ bool AchievementMgr::AdditionalRequirementsSatisfied(ModifierTreeNode const* tre
                     return ModifierTreeRequirementsSatisfied(tree, miscValue1, miscValue2, unit, referencePlayer);
                 break;
             case ACHIEVEMENT_CRITERIA_ADDITIONAL_CONDITION_TARGET_MIN_LEVEL:
-                if (!unit || unit->getLevel() < reqValue)
+                if (!unit || unit->GetLevel() < reqValue)
                     return false;
                 break;
             case ACHIEVEMENT_CRITERIA_ADDITIONAL_CONDITION_BATTLE_PET_FAMILY:

@@ -762,7 +762,7 @@ class boss_paragon_of_the_klaxxi : public CreatureScript
                         if (Creature* klaxxi = ObjectAccessor::GetCreature(*me, instance ? instance->GetData64(paragonMemberEntry) : 0))
                         {
                             klaxxi->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                            klaxxi->setFaction(14);
+                            klaxxi->SetFaction(14);
                             klaxxi->RemoveFlag(UNIT_FIELD_FLAGS2, 69240832);
                             klaxxi->RemoveAurasDueToSpell(SPELL_PERMANENT_FEIGN_DEATH);
 
@@ -864,7 +864,7 @@ struct soo_paragon_typeAI : public ScriptedAI
         events.Reset();
         nonCombatEvents.Reset();
         me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_PACIFIED);
-        me->setFaction(14);
+        me->SetFaction(14);
         me->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
         prevToxin       = 0;
         targetGUID      = 0;
@@ -1114,7 +1114,7 @@ struct soo_paragon_typeAI : public ScriptedAI
             me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
             me->PrepareChanneledCast(me->GetOrientation());
             me->SetHealth(1);
-            me->setFaction(35); // cuz ref doesn`t work
+            me->SetFaction(35); // cuz ref doesn`t work
             me->SetFlag(UNIT_FIELD_FLAGS2, 69240832);
             DoCast(me, SPELL_PERMANENT_FEIGN_DEATH, true);
             DoCast(me, SPELL_CLICK_ME);

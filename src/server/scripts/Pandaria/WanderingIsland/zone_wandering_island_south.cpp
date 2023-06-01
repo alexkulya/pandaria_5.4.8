@@ -1027,14 +1027,14 @@ class npc_shang_xi_choose_faction : public CreatureScript
             if (creature->IsQuestGiver())
                 player->PrepareQuestMenu(creature->GetGUID());
 
-            if (player->getRace() == RACE_PANDAREN_NEUTRAL)
+            if (player->GetRace() == RACE_PANDAREN_NEUTRAL)
             {
                 if (player->GetQuestStatus(31450) == QUEST_STATUS_INCOMPLETE)
                     player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_CHOOSE_FACTION, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
             }
-            else if (player->getRace() == RACE_PANDAREN_ALLIANCE)
+            else if (player->GetRace() == RACE_PANDAREN_ALLIANCE)
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_TP_STORMIND, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
-            else if (player->getRace() == RACE_PANDAREN_HORDE)
+            else if (player->GetRace() == RACE_PANDAREN_HORDE)
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_TP_ORGRI, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
 
             player->PlayerTalkClass->SendGossipMenu(1, creature->GetGUID());

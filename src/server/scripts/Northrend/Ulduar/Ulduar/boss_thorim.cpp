@@ -468,7 +468,7 @@ class boss_thorim : public CreatureScript
                 gotEncounterFinished = gotEncounterFinished || (instance->GetBossState(BOSS_THORIM) == DONE);
                 if (gotEncounterFinished) // May be called during fight if Thorim gets outfight... hm, should _not_ happen regularly
                 {
-                    me->setFaction(35);
+                    me->SetFaction(35);
                     return;
                 }
 
@@ -529,7 +529,7 @@ class boss_thorim : public CreatureScript
                 DoCastAOE(SPELL_THORIM_KILL_CREDIT, true);
 
                 Talk(SAY_DEATH);
-                me->setFaction(35);
+                me->SetFaction(35);
                 me->DespawnOrUnsummon(40 * IN_MILLISECONDS);
                 me->RemoveAllAuras();
                 me->RemoveAllAttackers();

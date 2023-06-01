@@ -321,7 +321,7 @@ public:
 
         void GainSoulCharge(Player* victim)
         {
-            switch (victim->getClass())
+            switch (victim->GetClass())
             {
                 case CLASS_PRIEST:
                 case CLASS_PALADIN:
@@ -395,7 +395,7 @@ public:
                 summoned->AI()->AttackStart(me);
             else
             {
-                summoned->setFaction(me->getFaction());
+                summoned->SetFaction(me->GetFaction());
                 summoned->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
                 summoned->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
             }
@@ -473,14 +473,14 @@ public:
                 if (instance)
                 {
                     // Do not let the raid skip straight to Archimonde. Visible and hostile ONLY if Azagalor is finished.
-                    if ((instance->GetData(DATA_AZGALOREVENT) < DONE) && (me->IsVisible() || (me->getFaction() != 35)))
+                    if ((instance->GetData(DATA_AZGALOREVENT) < DONE) && (me->IsVisible() || (me->GetFaction() != 35)))
                     {
                         me->SetVisible(false);
-                        me->setFaction(35);
+                        me->SetFaction(35);
                     }
-                    else if ((instance->GetData(DATA_AZGALOREVENT) >= DONE) && (!me->IsVisible() || (me->getFaction() == 35)))
+                    else if ((instance->GetData(DATA_AZGALOREVENT) >= DONE) && (!me->IsVisible() || (me->GetFaction() == 35)))
                     {
-                        me->setFaction(1720);
+                        me->SetFaction(1720);
                         me->SetVisible(true);
                     }
                 }

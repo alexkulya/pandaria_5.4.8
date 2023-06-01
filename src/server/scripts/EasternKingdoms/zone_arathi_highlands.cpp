@@ -157,7 +157,7 @@ class npc_professor_phizzlethorpe : public CreatureScript
                 if (npc_escortAI* pEscortAI = CAST_AI(npc_professor_phizzlethorpeAI, (creature->AI())))
                     pEscortAI->Start(false, false, player->GetGUID(), quest);
 
-                creature->setFaction(42);
+                creature->SetFaction(42);
             }
             return true;
         }

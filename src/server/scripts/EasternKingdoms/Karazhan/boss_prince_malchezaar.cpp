@@ -365,7 +365,7 @@ class boss_malchezaar : public CreatureScript
                 if (Creature* Infernal = me->SummonCreature(NETHERSPITE_INFERNAL, pos, TEMPSUMMON_TIMED_DESPAWN, 180000))
                 {
                     Infernal->SetDisplayId(INFERNAL_MODEL_INVISIBLE);
-                    Infernal->setFaction(me->getFaction());
+                    Infernal->SetFaction(me->GetFaction());
                     if (point)
                         CAST_AI(netherspite_infernal::netherspite_infernalAI, Infernal->AI())->point=point;
                     CAST_AI(netherspite_infernal::netherspite_infernalAI, Infernal->AI())->malchezaarGUID = me->GetGUID();
@@ -450,7 +450,7 @@ class boss_malchezaar : public CreatureScript
                             if (Creature* axe = me->SummonCreature(MALCHEZARS_AXE, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ(), 0, TEMPSUMMON_TIMED_DESPAWN_OUT_OF_COMBAT, 1000))
                             {
                                 axe->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                                axe->setFaction(me->getFaction());
+                                axe->SetFaction(me->GetFaction());
                                 axes[i] = axe->GetGUID();
                                 if (target)
                                 {

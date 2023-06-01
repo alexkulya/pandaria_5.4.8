@@ -87,7 +87,7 @@ class npc_coren_direbrew : public CreatureScript
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
-                creature->setFaction(FACTION_HOSTILE_COREN);
+                creature->SetFaction(FACTION_HOSTILE_COREN);
                 creature->AI()->AttackStart(player);
                 creature->AI()->DoZoneInCombat();
 
@@ -136,7 +136,7 @@ class npc_coren_direbrew : public CreatureScript
                         Creature* creature = ObjectAccessor::GetCreature((*me), _add[i]);
                         if (creature && creature->IsAlive())
                         {
-                            creature->setFaction(FACTION_HOSTILE_COREN);
+                            creature->SetFaction(FACTION_HOSTILE_COREN);
                             creature->SetInCombatWithZone();
                         }
                         _add[i] = 0;
@@ -203,9 +203,9 @@ class npc_coren_direbrew : public CreatureScript
 
             void JustSummoned(Creature* summon)
             {
-                if (me->getFaction() == FACTION_HOSTILE_COREN)
+                if (me->GetFaction() == FACTION_HOSTILE_COREN)
                 {
-                    summon->setFaction(FACTION_HOSTILE_COREN);
+                    summon->SetFaction(FACTION_HOSTILE_COREN);
 
                     if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100, true))
                         summon->AI()->AttackStart(target);

@@ -232,7 +232,7 @@ class npc_cfk_shado_pan_initiate : public CreatureScript
             void InitializeAI() override 
             {
                 instance = me->GetInstanceScript();
-                me->setFaction(1665);
+                me->SetFaction(1665);
 
                 if (Unit* Jin = ObjectAccessor::GetUnit(*me, instance ? instance->GetData64(NPC_JIN_IRONFIST) : 0))
                     me->AI()->AttackStart(Jin);
@@ -554,7 +554,7 @@ class npc_cfk_crypt_guardian_hall : public CreatureScript
             {
                 if (actionId == ACTION_GUARDIAN_INIT)
                 {
-                    me->setFaction(16);
+                    me->SetFaction(16);
                     me->GetMotionMaster()->MovePoint(0, GetInitiatePosition(me->GetGUID(), 15.0f, me->GetOrientation()));
                 }
             }
@@ -668,7 +668,7 @@ class npc_cfk_crypt_guardian_vault : public CreatureScript
             {
                 if (actionId == ACTION_GUARDIAN_INIT)
                 {
-                    me->setFaction(16);
+                    me->SetFaction(16);
                     me->SetSpeed(MOVE_WALK, 1.58f);
                     me->GetMotionMaster()->MovePath(me->GetDBTableGUIDLow(), false);
 

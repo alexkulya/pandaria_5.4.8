@@ -163,7 +163,7 @@ class instance_temple_of_jade_serpent : public InstanceMapScript
                         shaSummoned.push_back(creature->GetGUID());
                         break;
                     case NPC_ZAO_SUN_TRIGGER:
-                        creature->setFaction(14);
+                        creature->SetFaction(14);
                         creature->SetDisplayId(11686);
                         creature->SetReactState(REACT_PASSIVE);
                         sunTriggers.push_back(creature->GetGUID());
@@ -228,7 +228,7 @@ class instance_temple_of_jade_serpent : public InstanceMapScript
                         sunfires.push_back(creature->GetGUID());
                         break;
                     case NPC_JADE_FIRE:
-                        creature->setFaction(14);
+                        creature->SetFaction(14);
                         creature->SetDisplayId(11686);
                         creature->SetReactState(REACT_PASSIVE);
                         creature->CastSpell(creature, SPELL_JADE_FIRE_PERIODIC, true);

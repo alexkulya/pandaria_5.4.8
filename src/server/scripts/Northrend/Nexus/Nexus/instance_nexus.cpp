@@ -82,7 +82,7 @@ class instance_nexus : public InstanceMapScript
                     case NPC_ALLIANCE_BERSERKER:
                     {
                         if (ServerAllowsTwoSideGroups())
-                            creature->setFaction(FACTION_HOSTILE_FOR_ALL);
+                            creature->SetFaction(FACTION_HOSTILE_FOR_ALL);
                         if (TeamInInstance == ALLIANCE)
                             creature->UpdateEntry(NPC_HORDE_BERSERKER, HORDE);
                         break;
@@ -90,7 +90,7 @@ class instance_nexus : public InstanceMapScript
                     case NPC_ALLIANCE_RANGER:
                     {
                         if (ServerAllowsTwoSideGroups())
-                            creature->setFaction(FACTION_HOSTILE_FOR_ALL);
+                            creature->SetFaction(FACTION_HOSTILE_FOR_ALL);
                         if (TeamInInstance == ALLIANCE)
                             creature->UpdateEntry(NPC_HORDE_RANGER, HORDE);
                         break;
@@ -98,7 +98,7 @@ class instance_nexus : public InstanceMapScript
                     case NPC_ALLIANCE_CLERIC:
                     {
                         if (ServerAllowsTwoSideGroups())
-                            creature->setFaction(FACTION_HOSTILE_FOR_ALL);
+                            creature->SetFaction(FACTION_HOSTILE_FOR_ALL);
                         if (TeamInInstance == ALLIANCE)
                             creature->UpdateEntry(NPC_HORDE_CLERIC, HORDE);
                         break;
@@ -106,7 +106,7 @@ class instance_nexus : public InstanceMapScript
                     case NPC_ALLIANCE_COMMANDER:
                     {
                         if (ServerAllowsTwoSideGroups())
-                            creature->setFaction(FACTION_HOSTILE_FOR_ALL);
+                            creature->SetFaction(FACTION_HOSTILE_FOR_ALL);
                         if (TeamInInstance == ALLIANCE)
                             creature->UpdateEntry(NPC_HORDE_COMMANDER, HORDE);
                         break;
@@ -114,7 +114,7 @@ class instance_nexus : public InstanceMapScript
                     case NPC_COMMANDER_STOUTBEARD:
                     {
                         if (ServerAllowsTwoSideGroups())
-                            creature->setFaction(FACTION_HOSTILE_FOR_ALL);
+                            creature->SetFaction(FACTION_HOSTILE_FOR_ALL);
                         if (TeamInInstance == ALLIANCE)
                             creature->UpdateEntry(NPC_COMMANDER_KOLURG, HORDE);
                         commanderGUID = creature->GetGUID();

@@ -35,8 +35,8 @@ INSERT INTO `spell_area` (`spell`, `area`, `quest_start`, `quest_end`, `aura_spe
 (49416, 188, 28713, 28714, 0, 0, 2, 1, 66, 41), -- Generic Quest Invisibility Detection 1
 (60922, 188, 28714, 0, 0, 0, 2, 1, 66, 0), -- Generic Quest Invisibility Detection 3
 -- (92549, 188, 0, 28727, 0, 0, 2, 1, 0, 43), -- See Quest Invis 4                           (?)
-(94566, 188, 28723, 0, 0, 0, 2, 1, 66, 0); -- Generic Quest Invisibility Detection 5
--- (92237, 257, 28725, 28728, -92239, 0, 2, 1, 74, 41); -- Summon Tarindrella Aura           (?)
+(94566, 188, 28723, 0, 0, 0, 2, 1, 66, 0), -- Generic Quest Invisibility Detection 5
+(92237, 257, 28725, 28728, /* -92239*/0, 0, 2, 1, 74, 41); -- Summon Tarindrella Aura           (?)
 
 UPDATE `creature_template` SET `AIName` = "SmartAI" WHERE `entry` IN (2079, 49478, 34756, 34757, 2077);
 DELETE FROM `smart_scripts` WHERE `entryorguid` IN (2079, 49478, 34756, 34757, 2077) AND `source_type` = 0;
@@ -394,3 +394,5 @@ INSERT INTO `creature_text` (`entry`, `text_group`, `id`, `text_female`, `text`,
 (49479,1,0,"","Shadowthread Cave lies to the north. Be careful, it's dangerous there of late.",12,0,100,397,0,0,"Dentaria Silverglade"),
 (49479,2,0,"","The moonwell is to the northeast, on the other side of the pool and up the hill.",12,0,100,397,0,0,"Dentaria Silverglade"),
 (49479,3,0,"","The ramp up to Aldrassil is just in sight over there. Circle around and find Tenaron up top.",12,0,100,397,0,0,"Dentaria Silverglade");
+
+DELETE FROM `creature` WHERE `guid` = 372316 AND `id` = 49480;

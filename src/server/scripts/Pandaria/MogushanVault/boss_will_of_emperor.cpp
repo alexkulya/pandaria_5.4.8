@@ -281,7 +281,7 @@ class boss_jin_qin_xi : public CreatureScript
 
                 _Reset();
 
-                me->setFaction(35);
+                me->SetFaction(35);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_IMMUNE_TO_NPC);
                 me->SetDisplayId(DISPLAY_BOSS_INVISIBLE);
                 me->SetUInt32Value(UNIT_FIELD_VIRTUAL_ITEM_ID, 0);
@@ -604,7 +604,7 @@ class boss_jin_qin_xi : public CreatureScript
                         case EVENT_BOSS_EMOTE:
                         {
                             // Turn into enemy and jump in the room
-                            me->setFaction(14);
+                            me->SetFaction(14);
                             me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC);
 
                             if (Player* itr = me->FindNearestPlayer(VISIBLE_RANGE))
@@ -875,7 +875,7 @@ class npc_woe_add_generic : public CreatureScript
                 events.Reset();
 
                 // Won't attack
-                me->setFaction(35);
+                me->SetFaction(35);
                 // Invisible
                 me->SetDisplayId(DISPLAY_ADD_INVISIBLE);
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
@@ -1130,7 +1130,7 @@ class npc_woe_add_generic : public CreatureScript
                         }
                         case EVENT_WAIT_VISIBLE:
                         {
-                            me->setFaction(14);
+                            me->SetFaction(14);
                             // Landing coords
                             float x = me->GetPositionX() + (15 * cos(me->GetOrientation()));
                             float y = me->GetPositionY() + (15 * sin(me->GetOrientation()));

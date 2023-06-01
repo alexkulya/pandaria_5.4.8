@@ -46,7 +46,7 @@ struct npc_azshara_awol_grunt : public CreatureAI
     {
         targetGUID = 0;
         hasDefeat = false;
-        me->setFaction(125);
+        me->SetFaction(125);
     }
 
     void SetGUID(uint64 guid, int32 /*type*/) override
@@ -76,7 +76,7 @@ struct npc_azshara_awol_grunt : public CreatureAI
             }
             else
             {
-                me->setFaction(16);
+                me->SetFaction(16);
 
                 if (Player* target = ObjectAccessor::GetPlayer(*me, targetGUID))
                 {
@@ -96,7 +96,7 @@ struct npc_azshara_awol_grunt : public CreatureAI
         {
             damage = 0;
             hasDefeat = true;
-            me->setFaction(125);
+            me->SetFaction(125);
             me->PrepareChanneledCast(me->GetOrientation());
             Talk(TALK_DEFEAT);
 

@@ -59,7 +59,7 @@ struct theramore_invader_typeAI : public ScriptedAI
                     case NPC_JAINA_PROUDMOORE:
                         break;
                     default:
-                        me->setFaction(14);
+                        me->SetFaction(14);
                         break;
                 }
 

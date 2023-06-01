@@ -77,7 +77,7 @@ public:
                         playerGUID = player->GetGUID();
                         speechTimer = 1000;
                         speechCounter = 1;
-                        me->setFaction(player->getFaction());
+                        me->SetFaction(player->GetFaction());
                         me->CombatStop(true);
                         me->GetMotionMaster()->MoveIdle();
                         me->SetReactState(REACT_PASSIVE);
@@ -693,7 +693,7 @@ public:
 
                     /// @todo simplify text's selection
 
-                    switch (player->getRace())
+                    switch (player->GetRace())
                     {
                         case RACE_HUMAN:
                             switch (ExecuteSpeech_Counter)

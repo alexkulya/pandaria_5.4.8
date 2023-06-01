@@ -355,7 +355,7 @@ class boss_kaelthas : public CreatureScript
                     {
                         creature->Respawn();
                         creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                        creature->setFaction(me->getFaction());
+                        creature->SetFaction(me->GetFaction());
                         creature->AI()->EnterEvadeMode();
                     }
                 }
@@ -520,7 +520,7 @@ class boss_kaelthas : public CreatureScript
                                     if (Advisor)
                                     {
                                         Advisor->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                                        Advisor->setFaction(me->getFaction());
+                                        Advisor->SetFaction(me->GetFaction());
 
                                         target = SelectTarget(SELECT_TARGET_RANDOM, 0);
                                         if (target)
@@ -554,7 +554,7 @@ class boss_kaelthas : public CreatureScript
                                     if (Advisor)
                                     {
                                         Advisor->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                                        Advisor->setFaction(me->getFaction());
+                                        Advisor->SetFaction(me->GetFaction());
 
                                         target = SelectTarget(SELECT_TARGET_RANDOM, 0);
                                         if (target)
@@ -588,7 +588,7 @@ class boss_kaelthas : public CreatureScript
                                     if (Advisor)
                                     {
                                         Advisor->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                                        Advisor->setFaction(me->getFaction());
+                                        Advisor->SetFaction(me->GetFaction());
 
                                         target = SelectTarget(SELECT_TARGET_RANDOM, 0);
                                         if (target)
@@ -622,7 +622,7 @@ class boss_kaelthas : public CreatureScript
                                     if (Advisor)
                                     {
                                         Advisor->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                                        Advisor->setFaction(me->getFaction());
+                                        Advisor->SetFaction(me->GetFaction());
 
                                         target = SelectTarget(SELECT_TARGET_RANDOM, 0);
                                         if (target)
@@ -1438,7 +1438,7 @@ class npc_kael_flamestrike : public CreatureScript
                 KillSelf = false;
 
                 me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
-                me->setFaction(14);
+                me->SetFaction(14);
             }
 
             void MoveInLineOfSight(Unit* /*who*/) override { }

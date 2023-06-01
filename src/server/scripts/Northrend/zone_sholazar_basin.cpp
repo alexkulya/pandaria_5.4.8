@@ -152,10 +152,10 @@ public:
 
             switch (player->GetTeam()){
             case ALLIANCE:
-                creature->setFaction(FACTION_ESCORTEE_A);
+                creature->SetFaction(FACTION_ESCORTEE_A);
                 break;
             case HORDE:
-                creature->setFaction(FACTION_ESCORTEE_H);
+                creature->SetFaction(FACTION_ESCORTEE_H);
                 break;
             }
         }
@@ -450,7 +450,7 @@ public:
             if (npc_engineer_heliceAI* pEscortAI = CAST_AI(npc_engineer_helice::npc_engineer_heliceAI, creature->AI()))
             {
                 creature->GetMotionMaster()->MoveJumpTo(0, 0.4f, 0.4f);
-                creature->setFaction(113);
+                creature->SetFaction(113);
 
                 pEscortAI->Start(false, false, player->GetGUID());
                 creature->AI()->Talk(SAY_WP_1);

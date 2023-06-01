@@ -100,7 +100,7 @@ class boss_lilian_voss : public CreatureScript
             void InitializeAI() override
             {
                 SetEquipmentSlots(false, LilianSword, LilianSword, EQUIP_NO_CHANGE);;
-                me->setFaction(1665);
+                me->SetFaction(1665);
                 SetCombatMovement(false);
                 Reset();
                 fict = false;
@@ -235,7 +235,7 @@ class boss_lilian_voss : public CreatureScript
                     events.Reset();
                     me->RemoveAllAuras();
                     me->AttackStop();
-                    me->setFaction(35);
+                    me->SetFaction(35);
                     me->SetReactState(REACT_PASSIVE);
 
                     if (Creature* LilianSoul = ObjectAccessor::GetCreature(*me, instance->GetData64(NPC_LILIAN_SOUL)))
@@ -277,7 +277,7 @@ class boss_lilian_voss : public CreatureScript
                             me->SetReactState(REACT_PASSIVE);
                             me->CombatStop();
                             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_PACIFIED);
-                            me->setFaction(35);
+                            me->SetFaction(35);
                             me->GetMotionMaster()->MovePoint(0, GandlinglilianDoorPoint);
                             break;
                         case EVENT_SPECIAL:
@@ -296,7 +296,7 @@ class boss_lilian_voss : public CreatureScript
                                 Gandling->CastSpell(me, SPELL_COSMETIC_SOUL_RIP, false);
                             break;
                         case EVENT_INTRO_DONE:
-                            me->setFaction(14);
+                            me->SetFaction(14);
                             break;
                         case EVENT_PURIFIED:
                             JustDied(me);

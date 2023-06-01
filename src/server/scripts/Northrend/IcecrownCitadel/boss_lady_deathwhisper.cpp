@@ -384,7 +384,7 @@ class boss_lady_deathwhisper : public CreatureScript
                 {
                     if (darnavan->IsAlive())
                     {
-                        darnavan->setFaction(35);
+                        darnavan->SetFaction(35);
                         darnavan->CombatStop(true);
                         darnavan->GetMotionMaster()->MoveIdle();
                         darnavan->SetReactState(REACT_PASSIVE);
@@ -639,7 +639,7 @@ class boss_lady_deathwhisper : public CreatureScript
 
                 Unit* victim = SelectTarget(SELECT_TARGET_RANDOM, 0, 30.0f, true, -SPELL_DOMINATE_MIND);
                 Creature* ally = GetRandomSummonOrBoss();
-                switch (player->getClass())
+                switch (player->GetClass())
                 {
                     case CLASS_PRIEST:
                         if (player->HasTalent(TALENT_DISPERSION, player->GetActiveSpec()))

@@ -416,7 +416,7 @@ class boss_mimiron : public CreatureScript
                 me->SetReactState(REACT_PASSIVE);
                 me->RemoveAllAuras();
                 me->AttackStop();
-                me->setFaction(35);
+                me->SetFaction(35);
                 me->DeleteThreatList();
                 me->CombatStop(true);
 
@@ -659,13 +659,13 @@ class boss_mimiron : public CreatureScript
                                         {
                                             instance->SetData(DATA_MIMIRON_ELEVATOR, GO_STATE_ACTIVE_ALTERNATIVE);
                                             VX_001->SetVisible(true);
-                                            VX_001->setFaction(35);
+                                            VX_001->SetFaction(35);
                                             VX_001->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                                             for (uint8 n = 5; n < 7; ++n)
                                             {
                                                 if (Creature* Rocket = VX_001->SummonCreature(NPC_ROCKET, VX_001->GetPositionX(), VX_001->GetPositionY(), VX_001->GetPositionZ(), 0, TEMPSUMMON_MANUAL_DESPAWN))
                                                 {
-                                                    Rocket->setFaction(14);
+                                                    Rocket->SetFaction(14);
                                                     Rocket->SetReactState(REACT_PASSIVE);
                                                     Rocket->EnterVehicle(VX_001, n);
                                                 }
@@ -1440,7 +1440,7 @@ class boss_vx_001 : public CreatureScript
                         me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_ATTACKABLE_1 | UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NOT_SELECTABLE);
                         _phase = PHASE_VX001_SOLO__GLOBAL_2;
                         _events.SetPhase(_phase);
-                        me->setFaction(14);
+                        me->SetFaction(14);
                         me->SetInCombatWithZone();
                         break;
                     case DO_VX001_ASSEMBLED:                                // Reassemble and heal share some stuff, fallthrough is intended
@@ -2160,7 +2160,7 @@ class npc_emergency_bot : public CreatureScript
 
             void InitializeAI() override
             {
-                me->setFaction(14);
+                me->SetFaction(14);
                 me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_KNOCK_BACK, true);
                 me->ApplySpellImmune(0, IMMUNITY_ID, SPELL_DEATH_GRIP, true);
                 me->SetReactState(REACT_PASSIVE);
