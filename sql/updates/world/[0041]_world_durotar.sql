@@ -30,3 +30,17 @@ INSERT INTO `waypoints` (`entry`, `pointid`, `position_x`, `position_y`, `positi
 (39239, 16,141.040482, -4767.691895, 12.295138,"Durotar Riding Wolf"),
 (39239, 17,235.6723, -4735.171875, 10.103129,"Durotar Riding Wolf"),
 (39239, 18,273.183441, -4746.169434, 9.778715,"Durotar Riding Wolf");
+
+-- Kor'kron Loyalist SAI
+SET @ENTRY := 39609;
+UPDATE `creature_template` SET `AIName`="SmartAI" WHERE `entry`=@ENTRY;
+DELETE FROM `smart_scripts` WHERE `entryorguid`=@ENTRY AND `source_type`=0;
+INSERT INTO `smart_scripts` (`entryorguid`,`source_type`,`id`,`link`,`event_type`,`event_phase_mask`,`event_chance`,`event_flags`,`event_param1`,`event_param2`,`event_param3`,`event_param4`,`action_type`,`action_param1`,`action_param2`,`action_param3`,`action_param4`,`action_param5`,`action_param6`,`target_type`,`target_param1`,`target_param2`,`target_param3`,`target_x`,`target_y`,`target_z`,`target_o`,`comment`) VALUES
+(@ENTRY,0,3,0,62,0,100,0,11245,0,0,0,85,74031,0,0,0,0,0,7,0,0,0,0,0,0,0,"summon wolf");
+
+DELETE FROM `gossip_menu_option`  WHERE menu_id IN (11245);
+INSERT INTO `gossip_menu_option` (`menu_id`, `id`, `option_icon`, `option_text`, `option_text_female`, `option_id`, `npc_option_npcflag`, `action_menu_id`, `action_poi_id`, `box_coded`, `box_money`, `box_text`, `box_text_female`) VALUES
+("11245", "0", "0", "Use my wolf to reach Garrosh", "", "1", "1", "0", "0", "0", "0", "", "");
+
+DELETE FROM `locales_gossip_menu_option` WHERE menu_id =11245;
+INSERT INTO `locales_gossip_menu_option` (`menu_id`, `option_text_loc6`, `option_text_loc7`) VALUES ('11245', 'Usa mi lobo para llegar a Garrosh', 'Usa mi lobo para llegar a Garrosh');
