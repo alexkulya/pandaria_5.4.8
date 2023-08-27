@@ -202,95 +202,86 @@ public:
     };
 };
 
-enum Events
+enum OurTribeImprisonedData
 {
-    EVENT_CAST_WAR_STOMP = 1,
-    EVENT_CAST_CLEAVE = 2
+    POINT_ID_BRAVE_ESCAPED                  = 1,
+
+    SPELL_UNLOCKING                         = 71725,
+
+    EVENT_TALK_FREED                        = 1,
+    EVENT_ESCAPE                            = 2,
+
+    SAY_BRAVE_FREED                         = 0
 };
 
-struct npc_fledgling_brave : public ScriptedAI
+static std::array<Position, 4> CapturedBraveEscapePoints =
 {
-    npc_fledgling_brave(Creature* creature) : ScriptedAI(creature) { }
+    (-3042.8743f, -678.6991f, 45.932663f),
+    (-3022.8967f, -674.9234f, 46.631878f),
+    (-3006.0527f, -683.7966f, 47.65608f),
+    (-2999.302f, -695.0346f, 48.756355f)
+};
 
-    void Reset() override
-    {
-        events.ScheduleEvent(EVENT_CAST_WAR_STOMP, 10000);
-        events.ScheduleEvent(EVENT_CAST_CLEAVE, 10000);
-    }
+struct npc_mulgore_captured_brave : public ScriptedAI
+{
+    npc_mulgore_captured_brave(Creature* creature) : ScriptedAI(creature) { }
 
-    void DamageTaken(Unit* attacker, uint32& damage) override
+    void SpellHit(Unit* /*caster*/, SpellInfo const* spell) override
     {
-        if (attacker->GetTypeId() != TYPEID_PLAYER && !HealthAbovePct(85))
-            damage = 0;
+        if (spell->Id != SPELL_UNLOCKING)
+            return;
+
+        Position pos = me->GetPosition();
+        me->MovePosition(pos, 10.f, 0.f);
+        me->GetMotionMaster()->MovePoint(0, pos);
+        _events.ScheduleEvent(EVENT_TALK_FREED, 3s + 600ms);
     }
 
     void UpdateAI(uint32 diff) override
     {
-        if (!UpdateVictim())
-            return;
+        _events.Update(diff);
 
-        events.Update(diff);
-
-        while (uint32 eventId = events.ExecuteEvent())
+        while (uint32 eventId = _events.ExecuteEvent())
         {
             switch (eventId)
             {
-                case EVENT_CAST_WAR_STOMP:
-                    DoCastVictim(81500);
-                    events.ScheduleEvent(EVENT_CAST_WAR_STOMP, urand(3.5 * IN_MILLISECONDS, 12 * IN_MILLISECONDS));
+                case EVENT_TALK_FREED:
+                    Talk(SAY_BRAVE_FREED);
+                    _events.ScheduleEvent(EVENT_ESCAPE, 4s);
                     break;
-                case EVENT_CAST_CLEAVE:
-                    DoCastVictim(81502);
-                    events.ScheduleEvent(EVENT_CAST_CLEAVE, urand(3.5 * IN_MILLISECONDS, 12 * IN_MILLISECONDS));
+                case EVENT_ESCAPE:
+                {
+                    Position dest = CapturedBraveEscapePoints.front();
+
+                    for (uint8 i = 1; i < CapturedBraveEscapePoints.size(); ++i)
+                        if (me->GetExactDist(&CapturedBraveEscapePoints[i]) <= me->GetExactDist(&dest))
+                            dest = CapturedBraveEscapePoints[i];
+
+                    me->setActive(true);
+                    me->GetMotionMaster()->MovePoint(POINT_ID_BRAVE_ESCAPED, dest);
+                    break;
+                }
+                default:
                     break;
             }
         }
-
-        DoMeleeAttackIfReady();
     }
 
-private:
-    EventMap events;
-};
-
-struct npc_bristleback_invader : public ScriptedAI
-{
-    npc_bristleback_invader(Creature* creature) : ScriptedAI(creature) { }
-
-    void Reset() override
+    void MovementInform(uint32 motionType, uint32 pointId) override
     {
-        cast_rend_timer = 10000;
-    }
-
-    void DamageTaken(Unit* attacker, uint32& damage) override
-    {
-        if (attacker->GetTypeId() != TYPEID_PLAYER && !HealthAbovePct(85))
-            damage = 0;
-    }
-
-    void UpdateAI(uint32 diff) override
-    {
-        if (!UpdateVictim())
+        if (motionType != POINT_MOTION_TYPE || pointId != POINT_ID_BRAVE_ESCAPED)
             return;
 
-        cast_rend_timer -= diff;
-        if (cast_rend_timer <= 0)
-        {
-            cast_rend_timer = 30000;
-            DoCastVictim(11977);
-        }
-
-        DoMeleeAttackIfReady();
+        me->DespawnOrUnsummon();
     }
 
 private:
-    uint32 cast_rend_timer;
+    EventMap _events;
 };
 
 void AddSC_mulgore()
 {
     new npc_skorn_whitecloud();
     new npc_kyle_frenzied();
-    new creature_script<npc_fledgling_brave>("npc_fledgling_brave");
-    new creature_script<npc_bristleback_invader>("npc_bristleback_invader");
+    new creature_script<npc_mulgore_captured_brave>("npc_mulgore_captured_brave");
 }

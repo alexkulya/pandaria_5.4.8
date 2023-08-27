@@ -1173,6 +1173,7 @@ bool SmartAIMgr::IsEventValid(SmartScriptHolder& e)
         case SMART_ACTION_MOVE_OFFSET:
         case SMART_ACTION_SET_CORPSE_DELAY:
         case SMART_ACTION_DISABLE_EVADE:
+        case SMART_ACTION_FLEE:
         case SMART_ACTION_PLAY_SCENE_ID:
         case SMART_ACTION_PLAY_SCENE_PACKAGE:
         case SMART_ACTION_COMBAT_STOP:

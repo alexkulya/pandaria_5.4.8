@@ -2304,5 +2304,5 @@ INSERT INTO `smart_scripts` (`entryorguid`, `source_type`, `id`, `link`, `event_
 UPDATE `creature_template` SET `health_mod` = 272, `mana_mod` = 1 WHERE `entry` = 56007;
 UPDATE `creature_template` SET `health_mod` = 1 WHERE `entry` = 56008;
 
-UPDATE creature_template SET mindmg = 5, maxdmg = 10, attackpower = 0,spell1 = 0 WHERE entry =65468;
-UPDATE creature_template SET ScriptName = ''  WHERE entry =55019;
+UPDATE `creature_template` SET `ScriptName` = "" WHERE `entry` = 55019;
+UPDATE `creature_template` SET `mindmg` = 5, `maxdmg` = 10, `attackpower` = 0, `spell1` = 0 WHERE `entry` = 65468;

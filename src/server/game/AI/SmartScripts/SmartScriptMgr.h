@@ -547,11 +547,12 @@ enum SMART_ACTION
     SMART_ACTION_RANDOM_SOUND                       = 115,    // soundId1, soundId2, soundId3, soundId4, soundId5, onlySelf
     SMART_ACTION_SET_CORPSE_DELAY                   = 116,    // timer
     SMART_ACTION_DISABLE_EVADE                      = 117,    // 0/1 (1 = disabled, 0 = enabled)
+    SMART_ACTION_FLEE                               = 122,    // fleeTime
     SMART_ACTION_PLAY_ANIMKIT                       = 128,    // id, type (0 = oneShot, 1 = aiAnim, 2 = meleeAnim, 3 = movementAnim)
     SMART_ACTION_END                                = 129,
 
     // project
-    SMART_ACTION_project                           = 200,
+    SMART_ACTION_project                            = 200,
     SMART_ACTION_PLAY_SCENE_ID                      = 201,    // sceneId, apply
     SMART_ACTION_PLAY_SCENE_PACKAGE                 = 202,    // scenePackageId, apply
     SMART_ACTION_COMBAT_STOP                        = 203,
@@ -559,7 +560,7 @@ enum SMART_ACTION
     SMART_ACTION_STOP_FOLLOW                        = 205,
     SMART_ACTION_SPELL_VISUAL_KIT                   = 206,
     SMART_ACTION_CAST_RANDOM_SPELL                  = 207,
-    SMART_ACTION_END_project                       = 208,
+    SMART_ACTION_END_project                        = 208,
 };
 
 struct SmartAction
@@ -954,7 +955,7 @@ struct SmartAction
         struct
         {
             uint32 withEmote;
-        } flee;
+        } fleeAssist;
 
         struct
         {
@@ -1051,6 +1052,11 @@ struct SmartAction
         {
             uint32 disable;
         } disableEvade;
+
+        struct
+        {
+            uint32 fleeTime;
+        } flee;
 
         struct
         {
