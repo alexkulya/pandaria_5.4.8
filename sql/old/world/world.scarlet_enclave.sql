@@ -24,3 +24,5 @@ INSERT INTO `creature_text` (`entry`, `text_group`, `id`, `text`, `type`, `langu
 (25462, 0, 0, "All that I am: anger, cruelty, vengeance - I bestow upon you, my chosen knight. I have granted you immortality so that you may herald in a new, dark age for the Scourge.", 12, 0, 100, 396, 0, 14734, 0, "The Lich King"),
 (25462, 1, 0, "Gaze now upon the lands below us. The Scarlet Crusade scurries to undo my work, while Light's Hope stands defiantly against us - a blemish upon these Plaguelands. They must all be shown the price of their defiance.", 12, 0, 100, 397, 0, 14735, 0, "The Lich King"),
 (25462, 2, 0, "You will become my force of retribution. Where you tread, doom will follow. Go now and claim your destiny, death knight.", 12, 0, 100, 396, 0, 14736, 0, "The Lich King");
+
+UPDATE `creature_template` SET `InhabitType` = 8 WHERE `entry` = 28833;
