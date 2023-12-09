@@ -54,7 +54,7 @@ enum CreatureFlagsExtra
     CREATURE_FLAG_EXTRA_TAUNT_DIMINISH  = 0x00080000,       // Taunt is a subject to diminishing returns on this creautre
     CREATURE_FLAG_EXTRA_ALL_DIMINISH    = 0x00100000,       // Creature is subject to all diminishing returns as player are
     CREATURE_FLAG_EXTRA_NO_KNOCK_BACK   = 0x00200000,       // use to immune from Thunderstorm
-    CREATURE_FLAG_EXTRA_project_NPC    = 0x00800000,       // Creature will always be visible to the player. Only usable on creatures with entries 190000 or higher (on purpose)
+    CREATURE_FLAG_EXTRA_project_NPC     = 0x00800000,       // Creature will always be visible to the player. Only usable on creatures with entries 190000 or higher (on purpose)
     CREATURE_FLAG_EXTRA_DUNGEON_BOSS    = 0x10000000        // creature is a dungeon boss (SET DYNAMICALLY, DO NOT ADD IN DB)
 };
 
