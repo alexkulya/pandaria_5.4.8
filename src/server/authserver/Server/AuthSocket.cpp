@@ -493,9 +493,9 @@ bool AuthSocket::_HandleLogonChallenge()
                     uint8 securityFlags = 0;
 
                     // Check if token is used
-                    /*_tokenKey = fields[7].GetString();
+                    _tokenKey = fields[7].GetString();
                     if (!_tokenKey.empty())
-                        securityFlags = 4;*/
+                        securityFlags = 4;
 
                     pkt << uint8(securityFlags);            // security flags (0x0...0x04)
 
