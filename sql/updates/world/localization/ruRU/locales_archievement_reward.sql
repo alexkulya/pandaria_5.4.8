@@ -1,10 +1,3 @@
-/*
-SQLyog Ultimate v11.11 (64 bit)
-MySQL - 5.7.32 : Database - world
-*********************************************************************
-*/
-/*Table structure for table `locales_achievement_reward` */
-
 DROP TABLE IF EXISTS `locales_achievement_reward`;
 
 CREATE TABLE `locales_achievement_reward` (
