@@ -1008,9 +1008,9 @@ void AddSC_uldum()
     new spell_dormus_rage();
     new spell_sandstorm();
     new spell_transform_camel_dust_pile();
-    new spell_script<spell_addarah_breakout_cage_master>("spell_addarah_breakout_cage_master");
-    new spell_script<spell_rescue_survivor_quest>("spell_rescue_survivor_quest");
-    new spell_script<spell_thunder_clap_quest>("spell_thunder_clap_quest");
-    new spell_script<spell_stealing_quest>("spell_stealing_quest");
-    new spell_script<spell_uldum_mallet_eff>("spell_uldum_mallet_eff");
+    register_spell_script(spell_addarah_breakout_cage_master);
+    register_spell_script(spell_rescue_survivor_quest);
+    register_spell_script(spell_thunder_clap_quest);
+    register_spell_script(spell_stealing_quest);
+    register_spell_script(spell_uldum_mallet_eff);
 }

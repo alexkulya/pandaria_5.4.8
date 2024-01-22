@@ -1073,16 +1073,16 @@ void AddSC_durotar()
     new npc_garrosh_hellscream_warchief();
     new npc_garrosh_horde_way_quest();
     new npc_ji_firepaw_horde_way_quest();
-    new creature_script<npc_trial_challengers>("npc_trial_challengers");
+    register_creature_script(npc_trial_challengers);
     new npc_watershed_patrol();
-    new creature_script<npc_darkspear_jailor>("npc_darkspear_jailor");
-    new creature_script<npc_captive_pitescale_scout>("npc_captive_pitescale_scout");
+    register_creature_script(npc_darkspear_jailor);
+    register_creature_script(npc_captive_pitescale_scout);
     new spell_voodoo();
-    new spell_script<spell_summ_garrosh_horde_way>("spell_summ_garrosh_horde_way");
-    new aura_script<spell_summ_ji_horde_way>("spell_summ_ji_horde_way");
-    new spell_script<spell_place_territorial_fetish>("spell_place_territorial_fetish");
-    new spell_script<spell_thonks_spyglass>("spell_thonks_spyglass");
-    new spell_script<spell_shrink>("spell_shrink");
-    new aura_script<spell_teleport_out_blackout>("spell_teleport_out_blackout");
+    register_spell_script(spell_summ_garrosh_horde_way);
+    register_aura_script(spell_summ_ji_horde_way);
+    register_spell_script(spell_place_territorial_fetish);
+    register_spell_script(spell_thonks_spyglass);
+    register_spell_script(spell_shrink);
+    register_aura_script(spell_teleport_out_blackout);
     new AreaTrigger_at_ring_of_valor_entrance();
 }

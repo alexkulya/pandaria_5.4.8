@@ -640,5 +640,5 @@ void AddSC_winterspring()
     new npc_rivern_frostwind();
     new npc_ranshalla();
     new go_elune_fire();
-    new spell_script<spell_earthsurge>("spell_earthsurge");
+    register_spell_script(spell_earthsurge);
 }

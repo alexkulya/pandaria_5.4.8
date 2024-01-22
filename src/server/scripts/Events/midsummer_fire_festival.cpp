@@ -416,13 +416,13 @@ private:
 
 void AddSC_event_midsummer_fire_festival()
 {
-    new spell_script<spell_throw_torch>("spell_throw_torch");
-    new spell_script<spell_jungle_torch_catch>("spell_jungle_torch_catch");
-    new spell_script<spell_ribbon_pole_channel>("spell_ribbon_pole_channel");
-    new aura_script<spell_ribbon_pole_channel_remove>("spell_ribbon_pole_channel_remove");
-    new aura_script<spell_ribbon_pole_periodic_visual>("spell_ribbon_pole_periodic_visual");
-    new spell_script<spell_torch_target_picker>("spell_torch_target_picker");
-    new spell_script<spell_juggle_torch_catch>("spell_juggle_torch_catch");
-    new creature_script<npc_torch_tossing_target_bunny>("npc_torch_tossing_target_bunny");
-    new creature_script<npc_torch_tossing_target_bunny_controller>("npc_torch_tossing_target_bunny_controller");
+    register_spell_script(spell_throw_torch);
+    register_spell_script(spell_jungle_torch_catch);
+    register_spell_script(spell_ribbon_pole_channel);
+    register_aura_script(spell_ribbon_pole_channel_remove);
+    register_aura_script(spell_ribbon_pole_periodic_visual);
+    register_spell_script(spell_torch_target_picker);
+    register_spell_script(spell_juggle_torch_catch);
+    register_creature_script(npc_torch_tossing_target_bunny);
+    register_creature_script(npc_torch_tossing_target_bunny_controller);
 }

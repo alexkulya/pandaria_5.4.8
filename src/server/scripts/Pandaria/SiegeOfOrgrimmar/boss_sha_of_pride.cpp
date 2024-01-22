@@ -2110,38 +2110,38 @@ class sat_sha_of_pride_rift_of_corruption : public IAreaTriggerOnce
 
 void AddSC_sha_of_pride()
 {
-    new creature_script<boss_norushen_pride>("boss_norushen_pride");
+    register_creature_script(boss_norushen_pride);
     new boss_sha_of_pride();
 
-    new creature_script<npc_manifestation_of_pride>("npc_manifestation_of_pride");
-    new creature_script<npc_self_reflection>("npc_self_reflection");
-    new creature_script<npc_rift_of_corruption>("npc_rift_of_corruption");
-    new creature_script<npc_sha_of_pride_shadow_prison>("npc_sha_of_pride_shadow_prison");
+    register_creature_script(npc_manifestation_of_pride);
+    register_creature_script(npc_self_reflection);
+    register_creature_script(npc_rift_of_corruption);
+    register_creature_script(npc_sha_of_pride_shadow_prison);
 
-    new spell_script<spell_sha_of_pride_swelling_pride>("spell_sha_of_pride_swelling_pride");
-    new spell_script<spell_sha_of_pride_projection>("spell_sha_of_pride_projection");
-    new spell_script<spell_sha_of_pride_projection_explode>("spell_sha_of_pride_projection_explode");
-    new spell_script<spell_sha_of_pride_aura_of_pride>("spell_sha_of_pride_aura_of_pride");
-    new aura_script<spell_sha_of_pride_pride_bar>("spell_sha_of_pride_pride_bar");
-    new spell_script<spell_gift_of_the_titans_link>("spell_gift_of_the_titans_link");
-    new spell_script<spell_sha_of_fear_mark_of_arrogance>("spell_sha_of_fear_mark_of_arrogance");
-    new aura_script<spell_sha_of_fear_mark_of_arrogance_aura>("spell_sha_of_fear_mark_of_arrogance_aura");
-    new aura_script<spell_sha_of_pride_wounded_pride>("spell_sha_of_pride_wounded_pride");
-    new spell_script<spell_sha_of_pride_mocking_blast>("spell_sha_of_pride_mocking_blast");
-    new spell_script<spell_sha_of_pride_last_word>("spell_sha_of_pride_last_word");
-    new aura_script<spell_sha_of_pride_self_reflection>("spell_sha_of_pride_self_reflection");
-    new spell_script<spell_sha_of_pride_unleashed>("spell_sha_of_pride_unleashed");
-    new spell_script<spell_sha_of_pride_imprison>("spell_sha_of_pride_imprison");
-    new aura_script<spell_sha_of_pride_corrupted_prison>("spell_sha_of_pride_corrupted_prison");
-    new spell_script<spell_sha_of_pride_corrupted_prison_activation>("spell_sha_of_pride_corrupted_prison_activation");
-    new spell_script<spell_sha_of_pride_unleashed_apply>("spell_sha_of_pride_unleashed_apply");
-    new spell_script<spell_sha_of_pride_final_gift>("spell_sha_of_pride_final_gift");
-    new spell_script<spell_sha_of_pride_self_reflection_explode>("spell_sha_of_pride_self_reflection_explode");
-    new spell_script<spell_sha_of_pride_gift_of_the_titans_dps_selector>("spell_sha_of_pride_gift_of_the_titans_dps_selector");
-    new spell_script<spell_sha_of_pride_gift_of_the_titans_healers_selector>("spell_sha_of_pride_gift_of_the_titans_healers_selector");
-    new aura_script<spell_sha_of_pride_overcome>("spell_sha_of_pride_overcome");
-    new aura_script<spell_sha_of_pride_unstable_corruption>("spell_sha_of_pride_unstable_corruption");
-    new spell_script<spell_sha_of_pride_unstable_corruption_eff>("spell_sha_of_pride_unstable_corruption_eff");
-    new aura_script<spell_sha_of_pride_rift_of_corruption>("spell_sha_of_pride_rift_of_corruption");
+    register_spell_script(spell_sha_of_pride_swelling_pride);
+    register_spell_script(spell_sha_of_pride_projection);
+    register_spell_script(spell_sha_of_pride_projection_explode);
+    register_spell_script(spell_sha_of_pride_aura_of_pride);
+    register_aura_script(spell_sha_of_pride_pride_bar);
+    register_spell_script(spell_gift_of_the_titans_link);
+    register_spell_script(spell_sha_of_fear_mark_of_arrogance);
+    register_aura_script(spell_sha_of_fear_mark_of_arrogance_aura);
+    register_aura_script(spell_sha_of_pride_wounded_pride);
+    register_spell_script(spell_sha_of_pride_mocking_blast);
+    register_spell_script(spell_sha_of_pride_last_word);
+    register_aura_script(spell_sha_of_pride_self_reflection);
+    register_spell_script(spell_sha_of_pride_unleashed);
+    register_spell_script(spell_sha_of_pride_imprison);
+    register_aura_script(spell_sha_of_pride_corrupted_prison);
+    register_spell_script(spell_sha_of_pride_corrupted_prison_activation);
+    register_spell_script(spell_sha_of_pride_unleashed_apply);
+    register_spell_script(spell_sha_of_pride_final_gift);
+    register_spell_script(spell_sha_of_pride_self_reflection_explode);
+    register_spell_script(spell_sha_of_pride_gift_of_the_titans_dps_selector);
+    register_spell_script(spell_sha_of_pride_gift_of_the_titans_healers_selector);
+    register_aura_script(spell_sha_of_pride_overcome);
+    register_aura_script(spell_sha_of_pride_unstable_corruption);
+    register_spell_script(spell_sha_of_pride_unstable_corruption_eff);
+    register_aura_script(spell_sha_of_pride_rift_of_corruption);
     new atrigger_script<sat_sha_of_pride_rift_of_corruption>("sat_sha_of_pride_rift_of_corruption");
 }

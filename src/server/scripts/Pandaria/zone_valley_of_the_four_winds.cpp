@@ -287,211 +287,167 @@ enum eIkThikWarriorEvents
     EVENT_SHOCK_AND_AWE         = 2,
 };
 
-class npc_ik_thik_warrior : public CreatureScript
+struct npc_ik_thik_warrior : public ScriptedAI
 {
-    public:
-        npc_ik_thik_warrior() : CreatureScript("npc_ik_thik_warrior") { }
+    npc_ik_thik_warrior(Creature* creature) : ScriptedAI(creature) { }
 
-        struct npc_ik_thik_warriorAI : public ScriptedAI
+    EventMap events;
+
+    void Reset() override
+    {
+        events.Reset();
+
+        events.ScheduleEvent(EVENT_PIERCE_ARMOR, 5s);
+        events.ScheduleEvent(EVENT_SHOCK_AND_AWE, 15s);
+    }
+
+    void JustDied(Unit* /*killer*/) override { }
+
+    void JustSummoned(Creature* summon) override
+    {
+        summon->DespawnOrUnsummon(12000);
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (!UpdateVictim())
+            return;
+
+        if (me->HasUnitState(UNIT_STATE_CASTING))
+            return;
+
+        events.Update(diff);
+
+        while (uint32 eventId = events.ExecuteEvent())
         {
-            npc_ik_thik_warriorAI(Creature* creature) : ScriptedAI(creature) { }
-
-            EventMap events;
-
-            void Reset() override
+            switch (eventId)
             {
-                events.Reset();
-
-                events.ScheduleEvent(EVENT_PIERCE_ARMOR,         5000);
-                events.ScheduleEvent(EVENT_SHOCK_AND_AWE,        15000);
+                case EVENT_PIERCE_ARMOR:
+                    if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                        me->CastSpell(target, SPELL_PIERCE_ARMOR, false);
+                    events.ScheduleEvent(EVENT_PIERCE_ARMOR, 25s);
+                    break;
+                case EVENT_SHOCK_AND_AWE:
+                    if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                        me->CastSpell(target, SPELL_SHOCK_AND_AWE, false);
+                    events.ScheduleEvent(EVENT_SHOCK_AND_AWE, 40s);
+                    break;
+                default:
+                    break;
             }
-
-            void JustDied(Unit* /*killer*/) override { }
-
-            void JustSummoned(Creature* summon) override
-            {
-                summon->DespawnOrUnsummon(12000);
-            }
-
-            void UpdateAI(uint32 diff) override
-            {
-                if (!UpdateVictim())
-                    return;
-
-                if (me->HasUnitState(UNIT_STATE_CASTING))
-                    return;
-
-                events.Update(diff);
-
-                while (uint32 eventId = events.ExecuteEvent())
-                {
-                    switch (eventId)
-                    {
-                        case EVENT_PIERCE_ARMOR:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
-                                me->CastSpell(target, SPELL_PIERCE_ARMOR, false);
-                            events.ScheduleEvent(EVENT_PIERCE_ARMOR,       25000);
-                            break;
-                        case EVENT_SHOCK_AND_AWE:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
-                                me->CastSpell(target, SPELL_SHOCK_AND_AWE, false);
-                            events.ScheduleEvent(EVENT_SHOCK_AND_AWE, 40000);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-
-                DoMeleeAttackIfReady();
-            }
-        };
-
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new npc_ik_thik_warriorAI(creature);
         }
+
+        DoMeleeAttackIfReady();
+    }
 };
 
 // Muddy Water quest
-class spell_gen_gather_muddy_water : public SpellScriptLoader
+class spell_gen_gather_muddy_water : public SpellScript
 {
-    public:
-        spell_gen_gather_muddy_water() : SpellScriptLoader("spell_gen_gather_muddy_water") { }
+    PrepareSpellScript(spell_gen_gather_muddy_water);
 
-        class spell_gen_gather_muddy_water_SpellScript : public SpellScript
+    void HandleDummy(SpellEffIndex /*effIndex*/)
+    {
+        auto target = GetHitUnit();
+        if (!target || target->GetTypeId() != TYPEID_PLAYER)
+            return;
+
+        auto player = GetCaster()->ToPlayer();
+        if (player->GetQuestStatus(29951) == QUEST_STATUS_INCOMPLETE)
         {
-            PrepareSpellScript(spell_gen_gather_muddy_water_SpellScript);
-
-            void HandleDummy(SpellEffIndex /*effIndex*/)
+            if (!player->HasAura(106284))
             {
-                auto target = GetHitUnit();
-                if (!target || target->GetTypeId() != TYPEID_PLAYER)
-                    return;
-
-                auto player = GetCaster()->ToPlayer();
-                if (player->GetQuestStatus(29951) == QUEST_STATUS_INCOMPLETE)
-                {
-                    if (!player->HasAura(106284))
-                    {
-                        player->MonsterTextEmote("Mudmug's vial will slowly spill water while you are moving. Plan your path carefully!", player, true);
-                        player->CastSpell(player, 106284, true);
-                    }
-                    else
-                        player->CastSpell(player, 106294, true);
-
-                    if (player->GetPower(POWER_ALTERNATE_POWER) == 100)
-                    {
-                        player->AddItem(76356, 1);
-                        player->RemoveAurasDueToSpell(106284);
-                    }
-                }
+                player->MonsterTextEmote("Mudmug's vial will slowly spill water while you are moving. Plan your path carefully!", player, true);
+                player->CastSpell(player, 106284, true);
             }
+            else
+                player->CastSpell(player, 106294, true);
 
-            void Register() override
+            if (player->GetPower(POWER_ALTERNATE_POWER) == 100)
             {
-                OnEffectHitTarget += SpellEffectFn(spell_gen_gather_muddy_water_SpellScript::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+                player->AddItem(76356, 1);
+                player->RemoveAurasDueToSpell(106284);
             }
-        };
-
-        SpellScript* GetSpellScript() const override
-        {
-            return new spell_gen_gather_muddy_water_SpellScript();
         }
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_gen_gather_muddy_water::HandleDummy, EFFECT_0, SPELL_EFFECT_DUMMY);
+    }
 };
 
-class spell_gen_gather_muddy_water_aura : public SpellScriptLoader
+class spell_gen_gather_muddy_water_aura : public AuraScript
 {
-    public:
-        spell_gen_gather_muddy_water_aura() : SpellScriptLoader("spell_gen_gather_muddy_water_aura") { }
+    PrepareAuraScript(spell_gen_gather_muddy_water_aura);
 
-        class spell_gen_gather_muddy_water_aura_AuraScript : public AuraScript
-        {
-            PrepareAuraScript(spell_gen_gather_muddy_water_aura_AuraScript);
+    void HandlePeriodic(AuraEffect const* /*aurEff*/)
+    {
+        if (!GetTarget()->isMoving())
+            PreventDefaultAction();
+    }
 
-            void HandlePeriodic(AuraEffect const* /*aurEff*/)
-            {
-                if (!GetTarget()->isMoving())
-                    PreventDefaultAction();
-            }
-
-            void Register() override
-            {
-                OnEffectPeriodic += AuraEffectPeriodicFn(spell_gen_gather_muddy_water_aura_AuraScript::HandlePeriodic, EFFECT_1, SPELL_AURA_PERIODIC_TRIGGER_SPELL);
-            }
-        };
-
-        AuraScript* GetAuraScript() const override
-        {
-            return new spell_gen_gather_muddy_water_aura_AuraScript();
-        }
+    void Register() override
+    {
+        OnEffectPeriodic += AuraEffectPeriodicFn(spell_gen_gather_muddy_water_aura::HandlePeriodic, EFFECT_1, SPELL_AURA_PERIODIC_TRIGGER_SPELL);
+    }
 };
 
 // Crouching Carrot, Hidden Turnip quest
-class npc_orange_painted_turnip : public CreatureScript
+struct npc_orange_painted_turnip : public ScriptedAI
 {
-    public:
-        npc_orange_painted_turnip() : CreatureScript("npc_orange_painted_turnip") { }
+    npc_orange_painted_turnip(Creature* creature) : ScriptedAI(creature)
+    {
+        creature->SetReactState(REACT_PASSIVE);
+        creature->SetFaction(35);
+    }
 
-        struct npc_orange_painted_turnipAI : public ScriptedAI
+    uint32 timer;
+
+    void Reset() override
+    {
+        timer = 8000;
+        std::list<Creature*> clist;
+        GetCreatureListWithEntryInGrid(clist, me, 56538, 10.f);
+        for (auto &&c : clist)
         {
-            npc_orange_painted_turnipAI(Creature* creature) : ScriptedAI(creature)
-            {
-                creature->SetReactState(REACT_PASSIVE);
-                creature->SetFaction(35);
-            }
+            if (!me->IsWithinLOSInMap(c))
+                continue;
 
-            uint32 timer;
-
-            void Reset() override
-            {
-                timer = 8000;
-                std::list<Creature*> clist;
-                GetCreatureListWithEntryInGrid(clist, me, 56538, 10.f);
-                for (auto &&c : clist)
-                {
-                    if (!me->IsWithinLOSInMap(c))
-                        continue;
-
-                    float x, y, z;
-                    me->GetClosePoint(x, y, z, 0.f, 0.f, c->GetAngle(me));
-                    c->AI()->Talk(0);
-                    c->GetMotionMaster()->MoveIdle();
-                    c->GetMotionMaster()->MovePoint(1, x, y, z);
-                }
-            }
-
-            void UpdateAI(uint32 diff) override
-            {
-                if (timer <= diff)
-                {
-                    std::list<Creature*> clist;
-                    GetCreatureListWithEntryInGrid(clist, me, 56538, 10.f);
-                    for (auto &&c : clist)
-                    {
-                        if (!me->IsWithinLOSInMap(c))
-                            continue;
-
-                        if (auto player = me->GetCharmerOrOwnerPlayerOrPlayerItself())
-                            player->KilledMonsterCredit(56544);
-
-                        if (c->AI())
-                            c->AI()->Talk(1);
-
-                        c->GetMotionMaster()->MoveFleeing(me, 4000);
-                        c->DespawnOrUnsummon(4000);
-                    }
-                    me->DespawnOrUnsummon(5000);
-                    timer = 10000;
-                }
-                else
-                    timer -= diff;
-            }
-        };
-
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new npc_orange_painted_turnipAI(creature);
+            float x, y, z;
+            me->GetClosePoint(x, y, z, 0.f, 0.f, c->GetAngle(me));
+            c->AI()->Talk(0);
+            c->GetMotionMaster()->MoveIdle();
+            c->GetMotionMaster()->MovePoint(1, x, y, z);
         }
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (timer <= diff)
+        {
+            std::list<Creature*> clist;
+            GetCreatureListWithEntryInGrid(clist, me, 56538, 10.f);
+            for (auto &&c : clist)
+            {
+                if (!me->IsWithinLOSInMap(c))
+                    continue;
+
+                if (auto player = me->GetCharmerOrOwnerPlayerOrPlayerItself())
+                    player->KilledMonsterCredit(56544);
+
+                if (c->AI())
+                    c->AI()->Talk(1);
+
+                c->GetMotionMaster()->MoveFleeing(me, 4000);
+                c->DespawnOrUnsummon(4000);
+            }
+            me->DespawnOrUnsummon(5000);
+            timer = 10000;
+        }
+        else
+            timer -= diff;
+    }
 };
 
 class DisorientedTargetSelector
@@ -506,31 +462,20 @@ class DisorientedTargetSelector
 };
 
 // Disoriented 115226
-class spell_vfw_disoriented : public SpellScriptLoader
+class spell_vfw_disoriented : public SpellScript
 {
-    public:
-        spell_vfw_disoriented() : SpellScriptLoader("spell_vfw_disoriented") { }
+    PrepareSpellScript(spell_vfw_disoriented);
 
-        class spell_vfw_disoriented_SpellScript : public SpellScript
-        {
-            PrepareSpellScript(spell_vfw_disoriented_SpellScript);
+    void FilterTargets(std::list<WorldObject*>& targets)
+    {
+        targets.remove_if(DisorientedTargetSelector());
+    }
 
-            void FilterTargets(std::list<WorldObject*>& targets)
-            {
-                targets.remove_if(DisorientedTargetSelector());
-            }
-
-            void Register() override
-            {
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_vfw_disoriented_SpellScript::FilterTargets, EFFECT_0, TARGET_UNIT_DEST_AREA_ENEMY);
-                OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_vfw_disoriented_SpellScript::FilterTargets, EFFECT_1, TARGET_UNIT_DEST_AREA_ENEMY);
-            }
-        };
-
-        SpellScript *GetSpellScript() const override
-        {
-            return new spell_vfw_disoriented_SpellScript();
-        }
+    void Register() override
+    {
+        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_vfw_disoriented::FilterTargets, EFFECT_0, TARGET_UNIT_DEST_AREA_ENEMY);
+        OnObjectAreaTargetSelect += SpellObjectAreaTargetSelectFn(spell_vfw_disoriented::FilterTargets, EFFECT_1, TARGET_UNIT_DEST_AREA_ENEMY);
+    }
 };
 
 enum q29982
@@ -2287,46 +2232,46 @@ void AddSC_valley_of_the_four_winds()
     new npc_blackhoof();
 
     // Standard Mobs
-    new npc_ik_thik_warrior();
+    register_creature_script(npc_ik_thik_warrior);
 
     // Quests
-    new spell_gen_gather_muddy_water();
-    new spell_gen_gather_muddy_water_aura();
-    new npc_orange_painted_turnip();
-    new spell_vfw_disoriented();
+    register_spell_script(spell_gen_gather_muddy_water);
+    register_aura_script(spell_gen_gather_muddy_water_aura);
+    register_creature_script(npc_orange_painted_turnip);
+    register_spell_script(spell_vfw_disoriented);
     new npc_q29982();
     new AreaTrigger_cavern_of_endless_echoes();
-    new creature_script<npc_fish_fellreed>("npc_fish_fellreed");
-    new creature_script<npc_liang_thunderfoot>("npc_liang_thunderfoot");
-    new creature_script<npc_francis_the_shepherd_boy>("npc_francis_the_shepherd_boy");
-    new spell_script<spell_suspicious_footprint_identified>("spell_suspicious_footprint_identified");
-    new spell_script<spell_four_wind_pick_up_chicken>("spell_four_wind_pick_up_chicken");
-    new spell_script<spell_to_be_a_master_food_coocking>("spell_to_be_a_master_food_coocking");
-    new creature_script<npc_just_a_folk_story_quest>("npc_just_a_folk_story_quest");
-    new creature_script<npc_granary_vandal>("npc_granary_vandal");
-    new creature_script<npc_catch_and_carry>("npc_catch_and_carry");
-    new spell_script<spell_throw_grain>("spell_throw_grain");
-    new aura_script<spell_catch_grain>("spell_catch_grain");
-    new creature_script<npc_vfw_adolescent_mushan>("npc_vfw_adolescent_mushan");
-    new creature_script<npc_vfw_wyrmhorn_turtle>("npc_vfw_wyrmhorn_turtle");
-    new creature_script<npc_vfw_lupello>("npc_vfw_lupello");
-    new creature_script<npc_vfw_snagtooth_hooligan>("npc_vfw_snagtooth_hooligan");
-    new creature_script<npc_vfw_frenzyhop>("npc_vfw_frenzyhop");
-    new creature_script<npc_vfw_hornbill_strider>("npc_vfw_hornbill_strider");
-    new creature_script<npc_vfw_grainhunter_hawk>("npc_vfw_grainhunter_hawk");
-    new creature_script<npc_vfw_springtail_gnasher>("npc_vfw_springtail_gnasher");
-    new creature_script<npc_vfw_mothfighter>("npc_vfw_mothfighter");
-    new creature_script<npc_vfw_wildscale_herbalist>("npc_vfw_wildscale_herbalist");
-    new creature_script<npc_vfw_ikthik_vanguard>("npc_vfw_ikthik_vanguard");
-    new creature_script<npc_vfw_darkhide>("npc_vfw_darkhide");
-    new creature_script<npc_vfw_barrel_of_fireworks>("npc_vfw_barrel_of_fireworks");
-    new creature_script<npc_vfw_ik_thik_wing_commander>("npc_vfw_ik_thik_wing_commander");
-    new creature_script<npc_vfw_manifestation_of_fear>("npc_vfw_manifestation_of_fear");
-    new creature_script<npc_vfw_krungko_fingerlicker>("npc_vfw_krungko_fingerlicker");
-    new creature_script<npc_vfw_unbarreled_pandaren>("npc_vfw_unbarreled_pandaren");
-    new spell_script<spell_vfw_prey_pounce>("spell_vfw_prey_pounce");
-    new spell_script<spell_vfw_apply_mask>("spell_vfw_apply_mask");
-    new aura_script<spell_vfw_krungko_timer>("spell_vfw_krungko_timer");
+    register_creature_script(npc_fish_fellreed);
+    register_creature_script(npc_liang_thunderfoot);
+    register_creature_script(npc_francis_the_shepherd_boy);
+    register_spell_script(spell_suspicious_footprint_identified);
+    register_spell_script(spell_four_wind_pick_up_chicken);
+    register_spell_script(spell_to_be_a_master_food_coocking);
+    register_creature_script(npc_just_a_folk_story_quest);
+    register_creature_script(npc_granary_vandal);
+    register_creature_script(npc_catch_and_carry);
+    register_spell_script(spell_throw_grain);
+    register_aura_script(spell_catch_grain);
+    register_creature_script(npc_vfw_adolescent_mushan);
+    register_creature_script(npc_vfw_wyrmhorn_turtle);
+    register_creature_script(npc_vfw_lupello);
+    register_creature_script(npc_vfw_snagtooth_hooligan);
+    register_creature_script(npc_vfw_frenzyhop);
+    register_creature_script(npc_vfw_hornbill_strider);
+    register_creature_script(npc_vfw_grainhunter_hawk);
+    register_creature_script(npc_vfw_springtail_gnasher);
+    register_creature_script(npc_vfw_mothfighter);
+    register_creature_script(npc_vfw_wildscale_herbalist);
+    register_creature_script(npc_vfw_ikthik_vanguard);
+    register_creature_script(npc_vfw_darkhide);
+    register_creature_script(npc_vfw_barrel_of_fireworks);
+    register_creature_script(npc_vfw_ik_thik_wing_commander);
+    register_creature_script(npc_vfw_manifestation_of_fear);
+    register_creature_script(npc_vfw_krungko_fingerlicker);
+    register_creature_script(npc_vfw_unbarreled_pandaren);
+    register_spell_script(spell_vfw_prey_pounce);
+    register_spell_script(spell_vfw_apply_mask);
+    register_aura_script(spell_vfw_krungko_timer);
     new atrigger_script<sat_vfw_ground_and_pound>("sat_vfw_ground_and_pound");
-    new aura_script<spell_vfw_breaking_barrel>("spell_vfw_breaking_barrel");
+    register_aura_script(spell_vfw_breaking_barrel);
 }

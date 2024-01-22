@@ -1584,19 +1584,19 @@ struct npc_sedrick_calston : public ScriptedAI
 
 void AddSC_tirisfal_glades()
 {
-    new creature_script<npc_aradne>("npc_aradne");
-    new creature_script<npc_deathknell_grave_target>("npc_deathknell_grave_target");
-    new creature_script<npc_risen_dead>("npc_risen_dead");
-    new creature_script<npc_undertaker_mordo>("npc_undertaker_mordo");
-    new creature_script<npc_mindless_zombie>("npc_mindless_zombie");
-    new creature_script<npc_darnell>("npc_darnell");
+    register_creature_script(npc_aradne);
+    register_creature_script(npc_deathknell_grave_target);
+    register_creature_script(npc_risen_dead);
+    register_creature_script(npc_undertaker_mordo);
+    register_creature_script(npc_mindless_zombie);
+    register_creature_script(npc_darnell);
     new npc_marshal_redpath();
     new npc_lilian_voss();
     new npc_valdred_moray();
-    new creature_script<npc_vile_fin_puddlejumper>("npc_vile_fin_puddlejumper");
-    new creature_script<npc_vile_fin_minor_oracle>("npc_vile_fin_minor_oracle");
-    new spell_script<spell_murloc_leash>("spell_murloc_leash");
-    new creature_script<npc_captured_vile_fin_puddlejumper>("npc_captured_vile_fin_puddlejumper");
-    new creature_script<npc_captured_vile_fin_minor_oracle>("npc_captured_vile_fin_minor_oracle");
-    new creature_script<npc_sedrick_calston>("npc_sedrick_calston");
+    register_creature_script(npc_vile_fin_puddlejumper);
+    register_creature_script(npc_vile_fin_minor_oracle);
+    register_spell_script(spell_murloc_leash);
+    register_creature_script(npc_captured_vile_fin_puddlejumper);
+    register_creature_script(npc_captured_vile_fin_minor_oracle);
+    register_creature_script(npc_sedrick_calston);
 }

@@ -19,132 +19,140 @@
 #include "ScriptedCreature.h"
 #include "heart_of_fear.h"
 
-enum Yells
+enum MeljarakSpellData
 {
-    SAY_INTRO            = 0, // Your defiance of the empress ends here!
+    SPELL_WHIRLING_BLADE                    = 121896, // Triggers 121898 damage every 0.25s and 121897, 122083 dummy location spells (visuals?).
+    SPELL_WHIRLING_BLADE_DUMMY              = 121897,
+    SPELL_WHIRLING_BLADE_DUMMY_AURA         = 122083,
+    SPELL_RAIN_OF_BLADES                    = 122406, // Triggers 122407 damage spell every 0.5s.
+    SPELL_WIND_BOMB                         = 131813, // Triggers 131814 bomb summon npc 67053.
+    SPELL_WIND_BOMB_SUMM                    = 131814,
 
-    SAY_AGGRO            = 1, // All of Pandaria will fall beneath the Wings of the Empress!
-    SAY_SLAY             = 2, // 0 - The Empress commands it!; 1 - Pitiful.
-    SAY_DEATH            = 3, // Empress... I have... failed you...
+    SPELL_WATCHFUL_EYE_1                    = 125933, // Starting Normal and always Heroic aura - 9 adds alive, can control 4 / 3 on Heroic.
+    SPELL_WATCHFUL_EYE_2                    = 125935, // 6 adds alive, can control 2.
+    SPELL_WATCHFUL_EYE_3                    = 125936, // 3 adds alive, can control 0.
 
-    SAY_WHIRLING_BLADES  = 4, // My blade never misses its mark!
-    SAY_RAIN_OF_BLADES   = 5, // The skies belong to the Empress!
+    SPELL_RECKLESNESS_N                     = 122354, // Normal stackable version.
+    SPELL_RECKLESNESS_H                     = 125873, // Heroic 30 sec version.
 
-    SAY_WATCHFUL_EYE     = 6, // 0 - You fight like cowards!; 1 - Aid me brethren!
+    SPELL_BERSERK_MELJARAK                  = 120207, // 480 seconds or 8 mins Enrage.
 
-    SAY_ADD_GROUP_DIES   = 7, // 0 - To die for the empress is an honor!; 1 - The wings of the empress cannot fail!; 2 - You will pay for your transgressions!
-    SAY_SUMMON_REINFORCE = 8,  // 0 - The Kor'thik have no equal in combat!; 1 - The mighty Zar'thik bend the wind to their will!; 2 - The Sra'thik command the elements of this land, leaving their foes imprisoned for all time!
-
-    ANN_WHIRLING_BLADES  = 9, // Wind Lord Mel'jarak begins to cast [Whirling Blades]!
-    ANN_RAIN_OF_BLADES   = 10,// Wind Lord Mel'jarak begins to cast [Rain of Blades]!
-    ANN_REINFORCEMENTS   = 11 // Wind Lord Mel'jarak calls for reinforcements!
-};
-
-enum Spells
-{
-    SPELL_WHIRLING_BLADE             = 121896, // Triggers 121898 damage every 0.25s and 121897, 122083 dummy location spells (visuals?).
-    SPELL_WHIRLING_BLADE_DUMMY       = 121897,
-    SPELL_WHIRLING_BLADE_DUMMY_AURA  = 122083,
-    SPELL_RAIN_OF_BLADES             = 122406, // Triggers 122407 damage spell every 0.5s.
-    SPELL_WIND_BOMB                  = 131813, // Triggers 131814 bomb summon npc 67053.
-    SPELL_WIND_BOMB_SUMM             = 131814,
-
-    SPELL_WATCHFUL_EYE_1             = 125933, // Starting Normal and always Heroic aura - 9 adds alive, can control 4 / 3 on Heroic.
-    SPELL_WATCHFUL_EYE_2             = 125935, // 6 adds alive, can control 2.
-    SPELL_WATCHFUL_EYE_3             = 125936, // 3 adds alive, can control 0.
-
-    SPELL_RECKLESNESS_N              = 122354, // Normal stackable version.
-    SPELL_RECKLESNESS_H              = 125873, // Heroic 30 sec version.
-
-    SPELL_BERSERK_MELJARAK           = 120207, // 480 seconds or 8 mins Enrage.
-
-    SPELL_IMP_SPEAR_ABIL             = 122220, // Aura player receives when clicking on the racks. Gives Action Bar with button 1 to throw spear.
-    SPELL_IMP_SPEAR                  = 122224, // Incapacitates an add for 50 seconds, damage breaks it.
+    SPELL_IMP_SPEAR_ABIL                    = 122220, // Aura player receives when clicking on the racks. Gives Action Bar with button 1 to throw spear.
+    SPELL_IMP_SPEAR                         = 122224, // Incapacitates an add for 50 seconds, damage breaks it.
 
     // Wind Bomb
-    SPELL_WIND_BOMB_THR_DMG          = 131830, // Damage in 5 yards at throwing.
-    SPELL_WIND_BOMB_ARM              = 131835, // Visual bomb arm.
-    SPELL_WIND_BOMB_EXPLODE          = 131842, // If a player goes in 6 yards (on off checked with 131836).
+    SPELL_WIND_BOMB_THR_DMG                 = 131830, // Damage in 5 yards at throwing.
+    SPELL_WIND_BOMB_ARM                     = 131835, // Visual bomb arm.
+    SPELL_WIND_BOMB_EXPLODE                 = 131842, // If a player goes in 6 yards (on off checked with 131836).
 
     // The Swarm
-    SPELL_FATE_OF_THE_KORT           = 121774, // Share Damage spell for Kor'thik Elite Blademasters.
-    SPELL_FATE_OF_THE_SRAT           = 121802, // Share Damage spell for Sra'thik Amber-Trappers.
-    SPELL_FATE_OF_THE_ZART           = 121807, // Share Damage spell for Zar'thik Battle-Menders.
+    SPELL_FATE_OF_THE_KORT                  = 121774, // Share Damage spell for Kor'thik Elite Blademasters.
+    SPELL_FATE_OF_THE_SRAT                  = 121802, // Share Damage spell for Sra'thik Amber-Trappers.
+    SPELL_FATE_OF_THE_ZART                  = 121807, // Share Damage spell for Zar'thik Battle-Menders.
 
     // - Kor'thik Elite Blademaster
-    SPELL_KORTHIK_STRIKE             = 123962, // All 3 use this at once on the same player.
-    SPELL_KORTHIK_STRIKE_AURA        = 123963, // Lable
-    SPELL_KORTHIK_STRIKE_CHARGE      = 122409, // Req lable
+    SPELL_KORTHIK_STRIKE                    = 123962, // All 3 use this at once on the same player.
+    SPELL_KORTHIK_STRIKE_AURA               = 123963, // Lable
+    SPELL_KORTHIK_STRIKE_CHARGE             = 122409, // Req lable
 
     // - Sra'thik Amber-Trapper
-    SPELL_AMBER_PRISON               = 121876, // Initial cast, triggers 121881 after 3 seconds.
-    SPELL_AMBER_PRISON_TRIG          = 121881, // Triggers 121874 cast.
-    SPELL_AMBER_PRISON_FC            = 121874, // Triggers 121885 aura.
-    SPELL_AMBER_PRISON_AURA          = 121885, // Stun, root, visual etc. !ADD THIS: /* insert into spell_linked_spell values (121885, 129078, 1, 'Summon Amber Prison when hit by aura'); */
-    SPELL_AMBER_PRISON_SUMM          = 129078, // Summons 62531 Amber Prison npc.
+    SPELL_AMBER_PRISON                      = 121876, // Initial cast, triggers 121881 after 3 seconds.
+    SPELL_AMBER_PRISON_TRIG                 = 121881, // Triggers 121874 cast.
+    SPELL_AMBER_PRISON_FC                   = 121874, // Triggers 121885 aura.
+    SPELL_AMBER_PRISON_AURA                 = 121885, // Stun, root, visual etc. !ADD THIS: /* insert into spell_linked_spell values (121885, 129078, 1, 'Summon Amber Prison when hit by aura'); */
+    SPELL_AMBER_PRISON_SUMM                 = 129078, // Summons 62531 Amber Prison npc.
 
-    SPELL_RESIDUE                    = 122055, // Residue afflicts players who destroy Amber Prisons.
+    SPELL_RESIDUE                           = 122055, // Residue afflicts players who destroy Amber Prisons.
 
-    SPELL_CORROSIVE_RESIN            = 122064,
+    SPELL_CORROSIVE_RESIN                   = 122064,
 
     // !-  Moving while afflicted by Corrosive Resin removes a stack of Corrosive Resin and creates a Corrosive Resin Pool at the player's location. -!
-    SPELL_CORR_RESIN_POOL_S          = 122123, // Summons Corrosive Resin Pool npc 67046.
-    SPELL_CORR_RESIN_POOL_A          = 129005, // Aura for Corrosive Resin Pool, triggers 122125 dmg each sec.
+    SPELL_CORR_RESIN_POOL_S                 = 122123, // Summons Corrosive Resin Pool npc 67046.
+    SPELL_CORR_RESIN_POOL_A                 = 129005, // Aura for Corrosive Resin Pool, triggers 122125 dmg each sec.
 
     // - Zar'thik Battle-Mender
-    SPELL_MENDING                    = 122193, // Triggers a 200 yard dummy + heal spell 122147.
-    SPELL_QUICKENING                 = 122149,  // All Swarm gets boost 25% dmg + as.
-    SPELL_MENDING_EX_AURA            = 122185,
+    SPELL_MENDING                           = 122193, // Triggers a 200 yard dummy + heal spell 122147.
+    SPELL_QUICKENING                        = 122149, // All Swarm gets boost 25% dmg + as.
+    SPELL_MENDING_EX_AURA                   = 122185
 };
 
-enum Events
+enum MeljarakEvents
 {
-    EVENT_WHIRLING_BLADE        = 1, // 36 secs after pull
-    EVENT_RAIN_OF_BLADES        = 2,         // 60 secs after pull
-    EVENT_WIND_BOMB             = 3,
+    EVENT_WHIRLING_BLADE                    = 1, // 36 secs after pull
+    EVENT_RAIN_OF_BLADES                    = 2, // 60 secs after pull
+    EVENT_WIND_BOMB                         = 3,
 
-    EVENT_CHECK_ADD_CC_DEATH    = 4,     // Checks how many adds are dead / CC'ed.
-    EVENT_SUMMON_REINFORCEMENTS = 5,
+    EVENT_CHECK_ADD_CC_DEATH                = 4, // Checks how many adds are dead / CC'ed.
+    EVENT_SUMMON_REINFORCEMENTS             = 5,
 
-    EVENT_BERSERK_MELJARAK      = 6,
+    EVENT_BERSERK_MELJARAK                  = 6,
 
     // Wind Bomb
-    EVENT_ARM                   = 7,                    // 3 secs after spawn
-    EVENT_CHECK_PLAYER          = 8,           // Check if needs to explode.
+    EVENT_ARM                               = 7, // 3 secs after spawn
+    EVENT_CHECK_PLAYER                      = 8, // Check if needs to explode.
 
     // The Swarm
 
     // - Kor'thik Elite Blademaster
-    EVENT_KORTHIK_STRIKE        = 9,         // 19s after pull.
+    EVENT_KORTHIK_STRIKE                    = 9, // 19s after pull.
 
     // - Sra'thik Amber-Trapper
-    EVENT_AMBER_PRISON          = 10,
-    EVENT_CORROSIVE_RESIN       = 11,
+    EVENT_AMBER_PRISON                      = 10,
+    EVENT_CORROSIVE_RESIN                   = 11,
 
     // - Zar'thik Battle-Mender
-    EVENT_MENDING               = 12,
-    EVENT_QUICKENING            = 13,
+    EVENT_MENDING                           = 12,
+    EVENT_QUICKENING                        = 13,
 
     // Heroic
-    EVENT_LANDING               = 14,
-    EVENT_KORTHIK_STRIKE_CHARGE = 15,
+    EVENT_LANDING                           = 14,
+    EVENT_KORTHIK_STRIKE_CHARGE             = 15,
+
+    // Whirling blades stalker
+    EVENT_MOVE_BACK                         = 16,
+
+    // Swarm spawner
+    EVENT_SPAWN_KORTHIK                     = 17,
+    EVENT_SPAWN_ZARTHIK                     = 18,
+    EVENT_SPAWN_SRATHIK                     = 19
 };
 
-enum Actions
+enum MeljarakTexts
 {
-    ACTION_WHIRLING_BLADE  = 0,
-    ACTION_SWARM_IN_COMBAT = 1,
-    ACTION_SET_SPAWN_SWARM = 2,
-    ACTION_RESET_SPAWN     = 3,
-    ACTION_SWARM_TYPE_DIED = 4,
+    SAY_INTRO                               = 0,  // Your defiance of the empress ends here!
+
+    SAY_AGGRO                               = 1,  // All of Pandaria will fall beneath the Wings of the Empress!
+    SAY_SLAY                                = 2,  // 0 - The Empress commands it!; 1 - Pitiful.
+    SAY_DEATH                               = 3,  // Empress... I have... failed you...
+
+    SAY_WHIRLING_BLADES                     = 4,  // My blade never misses its mark!
+    SAY_RAIN_OF_BLADES                      = 5,  // The skies belong to the Empress!
+
+    SAY_WATCHFUL_EYE                        = 6,  // 0 - You fight like cowards!; 1 - Aid me brethren!
+
+    SAY_ADD_GROUP_DIES                      = 7,  // 0 - To die for the empress is an honor!; 1 - The wings of the empress cannot fail!; 2 - You will pay for your transgressions!
+    SAY_SUMMON_REINFORCE                    = 8,  // 0 - The Kor'thik have no equal in combat!; 1 - The mighty Zar'thik bend the wind to their will!; 2 - The Sra'thik command the elements of this land, leaving their foes imprisoned for all time!
+
+    ANN_WHIRLING_BLADES                     = 9,  // Wind Lord Mel'jarak begins to cast [Whirling Blades]!
+    ANN_RAIN_OF_BLADES                      = 10, // Wind Lord Mel'jarak begins to cast [Rain of Blades]!
+    ANN_REINFORCEMENTS                      = 11  // Wind Lord Mel'jarak calls for reinforcements!
 };
 
-enum Misc
+enum MeljarakActions
 {
-    GROUP_ALIVE  = 0,
-    GROUP_KILLED = 1,
+    ACTION_WHIRLING_BLADE                   = 0,
+    ACTION_SWARM_IN_COMBAT                  = 1,
+    ACTION_SET_SPAWN_SWARM                  = 2,
+    ACTION_RESET_SPAWN                      = 3,
+    ACTION_SWARM_TYPE_DIED                  = 4
+};
 
-    WORLD_STATE_ACHIEVEMENT_LESS_THAN_THREE = 12003,
+enum MeljarakMisc
+{
+    GROUP_ALIVE                             = 0,
+    GROUP_KILLED                            = 1,
+
+    WORLD_STATE_ACHIEVEMENT_LESS_THAN_THREE = 12003
 };
 
 void SetEncounterUnitForEachGroup(uint64 ownerGUID, InstanceScript* _instance, uint32 type, uint32 diffType = 0)
@@ -216,12 +224,13 @@ class boss_wind_lord_meljarak : public CreatureScript
                     SetEncounterUnitForEachGroup(me->GetGUID(), instance, ENCOUNTER_FRAME_DISENGAGE);
                     instance->DoRemoveBloodLustDebuffSpellOnPlayers();
                 }
-                WindBomb            = false;
-                HasReck             = false;
-                strikeTargetGUID    = 0;
+
+                WindBomb = false;
+                HasReck = false;
+                strikeTargetGUID = 0;
                 recklessnessCounter = 0;
-                targetGUID          = 0;
-                delay               = 0;
+                targetGUID = 0;
+                delay = 0;
                 ResetSwarm();
                 HandleResetSpears();
 
@@ -232,8 +241,8 @@ class boss_wind_lord_meljarak : public CreatureScript
                     SpawnSwarm();
 
                 groupDict.clear();
-                groupDict.insert(std::pair<uint32, uint32>(NPC_ZARTHIK_BATTLE_MENDER,     GROUP_ALIVE));
-                groupDict.insert(std::pair<uint32, uint32>(NPC_SRATHIK_AMBER_TRAPPER,     GROUP_ALIVE));
+                groupDict.insert(std::pair<uint32, uint32>(NPC_ZARTHIK_BATTLE_MENDER, GROUP_ALIVE));
+                groupDict.insert(std::pair<uint32, uint32>(NPC_SRATHIK_AMBER_TRAPPER, GROUP_ALIVE));
                 groupDict.insert(std::pair<uint32, uint32>(NPC_KORTHIK_ELITE_BLADEMASTER, GROUP_ALIVE));
 
                 me->GetMap()->SetWorldState(WORLD_STATE_ACHIEVEMENT_LESS_THAN_THREE, 1);
@@ -304,11 +313,12 @@ class boss_wind_lord_meljarak : public CreatureScript
                     instance->SetBossState(DATA_MELJARAK, IN_PROGRESS);
                     SetEncounterUnitForEachGroup(me->GetGUID(), instance, ENCOUNTER_FRAME_ENGAGE);
                 }
+
                 Talk(SAY_AGGRO);
-                events.ScheduleEvent(EVENT_WHIRLING_BLADE, 18000);
-                events.ScheduleEvent(EVENT_RAIN_OF_BLADES, 30000);
-                events.ScheduleEvent(EVENT_BERSERK_MELJARAK, 8 * MINUTE * IN_MILLISECONDS);
-                events.ScheduleEvent(EVENT_KORTHIK_STRIKE, 19000);
+                events.ScheduleEvent(EVENT_WHIRLING_BLADE, 18s);
+                events.ScheduleEvent(EVENT_RAIN_OF_BLADES, 30s);
+                events.ScheduleEvent(EVENT_BERSERK_MELJARAK, 8min);
+                events.ScheduleEvent(EVENT_KORTHIK_STRIKE, 19s);
             }
 
             void JustSummoned(Creature* summon) override
@@ -391,7 +401,7 @@ class boss_wind_lord_meljarak : public CreatureScript
                 if (me->HealthBelowPct(75) && !WindBomb)
                 {
                     WindBomb = true;
-                    events.ScheduleEvent(EVENT_WIND_BOMB, 5000);
+                    events.ScheduleEvent(EVENT_WIND_BOMB, 5s);
                 }
             }
 
@@ -404,6 +414,7 @@ class boss_wind_lord_meljarak : public CreatureScript
             {
                 _JustDied();
                 Talk(SAY_DEATH);
+
                 if (instance)
                 {
                     instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
@@ -465,7 +476,7 @@ class boss_wind_lord_meljarak : public CreatureScript
                                 targetGUID = victim->GetGUID();
 
                             me->CastSpell(me, SPELL_WHIRLING_BLADE, false);
-                            events.ScheduleEvent(EVENT_WHIRLING_BLADE, urand(48000, 64000));
+                            events.ScheduleEvent(EVENT_WHIRLING_BLADE, randtime(48s, 64s));
                             break;
                         case EVENT_RAIN_OF_BLADES:
                             Talk(SAY_RAIN_OF_BLADES);
@@ -482,11 +493,11 @@ class boss_wind_lord_meljarak : public CreatureScript
                                     me->RemoveChanneledCast(targetGUID);
                                 });
                             }
-                            events.ScheduleEvent(EVENT_RAIN_OF_BLADES, urand(48000, 64000));
+                            events.ScheduleEvent(EVENT_RAIN_OF_BLADES, randtime(48s, 64s));
                             break;
                         case EVENT_WIND_BOMB:
                             DoCast(me, SPELL_WIND_BOMB);
-                            events.ScheduleEvent(EVENT_WIND_BOMB, urand(18000, 24000));
+                            events.ScheduleEvent(EVENT_WIND_BOMB, randtime(18s, 24s));
                             break;
                         case EVENT_BERSERK_MELJARAK:
                             DoCast(me, SPELL_BERSERK_MELJARAK);
@@ -506,10 +517,10 @@ class boss_wind_lord_meljarak : public CreatureScript
                                     me->AddAura(SPELL_KORTHIK_STRIKE_AURA, target);
                                 }
 
-                                events.ScheduleEvent(EVENT_KORTHIK_STRIKE_CHARGE, urand(2 * IN_MILLISECONDS, 9 * IN_MILLISECONDS));
+                                events.ScheduleEvent(EVENT_KORTHIK_STRIKE_CHARGE, randtime(2s, 9s));
                             }
 
-                            events.ScheduleEvent(EVENT_KORTHIK_STRIKE, urand(19000, 29000));
+                            events.ScheduleEvent(EVENT_KORTHIK_STRIKE, randtime(19s, 29s));
                             break;
                         case EVENT_KORTHIK_STRIKE_CHARGE:
                             if (strikeTargetGUID)
@@ -520,7 +531,6 @@ class boss_wind_lord_meljarak : public CreatureScript
 
                 DoMeleeAttackIfReady();
                 EnterEvadeIfOutOfCombatArea(diff);
-
             }
 
             private:
@@ -537,10 +547,9 @@ class boss_wind_lord_meljarak : public CreatureScript
                 void ResetSwarm()
                 {
                     std::list <Creature*> Swarm = GetSwarmList();
-                    
+
                     for (auto&& itr : Swarm)
                         itr->DespawnOrUnsummon();
-                    
                 }
 
                 void SpawnSwarm()
@@ -642,609 +651,531 @@ class boss_wind_lord_meljarak : public CreatureScript
         }
 };
 
-// Meljarak swarm 65500, 65498, 65499
-class npc_meljarak_swarm : public CreatureScript
+// Meljarak swarm: 65500, 65498, 65499
+struct npc_meljarak_swarm : public ScriptedAI
 {
-    public:
-        npc_meljarak_swarm() : CreatureScript("npc_meljarak_swarm") { }
+    npc_meljarak_swarm(Creature* creature) : ScriptedAI(creature), _instance(creature->GetInstanceScript()) { }
 
-        struct npc_meljarak_swarmAI : public ScriptedAI
+    EventMap events, nonCombatEvents;
+    uint32 timer, wp;
+    bool triggeredDeath;
+
+    void Reset() override 
+    {
+        events.Reset();
+        triggeredDeath = false;
+    }
+
+    void IsSummonedBy(Unit* summoner) override
+    {
+        // Temp Hackfix
+        if (_instance && _instance->instance->GetSpawnMode() == RAID_DIFFICULTY_10MAN_NORMAL)
         {
-            npc_meljarak_swarmAI(Creature* creature) : ScriptedAI(creature), _instance(creature->GetInstanceScript()) { }
+            // should be 54.81m in 10 normal
+            me->SetCreateHealth(54810000);
+            me->SetMaxHealth(54810000);
+            me->SetHealth(54810000);
+            me->ResetPlayerDamageReq();
+        }
 
-            EventMap events, nonCombatEvents;
-            uint32 timer, wp;
-            bool triggeredDeath;
+        triggeredDeath = false;
 
-            void Reset() override 
+        switch (me->GetEntry())
+        {
+            case NPC_KORTHIK_ELITE_BLADEMASTER:
+                SetEquipmentSlots(false, KORTHIK_2H_WEAPON, 0, EQUIP_NO_CHANGE);
+                me->AddAura(SPELL_FATE_OF_THE_KORT, me);
+                break;
+            case NPC_ZARTHIK_BATTLE_MENDER:
+                SetEquipmentSlots(false, ZARTHIK_2H_WEAPON, 0, EQUIP_NO_CHANGE);
+                me->AddAura(SPELL_FATE_OF_THE_ZART, me);
+                break;
+            case NPC_SRATHIK_AMBER_TRAPPER:
+                SetEquipmentSlots(false, SRATHIK_1H_WEAPON, SRATHIK_1H_WEAPON, EQUIP_NO_CHANGE);
+                me->AddAura(SPELL_FATE_OF_THE_SRAT, me);
+                break;
+        }
+
+        if (summoner->GetEntry() == NPC_WIND_LORD_MELJARAK)
+        {
+            me->SetAnimationTier(UnitAnimationTier::Ground);
+            me->OverrideInhabitType(INHABIT_GROUND);
+            me->UpdateMovementFlags();
+            return;
+        }
+
+        // Send any type of swarm flying and land to platform
+        Movement::MoveSplineInit init(me);
+        for (auto itr : SwarmLanding)
+        {
+            float x, y, z;
+            me->GetRandomPoint(itr, 3.0f, x, y, z);
+            init.Path().push_back(G3D::Vector3(x, y, z));
+        }
+
+        init.SetSmooth();
+        init.SetUncompressed();
+        init.Launch();
+
+        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC);
+        me->SetReactState(REACT_PASSIVE);
+        nonCombatEvents.ScheduleEvent(EVENT_LANDING, me->GetSplineDuration());
+    }
+
+    void EnterCombat(Unit* who) override
+    {
+        if (Creature* meljarak = GetClosestCreatureWithEntry(me, NPC_WIND_LORD_MELJARAK, 100.0f, true))
+            if (!meljarak->GetVictim())             // Just optimization. EnterCombat won't be called anyway.
+                meljarak->AI()->AttackStart(who);   // Only Meljarak have to sets all the swarm in combat.
+
+        switch (me->GetEntry())
+        {
+            case NPC_SRATHIK_AMBER_TRAPPER:
+                events.ScheduleEvent(EVENT_AMBER_PRISON, randtime(13s, 24s));
+                events.ScheduleEvent(EVENT_CORROSIVE_RESIN, randtime(8s, 20s));
+                break;
+            case NPC_ZARTHIK_BATTLE_MENDER:
+                events.ScheduleEvent(EVENT_MENDING, randtime(30s, 49s));
+                events.ScheduleEvent(EVENT_QUICKENING, randtime(12s, 28s));
+                break;
+        }
+    }
+
+    void JustDied(Unit* /*killer*/) override
+    {
+        if (_instance)
+            _instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
+
+        events.Reset();
+        me->CombatStop();
+        me->DespawnOrUnsummon(5 * IN_MILLISECONDS);
+
+        if (Creature* meljarak = ObjectAccessor::GetCreature(*me, _instance ? _instance->GetData64(DATA_MELJARAK) : 0))
+            meljarak->AI()->DoAction(me->GetEntry());
+
+        // Only Heroic
+        if (!IsHeroic())
+            return;
+
+        uint32 Swarmer = 0;
+
+        switch (me->GetEntry())
+        {
+            case NPC_KORTHIK_ELITE_BLADEMASTER:
+                Swarmer = NPC_KORTHIK_SPAWN_HEROIC;
+                break;
+            case NPC_ZARTHIK_BATTLE_MENDER:
+                Swarmer = NPC_ZARTHIK_SPAWN_HEROIC;
+                break;
+            case NPC_SRATHIK_AMBER_TRAPPER:
+                Swarmer = NPC_SRATHIK_SPAWN_HEROIC;
+                break;
+        }
+
+        // lauch timer on 45s for each type of group
+        if (Creature* Swarm = GetClosestCreatureWithEntry(me, Swarmer, 200.0f, true))
+            Swarm->AI()->DoAction(ACTION_SET_SPAWN_SWARM);
+    }
+
+    void DamageTaken(Unit* attacker, uint32& damage) override 
+    {
+        if (damage >= me->GetHealth() && !triggeredDeath)
+        {
+            triggeredDeath = true;
+            me->LowerPlayerDamageReq(me->GetMaxHealth()); // Allow player loots even if only the controller has damaged the guardian
+
+            std::list<Creature*> selectedGroup;
+            GetCreatureListWithEntryInGrid(selectedGroup, me, me->GetEntry(), 200.0f);
+
+            for (auto&& itr : selectedGroup)
+                if (itr->GetGUID() != me->GetGUID())
+                    me->Kill(itr, false);
+            return;
+        }
+
+        RecalculateHealth(damage);
+
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        nonCombatEvents.Update(diff);
+
+        while (uint32 eventId = nonCombatEvents.ExecuteEvent())
+        {
+            if (eventId == EVENT_LANDING)
             {
-                events.Reset();
-                triggeredDeath = false;
+                me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC);
+                me->SetReactState(REACT_AGGRESSIVE);
+                me->SetCanFly(false);
+                me->SetAnimationTier(UnitAnimationTier::Ground);
+                me->OverrideInhabitType(INHABIT_GROUND);
+                me->UpdateMovementFlags();
+
+                me->SetInCombatWithZone();
             }
+            break;
+        }
 
-            void IsSummonedBy(Unit* summoner) override
+        if (!UpdateVictim())
+            return;
+
+        events.Update(diff);
+
+        while (uint32 eventId = events.ExecuteEvent())
+        {
+            switch (eventId)
             {
-                // Temp Hackfix
-                if (_instance && _instance->instance->GetSpawnMode() == RAID_DIFFICULTY_10MAN_NORMAL)
+                case EVENT_AMBER_PRISON:
+                    DoCast(me, SPELL_AMBER_PRISON);
+                    events.ScheduleEvent(EVENT_AMBER_PRISON, randtime(35s, 70s));
+                    break;
+
+                case EVENT_CORROSIVE_RESIN:
+                    DoCast(me, SPELL_CORROSIVE_RESIN);
+                    events.ScheduleEvent(EVENT_CORROSIVE_RESIN, randtime(25s, 32s));
+                    break;
+
+                case EVENT_MENDING:
                 {
-                    // should be 54.81m in 10 normal
-                    me->SetCreateHealth(54810000);
-                    me->SetMaxHealth(54810000);
-                    me->SetHealth(54810000);
-                    me->ResetPlayerDamageReq();
-                }
-
-                triggeredDeath = false;
-
-                switch (me->GetEntry())
-                {
-                    case NPC_KORTHIK_ELITE_BLADEMASTER:
-                        SetEquipmentSlots(false, KORTHIK_2H_WEAPON, 0, EQUIP_NO_CHANGE);
-                        me->AddAura(SPELL_FATE_OF_THE_KORT, me);
-                        break;
-                    case NPC_ZARTHIK_BATTLE_MENDER:
-                        SetEquipmentSlots(false, ZARTHIK_2H_WEAPON, 0, EQUIP_NO_CHANGE);
-                        me->AddAura(SPELL_FATE_OF_THE_ZART, me);
-                        break;
-                    case NPC_SRATHIK_AMBER_TRAPPER:
-                        SetEquipmentSlots(false, SRATHIK_1H_WEAPON, SRATHIK_1H_WEAPON, EQUIP_NO_CHANGE);
-                        me->AddAura(SPELL_FATE_OF_THE_SRAT, me);
-                        break;
-                }
-
-                if (summoner->GetEntry() == NPC_WIND_LORD_MELJARAK)
-                {
-                    me->SetAnimationTier(UnitAnimationTier::Ground);
-                    me->OverrideInhabitType(INHABIT_GROUND);
-                    me->UpdateMovementFlags();
-                    return;
-                }
-
-                // Send any type of swarm flying and land to platform
-                Movement::MoveSplineInit init(me);
-                for (auto itr : SwarmLanding)
-                {
-                    float x, y, z;
-                    me->GetRandomPoint(itr, 3.0f, x, y, z);
-                    init.Path().push_back(G3D::Vector3(x, y, z));
-                }
-
-                init.SetSmooth();
-                init.SetUncompressed();
-                init.Launch();
-
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC);
-                me->SetReactState(REACT_PASSIVE);
-                nonCombatEvents.ScheduleEvent(EVENT_LANDING, me->GetSplineDuration());
-            }
-
-            void EnterCombat(Unit* who) override
-            {
-                if (Creature* meljarak = GetClosestCreatureWithEntry(me, NPC_WIND_LORD_MELJARAK, 100.0f, true))
-                    if (!meljarak->GetVictim())             // Just optimization. EnterCombat won't be called anyway.
-                        meljarak->AI()->AttackStart(who);   // Only Meljarak have to sets all the swarm in combat.
-
-                switch (me->GetEntry())
-                {
-                    case NPC_SRATHIK_AMBER_TRAPPER:
-                        events.ScheduleEvent(EVENT_AMBER_PRISON, urand(13000, 24000));
-                        events.ScheduleEvent(EVENT_CORROSIVE_RESIN, urand(8000, 20000));
-                        break;
-                    case NPC_ZARTHIK_BATTLE_MENDER:
-                        events.ScheduleEvent(EVENT_MENDING, urand(30000, 49000));
-                        events.ScheduleEvent(EVENT_QUICKENING, urand(12000, 28000));
-                        break;
-                }
-            }
-
-            void JustDied(Unit* /*killer*/) override
-            {
-                if (_instance)
-                    _instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
-
-                events.Reset();
-                me->CombatStop();
-                me->DespawnOrUnsummon(5 * IN_MILLISECONDS);
-
-                if (Creature* meljarak = ObjectAccessor::GetCreature(*me, _instance ? _instance->GetData64(DATA_MELJARAK) : 0))
-                    meljarak->AI()->DoAction(me->GetEntry());
-
-                // Only Heroic
-                if (!IsHeroic())
-                    return;
-
-                uint32 Swarmer = 0;
-
-                switch (me->GetEntry())
-                {
-                    case NPC_KORTHIK_ELITE_BLADEMASTER:
-                        Swarmer = NPC_KORTHIK_SPAWN_HEROIC;
-                        break;
-                    case NPC_ZARTHIK_BATTLE_MENDER:
-                        Swarmer = NPC_ZARTHIK_SPAWN_HEROIC;
-                        break;
-                    case NPC_SRATHIK_AMBER_TRAPPER:
-                        Swarmer = NPC_SRATHIK_SPAWN_HEROIC;
-                        break;
-                }
-
-                // lauch timer on 45s for each type of group
-                if (Creature* Swarm = GetClosestCreatureWithEntry(me, Swarmer, 200.0f, true))
-                    Swarm->AI()->DoAction(ACTION_SET_SPAWN_SWARM);
-            }
-
-            void DamageTaken(Unit* attacker, uint32& damage) override 
-            {
-                if (damage >= me->GetHealth() && !triggeredDeath)
-                {
-                    triggeredDeath = true;
-                    me->LowerPlayerDamageReq(me->GetMaxHealth()); // Allow player loots even if only the controller has damaged the guardian
-
-                    std::list<Creature*> selectedGroup;
-                    GetCreatureListWithEntryInGrid(selectedGroup, me, me->GetEntry(), 200.0f);
-
-                    for (auto&& itr : selectedGroup)
-                        if (itr->GetGUID() != me->GetGUID())
-                            me->Kill(itr, false);
-                    return;
-                }
-
-                RecalculateHealth(damage);
-
-            }
-
-            void UpdateAI(uint32 diff) override
-            {
-                nonCombatEvents.Update(diff);
-
-                while (uint32 eventId = nonCombatEvents.ExecuteEvent())
-                {
-                    if (eventId == EVENT_LANDING)
-                    {
-                        me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC);
-                        me->SetReactState(REACT_AGGRESSIVE);
-                        me->SetCanFly(false);
-                        me->SetAnimationTier(UnitAnimationTier::Ground);
-                        me->OverrideInhabitType(INHABIT_GROUND);
-                        me->UpdateMovementFlags();
-
-                        me->SetInCombatWithZone();
-                    }
+                    DoCast(me, SPELL_MENDING);
+                    events.ScheduleEvent(EVENT_MENDING, randtime(37s, 62s));
                     break;
                 }
-
-                if (!UpdateVictim())
-                    return;
-
-                events.Update(diff);
-
-                while (uint32 eventId = events.ExecuteEvent())
+                case EVENT_QUICKENING:
                 {
-                    switch (eventId)
-                    {
-                        case EVENT_AMBER_PRISON:
-                            DoCast(me, SPELL_AMBER_PRISON);
-                            events.ScheduleEvent(EVENT_AMBER_PRISON, urand(35000, 70000));
-                            break;
-
-                        case EVENT_CORROSIVE_RESIN:
-                            DoCast(me, SPELL_CORROSIVE_RESIN);
-                            events.ScheduleEvent(EVENT_CORROSIVE_RESIN, urand(25000, 32000));
-                            break;
-
-                        case EVENT_MENDING:
-                        {
-                            DoCast(me, SPELL_MENDING);
-                            events.ScheduleEvent(EVENT_MENDING, urand(37000, 62000));
-                            break;
-                        }
-                        case EVENT_QUICKENING:
-                        {
-                            DoCast(me, SPELL_QUICKENING);
-                            events.ScheduleEvent(EVENT_QUICKENING, urand(33000, 54000));
-                            break;
-                        }
-                    }
-                }
-
-                DoMeleeAttackIfReady();
-            }
-
-            void SpellHit(Unit*, SpellInfo const* spell) override
-            {
-                if (!_instance)
-                    return;
-
-                if (spell->HasAttribute(SPELL_ATTR0_CU_AURA_CC) || spell->HasAura(SPELL_AURA_MOD_ROOT))
-                {
-                    std::list<Creature*> swarm;
-                    GetCreatureListWithEntryInGrid(swarm, me, NPC_KORTHIK_ELITE_BLADEMASTER, 100.0f);
-                    GetCreatureListWithEntryInGrid(swarm, me, NPC_ZARTHIK_BATTLE_MENDER, 100.0f);
-                    GetCreatureListWithEntryInGrid(swarm, me, NPC_SRATHIK_AMBER_TRAPPER, 100.0f);
-
-                    uint32 controlled = 0;
-                    for (auto&& itr : swarm)
-                        if (itr->HasCrowdControlAura()) // May be need to check non breakable too, but it is only short stuns I think
-                            ++controlled;
-
-                    if (controlled >= 2)
-                        me->GetMap()->SetWorldState(WORLD_STATE_ACHIEVEMENT_LESS_THAN_THREE, 0);
+                    DoCast(me, SPELL_QUICKENING);
+                    events.ScheduleEvent(EVENT_QUICKENING, randtime(33s, 54s));
+                    break;
                 }
             }
-
-        private:
-            InstanceScript* _instance;
-
-            void RecalculateHealth(uint32 damage)
-            {
-                std::list<Creature*> Swarm;
-                GetCreatureListWithEntryInGrid(Swarm, me, me->GetEntry(), 100.0f);
-
-                for (auto&& itr : Swarm)
-                    if (itr->GetGUID() != me->GetGUID() && damage < itr->GetHealth())
-                        itr->ModifyHealth(-int32(damage));
-            }
-        };
-
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new npc_meljarak_swarmAI(creature);
         }
+
+        DoMeleeAttackIfReady();
+    }
+
+    void SpellHit(Unit*, SpellInfo const* spell) override
+    {
+        if (!_instance)
+            return;
+
+        if (spell->HasAttribute(SPELL_ATTR0_CU_AURA_CC) || spell->HasAura(SPELL_AURA_MOD_ROOT))
+        {
+            std::list<Creature*> swarm;
+            GetCreatureListWithEntryInGrid(swarm, me, NPC_KORTHIK_ELITE_BLADEMASTER, 100.0f);
+            GetCreatureListWithEntryInGrid(swarm, me, NPC_ZARTHIK_BATTLE_MENDER, 100.0f);
+            GetCreatureListWithEntryInGrid(swarm, me, NPC_SRATHIK_AMBER_TRAPPER, 100.0f);
+
+            uint32 controlled = 0;
+            for (auto&& itr : swarm)
+                if (itr->HasCrowdControlAura()) // May be need to check non breakable too, but it is only short stuns I think
+                    ++controlled;
+
+            if (controlled >= 2)
+                me->GetMap()->SetWorldState(WORLD_STATE_ACHIEVEMENT_LESS_THAN_THREE, 0);
+        }
+    }
+
+private:
+    InstanceScript* _instance;
+
+    void RecalculateHealth(uint32 damage)
+    {
+        std::list<Creature*> Swarm;
+        GetCreatureListWithEntryInGrid(Swarm, me, me->GetEntry(), 100.0f);
+
+        for (auto&& itr : Swarm)
+            if (itr->GetGUID() != me->GetGUID() && damage < itr->GetHealth())
+                itr->ModifyHealth(-int32(damage));
+    }
 };
 
-// Whirling blades stalker 63930
-class npc_whirling_blade_stalker : public CreatureScript
+// Whirling blades stalker: 63930
+struct npc_whirling_blade_stalker : public ScriptedAI
 {
-    public:
-        npc_whirling_blade_stalker() : CreatureScript("npc_whirling_blade_stalker") { }
+    npc_whirling_blade_stalker(Creature* creature) : ScriptedAI(creature), _instance(creature->GetInstanceScript()) { }
+    EventMap events;
+    uint32 timer, Pointer;
+    Position pos;
+    std::list <uint32> whirlingBladeAffected;
+    float x, y, dist;
 
-        enum eEvents
+    void IsSummonedBy(Unit* summoner) override 
+    {
+        me->SetSpeed(MOVE_RUN, 2.65f);
+        me->SetSpeed(MOVE_WALK, 2.65f);
+        me->SetSpeed(MOVE_SWIM, 2.65f);
+        me->AddAura(SPELL_WHIRLING_BLADE, me);
+        Pointer = 0;
+        dist = frand(35.0f, 42.0f);
+        me->SetObjectScale(summoner->GetObjectScale());
+
+        GetPositionWithDistInOrientation(me, dist, me->GetOrientation(), x, y);
+        pos = { x, y, me->GetPositionZ(), me->GetOrientation() };
+
+        me->GetMotionMaster()->MovePoint(Pointer, pos);
+    }
+
+    void Reset() override
+    {
+        me->SetReactState(REACT_PASSIVE);
+        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+        whirlingBladeAffected.clear();
+    }
+
+    void MovementInform(uint32 type, uint32 pointId) override
+    {
+        if (type != POINT_MOTION_TYPE)
+            return;
+
+        switch (pointId)
         {
-            EVENT_MOVE_BACK = 1,
-        };
+            case 0:
+                Pointer = 1;
+                whirlingBladeAffected.clear();
+                events.ScheduleEvent(EVENT_MOVE_BACK, 100);
+                break;
+            case 1:
+                if (Unit* Meljarak = ObjectAccessor::GetUnit(*me, _instance->GetData64(DATA_MELJARAK)))
+                    Meljarak->GetAI()->DoAction(ACTION_WHIRLING_BLADE);
 
-        struct npc_whirling_blade_stalkerAI : public ScriptedAI
+                me->DespawnOrUnsummon();
+                break;
+        }
+    }
+
+    // We should only once hit player on way, and once at way to back.
+    uint32 GetData(uint32 type) const override
+    {
+        for (auto&& itr : whirlingBladeAffected)
+            if (type == itr)
+                return 1;
+
+        return 0;
+    }
+
+    void SetData(uint32 type, uint32 data) override
+    {
+        if (type == TYPE_WHIRLING_BLADE)
+            whirlingBladeAffected.push_back(data);
+    }
+
+    void InitializeAI() override
+    {
+        me->SetReactState(REACT_PASSIVE);
+        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+    }
+
+    void DamageTaken(Unit* attacker, uint32& damage) override { damage = 0; }
+
+    void UpdateAI(uint32 diff) override
+    {
+        events.Update(diff);
+
+        while (uint32 eventId = events.ExecuteEvent())
         {
-            npc_whirling_blade_stalkerAI(Creature* creature) : ScriptedAI(creature), _instance(creature->GetInstanceScript()) { }
-            EventMap events;
-            uint32 timer, Pointer;
-            Position pos;
-            std::list <uint32> whirlingBladeAffected;
-            float x, y, dist;
-
-            void IsSummonedBy(Unit* summoner) override 
+            if (eventId == EVENT_MOVE_BACK)
             {
-                me->SetSpeed(MOVE_RUN, 2.65f);
-                me->SetSpeed(MOVE_WALK, 2.65f);
-                me->SetSpeed(MOVE_SWIM, 2.65f);
-                me->AddAura(SPELL_WHIRLING_BLADE, me);
-                Pointer = 0;
-                dist = frand(35.0f, 42.0f);
-                me->SetObjectScale(summoner->GetObjectScale());
+                float orientation = me->GetOrientation() + M_PI;
 
-                GetPositionWithDistInOrientation(me, dist, me->GetOrientation(), x, y);
-                pos = { x, y, me->GetPositionZ(), me->GetOrientation() };
+                GetPositionWithDistInOrientation(me, dist, Position::NormalizeOrientation(orientation), x, y);
+                pos = { x, y, me->GetPositionZ(), Position::NormalizeOrientation(orientation) };
+
+                if (Unit* Meljarak = ObjectAccessor::GetUnit(*me, _instance->GetData64(DATA_MELJARAK)))
+                {
+                    me->CastSpell(Meljarak, SPELL_WHIRLING_BLADE_DUMMY, false);
+                    me->CastSpell(Meljarak, SPELL_WHIRLING_BLADE_DUMMY_AURA, false);
+                }
 
                 me->GetMotionMaster()->MovePoint(Pointer, pos);
             }
+            break;
+        }
+    }
 
-            void Reset() override
+private:
+    InstanceScript* _instance;
+};
+
+// Wind Bomb: 67053
+struct npc_wind_bomb_meljarak : public ScriptedAI
+{
+    npc_wind_bomb_meljarak(Creature* creature) : ScriptedAI(creature) { }
+    EventMap events;
+
+    void IsSummonedBy(Unit* summoner) override
+    {
+        me->SetDisplayId(45684);
+        me->SetInCombatWithZone();
+        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
+        me->SetReactState(REACT_PASSIVE);
+
+        DoCast(me, SPELL_WIND_BOMB_THR_DMG);
+
+        events.ScheduleEvent(EVENT_ARM, 3s);
+        events.ScheduleEvent(EVENT_CHECK_PLAYER, 4s);
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        events.Update(diff);
+
+        while (uint32 eventId = events.ExecuteEvent())
+        {
+            switch (eventId)
             {
-                me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                whirlingBladeAffected.clear();
-            }
-
-            void MovementInform(uint32 type, uint32 pointId) override
-            {
-                if (type != POINT_MOTION_TYPE)
-                    return;
-
-                switch (pointId)
-                {
-                    case 0:
-                        Pointer = 1;
-                        whirlingBladeAffected.clear();
-                        events.ScheduleEvent(EVENT_MOVE_BACK, 100);
-                        break;
-                    case 1:
-                        if (Unit* Meljarak = ObjectAccessor::GetUnit(*me, _instance->GetData64(DATA_MELJARAK)))
-                            Meljarak->GetAI()->DoAction(ACTION_WHIRLING_BLADE);
-
-                        me->DespawnOrUnsummon();
-                        break;
-                }
-            }
-
-            // We should only once hit player on way, and once at way to back.
-            uint32 GetData(uint32 type) const override
-            {
-                for (auto&& itr : whirlingBladeAffected)
-                    if (type == itr)
-                        return 1;
-
-                return 0;
-            }
-
-            void SetData(uint32 type, uint32 data) override
-            {
-                if (type == TYPE_WHIRLING_BLADE)
-                    whirlingBladeAffected.push_back(data);
-            }
-
-            void InitializeAI() override
-            {
-                me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-            }
-
-            void DamageTaken(Unit* attacker, uint32& damage) override { damage = 0; }
-
-            void UpdateAI(uint32 diff) override
-            {
-                events.Update(diff);
-
-                while (uint32 eventId = events.ExecuteEvent())
-                {
-                    if (eventId == EVENT_MOVE_BACK)
-                    {
-                        float orientation = me->GetOrientation() + M_PI;
-
-                        GetPositionWithDistInOrientation(me, dist, Position::NormalizeOrientation(orientation), x, y);
-                        pos = { x, y, me->GetPositionZ(), Position::NormalizeOrientation(orientation) };
-
-                        if (Unit* Meljarak = ObjectAccessor::GetUnit(*me, _instance->GetData64(DATA_MELJARAK)))
-                        {
-                            me->CastSpell(Meljarak, SPELL_WHIRLING_BLADE_DUMMY, false);
-                            me->CastSpell(Meljarak, SPELL_WHIRLING_BLADE_DUMMY_AURA, false);
-                        }
-
-                        me->GetMotionMaster()->MovePoint(Pointer, pos);
-                    }
+                case EVENT_ARM:
+                    DoCast(me, SPELL_WIND_BOMB_ARM);
                     break;
-                }
-            }
-
-        private:
-            InstanceScript* _instance;
-        };
-
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new npc_whirling_blade_stalkerAI(creature);
-        }
-};
-
-// Wind Bomb: 67053.
-class npc_wind_bomb_meljarak : public CreatureScript
-{
-    public:
-        npc_wind_bomb_meljarak() : CreatureScript("npc_wind_bomb_meljarak") { }
-
-        struct npc_wind_bomb_meljarakAI : public ScriptedAI
-        {
-            npc_wind_bomb_meljarakAI(Creature* creature) : ScriptedAI(creature) { }
-            EventMap events;
-
-            void IsSummonedBy(Unit* summoner) override
-            {
-                me->SetDisplayId(45684);
-                me->SetInCombatWithZone();
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE | UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE);
-                me->SetReactState(REACT_PASSIVE);
-
-                DoCast(me, SPELL_WIND_BOMB_THR_DMG);
-
-                events.ScheduleEvent(EVENT_ARM, 3000);
-                events.ScheduleEvent(EVENT_CHECK_PLAYER, 4000);
-            }
-
-            void UpdateAI(uint32 diff) override
-            {
-                events.Update(diff);
-
-                while (uint32 eventId = events.ExecuteEvent())
-                {
-                    switch (eventId)
+                case EVENT_CHECK_PLAYER:
+                    if (Player* player = me->SelectNearestPlayer(6.0f))
                     {
-                        case EVENT_ARM:
-                            DoCast(me, SPELL_WIND_BOMB_ARM);
-                            break;
-                        case EVENT_CHECK_PLAYER:
-                            if (Player* player = me->SelectNearestPlayer(6.0f))
-                            {
-                                if (player->IsWithinDistInMap(me, 5.15f))
-                                {
-                                    DoCast(me, SPELL_WIND_BOMB_EXPLODE);
-                                    me->DespawnOrUnsummon();
-                                }
-                                else
-                                    events.ScheduleEvent(EVENT_CHECK_PLAYER, 500);
-                            }
-                            else
-                                events.ScheduleEvent(EVENT_CHECK_PLAYER, 500);
-                            break;
-                        default:
-                            break;
+                        if (player->IsWithinDistInMap(me, 5.15f))
+                        {
+                            DoCast(me, SPELL_WIND_BOMB_EXPLODE);
+                            me->DespawnOrUnsummon();
+                        }
+                        else
+                            events.ScheduleEvent(EVENT_CHECK_PLAYER, 500ms);
                     }
-                }
+                    else
+                        events.ScheduleEvent(EVENT_CHECK_PLAYER, 500ms);
+                    break;
+                default:
+                    break;
             }
-        };
-
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new npc_wind_bomb_meljarakAI(creature);
         }
+    }
 };
 
-// Corrosive resin pool stalker: 67046.
-class npc_corrosive_resin_pool : public CreatureScript
+// Corrosive resin pool stalker: 67046
+struct npc_corrosive_resin_pool : public ScriptedAI
 {
-    public:
-        npc_corrosive_resin_pool() : CreatureScript("npc_corrosive_resin_pool") { }
+    npc_corrosive_resin_pool(Creature* creature) : ScriptedAI(creature) { }
+    EventMap events;
 
-        struct npc_corrosive_resin_poolAI : public ScriptedAI
-        {
-            npc_corrosive_resin_poolAI(Creature* creature) : ScriptedAI(creature) { }
-            EventMap events;
+    void IsSummonedBy(Unit* summoner) override
+    {
+        me->AddAura(SPELL_CORR_RESIN_POOL_A, me);
+        me->DespawnOrUnsummon(60000);
+    }
 
-            void IsSummonedBy(Unit* summoner) override
-            {
-                me->AddAura(SPELL_CORR_RESIN_POOL_A, me);
-                me->DespawnOrUnsummon(60000);
-            }
-
-            void UpdateAI(uint32 diff) override
-            {
-                events.Update(diff);
-            }
-        };
-
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new npc_corrosive_resin_poolAI(creature);
-        }
+    void UpdateAI(uint32 diff) override
+    {
+        events.Update(diff);
+    }
 };
 
 // Amber Prison Stalker: 62531
-class npc_amber_prison : public CreatureScript
+struct npc_amber_prison : public ScriptedAI
 {
-    public:
-        npc_amber_prison() : CreatureScript("npc_amber_prison") { }
+    npc_amber_prison(Creature* creature) : ScriptedAI(creature) { }
+    EventMap events;
+    uint64 ownerGUID;
 
-        struct npc_amber_prisonAI : public ScriptedAI
+    void IsSummonedBy(Unit* summoner) override
+    {
+        me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
+        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE | UNIT_FLAG_NON_ATTACKABLE);
+        summoner->CastSpell(summoner, SPELL_AMBER_PRISON_AURA, true);
+        ownerGUID = summoner->GetGUID();
+    }
+
+    void OnSpellClick(Unit* clicker, bool& /*result*/) override
+    {
+        if (clicker->HasAura(SPELL_RESIDUE) || clicker->HasAura(SPELL_AMBER_PRISON_AURA) || clicker->GetGUID() == ownerGUID)
+            return;
+
+        if (Unit* owner = ObjectAccessor::GetUnit(*me, ownerGUID))
         {
-            npc_amber_prisonAI(Creature* creature) : ScriptedAI(creature) { }
-            EventMap events;
-            uint64 ownerGUID;
-
-            void IsSummonedBy(Unit* summoner) override
-            {
-                me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE | UNIT_FLAG_NON_ATTACKABLE);
-                summoner->CastSpell(summoner, SPELL_AMBER_PRISON_AURA, true);
-                ownerGUID = summoner->GetGUID();
-            }
-
-            void OnSpellClick(Unit* clicker, bool& /*result*/) override
-            {
-                if (clicker->HasAura(SPELL_RESIDUE) || clicker->HasAura(SPELL_AMBER_PRISON_AURA) || clicker->GetGUID() == ownerGUID)
-                    return;
-
-                if (Unit* owner = ObjectAccessor::GetUnit(*me, ownerGUID))
-                {
-                    owner->RemoveAurasDueToSpell(SPELL_AMBER_PRISON_AURA);
-                    clicker->CastSpell(clicker, SPELL_RESIDUE, false);
-                    me->DespawnOrUnsummon();
-                }
-            }
-        };
-
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new npc_amber_prisonAI(creature);
+            owner->RemoveAurasDueToSpell(SPELL_AMBER_PRISON_AURA);
+            clicker->CastSpell(clicker, SPELL_RESIDUE, false);
+            me->DespawnOrUnsummon();
         }
+    }
 };
 
 // Swarm Spawner: 62447,62452,62451
-class npc_swarm_spawner_heroic : public CreatureScript
+struct npc_swarm_spawner_heroic : public ScriptedAI
 {
-    public:
-        npc_swarm_spawner_heroic() : CreatureScript("npc_swarm_spawner_heroic") { }
+    npc_swarm_spawner_heroic(Creature* creature) : ScriptedAI(creature) { }
+    EventMap events;
+    uint32 SwarmType, EventType;
+    bool Launched;
+    InstanceScript* instance;
 
-        enum sEvents
+    void InitializeAI() override
+    {
+        instance = me->GetInstanceScript();
+
+        switch (me->GetEntry())
         {
-            EVENT_SPAWN_KORTHIK = 1,
-            EVENT_SPAWN_ZARTHIK = 2,
-            EVENT_SPAWN_SRATHIK = 3,
-        };
-
-        struct npc_swarm_spawner_heroicAI : public ScriptedAI
-        {
-            npc_swarm_spawner_heroicAI(Creature* creature) : ScriptedAI(creature) { }
-            EventMap events;
-            uint32 SwarmType, EventType;
-            bool Launched;
-            InstanceScript* instance;
-
-            void InitializeAI() override
-            {
-                instance = me->GetInstanceScript();
-
-                switch (me->GetEntry())
-                {
-                    case NPC_KORTHIK_SPAWN_HEROIC:
-                        EventType = EVENT_SPAWN_KORTHIK;
-                        SwarmType = NPC_KORTHIK_ELITE_BLADEMASTER;
-                        break;
-                    case NPC_ZARTHIK_SPAWN_HEROIC:
-                        EventType = EVENT_SPAWN_ZARTHIK;
-                        SwarmType = NPC_ZARTHIK_BATTLE_MENDER;
-                        break;
-                    case NPC_SRATHIK_SPAWN_HEROIC:
-                        EventType = EVENT_SPAWN_SRATHIK;
-                        SwarmType = NPC_SRATHIK_AMBER_TRAPPER;
-                        break;
-                }
-
-                Reset();
-            }
-
-            void Reset() override
-            {
-                events.Reset();
-                Launched = false;
-            }
-
-            void DoAction(int32 actionId) override
-            {
-                switch (actionId)
-                {
-                    case ACTION_SET_SPAWN_SWARM:
-                        if (!Launched)
-                        {
-                            Launched = true;
-                            events.ScheduleEvent(EventType, 45 * IN_MILLISECONDS);
-                        }
-                        break;
-                    case ACTION_RESET_SPAWN:
-                        Reset();
-                        break;
-                }
-            }
-
-            void UpdateAI(uint32 diff) override
-            {
-                events.Update(diff);
-
-                while (uint32 eventId = events.ExecuteEvent())
-                {
-                    switch (eventId)
-                    {
-                        case EVENT_SPAWN_KORTHIK:
-                        case EVENT_SPAWN_SRATHIK:
-                        case EVENT_SPAWN_ZARTHIK:
-                            for (uint8 i = 0; i < 3; i++)
-                                me->SummonCreature(SwarmType, me->GetPositionX() + frand(-2.0f, 2.0f), me->GetPositionY() + frand(-8.0f, 8.0f), me->GetPositionZ(), TEMPSUMMON_MANUAL_DESPAWN);
-                            
-                            Launched = false;
-
-                            // Send new frame for group
-                            if (Creature* Meljarak = ObjectAccessor::GetCreature(*me, instance->GetData64(DATA_MELJARAK)))
-                            {
-                                SetEncounterUnitForEachGroup(Meljarak->GetGUID(), instance, ENCOUNTER_FRAME_ENGAGE, SwarmType);
-                                Meljarak->AI()->DoAction(SwarmType + 5);
-                            }
-                            break;
-                    }
-                }
-            }
-        };
-
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new npc_swarm_spawner_heroicAI(creature);
+            case NPC_KORTHIK_SPAWN_HEROIC:
+                EventType = EVENT_SPAWN_KORTHIK;
+                SwarmType = NPC_KORTHIK_ELITE_BLADEMASTER;
+                break;
+            case NPC_ZARTHIK_SPAWN_HEROIC:
+                EventType = EVENT_SPAWN_ZARTHIK;
+                SwarmType = NPC_ZARTHIK_BATTLE_MENDER;
+                break;
+            case NPC_SRATHIK_SPAWN_HEROIC:
+                EventType = EVENT_SPAWN_SRATHIK;
+                SwarmType = NPC_SRATHIK_AMBER_TRAPPER;
+                break;
         }
+
+        Reset();
+    }
+
+    void Reset() override
+    {
+        events.Reset();
+        Launched = false;
+    }
+
+    void DoAction(int32 actionId) override
+    {
+        switch (actionId)
+        {
+            case ACTION_SET_SPAWN_SWARM:
+                if (!Launched)
+                {
+                    Launched = true;
+                    events.ScheduleEvent(EventType, 45s);
+                }
+                break;
+            case ACTION_RESET_SPAWN:
+                Reset();
+                break;
+        }
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        events.Update(diff);
+
+        while (uint32 eventId = events.ExecuteEvent())
+        {
+            switch (eventId)
+            {
+                case EVENT_SPAWN_KORTHIK:
+                case EVENT_SPAWN_SRATHIK:
+                case EVENT_SPAWN_ZARTHIK:
+                    for (uint8 i = 0; i < 3; i++)
+                        me->SummonCreature(SwarmType, me->GetPositionX() + frand(-2.0f, 2.0f), me->GetPositionY() + frand(-8.0f, 8.0f), me->GetPositionZ(), TEMPSUMMON_MANUAL_DESPAWN);
+                    
+                    Launched = false;
+
+                    // Send new frame for group
+                    if (Creature* Meljarak = ObjectAccessor::GetCreature(*me, instance->GetData64(DATA_MELJARAK)))
+                    {
+                        SetEncounterUnitForEachGroup(Meljarak->GetGUID(), instance, ENCOUNTER_FRAME_ENGAGE, SwarmType);
+                        Meljarak->AI()->DoAction(SwarmType + 5);
+                    }
+                    break;
+            }
+        }
+    }
 };
 
 // GameObject - 212349 - Mantid weapon rack
@@ -1270,7 +1201,7 @@ class go_mantid_weapon_rack : public GameObjectScript
         }
 };
 
-// Whirling blade 121896
+// Whirling blade: 121896
 class spell_whirling_blade : public SpellScript
 {
     PrepareSpellScript(spell_whirling_blade);
@@ -1346,7 +1277,7 @@ class spell_meljarak_corrosive_resin_aura : public AuraScript
     }
 };
 
-// Corrosive Resin: 122064.
+// Corrosive Resin: 122064
 class spell_meljarak_corrosive_resin : public SpellScript
 {
     PrepareSpellScript(spell_meljarak_corrosive_resin);
@@ -1394,7 +1325,7 @@ class spell_meljarak_corrosive_resin : public SpellScript
     }
 };
 
-// Amber Prison Target Selector 121876
+// Amber Prison Target Selector: 121876
 class spell_amber_prison_selector : public SpellScript
 {
     PrepareSpellScript(spell_amber_prison_selector);
@@ -1431,7 +1362,7 @@ class spell_amber_prison_selector : public SpellScript
     }
 };
 
-// Amber Prison 121874
+// Amber Prison: 121874
 class spell_meljarak_amber_prison : public SpellScript
 {
     PrepareSpellScript(spell_meljarak_amber_prison);
@@ -1462,7 +1393,7 @@ class MendingPredicate : public std::unary_function<uint32, bool>
         const uint32 _entry;
 };
 
-// mending - 122193
+// Mending: 122193
 class spell_mending : public SpellScript
 {
     PrepareSpellScript(spell_mending);
@@ -1499,7 +1430,7 @@ class spell_mending : public SpellScript
     }
 };
 
-// Impaling Spear 122224
+// Impaling Spear: 122224
 class spell_meljarak_impaling_spear : public SpellScript
 {
     PrepareSpellScript(spell_meljarak_impaling_spear);
@@ -1520,7 +1451,7 @@ class spell_meljarak_impaling_spear : public SpellScript
     }
 };
 
-// Korthik Strike 122409
+// Korthik Strike: 122409
 class spell_meljarak_korthik_strike : public SpellScript
 {
     PrepareSpellScript(spell_meljarak_korthik_strike);
@@ -1553,7 +1484,7 @@ class BerserkPredicate
         }
 };
 
-// Meljarak Berserk 120207
+// Meljarak Berserk: 120207
 class spell_meljarak_berserk : public SpellScript
 {
     PrepareSpellScript(spell_meljarak_berserk);
@@ -1578,7 +1509,7 @@ class spell_meljarak_berserk : public SpellScript
     }
 };
 
-// Wind Bomb 131813
+// Wind Bomb: 131813
 class spell_meljarak_wind_bomb : public SpellScript
 {
     PrepareSpellScript(spell_meljarak_wind_bomb);
@@ -1647,7 +1578,7 @@ class WhirlingBladePredicate : public std::unary_function<Creature*, bool>
         Creature const* _caster;
 };
 
-// Whirling Blade Effect (damage) 121898
+// Whirling Blade Effect (damage): 121898
 class spell_whirling_blade_eff : public SpellScript
 {
     PrepareSpellScript(spell_whirling_blade_eff);
@@ -1667,22 +1598,22 @@ class spell_whirling_blade_eff : public SpellScript
 void AddSC_boss_meljarak()
 {
     new boss_wind_lord_meljarak();
-    new npc_meljarak_swarm();
-    new npc_whirling_blade_stalker();
-    new npc_wind_bomb_meljarak();
-    new npc_corrosive_resin_pool();
-    new npc_amber_prison();
-    new npc_swarm_spawner_heroic();
+    register_creature_script(npc_meljarak_swarm);
+    register_creature_script(npc_whirling_blade_stalker);
+    register_creature_script(npc_wind_bomb_meljarak);
+    register_creature_script(npc_corrosive_resin_pool);
+    register_creature_script(npc_amber_prison);
+    register_creature_script(npc_swarm_spawner_heroic);
     new go_mantid_weapon_rack();
-    new spell_script<spell_whirling_blade>("spell_whirling_blade");
-    new aura_script<spell_meljarak_corrosive_resin_aura>("spell_meljarak_corrosive_resin_aura");
-    new spell_script<spell_meljarak_corrosive_resin>("spell_meljarak_corrosive_resin");
-    new spell_script<spell_amber_prison_selector>("spell_amber_prison_selector");
-    new spell_script<spell_meljarak_amber_prison>("spell_meljarak_amber_prison");
-    new spell_script<spell_mending>("spell_mending");
-    new spell_script<spell_meljarak_impaling_spear>("spell_meljarak_impaling_spear");
-    new spell_script<spell_meljarak_korthik_strike>("spell_meljarak_korthik_strike");
-    new spell_script<spell_meljarak_berserk>("spell_meljarak_berserk");
-    new spell_script<spell_meljarak_wind_bomb>("spell_meljarak_wind_bomb");
-    new spell_script<spell_whirling_blade_eff>("spell_whirling_blade_eff");
+    register_spell_script(spell_whirling_blade);
+    register_aura_script(spell_meljarak_corrosive_resin_aura);
+    register_spell_script(spell_meljarak_corrosive_resin);
+    register_spell_script(spell_amber_prison_selector);
+    register_spell_script(spell_meljarak_amber_prison);
+    register_spell_script(spell_mending);
+    register_spell_script(spell_meljarak_impaling_spear);
+    register_spell_script(spell_meljarak_korthik_strike);
+    register_spell_script(spell_meljarak_berserk);
+    register_spell_script(spell_meljarak_wind_bomb);
+    register_spell_script(spell_whirling_blade_eff);
 }

@@ -1947,7 +1947,7 @@ void AddSC_boss_shekzeer()
     new npc_korthik_reaver();
     new npc_dissonance_field();
     new npc_sha_of_fear_shekzeer();
-    new creature_script<npc_heart_of_fear>("npc_heart_of_fear");
+    register_creature_script(npc_heart_of_fear);
     new spell_dissonance_field();
     new spell_corrupted_dissonance_field();
     new spell_dissonance_field_knockback();
@@ -1961,13 +1961,13 @@ void AddSC_boss_shekzeer()
     new spell_large_resin_combine();
     new spell_corrupted_field_visual();
     new spell_bubbling_amber_trapped();
-    new spell_script<spell_eyes_of_the_empress>("spell_eyes_of_the_empress");
-    new aura_script<spell_servant_of_the_empress>("spell_servant_of_the_empress");
-    new spell_script<spell_dissonance_field_corruption>("spell_dissonance_field_corruption");
-    new aura_script<spell_heart_of_fear_selector_aura>("spell_heart_of_fear_selector_aura");
-    new spell_script<spell_heart_of_fear_selector>("spell_heart_of_fear_selector");
-    new aura_script<spell_windblade_fixate_aura>("spell_windblade_fixate_aura");
-    new spell_script<spell_windblade_fixate>("spell_windblade_fixate");
+    register_spell_script(spell_eyes_of_the_empress);
+    register_aura_script(spell_servant_of_the_empress);
+    register_spell_script(spell_dissonance_field_corruption);
+    register_aura_script(spell_heart_of_fear_selector_aura);
+    register_spell_script(spell_heart_of_fear_selector);
+    register_aura_script(spell_windblade_fixate_aura);
+    register_spell_script(spell_windblade_fixate);
     new AreaTrigger_at_behind_shekzeer();
     new atrigger_script<sat_shekzeer_sha_corruption>("sat_shekzeer_sha_corruption");
 }

@@ -116,7 +116,7 @@ class spell_dg_capturing : public SpellScript
 
 void AddSC_deepwind_gorge()
 {
-    new creature_script<npc_dg_cart>("npc_dg_cart");
-    new aura_script<spell_mine_cart>("spell_mine_cart");
-    new spell_script<spell_dg_capturing>("spell_dg_capturing");
+    register_creature_script(npc_dg_cart);
+    register_aura_script(spell_mine_cart);
+    register_spell_script(spell_dg_capturing);
 }

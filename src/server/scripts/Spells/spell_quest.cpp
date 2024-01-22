@@ -939,43 +939,30 @@ enum SalvagingLifesStength
     NPC_SHARD_KILL_CREDIT                        = 29303,
 };
 
-class spell_q12805_lifeblood_dummy : public SpellScriptLoader
+class spell_q12805_lifeblood_dummy : public SpellScript
 {
-    public:
-        spell_q12805_lifeblood_dummy() : SpellScriptLoader("spell_q12805_lifeblood_dummy")
+    PrepareSpellScript(spell_q12805_lifeblood_dummy);
+
+    bool Load() override
+    {
+        return GetCaster()->GetTypeId() == TYPEID_PLAYER;
+    }
+
+    void HandleScript(SpellEffIndex /*effIndex*/)
+    {
+        Player* caster = GetCaster()->ToPlayer();
+        if (Creature* target = GetHitCreature())
         {
+            caster->KilledMonsterCredit(NPC_SHARD_KILL_CREDIT, 0);
+            target->CastSpell(target, uint32(GetEffectValue()), true);
+            target->DespawnOrUnsummon(2000);
         }
+    }
 
-        class spell_q12805_lifeblood_dummy_SpellScript : public SpellScript
-        {
-            PrepareSpellScript(spell_q12805_lifeblood_dummy_SpellScript);
-
-            bool Load() override
-            {
-                return GetCaster()->GetTypeId() == TYPEID_PLAYER;
-            }
-
-            void HandleScript(SpellEffIndex /*effIndex*/)
-            {
-                Player* caster = GetCaster()->ToPlayer();
-                if (Creature* target = GetHitCreature())
-                {
-                    caster->KilledMonsterCredit(NPC_SHARD_KILL_CREDIT, 0);
-                    target->CastSpell(target, uint32(GetEffectValue()), true);
-                    target->DespawnOrUnsummon(2000);
-                }
-            }
-
-            void Register() override
-            {
-                OnEffectHitTarget += SpellEffectFn(spell_q12805_lifeblood_dummy_SpellScript::HandleScript, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
-            }
-        };
-
-        SpellScript* GetSpellScript() const override
-        {
-            return new spell_q12805_lifeblood_dummy_SpellScript();
-        };
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_q12805_lifeblood_dummy::HandleScript, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
+    }
 };
 
 /*
@@ -2509,8 +2496,8 @@ void AddSC_quest_spell_scripts()
     new spell_q10041_q10040_who_are_they();
     new spell_symbol_of_life_dummy();
     new spell_q12659_ahunaes_knife();
-    new spell_script<spell_q9874_liquid_fire>("spell_q9874_liquid_fire");
-    new spell_q12805_lifeblood_dummy();
+    register_spell_script(spell_q9874_liquid_fire);
+    register_spell_script(spell_q12805_lifeblood_dummy);
     new spell_q13280_13283_plant_battle_standard();
     new spell_q14112_14145_chum_the_water();
     new spell_q9452_cast_net();
@@ -2543,10 +2530,10 @@ void AddSC_quest_spell_scripts()
     new spell_q12919_gymers_grab();
     new spell_q12919_gymers_throw();
     new spell_q28813_get_our_boys_back_dummy();
-    new spell_script<spell_q31450>("spell_q31450");
-    new spell_script<spell_q32683_q32726_ghostly_skeleton_key>("spell_q32683_q32726_ghostly_skeleton_key");
-    new spell_script<spell_q12414_hand_over_reins>("spell_q12414_hand_over_reins");
-    new aura_script<spell_cooking_for_kunzen_bonfire>("spell_cooking_for_kunzen_bonfire");
+    register_spell_script(spell_q31450);
+    register_spell_script(spell_q32683_q32726_ghostly_skeleton_key);
+    register_spell_script(spell_q12414_hand_over_reins);
+    register_aura_script(spell_cooking_for_kunzen_bonfire);
     new spell_q30050_resuscitate();
     new spell_q31112_ping_bunny();
 }

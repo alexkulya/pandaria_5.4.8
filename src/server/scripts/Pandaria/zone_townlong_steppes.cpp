@@ -1833,21 +1833,21 @@ void AddSC_townlong_steppes()
     // Rare mobs
     new npc_lith_ik();
     new npc_eshelon();
-    new creature_script<npc_lon_the_bull>("npc_lon_the_bull");
-    new creature_script<npc_norlaxx>("npc_norlaxx");
-    new creature_script<npc_siltriss_sharpener>("npc_siltriss_sharpener");
-    new creature_script<npc_yul_wildpaw>("npc_yul_wildpaw");
+    register_creature_script(npc_lon_the_bull);
+    register_creature_script(npc_norlaxx);
+    register_creature_script(npc_siltriss_sharpener);
+    register_creature_script(npc_yul_wildpaw);
     // Elite mobs
     new npc_darkwoods_faerie();
     new npc_hei_feng();
     // Standard Mobs
-    new creature_script<npc_seething_flashripper>("npc_seething_flashripper");
-    new creature_script<npc_korthik_timberhusk>("npc_korthik_timberhusk");
-    new creature_script<npc_rankbite_ancient>("npc_rankbite_ancient");
-    new creature_script<npc_deadtalker_crusher>("npc_deadtalker_crusher");
-    new creature_script<npc_longshadow_mushan>("npc_longshadow_mushan");
-    new creature_script<npc_seething_hatred>("npc_seething_hatred");
-    new creature_script<npc_gnathus>("npc_gnathus");
+    register_creature_script(npc_seething_flashripper);
+    register_creature_script(npc_korthik_timberhusk);
+    register_creature_script(npc_rankbite_ancient);
+    register_creature_script(npc_deadtalker_crusher);
+    register_creature_script(npc_longshadow_mushan);
+    register_creature_script(npc_seething_hatred);
+    register_creature_script(npc_gnathus);
     // Quests
     new go_sikthik_cage();
     new spell_item_cintron_infused_bandage();
@@ -1856,12 +1856,12 @@ void AddSC_townlong_steppes()
     new npc_longying_ranger();
     new npc_lin_silentstrike();
     new npc_osul_mist_shaman();
-    new spell_script<spell_gather_steam>("spell_gather_steam");
+    register_spell_script(spell_gather_steam);
     new npc_suna_silentstrike();
     new npc_wounded_niuzao_sentinel();
-    new creature_script<npc_townlong_gunpowder_cask>("npc_townlong_gunpowder_cask");
-    new spell_script<spell_q30959>("spell_q30959");
-    new aura_script<spell_protective_shell>("spell_protective_shell");
+    register_creature_script(npc_townlong_gunpowder_cask);
+    register_spell_script(spell_q30959);
+    register_aura_script(spell_protective_shell);
     new cond_burn_mantid_corpse();
-    new spell_script<spell_townlong_shado_pan_spike_trap_eff>("spell_townlong_shado_pan_spike_trap_eff");
+    register_spell_script(spell_townlong_shado_pan_spike_trap_eff);
 }

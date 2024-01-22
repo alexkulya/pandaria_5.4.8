@@ -1482,28 +1482,28 @@ class scene_memory_of_relicvary : public SceneScript
 void AddSC_pursuing_the_black_harvest()
 {
     new npc_black_harvest_akama();
-    new creature_script<npc_black_harvest_essence_of_order>("npc_black_harvest_essence_of_order");
-    new creature_script<npc_black_harvest_unbound_centurion>("npc_black_harvest_unbound_centurion");
-    new creature_script<npc_black_harvest_unbound_nightlord>("npc_black_harvest_unbound_nightlord");
-    new creature_script<npc_black_harvest_unbound_bonemender>("npc_black_harvest_unbound_bonemender");
-    new creature_script<npc_black_harvest_unbound_succubus>("npc_black_harvest_unbound_succubus");
-    new creature_script<npc_black_harvest_unbound_shivarra>("npc_black_harvest_unbound_shivarra");
-    new creature_script<npc_black_harvest_freed_imp>("npc_black_harvest_freed_imp");
-    new creature_script<npc_black_harvest_suffering_soul_fragment>("npc_black_harvest_suffering_soul_fragment");
-    new creature_script<npc_black_harvest_ashtongue_shaman>("npc_black_harvest_ashtongue_shaman");
-    new creature_script<npc_black_harvest_ashtongue_primalist>("npc_black_harvest_ashtongue_primalist");
-    new creature_script<npc_black_harvest_kanrethad_ebonlocke>("npc_black_harvest_kanrethad_ebonlocke");
-    new creature_script<npc_black_harvest_black_temple_top_credit>("npc_black_harvest_black_temple_top_credit");
-    new creature_script<npc_black_harvest_demonic_soulwell>("npc_black_harvest_demonic_soulwell");
-    new creature_script<npc_black_harvest_jubeka_shadowbreaker>("npc_black_harvest_jubeka_shadowbreaker");
+    register_creature_script(npc_black_harvest_essence_of_order);
+    register_creature_script(npc_black_harvest_unbound_centurion);
+    register_creature_script(npc_black_harvest_unbound_nightlord);
+    register_creature_script(npc_black_harvest_unbound_bonemender);
+    register_creature_script(npc_black_harvest_unbound_succubus);
+    register_creature_script(npc_black_harvest_unbound_shivarra);
+    register_creature_script(npc_black_harvest_freed_imp);
+    register_creature_script(npc_black_harvest_suffering_soul_fragment);
+    register_creature_script(npc_black_harvest_ashtongue_shaman);
+    register_creature_script(npc_black_harvest_ashtongue_primalist);
+    register_creature_script(npc_black_harvest_kanrethad_ebonlocke);
+    register_creature_script(npc_black_harvest_black_temple_top_credit);
+    register_creature_script(npc_black_harvest_demonic_soulwell);
+    register_creature_script(npc_black_harvest_jubeka_shadowbreaker);
     new go_black_harvest_illidari_scroll();
     new go_black_harvest_jubekas_mark();
 
-    new aura_script<spell_black_harvest_place_empowered_soulcore>("spell_black_harvest_place_empowered_soulcore");
-    new spell_script<spell_black_harvest_annihilate_demons>("spell_black_harvest_annihilate_demons");
-    new aura_script<spell_black_harvest_eternal_banishment>("spell_black_harvest_eternal_banishment");
-    new aura_script<spell_black_harvest_drain_fel_energy>("spell_black_harvest_drain_fel_energy");
-    new aura_script<spell_black_harvest_blackout>("spell_black_harvest_blackout");
-    new spell_script<spell_black_harvest_spellflame>("spell_black_harvest_spellflame");
+    register_aura_script(spell_black_harvest_place_empowered_soulcore);
+    register_spell_script(spell_black_harvest_annihilate_demons);
+    register_aura_script(spell_black_harvest_eternal_banishment);
+    register_aura_script(spell_black_harvest_drain_fel_energy);
+    register_aura_script(spell_black_harvest_blackout);
+    register_spell_script(spell_black_harvest_spellflame);
     new scene_memory_of_relicvary();
 }

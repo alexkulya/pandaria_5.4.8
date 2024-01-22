@@ -33,5 +33,5 @@ struct npc_sister_goldskimmer : public ScriptedAI
 
 void AddSC_kezan()
 {
-    new creature_script<npc_sister_goldskimmer>("npc_sister_goldskimmer");
+    register_creature_script(npc_sister_goldskimmer);
 }

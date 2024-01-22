@@ -305,7 +305,7 @@ void AddSC_zulaman()
     new npc_zulaman_forest_frog();
     new go_strange_gong();
     new npc_amanishi_tempest();
-    new creature_script<npc_amani_lynx>("npc_amani_lynx");
+    register_creature_script(npc_amani_lynx);
     //new npc_amanishi_lookout();
     //new npc_amani_eagle();
     //new npc_amanishi_warrior();

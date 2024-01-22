@@ -1271,23 +1271,23 @@ void AddSC_unga_ingoo()
 {
     new npc_brewmaster_bo_escort();
     new npc_brewmaster_bo_brew();
-    new creature_script<npc_unga_spearscamp>("npc_unga_spearscamp");
-    new creature_script<npc_unga_bird_haver>("npc_unga_bird_haver");
-    new creature_script<npc_unga_gladiators>("npc_unga_gladiators");
-    new creature_script<npc_unga_zipline_to_ship>("npc_unga_zipline_to_ship");
-    new creature_script<npc_unga_captain_ook>("npc_unga_captain_ook");
-    new creature_script<npc_unga_banana_ship>("npc_unga_banana_ship");
-    new creature_script<npc_unga_pirate>("npc_unga_pirate");
-    new creature_script<npc_unstable_keg>("npc_unstable_keg");
-    new creature_script<npc_unga_ookie>("npc_unga_ookie");
+    register_creature_script(npc_unga_spearscamp);
+    register_creature_script(npc_unga_bird_haver);
+    register_creature_script(npc_unga_gladiators);
+    register_creature_script(npc_unga_zipline_to_ship);
+    register_creature_script(npc_unga_captain_ook);
+    register_creature_script(npc_unga_banana_ship);
+    register_creature_script(npc_unga_pirate);
+    register_creature_script(npc_unstable_keg);
+    register_creature_script(npc_unga_ookie);
     new go_brew_container();
 
-    new aura_script<spell_calling_birds>("spell_calling_birds");
-    new spell_script<spell_unga_throw_keg>("spell_unga_throw_keg");
-    new spell_script<spell_unga_mug_collected>("spell_unga_mug_collected");
-    new aura_script<spell_unga_jungle_brew_collected>("spell_unga_jungle_brew_collected");
-    new aura_script<spell_unga_encumbered>("spell_unga_encumbered");
-    new aura_script<spell_unga_popped_cork>("spell_unga_popped_cork");
+    register_aura_script(spell_calling_birds);
+    register_spell_script(spell_unga_throw_keg);
+    register_spell_script(spell_unga_mug_collected);
+    register_aura_script(spell_unga_jungle_brew_collected);
+    register_aura_script(spell_unga_encumbered);
+    register_aura_script(spell_unga_popped_cork);
     new AreaTrigger_at_unga_ingoo_cauldron();
     new atrigger_script<sat_bo_rejuvinating_mist>("sat_bo_rejuvinating_mist");
 }

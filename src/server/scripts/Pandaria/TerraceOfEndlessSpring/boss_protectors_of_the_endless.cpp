@@ -2018,9 +2018,9 @@ void AddSC_boss_protectors_of_the_endless()
     new spell_expelled_corruption();
     new spell_lightning_storm_aura();
     new spell_lightning_storm_damage();
-    new spell_script<spell_lightning_prison>("spell_lightning_prison");
-    new spell_script<spell_corrupted_essence>("spell_corrupted_essence");
+    register_spell_script(spell_lightning_prison);
+    register_spell_script(spell_corrupted_essence);
     new spell_superior_corrupted_essence();
     new spell_cleansing_waters_regen();
-    new spell_script<spell_corrupted_waters_empowered>("spell_corrupted_waters_empowered");
+    register_spell_script(spell_corrupted_waters_empowered);
 }

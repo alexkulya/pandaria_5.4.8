@@ -909,9 +909,9 @@ void AddSC_the_barrens()
 {
     new npc_wizzlecrank_shredder();
     new npc_razormane_pillager();
-    new spell_script<spell_groldom_net>("spell_groldom_net");
-    new aura_script<spell_snared_in_net>("spell_snared_in_net");
+    register_spell_script(spell_groldom_net);
+    register_aura_script(spell_snared_in_net);
     new AreaTrigger_at_groldom_farm();
-    new creature_script<npc_barrent_wounded_defender>("npc_barrent_wounded_defender");
-    new spell_script<spell_barrens_bandage>("spell_barrens_bandage");
+    register_creature_script(npc_barrent_wounded_defender);
+    register_spell_script(spell_barrens_bandage);
 }

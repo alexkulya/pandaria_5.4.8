@@ -84,141 +84,130 @@ void HandleInitCombat(uint64 ownerGUID)
     }
 }
 
-class boss_galion : public CreatureScript
+struct boss_galion : public BossAI
 {
-    public:
-        boss_galion() : CreatureScript("boss_galion") { }
+    boss_galion(Creature* creature) : BossAI(creature, DATA_BOSS_GALION) { }
 
-        struct boss_galion_AI : public BossAI
+    EventMap vEvents;
+    int32 m_bp;
+
+    void Reset() override
+    {
+        events.Reset();
+        summons.DespawnAll();
+        m_bp = 0;
+
+        vEvents.ScheduleEvent(EVENT_INIT_VEHICLE, 500ms);
+    }
+
+    void KilledUnit(Unit* /*victim*/) override { }
+
+    void EnterEvadeMode() override
+    {
+        summons.DespawnAll();
+        _DespawnAtEvade();
+        me->GetMotionMaster()->MoveTargetedHome();
+    }
+
+    void EnterCombat(Unit* /*who*/) override
+    {
+        events.ScheduleEvent(EVENT_STOMP, 50s);
+        events.ScheduleEvent(EVENT_CANNON, 25s);
+        events.ScheduleEvent(EVENT_SPAWN, 1min);
+        events.ScheduleEvent(EVENT_BERSERK, 15min);
+        events.ScheduleEvent(EVENT_INIT_COMBAT, 1s + 500ms);
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        vEvents.Update(diff);
+
+        while (uint32 eventId = vEvents.ExecuteEvent())
         {
-            boss_galion_AI(Creature* creature) : BossAI(creature, DATA_BOSS_GALION) { }
-
-            EventMap vEvents;
-            int32 m_bp;
-
-            void Reset() override
+            if (eventId == EVENT_INIT_VEHICLE)
             {
-                events.Reset();
-                summons.DespawnAll();
-                m_bp = 0;
-
-                vEvents.ScheduleEvent(EVENT_INIT_VEHICLE, 500ms);
-            }
-
-            void KilledUnit(Unit* /*victim*/) override { }
-
-            void EnterEvadeMode() override
-            {
-                summons.DespawnAll();
-                _DespawnAtEvade();
-                me->GetMotionMaster()->MoveTargetedHome();
-            }
-
-            void EnterCombat(Unit* /*who*/) override
-            {
-                events.ScheduleEvent(EVENT_STOMP, 50s);
-                events.ScheduleEvent(EVENT_CANNON, 25s);
-                events.ScheduleEvent(EVENT_SPAWN, 1min);
-                events.ScheduleEvent(EVENT_BERSERK, 15min);
-                events.ScheduleEvent(EVENT_INIT_COMBAT, 1s + 500ms);
-            }
-
-            void UpdateAI(uint32 diff) override
-            {
-                vEvents.Update(diff);
-
-                while (uint32 eventId = vEvents.ExecuteEvent())
+                // Init vehicles, only cosmetic or passive
+                if (const SpellInfo* m_spell = sSpellMgr->GetSpellInfo(VEHICLE_SPELL_RIDE_HARDCODED))
                 {
-                    if (eventId == EVENT_INIT_VEHICLE)
+                    for (uint32 i = 1; i < 3; i++)
                     {
-                        // Init vehicles, only cosmetic or passive
-                        if (const SpellInfo* m_spell = sSpellMgr->GetSpellInfo(VEHICLE_SPELL_RIDE_HARDCODED))
+                        m_bp = m_spell->Effects[EFFECT_0].BasePoints + (int32)i;
+
+                        if (Creature* cannon = me->SummonCreature(NPC_GALLEON_CANNON, *me, TEMPSUMMON_MANUAL_DESPAWN))
                         {
-                            for (uint32 i = 1; i < 3; i++)
-                            {
-                                m_bp = m_spell->Effects[EFFECT_0].BasePoints + (int32)i;
-
-                                if (Creature* cannon = me->SummonCreature(NPC_GALLEON_CANNON, *me, TEMPSUMMON_MANUAL_DESPAWN))
-                                {
-                                    cannon->CastCustomSpell(me, VEHICLE_SPELL_RIDE_HARDCODED, &m_bp, 0, 0, true);
-                                    cannon->SetFacingTo(Position::NormalizeOrientation(me->GetOrientation() + M_PI / 2));
-                                }
-                            }
-
-                            for (uint32 i = 3; i < 7; i++)
-                            {
-                                m_bp = m_spell->Effects[EFFECT_0].BasePoints + (int32)i;
-
-                                if (Creature* skirmisher = me->SummonCreature(NPC_SALYIN_SKRIMISHER, *me, TEMPSUMMON_MANUAL_DESPAWN))
-                                    skirmisher->CastCustomSpell(me, VEHICLE_SPELL_RIDE_HARDCODED, &m_bp, 0, 0, true);
-                            }
-
-                            m_bp = m_spell->Effects[EFFECT_0].BasePoints + 7;
-
-                            if (Creature* chief = me->SummonCreature(NPC_CHIEF_SALYIS, *me, TEMPSUMMON_MANUAL_DESPAWN))
-                                chief->CastCustomSpell(me, VEHICLE_SPELL_RIDE_HARDCODED, &m_bp, 0, 0, true);
+                            cannon->CastCustomSpell(me, VEHICLE_SPELL_RIDE_HARDCODED, &m_bp, 0, 0, true);
+                            cannon->SetFacingTo(Position::NormalizeOrientation(me->GetOrientation() + M_PI / 2));
                         }
+                    }
+
+                    for (uint32 i = 3; i < 7; i++)
+                    {
+                        m_bp = m_spell->Effects[EFFECT_0].BasePoints + (int32)i;
+
+                        if (Creature* skirmisher = me->SummonCreature(NPC_SALYIN_SKRIMISHER, *me, TEMPSUMMON_MANUAL_DESPAWN))
+                            skirmisher->CastCustomSpell(me, VEHICLE_SPELL_RIDE_HARDCODED, &m_bp, 0, 0, true);
+                    }
+
+                    m_bp = m_spell->Effects[EFFECT_0].BasePoints + 7;
+
+                    if (Creature* chief = me->SummonCreature(NPC_CHIEF_SALYIS, *me, TEMPSUMMON_MANUAL_DESPAWN))
+                        chief->CastCustomSpell(me, VEHICLE_SPELL_RIDE_HARDCODED, &m_bp, 0, 0, true);
+                }
+            }
+            break;
+        }
+
+        if (!UpdateVictim())
+            return;
+
+        events.Update(diff);
+
+        while (uint32 eventId = events.ExecuteEvent())
+        {
+            switch (eventId)
+            {
+                case EVENT_STOMP:
+                {
+                    me->CastSpell(me, SPELL_STOMP, true);
+                    events.ScheduleEvent(EVENT_STOMP, 1min);
+                    break;
+                }
+                case EVENT_CANNON:
+                {
+                    DoCast(me, SPELL_CANNON_BARRAGE);
+                    events.ScheduleEvent(EVENT_CANNON, 1min);
+                    break;
+                }
+                case EVENT_SPAWN:
+                {
+                    for (uint8 i = 0; i < 6; ++i)
+                        me->SummonCreature(NPC_SALYIN_WARMONGER, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ());
+
+                    events.ScheduleEvent(EVENT_SPAWN, 1min);
+                    break;
+                }
+                case EVENT_BERSERK:
+                {
+                    me->CastSpell(me, SPELL_BERSERK, false);
+                    break;
+                }
+                case EVENT_INIT_COMBAT:
+                {
+                    if (Vehicle* veh = me->GetVehicleKit())
+                    {
+                        for (auto&& seat : veh->Seats)
+                            if (Creature* passenger = ObjectAccessor::GetCreature(*veh->GetBase(), seat.second.Passenger.Guid))
+                                if (passenger->AI())
+                                    passenger->AI()->DoAction(ACTION_INIT_COMBAT);
                     }
                     break;
                 }
-
-                if (!UpdateVictim())
-                    return;
-
-                events.Update(diff);
-
-                while (uint32 eventId = events.ExecuteEvent())
-                {
-                    switch (eventId)
-                    {
-                        case EVENT_STOMP:
-                        {
-                            me->CastSpell(me, SPELL_STOMP, true);
-                            events.ScheduleEvent(EVENT_STOMP, 1min);
-                            break;
-                        }
-                        case EVENT_CANNON:
-                        {
-                            DoCast(me, SPELL_CANNON_BARRAGE);
-                            events.ScheduleEvent(EVENT_CANNON, 1min);
-                            break;
-                        }
-                        case EVENT_SPAWN:
-                        {
-                            for (uint8 i = 0; i < 6; ++i)
-                                me->SummonCreature(NPC_SALYIN_WARMONGER, me->GetPositionX(), me->GetPositionY(), me->GetPositionZ());
-
-                            events.ScheduleEvent(EVENT_SPAWN, 1min);
-                            break;
-                        }
-                        case EVENT_BERSERK:
-                        {
-                            me->CastSpell(me, SPELL_BERSERK, false);
-                            break;
-                        }
-                        case EVENT_INIT_COMBAT:
-                        {
-                            if (Vehicle* veh = me->GetVehicleKit())
-                            {
-                                for (auto&& seat : veh->Seats)
-                                    if (Creature* passenger = ObjectAccessor::GetCreature(*veh->GetBase(), seat.second.Passenger.Guid))
-                                        if (passenger->AI())
-                                            passenger->AI()->DoAction(ACTION_INIT_COMBAT);
-                            }
-                            break;
-                        }
-                    }
-                }
-
-                DoMeleeAttackIfReady();
-                EnterEvadeIfOutOfCombatArea(diff, 125.0f);
             }
-        };
-
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new boss_galion_AI(creature);
         }
+
+        DoMeleeAttackIfReady();
+        EnterEvadeIfOutOfCombatArea(diff, 125.0f);
+    }
 };
 
 struct npc_salyin_skrimisher : public ScriptedAI
@@ -323,8 +312,8 @@ class spell_galleon_fire_shot : public SpellScript
 
 void AddSC_boss_galion()
 {
-    new boss_galion();
-    new creature_script<npc_salyin_skrimisher>("npc_salyin_skrimisher");
-    new creature_script<npc_salyin_warmonger>("npc_salyin_warmonger");
-    new spell_script<spell_galleon_fire_shot>("spell_galleon_fire_shot");
+    register_creature_script(boss_galion);
+    register_creature_script(npc_salyin_skrimisher);
+    register_creature_script(npc_salyin_warmonger);
+    register_spell_script(spell_galleon_fire_shot);
 }

@@ -31,40 +31,25 @@ public:
 
 public:
     //! Default constructor.
-    TimeValue()
-        : _duration(std::chrono::milliseconds::zero())
-    {
-    }
+    TimeValue() : _duration(std::chrono::milliseconds::zero()) { }
 
     //! Copy constructor.
-    TimeValue(TimeValue const& other)
-        : _duration(other._duration)
-    {
-    }
+    TimeValue(TimeValue const& other) : _duration(other._duration) { }
 
     //! Constructor.
     //! Creates TimeValue from std::chrono::duration.
     //! @param d Duration.
     template <class Rep, class Period>
-    TimeValue(std::chrono::duration<Rep, Period> const& d)
-        : _duration(std::chrono::duration_cast<Duration>(d))
-    {
-
-    }
+    TimeValue(std::chrono::duration<Rep, Period> const& d) : _duration(std::chrono::duration_cast<Duration>(d)) { }
 
     //! Constructor.
     //! Creates TimeValue from std::chrono::time_point.
     //! @param tp Time point.
     template <class Clock>
-    TimeValue(std::chrono::time_point<Clock> const& tp)
-        : _duration(std::chrono::duration_cast<Duration>(tp.time_since_epoch()))
-    {
-    }
+    TimeValue(std::chrono::time_point<Clock> const& tp) : _duration(std::chrono::duration_cast<Duration>(tp.time_since_epoch())) { }
 
     //! Destructor.
-    ~TimeValue()
-    {
-    }
+    ~TimeValue() { }
 
     //! Converts to the number of seconds.
     //! @return The number of seconds.

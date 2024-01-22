@@ -605,15 +605,15 @@ class spell_erudax_umbral_mending : public SpellScript
 void AddSC_boss_erudax()
 {
     new boss_erudax();
-    new creature_script<npc_erudax_faceless_corruptor>("npc_erudax_faceless_corruptor");
-    new creature_script<npc_alexstrasza_egg>("npc_alexstrasza_egg");
-    new creature_script<npc_shadow_gale_stalker>("npc_shadow_gale_stalker");
-    new creature_script<npc_erudax_twilight_hatchling>("npc_erudax_twilight_hatchling");
+    register_creature_script(npc_erudax_faceless_corruptor);
+    register_creature_script(npc_alexstrasza_egg);
+    register_creature_script(npc_shadow_gale_stalker);
+    register_creature_script(npc_erudax_twilight_hatchling);
 
-    new spell_script<spell_erudax_shadow_gale>("spell_erudax_shadow_gale");
-    new spell_script<spell_erudax_shadow_gale_launcher>("spell_erudax_shadow_gale_launcher");
-    new spell_script<spell_erudax_shield_of_nightmares>("spell_erudax_shield_of_nightmares");
-    new spell_script<spell_erudax_twilight_corruption>("spell_erudax_twilight_corruption");
-    new aura_script<spell_erudax_twilight_corruption_aura>("spell_erudax_twilight_corruption_aura");
-    new spell_script<spell_erudax_umbral_mending>("spell_erudax_umbral_mending");
+    register_spell_script(spell_erudax_shadow_gale);
+    register_spell_script(spell_erudax_shadow_gale_launcher);
+    register_spell_script(spell_erudax_shield_of_nightmares);
+    register_spell_script(spell_erudax_twilight_corruption);
+    register_aura_script(spell_erudax_twilight_corruption_aura);
+    register_spell_script(spell_erudax_umbral_mending);
 }

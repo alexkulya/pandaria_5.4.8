@@ -39,195 +39,166 @@
 
 #include "siege_of_orgrimmar.h"
 
-enum Yells
-{
-    // Rook
-    TALK_ROOK_AGGRO = 3,
-    TALK_ROOK_DESPERATE_ANN,
-    TALK_ROOK_DESPERATE,
-    TALK_ROOK_BOND_OF_GOLDEN_LOTUS_ANN,
-    TALK_ROOK_BOND_OF_GOLDEN_LOTUS,
-    ROOK_SAY_CORRUPTION_KICK,
-
-    // Sun
-    TALK_SUN_DESPERATE_ANN = 1,
-    TALK_SUN_DESPERATE,
-    TALK_SUN_BOND_OF_GOLDEN_LOTUS,
-    TALK_SUN_BOND_OF_GOLDEN_LOTUS_ANN,
-    TALK_SUN_CALAMITY, 
-    TALK_SUN_ANNOUNCE_CALAMITY,
-
-    // He
-    TALK_HE_DESPERATE_ANN = 0,
-    TALK_HE_DESPERATE,
-    TALK_HE_BOND_OF_GOLDEN_LOTUS_ANN,
-    TALK_HE_BOND_OF_GOLDEN_LOTUS,
-    TALK_HE_GOUGE_ANN,
-    TALK_HE_ANNOUNCE_INSTANT_POISON,
-    TALK_HE_ANNOUNCE_NOXIOUS_POISON,
-};
-
-enum Spells
+enum FallenProtectorsSpellData
 {
     // General
+    SPELL_BOND_OF_THE_GOLDEN_LOTUS          = 143497,
 
-    SPELL_BOND_OF_THE_GOLDEN_LOTUS = 143497,
-
-    SPELL_ROOT_GENERIC             = 42716,
-    SPELL_PROTECTORS_VISUAL        = 144942, // Not used - Black & White Dummy.
-    SPELL_BERSERK                  = 144369,
+    SPELL_ROOT_GENERIC                      = 42716,
+    SPELL_PROTECTORS_VISUAL                 = 144942, // Not used - Black & White Dummy.
+    SPELL_BERSERK                           = 144369,
 
     //============================================================================================================================================================================//
 
     // Rook Stonetoe
-    SPELL_VENGEFUL_STRIKES         = 144396, // Stun, Damage, trigger 144397 each 0.5s.
-    SPELL_VENGEFUL_STRIKES_VISUAL  = 145584,
+    SPELL_VENGEFUL_STRIKES                  = 144396, // Stun, Damage, trigger 144397 each 0.5s.
+    SPELL_VENGEFUL_STRIKES_VISUAL           = 145584,
 
-    SPELL_CORRUPTED_BREW           = 143019, // Dummy on efect 0 to cast SPELL_CORRUPTED_BREW_MISSILE (1, 3, 2, 6 targets).
-    SPELL_CORRUPTED_BREW_MISSILE   = 143021, // Triggers SPELL_CORRUPTED_BREW_DAMAGE.
-    SPELL_CORRUPTED_BREW_DAMAGE    = 143023, // Damage and movement speed reduce in 5 yards.
-    SPELL_CORRUPTED_BREW_OVERPOWER = 145605,
-    SPELL_CORRUPTED_BREW_X1        = 145608, // depend of stack amount
-    SPELL_CORRUPTED_BREW_X2        = 145609,
-    SPELL_CORRUPTED_BREW_X3        = 145610,
-    SPELL_CORRUPTED_BREW_x4        = 145611,
-    SPELL_CORRUPTED_BREW_X5        = 145612,
-    SPELL_CORRUPTED_BREW_X6        = 145615,
-    SPELL_CORRUPTED_BREW_x7        = 145617,
+    SPELL_CORRUPTED_BREW                    = 143019, // Dummy on efect 0 to cast SPELL_CORRUPTED_BREW_MISSILE (1, 3, 2, 6 targets).
+    SPELL_CORRUPTED_BREW_MISSILE            = 143021, // Triggers SPELL_CORRUPTED_BREW_DAMAGE.
+    SPELL_CORRUPTED_BREW_DAMAGE             = 143023, // Damage and movement speed reduce in 5 yards.
+    SPELL_CORRUPTED_BREW_OVERPOWER          = 145605,
+    SPELL_CORRUPTED_BREW_X1                 = 145608, // depend of stack amount
+    SPELL_CORRUPTED_BREW_X2                 = 145609,
+    SPELL_CORRUPTED_BREW_X3                 = 145610,
+    SPELL_CORRUPTED_BREW_x4                 = 145611,
+    SPELL_CORRUPTED_BREW_X5                 = 145612,
+    SPELL_CORRUPTED_BREW_X6                 = 145615,
+    SPELL_CORRUPTED_BREW_x7                 = 145617,
 
-    SPELL_CLASH                    = 143027, // Dummy on Effect 0 to cast SPELL_CLASH_ROOK + SPELL_CLASH_TARGET.
-    SPELL_CLASH_BY_PLAYER          = 143030, // Player charge to Rook.
-    SPELL_CLASH_BY_ROOK            = 143028, // Rook Jump to Player.
+    SPELL_CLASH                             = 143027, // Dummy on Effect 0 to cast SPELL_CLASH_ROOK + SPELL_CLASH_TARGET.
+    SPELL_CLASH_BY_PLAYER                   = 143030, // Player charge to Rook.
+    SPELL_CLASH_BY_ROOK                     = 143028, // Rook Jump to Player.
 
-    SPELL_CORRUPTION_KICK          = 143007, // Immediately after Clash. Triggers damage and aura apply.
-    SPELL_CORRUPTION_KICK_EFF      = 143010,
+    SPELL_CORRUPTION_KICK                   = 143007, // Immediately after Clash. Triggers damage and aura apply.
+    SPELL_CORRUPTION_KICK_EFF               = 143010,
 
-    SPELL_MISSERY_SORROW_GLOOM     = 143955, // Dummy aura, "Meditating" tooltip.
+    SPELL_MISSERY_SORROW_GLOOM              = 143955, // Dummy aura, "Meditating" tooltip.
 
     //============================================================================================================================================================================//
 
     // He Softfoot
-    SPELL_SHADOWSTEP               = 143048, // Triggers SPELL_HE_GARROTE and Teleport 2y behind target.
-    SPELL_SHADOWSTEP_SELECTOR      = 143050,
-    SPELL_HE_GARROTE               = 143198, // Damage every 2 seconds.
+    SPELL_SHADOWSTEP                        = 143048, // Triggers SPELL_HE_GARROTE and Teleport 2y behind target.
+    SPELL_SHADOWSTEP_SELECTOR               = 143050,
+    SPELL_HE_GARROTE                        = 143198, // Damage every 2 seconds.
 
-    SPELL_HE_GOUGE                 = 143330, // Dummy of Effect 0. Checks for SPELL_HE_GOUGE_DMG_STUN / SPELL_HE_GOUGE_KB.
-    SPELL_HE_GOUGE_DMG_STUN        = 143301, // Damage and 6 seconds stun.
-    SPELL_HE_GOUGE_KB              = 143331, // Knockback.
+    SPELL_HE_GOUGE                          = 143330, // Dummy of Effect 0. Checks for SPELL_HE_GOUGE_DMG_STUN / SPELL_HE_GOUGE_KB.
+    SPELL_HE_GOUGE_DMG_STUN                 = 143301, // Damage and 6 seconds stun.
+    SPELL_HE_GOUGE_KB                       = 143331, // Knockback.
 
-    SPELL_INSTANT_POISON           = 143210, // Applies Proc aura on melee atack for Instant Poison damage (Effect 1) and Script Effect for removal for SPELL_NOXIOUS_POISON on Effect 2.
-    SPELL_INSTANCE_POISON_EFF      = 143224,
+    SPELL_INSTANT_POISON                    = 143210, // Applies Proc aura on melee atack for Instant Poison damage (Effect 1) and Script Effect for removal for SPELL_NOXIOUS_POISON on Effect 2.
+    SPELL_INSTANCE_POISON_EFF               = 143224,
 
-    SPELL_NOXIOUS_POISON           = 143225, // Applies Proc aura on melee atack for SPELL_NOXIOUS_POISON_MISSILE (Effect 1) and Script Effect for removal for SPELL_INSTANT_POISON on Effect 2.
-    SPELL_NOXIOUS_POISON_MISSILE   = 143245, // Triggers SPELL_NOXIOUS_POISON_AT_MISS.
-    SPELL_NOXIOUS_POISON_AT_MISS   = 143276, // Triggers SPELL_NOXIOUS_POISON_AT.
-    SPELL_NOXIOUS_POISON_AT        = 143235, // Creates Areatrigger 1013 (Pool of Noxious Poison).
-    SPELL_NOXIOUS_POISON_AURA      = 143239, // Player periodic damage trigger aura (From Areatrigger).
+    SPELL_NOXIOUS_POISON                    = 143225, // Applies Proc aura on melee atack for SPELL_NOXIOUS_POISON_MISSILE (Effect 1) and Script Effect for removal for SPELL_INSTANT_POISON on Effect 2.
+    SPELL_NOXIOUS_POISON_MISSILE            = 143245, // Triggers SPELL_NOXIOUS_POISON_AT_MISS.
+    SPELL_NOXIOUS_POISON_AT_MISS            = 143276, // Triggers SPELL_NOXIOUS_POISON_AT.
+    SPELL_NOXIOUS_POISON_AT                 = 143235, // Creates Areatrigger 1013 (Pool of Noxious Poison).
+    SPELL_NOXIOUS_POISON_AURA               = 143239, // Player periodic damage trigger aura (From Areatrigger).
 
-    SPELL_MARK_OF_ANGUISH          = 143822, // Dummy on Effect 0 for SPELL_MARK_OF_ANGUISH_MAIN aura apply on random target.
-    SPELL_MARK_OF_ANGUISH_MAIN     = 143840, // Mechanic abilities, Periodic Dummy on Effect 1 for SPELL_MARK_OF_ANGUISH_DAMAGE, Root apply.
-    SPELL_MARK_OF_ANGUISH_DAMAGE   = 144365, // Damage.
-    SPELL_MARK_OF_ANGUISH_TRANSFER = 143842, // Mechanic Abilities button, Dummy on Effect 0 for SPELL_MARK_OF_ANGUISH_MAIN aura apply on selected friendly target.
-    SPELL_MARK_OF_ANGUISH_VISUAL   = 143812, // Kneel boss visual, "Meditating" tooltip.
-    SPELL_DEBILITATION             = 147383, // Possessing the Mark of Anguish debilitates targets, decreasing their armor by 50% for 2 min.
-    SPELL_HE_FIXATE                = 143292, // in case if our target got gouge - fixate on anyone - until taunt or 30s duration.
+    SPELL_MARK_OF_ANGUISH                   = 143822, // Dummy on Effect 0 for SPELL_MARK_OF_ANGUISH_MAIN aura apply on random target.
+    SPELL_MARK_OF_ANGUISH_MAIN              = 143840, // Mechanic abilities, Periodic Dummy on Effect 1 for SPELL_MARK_OF_ANGUISH_DAMAGE, Root apply.
+    SPELL_MARK_OF_ANGUISH_DAMAGE            = 144365, // Damage.
+    SPELL_MARK_OF_ANGUISH_TRANSFER          = 143842, // Mechanic Abilities button, Dummy on Effect 0 for SPELL_MARK_OF_ANGUISH_MAIN aura apply on selected friendly target.
+    SPELL_MARK_OF_ANGUISH_VISUAL            = 143812, // Kneel boss visual, "Meditating" tooltip.
+    SPELL_DEBILITATION                      = 147383, // Possessing the Mark of Anguish debilitates targets, decreasing their armor by 50% for 2 min.
+    SPELL_HE_FIXATE                         = 143292, // in case if our target got gouge - fixate on anyone - until taunt or 30s duration.
 
     //============================================================================================================================================================================//
 
     // Sun Tenderheart
-    SPELL_SHA_SHEAR                = 143423, // Triggers SPELL_SHA_SHEAR_DAMAGE each sec.
-    SPELL_SHA_SHEAR_DAMAGE         = 143424, // Damage.
+    SPELL_SHA_SHEAR                         = 143423, // Triggers SPELL_SHA_SHEAR_DAMAGE each sec.
+    SPELL_SHA_SHEAR_DAMAGE                  = 143424, // Damage.
 
-    SPELL_SHADOW_WORD_BANE         = 143446, // Cast time and Dumy on Effect 0 for targets apply of SPELL_SHADOW_WORD_BANE_HIT (2, 5, 4, 10 targets).
-    SPELL_SHADOW_WORD_BANE_HIT     = 143434, // Dummy for Jump on Effect 0, Periodic Damage aura apply (Effect 1).
-    SPELL_SHADOW_WORD_BANE_JUMP    = 143443, // Jump spell between players on tick. Dummy on Effect 0 to apply SPELL_SHADOW_WORD_BANE_HIT.
-    SPELL_SHADOW_WORD_BANE_SELECT  = 143438,
+    SPELL_SHADOW_WORD_BANE                  = 143446, // Cast time and Dumy on Effect 0 for targets apply of SPELL_SHADOW_WORD_BANE_HIT (2, 5, 4, 10 targets).
+    SPELL_SHADOW_WORD_BANE_HIT              = 143434, // Dummy for Jump on Effect 0, Periodic Damage aura apply (Effect 1).
+    SPELL_SHADOW_WORD_BANE_JUMP             = 143443, // Jump spell between players on tick. Dummy on Effect 0 to apply SPELL_SHADOW_WORD_BANE_HIT.
+    SPELL_SHADOW_WORD_BANE_SELECT           = 143438,
 
-    SPELL_CALAMITY                 = 143491, // Cast time and Dummy on Effect 0 for SPELL_CALAMITY_DAMAGE.
-    SPELL_CALAMITY_DAMAGE          = 143493, // Damage health % (Effect 0) and Dummy (Effect 1) for 10% Heroic increase.
-    SPELL_CALAMITY_OVERPOWER       = 143544,
+    SPELL_CALAMITY                          = 143491, // Cast time and Dummy on Effect 0 for SPELL_CALAMITY_DAMAGE.
+    SPELL_CALAMITY_DAMAGE                   = 143493, // Damage health % (Effect 0) and Dummy (Effect 1) for 10% Heroic increase.
+    SPELL_CALAMITY_OVERPOWER                = 143544,
 
-    SPELL_DARK_MEDITATION          = 143546, // Creates Areatrigger 1032 (Dark Meditation) Effect 0, Periodic Dummy (Effect 1) for SPELL_DARK_MEDITATION_DAMAGE trigger every 0.5 seconds.
-    SPELL_DARK_MEDITATION_DAMAGE   = 143559, // Damage.
-    SPELL_DARK_MEDITATION_VISUAL   = 143843, // Visual area and Dummy Effect 0 (Unk).
-    SPELL_DARK_MEDITATION_DMG_RED  = 143564, // Damage reduction aura on players inside the field.
+    SPELL_DARK_MEDITATION                   = 143546, // Creates Areatrigger 1032 (Dark Meditation) Effect 0, Periodic Dummy (Effect 1) for SPELL_DARK_MEDITATION_DAMAGE trigger every 0.5 seconds.
+    SPELL_DARK_MEDITATION_DAMAGE            = 143559, // Damage.
+    SPELL_DARK_MEDITATION_VISUAL            = 143843, // Visual area and Dummy Effect 0 (Unk).
+    SPELL_DARK_MEDITATION_DMG_RED           = 143564, // Damage reduction aura on players inside the field.
 
     // ! On HEROIC difficulty, Sun Tenderheart periodically fires a bolt of dark energy !
-    SPELL_MEDITATION_SPIKE_MISSILE = 143599, // Triggers SPELL_MEDITATION_SPIKE_DAMAGE.
-    SPELL_MEDITATION_SPIKE_DAMAGE  = 143602, // Damage.
+    SPELL_MEDITATION_SPIKE_MISSILE          = 143599, // Triggers SPELL_MEDITATION_SPIKE_DAMAGE.
+    SPELL_MEDITATION_SPIKE_DAMAGE           = 143602, // Damage.
 
     // Embodied Misery
-    SPELL_DEFILED_GROUND           = 143961, // Damage, Knockback and trigger SPELL_DEFILED_GROUND_AT (Effect 1).
-    SPELL_DEFILED_GROUND_AT        = 143960, // Creates Areatrigger 1053 (Defiled Ground).
-    SPELL_DEFILED_GROUND_AURA      = 143959, // Triggers Periodic Damage (Player aura).
+    SPELL_DEFILED_GROUND                    = 143961, // Damage, Knockback and trigger SPELL_DEFILED_GROUND_AT (Effect 1).
+    SPELL_DEFILED_GROUND_AT                 = 143960, // Creates Areatrigger 1053 (Defiled Ground).
+    SPELL_DEFILED_GROUND_AURA               = 143959, // Triggers Periodic Damage (Player aura).
 
     // Embodied Sorrow
-    SPELL_INFERNO_STRIKE           = 143962, // Dummy for damage increase on Effect 0, Damage on effect 1. Damage split between targets in 8 yards.
+    SPELL_INFERNO_STRIKE                    = 143962, // Dummy for damage increase on Effect 0, Damage on effect 1. Damage split between targets in 8 yards.
 
     // Embodied Gloom 
-    SPELL_CORRUPTION_SHOCK         = 143958, // Dummy on Effect 0 for SPELL_CORRUPTION_SHOCK_MISSILE (2, 5, 4, 10 targets).
-    SPELL_CORRUPTION_SHOCK_MISSILE = 144020, // Triggers SPELL_CORRUPTION_SHOCK_DAMAGE at location.
-    SPELL_CORRUPTION_SHOCK_DAMAGE  = 144018, // Damage.
+    SPELL_CORRUPTION_SHOCK                  = 143958, // Dummy on Effect 0 for SPELL_CORRUPTION_SHOCK_MISSILE (2, 5, 4, 10 targets).
+    SPELL_CORRUPTION_SHOCK_MISSILE          = 144020, // Triggers SPELL_CORRUPTION_SHOCK_DAMAGE at location.
+    SPELL_CORRUPTION_SHOCK_DAMAGE           = 144018, // Damage.
 
     // ! On HEROIC difficulty, Corruption Chain replaces Corruption Shock !
-    SPELL_CORRUPTION_CHAIN         = 145653, // Cast time and dummy on Effect 0 for SPELL_CORRUPTION_CHAIN_DAMAGE.
-    SPELL_CORRUPTION_CHAIN_DAMAGE  = 145631, // Damage and chain.
+    SPELL_CORRUPTION_CHAIN                  = 145653, // Cast time and dummy on Effect 0 for SPELL_CORRUPTION_CHAIN_DAMAGE.
+    SPELL_CORRUPTION_CHAIN_DAMAGE           = 145631, // Damage and chain.
 
     // All three above.
-    SPELL_SHARED_TORMENT           = 145655, // All three NPC's share health.
+    SPELL_SHARED_TORMENT                    = 145655, // All three NPC's share health.
 
     // Embodied Anguish
-    SPELL_SHADOW_WEAKNESS_AURA     = 144079, // Proc aura for SPELL_SHADOW_WEAKNESS.
-    SPELL_SHADOW_WEAKNESS          = 144176,
-    SPELL_SHADOW_WEAKNESS_TRANSFER = 144081, // Dummy on Effect 0 to apply a stack of SPELL_SHADOW_WEAKNESS on all players when using SPELL_MARK_OF_ANGUISH_TRANSFER.
+    SPELL_SHADOW_WEAKNESS_AURA              = 144079, // Proc aura for SPELL_SHADOW_WEAKNESS.
+    SPELL_SHADOW_WEAKNESS                   = 144176,
+    SPELL_SHADOW_WEAKNESS_TRANSFER          = 144081, // Dummy on Effect 0 to apply a stack of SPELL_SHADOW_WEAKNESS on all players when using SPELL_MARK_OF_ANGUISH_TRANSFER.
 
     // Manifest Emotions – Embodied Despair and Embodied Desperation focus their negative emotions, creating Sha manifestations which attack players. 
     // Any damage taken by these manifested emotions will also be suffered by the creature that spawned them.
 
     // Embodied Despair
-    SPELL_MANIFEST_DESPAIR         = 143746, // Summons NPC_DESPAIR_SPAWN.
+    SPELL_MANIFEST_DESPAIR                  = 143746, // Summons NPC_DESPAIR_SPAWN.
 
     // Embodied Desperation
-    SPELL_MANIFEST_DESPERATION     = 144504,  // Summons NPC_DESPERATION_SPAWN.
+    SPELL_MANIFEST_DESPERATION              = 144504,  // Summons NPC_DESPERATION_SPAWN.
 
     // Achievement
-    SPELL_GO_LONG                  = 145538,
+    SPELL_GO_LONG                           = 145538
 };
 
-enum Events
+enum FallenProtectorsEvents
 {
     // Rook Stonetoe
-    EVENT_ROOK_VENGEFUL_STRIKES    = 1,      //  7 seconds after combat start. Every 21 seconds.
-    EVENT_ROOK_CORRUPTED_BREW,               // 18 seconds after combat start. Every 17-25 seconds.
-    EVENT_ROOK_CLASH,                        // 45 seconds after combat start. Every 46 seconds.
-    EVENT_ROOK_CORRUPTION_KICK,              // After Clash.
+    EVENT_ROOK_VENGEFUL_STRIKES             = 1,      //  7 seconds after combat start. Every 21 seconds.
+    EVENT_ROOK_CORRUPTED_BREW,                        // 18 seconds after combat start. Every 17-25 seconds.
+    EVENT_ROOK_CLASH,                                 // 45 seconds after combat start. Every 46 seconds.
+    EVENT_ROOK_CORRUPTION_KICK,                       // After Clash.
     EVENT_ROOK_DESPERATE_MEASURES,
 
     // He Softfoot
-    EVENT_HE_GARROTE,                        // 15 seconds after combat start. Every 30-46 (Heroic 20-26) seconds.
-    EVENT_HE_GOUGE,                          // 23 seconds after combat start. Every 30-41 seconds.
+    EVENT_HE_GARROTE,                                 // 15 seconds after combat start. Every 30-46 (Heroic 20-26) seconds.
+    EVENT_HE_GOUGE,                                   // 23 seconds after combat start. Every 30-41 seconds.
     EVENT_HE_POISON_DAGGERS,
     EVENT_HE_DESPERATE_MEASURES,
 
     // Sun Tenderheart
     EVENT_SUN_SHA_SHEAR,
-    EVENT_SUN_SHADOW_WORD_BANE,              // 15 seconds after combat start. Every 17-25 (Heroic 13-20) seconds.
-    EVENT_SUN_CALAMITY,                      // 31 seconds after combat start. Every 40-50 seconds.
+    EVENT_SUN_SHADOW_WORD_BANE,                       // 15 seconds after combat start. Every 17-25 (Heroic 13-20) seconds.
+    EVENT_SUN_CALAMITY,                               // 31 seconds after combat start. Every 40-50 seconds.
     EVENT_SUN_DESPERATE_MEASURES,
-    EVENT_SUN_MEDITATION_SPIKE,              // HEROIC only!
+    EVENT_SUN_MEDITATION_SPIKE,                       // HEROIC only!
 
     // General
     EVENT_CHECK_BOND_OF_THE_GOLDEN_LOTUS,
-    EVENT_BERSERK,                           // 900 seconds Normal. 600 seconds Heroic.
+    EVENT_BERSERK,                                    // 900 seconds Normal. 600 seconds Heroic.
 
     // Embodied Misery
-    EVENT_DEFILED_GROUND,                    // Every 10.5 seconds.
+    EVENT_DEFILED_GROUND,                             // Every 10.5 seconds.
 
     // Embodied Sorrow
-    EVENT_INFERNO_STRIKE,                    // Every 9.5 seconds.
+    EVENT_INFERNO_STRIKE,                             // Every 9.5 seconds.
 
     // Embodied Gloom 
-    EVENT_CORRUPTION_SHOCK_CHAIN,            // Shock -> Chain HEROIC!
+    EVENT_CORRUPTION_SHOCK_CHAIN,                     // Shock -> Chain HEROIC!
 
     // Embodied Despair
     EVENT_MANIFEST_DESPAIR,
@@ -236,9 +207,37 @@ enum Events
     EVENT_MANIFEST_DESPERATION
 };
 
-enum Actions
+enum FallenProtectorsTexts
 {
-    ACTION_EVENT_COMPLETE = 1,
+    // Rook
+    TALK_ROOK_AGGRO                         = 3,
+    TALK_ROOK_DESPERATE_ANN,
+    TALK_ROOK_DESPERATE,
+    TALK_ROOK_BOND_OF_GOLDEN_LOTUS_ANN,
+    TALK_ROOK_BOND_OF_GOLDEN_LOTUS,
+    ROOK_SAY_CORRUPTION_KICK,
+
+    // Sun
+    TALK_SUN_DESPERATE_ANN                  = 1,
+    TALK_SUN_DESPERATE,
+    TALK_SUN_BOND_OF_GOLDEN_LOTUS,
+    TALK_SUN_BOND_OF_GOLDEN_LOTUS_ANN,
+    TALK_SUN_CALAMITY, 
+    TALK_SUN_ANNOUNCE_CALAMITY,
+
+    // He
+    TALK_HE_DESPERATE_ANN                   = 0,
+    TALK_HE_DESPERATE,
+    TALK_HE_BOND_OF_GOLDEN_LOTUS_ANN,
+    TALK_HE_BOND_OF_GOLDEN_LOTUS,
+    TALK_HE_GOUGE_ANN,
+    TALK_HE_ANNOUNCE_INSTANT_POISON,
+    TALK_HE_ANNOUNCE_NOXIOUS_POISON
+};
+
+enum FallenProtectorsActions
+{
+    ACTION_EVENT_COMPLETE                   = 1,
     ACTION_NEW_MARK,
     ACTION_REMOVE_CLASH,
 };
@@ -338,9 +337,9 @@ class boss_rook_stonetoe : public CreatureScript
 
                 Talk(TALK_ROOK_AGGRO);
 
-                events.ScheduleEvent(EVENT_ROOK_VENGEFUL_STRIKES, 7000);
-                events.ScheduleEvent(EVENT_ROOK_CORRUPTED_BREW, 18000);
-                events.ScheduleEvent(EVENT_ROOK_CLASH, 45000);
+                events.ScheduleEvent(EVENT_ROOK_VENGEFUL_STRIKES, 7s);
+                events.ScheduleEvent(EVENT_ROOK_CORRUPTED_BREW, 18s);
+                events.ScheduleEvent(EVENT_ROOK_CLASH, 45s);
 
                 events.ScheduleEvent(EVENT_BERSERK, (!IsHeroic() ? 15 : 10) * MINUTE * IN_MILLISECONDS);
 
@@ -377,7 +376,7 @@ class boss_rook_stonetoe : public CreatureScript
                     if (me->HasUnitState(UNIT_STATE_CASTING))
                         return;
 
-                    events.ScheduleEvent(EVENT_ROOK_DESPERATE_MEASURES, 500);
+                    events.ScheduleEvent(EVENT_ROOK_DESPERATE_MEASURES, 500ms);
                     if (!doneDesperateMeasuresPhase)
                         doneDesperateMeasuresPhase = true;
                     else
@@ -436,9 +435,9 @@ class boss_rook_stonetoe : public CreatureScript
                         lotusScheduled = false;
                         scheduler.CancelAll();
 
-                        events.ScheduleEvent(EVENT_ROOK_VENGEFUL_STRIKES, 7000);
-                        events.ScheduleEvent(EVENT_ROOK_CORRUPTED_BREW, 18000);
-                        events.ScheduleEvent(EVENT_ROOK_CLASH, 45000);
+                        events.ScheduleEvent(EVENT_ROOK_VENGEFUL_STRIKES, 7s);
+                        events.ScheduleEvent(EVENT_ROOK_CORRUPTED_BREW, 18s);
+                        events.ScheduleEvent(EVENT_ROOK_CLASH, 45s);
                         break;
                     case ACTION_REMOVE_CLASH:
                         if (!me->HasAura(SPELL_MISSERY_SORROW_GLOOM))
@@ -538,7 +537,7 @@ class boss_rook_stonetoe : public CreatureScript
                             if (Unit* target = me->GetVictim())
                                 DoCast(target, SPELL_VENGEFUL_STRIKES);
 
-                            events.ScheduleEvent(EVENT_ROOK_VENGEFUL_STRIKES, 21000);
+                            events.ScheduleEvent(EVENT_ROOK_VENGEFUL_STRIKES, 21s);
                             break;
 
                         case EVENT_ROOK_CORRUPTED_BREW:
@@ -546,7 +545,7 @@ class boss_rook_stonetoe : public CreatureScript
                                 DoCast(me, SPELL_CORRUPTED_BREW_OVERPOWER, true);
 
                             DoCast(me, SPELL_CORRUPTED_BREW);
-                            events.ScheduleEvent(EVENT_ROOK_CORRUPTED_BREW, urand(17000, 25000));
+                            events.ScheduleEvent(EVENT_ROOK_CORRUPTED_BREW, randtime(17s, 25s));
                             break;
 
                         case EVENT_ROOK_CLASH:
@@ -556,13 +555,13 @@ class boss_rook_stonetoe : public CreatureScript
                             // Not use this spell during any Measures phase
                             if (isAnyMeasuresPhase())
                             {
-                                events.RescheduleEvent(EVENT_ROOK_CLASH, 2 * IN_MILLISECONDS);
+                                events.RescheduleEvent(EVENT_ROOK_CLASH, 2s);
                                 break;
                             }
 
                             DoCast(me, SPELL_CLASH);
-                            events.ScheduleEvent(EVENT_ROOK_CORRUPTION_KICK, 1 * IN_MILLISECONDS);
-                            events.ScheduleEvent(EVENT_ROOK_CLASH, 46000);
+                            events.ScheduleEvent(EVENT_ROOK_CORRUPTION_KICK, 1s);
+                            events.ScheduleEvent(EVENT_ROOK_CLASH, 46s);
                             break;
                         case EVENT_ROOK_CORRUPTION_KICK:
                             Talk(ROOK_SAY_CORRUPTION_KICK);
@@ -606,10 +605,10 @@ class boss_rook_stonetoe : public CreatureScript
                                     me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
 
                                     // Reschedule the normal events.
-                                    events.ScheduleEvent(EVENT_ROOK_VENGEFUL_STRIKES, 7000);
-                                    events.ScheduleEvent(EVENT_ROOK_CORRUPTED_BREW, 18000);
+                                    events.ScheduleEvent(EVENT_ROOK_VENGEFUL_STRIKES, 7s);
+                                    events.ScheduleEvent(EVENT_ROOK_CORRUPTED_BREW, 18s);
 
-                                    events.ScheduleEvent(EVENT_ROOK_CLASH, 45000);
+                                    events.ScheduleEvent(EVENT_ROOK_CLASH, 45s);
                                 }
                                 else
                                     context.Repeat(Seconds(1));
@@ -761,9 +760,9 @@ class boss_he_softfoot : public CreatureScript
                 if (instance)
                     instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me);
 
-                events.ScheduleEvent(EVENT_HE_GARROTE, 15000);
-                events.ScheduleEvent(EVENT_HE_GOUGE, 23000);
-                events.ScheduleEvent(EVENT_HE_POISON_DAGGERS, 45000);
+                events.ScheduleEvent(EVENT_HE_GARROTE, 15s);
+                events.ScheduleEvent(EVENT_HE_GOUGE, 23s);
+                events.ScheduleEvent(EVENT_HE_POISON_DAGGERS, 45s);
 
                 _EnterCombat();
             }
@@ -821,7 +820,7 @@ class boss_he_softfoot : public CreatureScript
                     if (me->HasUnitState(UNIT_STATE_CASTING))
                         return;
 
-                    events.ScheduleEvent(EVENT_HE_DESPERATE_MEASURES, 500);
+                    events.ScheduleEvent(EVENT_HE_DESPERATE_MEASURES, 500ms);
                     if (!doneDesperateMeasuresPhase)
                         doneDesperateMeasuresPhase = true;
                     else
@@ -855,9 +854,9 @@ class boss_he_softfoot : public CreatureScript
                     case ACTION_HEALED_BY_BOND_OF_LOTUS:
                         lotusScheduled = false;
 
-                        events.ScheduleEvent(EVENT_HE_GARROTE, 15000);
-                        events.ScheduleEvent(EVENT_HE_GOUGE, 23000);
-                        events.ScheduleEvent(EVENT_HE_POISON_DAGGERS, 45000);
+                        events.ScheduleEvent(EVENT_HE_GARROTE, 15s);
+                        events.ScheduleEvent(EVENT_HE_GOUGE, 23s);
+                        events.ScheduleEvent(EVENT_HE_POISON_DAGGERS, 45s);
                         break;
                 }
             }
@@ -964,7 +963,7 @@ class boss_he_softfoot : public CreatureScript
                         case EVENT_HE_GOUGE:
                             Talk(TALK_HE_GOUGE_ANN, me->GetVictim());
                             DoCast(me->GetVictim(), SPELL_HE_GOUGE);
-                            events.ScheduleEvent(EVENT_HE_GOUGE, urand(30000, 41000));
+                            events.ScheduleEvent(EVENT_HE_GOUGE, randtime(30s, 41s));
                             break;
 
                         case EVENT_HE_POISON_DAGGERS:
@@ -986,7 +985,7 @@ class boss_he_softfoot : public CreatureScript
                                 me->RemoveAurasDueToSpell(SPELL_NOXIOUS_POISON);
                                 DoCast(me, SPELL_INSTANT_POISON);
                             }
-                            events.ScheduleEvent(EVENT_HE_POISON_DAGGERS, 46000);
+                            events.ScheduleEvent(EVENT_HE_POISON_DAGGERS, 46s);
                             break;
 
                         case EVENT_HE_DESPERATE_MEASURES:
@@ -1031,11 +1030,11 @@ class boss_he_softfoot : public CreatureScript
                                     me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
 
                                     // Reschedule the normal events.
-                                    events.ScheduleEvent(EVENT_HE_GARROTE, 15000);
-                                    events.ScheduleEvent(EVENT_HE_GOUGE, 23000);
+                                    events.ScheduleEvent(EVENT_HE_GARROTE, 15s);
+                                    events.ScheduleEvent(EVENT_HE_GOUGE, 23s);
 
                                     // On Normal difficulty needs reschedule.
-                                    events.ScheduleEvent(EVENT_HE_POISON_DAGGERS, 45000);
+                                    events.ScheduleEvent(EVENT_HE_POISON_DAGGERS, 45s);
                                 }
                                 else
                                     context.Repeat(Seconds(1));
@@ -1084,18 +1083,17 @@ class boss_sun_tenderheart : public CreatureScript
                 scheduler.CancelAll();
                 me->SetReactState(REACT_DEFENSIVE);
 
-                doneDesperateMeasuresPhase  = false;
+                doneDesperateMeasuresPhase = false;
                 doneDesperateMeasuresPhase2 = false;
 
                 lotusScheduled = false;
-                hasEvade       = false;
+                hasEvade = false;
                 shadowWordTargetGUID = 0;
-                calamityPower        = 1;
+                calamityPower = 1;
 
                 _Reset();
 
-                scheduler
-                    .Schedule(Seconds(1), [this](TaskContext context)
+                scheduler.Schedule(Seconds(1), [this](TaskContext context)
                 {
                     me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED | UNIT_FLAG_NON_ATTACKABLE);
                 });
@@ -1125,9 +1123,9 @@ class boss_sun_tenderheart : public CreatureScript
                 if (instance)
                     instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me);
 
-                events.ScheduleEvent(EVENT_SUN_SHA_SHEAR, 2000);
-                events.ScheduleEvent(EVENT_SUN_SHADOW_WORD_BANE, 15000);
-                events.ScheduleEvent(EVENT_SUN_CALAMITY, 31000);
+                events.ScheduleEvent(EVENT_SUN_SHA_SHEAR, 2s);
+                events.ScheduleEvent(EVENT_SUN_SHADOW_WORD_BANE, 15s);
+                events.ScheduleEvent(EVENT_SUN_CALAMITY, 31s);
 
                 _EnterCombat();
             }
@@ -1159,7 +1157,7 @@ class boss_sun_tenderheart : public CreatureScript
                     if (me->HasUnitState(UNIT_STATE_CASTING) && me->GetCurrentSpell(CURRENT_GENERIC_SPELL) && me->GetCurrentSpell(CURRENT_GENERIC_SPELL)->m_spellInfo->Id == SPELL_CALAMITY)
                         return;
 
-                    events.ScheduleEvent(EVENT_SUN_DESPERATE_MEASURES, 500);
+                    events.ScheduleEvent(EVENT_SUN_DESPERATE_MEASURES, 500ms);
                     if (!doneDesperateMeasuresPhase)
                         doneDesperateMeasuresPhase = true;
                     else
@@ -1223,9 +1221,9 @@ class boss_sun_tenderheart : public CreatureScript
                     case ACTION_HEALED_BY_BOND_OF_LOTUS:
                         lotusScheduled = false;
 
-                        events.ScheduleEvent(EVENT_SUN_SHA_SHEAR, 2000);
-                        events.ScheduleEvent(EVENT_SUN_SHADOW_WORD_BANE, 15000);
-                        events.ScheduleEvent(EVENT_SUN_CALAMITY, 31000);
+                        events.ScheduleEvent(EVENT_SUN_SHA_SHEAR, 2s);
+                        events.ScheduleEvent(EVENT_SUN_SHADOW_WORD_BANE, 15s);
+                        events.ScheduleEvent(EVENT_SUN_CALAMITY, 31s);
                         break;
                 }
             };
@@ -1307,7 +1305,7 @@ class boss_sun_tenderheart : public CreatureScript
                             if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
                                 DoCast(target, SPELL_SHA_SHEAR);
 
-                            events.ScheduleEvent(EVENT_SUN_SHA_SHEAR, 3000);
+                            events.ScheduleEvent(EVENT_SUN_SHA_SHEAR, 3s);
                             break;
 
                         case EVENT_SUN_SHADOW_WORD_BANE:
@@ -1322,7 +1320,7 @@ class boss_sun_tenderheart : public CreatureScript
                             // Not use this spell during any Measures phase
                             if (isAnyMeasuresPhase())
                             {
-                                events.RescheduleEvent(EVENT_SUN_CALAMITY, 2 * IN_MILLISECONDS);
+                                events.RescheduleEvent(EVENT_SUN_CALAMITY, 2s);
                                 break;
                             }
 
@@ -1331,7 +1329,7 @@ class boss_sun_tenderheart : public CreatureScript
                                 instance->DoRemoveAurasDueToSpellOnPlayers(SPELL_SHADOW_WORD_BANE_HIT);
 
                             DoCast(me, SPELL_CALAMITY);
-                            events.ScheduleEvent(EVENT_SUN_CALAMITY, 40 * IN_MILLISECONDS);
+                            events.ScheduleEvent(EVENT_SUN_CALAMITY, 40s);
                             break;
 
                         case EVENT_SUN_DESPERATE_MEASURES:
@@ -1396,11 +1394,11 @@ class boss_sun_tenderheart : public CreatureScript
                                     me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
 
                                     // Reschedule the normal events.
-                                    events.ScheduleEvent(EVENT_SUN_SHA_SHEAR, 2000);
-                                    events.ScheduleEvent(EVENT_SUN_SHADOW_WORD_BANE, 15000);
+                                    events.ScheduleEvent(EVENT_SUN_SHA_SHEAR, 2s);
+                                    events.ScheduleEvent(EVENT_SUN_SHADOW_WORD_BANE, 15s);
 
                                     // On Normal difficulty Calamity needs reschedule.
-                                    events.ScheduleEvent(EVENT_SUN_CALAMITY, 31000);
+                                    events.ScheduleEvent(EVENT_SUN_CALAMITY, 31s);
                                 }
                                 else
                                     context.Repeat(Seconds(1));
@@ -1509,7 +1507,7 @@ struct npc_embodied_misery : public ScriptedAI
             if (me->GetInstanceScript())
                 me->GetInstanceScript()->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me);
 
-            events.ScheduleEvent(EVENT_DEFILED_GROUND, 8 * IN_MILLISECONDS);
+            events.ScheduleEvent(EVENT_DEFILED_GROUND, 8s);
 
             if (Creature* sun = ObjectAccessor::GetCreature(*me, me->GetInstanceScript() ? me->GetInstanceScript()->GetData64(NPC_SUN_TENDERHEART) : 0))
                 me->SetFacingTo(me->GetAngle(sun));
@@ -1536,7 +1534,7 @@ struct npc_embodied_misery : public ScriptedAI
                     if (Unit* target = me->GetVictim())
                         DoCast(target, SPELL_DEFILED_GROUND);
 
-                    events.ScheduleEvent(EVENT_DEFILED_GROUND, 10500);
+                    events.ScheduleEvent(EVENT_DEFILED_GROUND, 10s + 500ms);
                     break;
 
                 default: break;
@@ -1648,7 +1646,7 @@ struct npc_embodied_sorrow : public ScriptedAI
                     else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
                         DoCast(target, SPELL_INFERNO_STRIKE);
 
-                    events.ScheduleEvent(EVENT_INFERNO_STRIKE, 9500);
+                    events.ScheduleEvent(EVENT_INFERNO_STRIKE, 9s + 500ms);
                     break;
 
                 default: break;
@@ -1728,7 +1726,7 @@ struct npc_embodied_gloom : public ScriptedAI
             if (me->GetInstanceScript())
                 me->GetInstanceScript()->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me);
 
-            events.ScheduleEvent(EVENT_CORRUPTION_SHOCK_CHAIN, 1.5 * IN_MILLISECONDS);
+            events.ScheduleEvent(EVENT_CORRUPTION_SHOCK_CHAIN, 1s + 500ms);
 
             if (Creature* sun = ObjectAccessor::GetCreature(*me, me->GetInstanceScript() ? me->GetInstanceScript()->GetData64(NPC_SUN_TENDERHEART) : 0))
                 me->SetFacingTo(me->GetAngle(sun));
@@ -1746,7 +1744,7 @@ struct npc_embodied_gloom : public ScriptedAI
 
     void CastInterrupted(SpellInfo const* spell) override
     {
-        events.RescheduleEvent(EVENT_CORRUPTION_SHOCK_CHAIN, 6 * IN_MILLISECONDS);
+        events.RescheduleEvent(EVENT_CORRUPTION_SHOCK_CHAIN, 6s);
 
         if (Unit* vict = me->GetVictim())
             me->GetMotionMaster()->MoveChase(vict);
@@ -1788,7 +1786,7 @@ struct npc_embodied_gloom : public ScriptedAI
                         else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
                             DoCast(target, SPELL_CORRUPTION_CHAIN);
                     }
-                    events.ScheduleEvent(EVENT_CORRUPTION_SHOCK_CHAIN, 3 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_CORRUPTION_SHOCK_CHAIN, 3s);
                     break;
                 
                 default: break;
@@ -1898,7 +1896,7 @@ struct npc_embodied_despair : public ScriptedAI
     {
         if (pointId == EVENT_JUMP)
         {
-            events.ScheduleEvent(EVENT_MANIFEST_DESPAIR, 0.5 * IN_MILLISECONDS);
+            events.ScheduleEvent(EVENT_MANIFEST_DESPAIR, 500ms);
             me->SummonCreature(NPC_DESPAIR_SPAWN, *me, TEMPSUMMON_MANUAL_DESPAWN);
 
             if (Creature* sun = ObjectAccessor::GetCreature(*me, me->GetInstanceScript() ? me->GetInstanceScript()->GetData64(NPC_SUN_TENDERHEART) : 0))
@@ -1936,7 +1934,7 @@ struct npc_embodied_despair : public ScriptedAI
             {
                 case EVENT_MANIFEST_DESPAIR:
                     DoCast(me, SPELL_MANIFEST_DESPAIR);
-                    events.ScheduleEvent(EVENT_MANIFEST_DESPAIR, urand(5000, 7000));
+                    events.ScheduleEvent(EVENT_MANIFEST_DESPAIR, randtime(5s, 7s));
                     break;
 
                 default: break;
@@ -1969,7 +1967,7 @@ struct npc_embodied_desperation : public ScriptedAI
     {
         if (pointId == EVENT_JUMP)
         {
-            events.ScheduleEvent(EVENT_MANIFEST_DESPERATION, 0.5 * IN_MILLISECONDS);
+            events.ScheduleEvent(EVENT_MANIFEST_DESPERATION, 500ms);
             me->SummonCreature(NPC_DESPERATION_SPAWN, *me, TEMPSUMMON_MANUAL_DESPAWN);
 
             if (Creature* sun = ObjectAccessor::GetCreature(*me, me->GetInstanceScript() ? me->GetInstanceScript()->GetData64(NPC_SUN_TENDERHEART) : 0))
@@ -2007,7 +2005,7 @@ struct npc_embodied_desperation : public ScriptedAI
             {
                 case EVENT_MANIFEST_DESPERATION:
                     DoCast(me, SPELL_MANIFEST_DESPERATION);
-                    events.ScheduleEvent(EVENT_MANIFEST_DESPERATION, urand(5000, 7000));
+                    events.ScheduleEvent(EVENT_MANIFEST_DESPERATION, randtime(5s, 7s));
                     break;
                 
                 default: break;
@@ -3293,48 +3291,48 @@ void AddSC_fallen_protectors()
     new boss_rook_stonetoe();
     new boss_he_softfoot();
     new boss_sun_tenderheart();
-    new creature_script<npc_embodied_misery>("npc_embodied_misery");
-    new creature_script<npc_embodied_sorrow>("npc_embodied_sorrow");
-    new creature_script<npc_embodied_gloom>("npc_embodied_gloom");
-    new creature_script<npc_embodied_anguish>("npc_embodied_anguish");
-    new creature_script<npc_embodied_despair>("npc_embodied_despair");
-    new creature_script<npc_embodied_desperation>("npc_embodied_desperation");
-    new creature_script<npc_despair_spawn>("npc_despair_spawn");
-    new creature_script<npc_desperation_spawn>("npc_desperation_spawn");
-    new creature_script<npc_golden_lotus_trigger>("npc_golden_lotus_trigger");
+    register_creature_script(npc_embodied_misery);
+    register_creature_script(npc_embodied_sorrow);
+    register_creature_script(npc_embodied_gloom);
+    register_creature_script(npc_embodied_anguish);
+    register_creature_script(npc_embodied_despair);
+    register_creature_script(npc_embodied_desperation);
+    register_creature_script(npc_despair_spawn);
+    register_creature_script(npc_desperation_spawn);
+    register_creature_script(npc_golden_lotus_trigger);
 
-    new spell_script<spell_rook_corrupted_brew>("spell_rook_corrupted_brew");
-    new spell_script<spell_rook_clash>("spell_rook_clash");
-    new spell_script<spell_he_gouge>("spell_he_gouge");
-    new spell_script<spell_he_instant_poison>("spell_he_instant_poison");
-    new spell_script<spell_he_noxious_poison>("spell_he_noxious_poison");
-    new spell_script<spell_he_mark_of_anguish>("spell_he_mark_of_anguish");
-    new aura_script<spell_he_mark_of_anguish_main>("spell_he_mark_of_anguish_main");
-    new spell_script<spell_he_mark_of_anguish_transfer>("spell_he_mark_of_anguish_transfer");
-    new spell_script<spell_sun_sha_shear_eff>("spell_sun_sha_shear_eff");
-    new spell_script<spell_sun_sha_shear>("spell_sun_sha_shear");
-    new spell_script<spell_sun_shadow_word_bane>("spell_sun_shadow_word_bane");
-    new aura_script<spell_sun_shadow_word_bane_main>("spell_sun_shadow_word_bane_main");
-    new spell_script<spell_sun_shadow_word_bane_jump>("spell_sun_shadow_word_bane_jump");
-    new spell_script<spell_shadow_word_bane_jump_selector>("spell_shadow_word_bane_jump_selector");
-    new spell_script<spell_sun_calamity>("spell_sun_calamity");
-    new aura_script<spell_sun_dark_meditation>("spell_sun_dark_meditation");
-    new spell_script<spell_embodied_gloom_corruption_shock>("spell_embodied_gloom_corruption_shock");
-    new spell_script<spell_embodied_gloom_corruption_chain>("spell_embodied_gloom_corruption_chain");
-    new spell_script<spell_embodied_anguish_shadow_weakness_transfer>("spell_embodied_anguish_shadow_weakness_transfer");
-    new spell_script<spell_he_shadowstep_selector>("spell_he_shadowstep_selector");
-    new spell_script<spell_he_mark_of_anguish_eff>("spell_he_mark_of_anguish_eff");
-    new spell_script<spell_sorrow_inferno_strike>("spell_sorrow_inferno_strike");
-    new spell_script<spell_bond_of_the_golden_lotus>("spell_bond_of_the_golden_lotus");
-    new spell_script<spell_noxious_poison_missle>("spell_noxious_poison_missle");
-    new aura_script<spell_he_instance_poison>("spell_he_instance_poison");
-    new spell_script<spell_fallen_protectors_shared_torment>("spell_fallen_protectors_shared_torment");
-    new aura_script<spell_fallen_protectors_debilitation>("spell_fallen_protectors_debilitation");
-    new aura_script<spell_he_fixate>("spell_he_fixate");
-    new spell_script<spell_rook_corruptiong_chain_eff>("spell_rook_corruptiong_chain_eff");
-    new spell_script<spell_rook_vengeful_strikes>("spell_rook_vengeful_strikes");
-    new aura_script<spell_rook_corruption_kick>("spell_rook_corruption_kick");
-    new aura_script<spell_rook_vengeful_strikes_periodic>("spell_rook_vengeful_strikes_periodic");
+    register_spell_script(spell_rook_corrupted_brew);
+    register_spell_script(spell_rook_clash);
+    register_spell_script(spell_he_gouge);
+    register_spell_script(spell_he_instant_poison);
+    register_spell_script(spell_he_noxious_poison);
+    register_spell_script(spell_he_mark_of_anguish);
+    register_aura_script(spell_he_mark_of_anguish_main);
+    register_spell_script(spell_he_mark_of_anguish_transfer);
+    register_spell_script(spell_sun_sha_shear_eff);
+    register_spell_script(spell_sun_sha_shear);
+    register_spell_script(spell_sun_shadow_word_bane);
+    register_aura_script(spell_sun_shadow_word_bane_main);
+    register_spell_script(spell_sun_shadow_word_bane_jump);
+    register_spell_script(spell_shadow_word_bane_jump_selector);
+    register_spell_script(spell_sun_calamity);
+    register_aura_script(spell_sun_dark_meditation);
+    register_spell_script(spell_embodied_gloom_corruption_shock);
+    register_spell_script(spell_embodied_gloom_corruption_chain);
+    register_spell_script(spell_embodied_anguish_shadow_weakness_transfer);
+    register_spell_script(spell_he_shadowstep_selector);
+    register_spell_script(spell_he_mark_of_anguish_eff);
+    register_spell_script(spell_sorrow_inferno_strike);
+    register_spell_script(spell_bond_of_the_golden_lotus);
+    register_spell_script(spell_noxious_poison_missle);
+    register_aura_script(spell_he_instance_poison);
+    register_spell_script(spell_fallen_protectors_shared_torment);
+    register_aura_script(spell_fallen_protectors_debilitation);
+    register_aura_script(spell_he_fixate);
+    register_spell_script(spell_rook_corruptiong_chain_eff);
+    register_spell_script(spell_rook_vengeful_strikes);
+    register_aura_script(spell_rook_corruption_kick);
+    register_aura_script(spell_rook_vengeful_strikes_periodic);
     new atrigger_script<sat_dark_meditation>("sat_dark_meditation");
     new atrigger_script<sat_noxious_poison>("sat_noxious_poison");
     new atrigger_script<sat_rook_defiled_ground>("sat_rook_defiled_ground");

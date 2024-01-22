@@ -311,7 +311,7 @@ class npc_burning_steppes_chiseled_golem : public CreatureScript
 
 void AddSC_burning_steppes()
 {
-    new creature_script<npc_burning_steppes_war_reaver>("npc_burning_steppes_war_reaver");
+    register_creature_script(npc_burning_steppes_war_reaver);
     new go_burning_steppes_war_reaver_part();
     new npc_burning_steppes_chiseled_golem();
 }

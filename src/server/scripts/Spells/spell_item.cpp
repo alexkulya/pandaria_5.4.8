@@ -1536,43 +1536,32 @@ enum AshbringerSounds
     SOUND_ASHBRINGER_12 = 8928,                             // "Kill them all!"
 };
 
-class spell_item_ashbringer : public SpellScriptLoader
+class spell_item_ashbringer : public SpellScript
 {
-    public:
-        spell_item_ashbringer() : SpellScriptLoader("spell_item_ashbringer") { }
+    PrepareSpellScript(spell_item_ashbringer);
 
-        class spell_item_ashbringer_SpellScript : public SpellScript
-        {
-            PrepareSpellScript(spell_item_ashbringer_SpellScript);
+    bool Load() override
+    {
+        return GetCaster()->GetTypeId() == TYPEID_PLAYER;
+    }
 
-            bool Load() override
-            {
-                return GetCaster()->GetTypeId() == TYPEID_PLAYER;
-            }
+    void OnDummyEffect(SpellEffIndex effIndex)
+    {
+        PreventHitDefaultEffect(effIndex);
 
-            void OnDummyEffect(SpellEffIndex effIndex)
-            {
-                PreventHitDefaultEffect(effIndex);
+        Player* player = GetCaster()->ToPlayer();
+        uint32 sound_id = RAND( SOUND_ASHBRINGER_1, SOUND_ASHBRINGER_2, SOUND_ASHBRINGER_3, SOUND_ASHBRINGER_4, SOUND_ASHBRINGER_5, SOUND_ASHBRINGER_6,
+                        SOUND_ASHBRINGER_7, SOUND_ASHBRINGER_8, SOUND_ASHBRINGER_9, SOUND_ASHBRINGER_10, SOUND_ASHBRINGER_11, SOUND_ASHBRINGER_12 );
 
-                Player* player = GetCaster()->ToPlayer();
-                uint32 sound_id = RAND( SOUND_ASHBRINGER_1, SOUND_ASHBRINGER_2, SOUND_ASHBRINGER_3, SOUND_ASHBRINGER_4, SOUND_ASHBRINGER_5, SOUND_ASHBRINGER_6,
-                                SOUND_ASHBRINGER_7, SOUND_ASHBRINGER_8, SOUND_ASHBRINGER_9, SOUND_ASHBRINGER_10, SOUND_ASHBRINGER_11, SOUND_ASHBRINGER_12 );
+        // Ashbringers effect (spellID 28441) retriggers every 5 seconds, with a chance of making it say one of the above 12 sounds
+        if (urand(0, 60) < 1)
+            player->PlayDirectSound(sound_id, player);
+    }
 
-                // Ashbringers effect (spellID 28441) retriggers every 5 seconds, with a chance of making it say one of the above 12 sounds
-                if (urand(0, 60) < 1)
-                    player->PlayDirectSound(sound_id, player);
-            }
-
-            void Register() override
-            {
-                OnEffectHit += SpellEffectFn(spell_item_ashbringer_SpellScript::OnDummyEffect, EFFECT_0, SPELL_EFFECT_DUMMY);
-            }
-        };
-
-        SpellScript* GetSpellScript() const override
-        {
-            return new spell_item_ashbringer_SpellScript();
-        }
+    void Register() override
+    {
+        OnEffectHit += SpellEffectFn(spell_item_ashbringer::OnDummyEffect, EFFECT_0, SPELL_EFFECT_DUMMY);
+    }
 };
 
 enum MagicEater
@@ -1585,52 +1574,41 @@ enum MagicEater
     SPELL_WELL_FED_5                             = 57291,
 };
 
-class spell_magic_eater_food : public SpellScriptLoader
+class spell_magic_eater_food : public AuraScript
 {
-    public:
-        spell_magic_eater_food() : SpellScriptLoader("spell_magic_eater_food") { }
+    PrepareAuraScript(spell_magic_eater_food);
 
-        class spell_magic_eater_food_AuraScript : public AuraScript
+    void HandleTriggerSpell(AuraEffect const* /*aurEff*/)
+    {
+        PreventDefaultAction();
+        Unit* target = GetTarget();
+        switch (urand(0, 5))
         {
-            PrepareAuraScript(spell_magic_eater_food_AuraScript);
-
-            void HandleTriggerSpell(AuraEffect const* /*aurEff*/)
-            {
-                PreventDefaultAction();
-                Unit* target = GetTarget();
-                switch (urand(0, 5))
-                {
-                    case 0:
-                        target->CastSpell(target, SPELL_WILD_MAGIC, true);
-                        break;
-                    case 1:
-                        target->CastSpell(target, SPELL_WELL_FED_1, true);
-                        break;
-                    case 2:
-                        target->CastSpell(target, SPELL_WELL_FED_2, true);
-                        break;
-                    case 3:
-                        target->CastSpell(target, SPELL_WELL_FED_3, true);
-                        break;
-                    case 4:
-                        target->CastSpell(target, SPELL_WELL_FED_4, true);
-                        break;
-                    case 5:
-                        target->CastSpell(target, SPELL_WELL_FED_5, true);
-                        break;
-                }
-            }
-
-            void Register() override
-            {
-                OnEffectPeriodic += AuraEffectPeriodicFn(spell_magic_eater_food_AuraScript::HandleTriggerSpell, EFFECT_1, SPELL_AURA_PERIODIC_TRIGGER_SPELL);
-            }
-        };
-
-        AuraScript* GetAuraScript() const override
-        {
-            return new spell_magic_eater_food_AuraScript();
+            case 0:
+                target->CastSpell(target, SPELL_WILD_MAGIC, true);
+                break;
+            case 1:
+                target->CastSpell(target, SPELL_WELL_FED_1, true);
+                break;
+            case 2:
+                target->CastSpell(target, SPELL_WELL_FED_2, true);
+                break;
+            case 3:
+                target->CastSpell(target, SPELL_WELL_FED_3, true);
+                break;
+            case 4:
+                target->CastSpell(target, SPELL_WELL_FED_4, true);
+                break;
+            case 5:
+                target->CastSpell(target, SPELL_WELL_FED_5, true);
+                break;
         }
+    }
+
+    void Register() override
+    {
+        OnEffectPeriodic += AuraEffectPeriodicFn(spell_magic_eater_food::HandleTriggerSpell, EFFECT_1, SPELL_AURA_PERIODIC_TRIGGER_SPELL);
+    }
 };
 
 class spell_item_shimmering_vessel : public SpellScriptLoader
@@ -4455,8 +4433,8 @@ void AddSC_item_spell_scripts()
     new spell_item_map_of_the_geyser_fields();
     new spell_item_vanquished_clutches();
 
-    new spell_item_ashbringer();
-    new spell_magic_eater_food();
+    register_spell_script(spell_item_ashbringer);
+    register_aura_script(spell_magic_eater_food);
     new spell_item_shimmering_vessel();
     new spell_item_purify_helboar_meat();
     new spell_item_crystal_prison_dummy_dnd();
@@ -4476,62 +4454,62 @@ void AddSC_item_spell_scripts()
     new spell_item_muisek_vessel();
     new spell_item_greatmothers_soulcatcher();
     new spell_item_flameseers_staff_flamebreaker();
-    new spell_script<spell_item_wormhole_pandaria>("spell_item_wormhole_pandaria");
-    new spell_script<spell_item_flippable_table>("spell_item_flippable_table");
-    new aura_script<spell_item_stardust_no_2>("spell_item_stardust_no_2");
-    new spell_script<spell_jewelcrafting_daily_quests_cata>("spell_jewelcrafting_daily_quests_cata");
-    new spell_script<spell_item_alchemists_flask>("spell_item_alchemists_flask");
-    new aura_script<spell_item_swarmkeepers_speed>("spell_item_swarmkeepers_speed");
-    new aura_script<spell_item_arrival_of_the_naaru>("spell_item_arrival_of_the_naaru");
-    new spell_script<spell_item_teleport_with_error>("spell_item_teleport_with_error");
-    new spell_script<spell_item_taunt_flag_targeting>("spell_item_taunt_flag_targeting");
-    new spell_script<spell_item_summon_sword_dancers>("spell_item_summon_sword_dancers");
-    new aura_script<spell_item_spark_of_zandalari_proc_aura>("spell_item_spark_of_zandalari_proc_aura");
-    new aura_script<spell_item_spark_of_zandalari>("spell_item_spark_of_zandalari");
-    new aura_script<spell_item_relic_of_zuldazar_shield>("spell_item_relic_of_zuldazar_shield");
-    new spell_script<spell_item_relic_of_zuldazar>("spell_item_relic_of_zuldazar");
-    new aura_script<spell_item_lightning_chalice_proc_aura>("spell_item_lightning_chalice_proc_aura");
-    new aura_script<spell_infinite_power>("spell_infinite_power");
-    new spell_script<spell_item_hardened_shell>("spell_item_hardened_shell");
-    new aura_script<spell_item_soul_barrier>("spell_item_soul_barrier");
-    new aura_script<spell_item_proc_ji_kuns_rising_winds>("spell_item_proc_ji_kuns_rising_winds");
-    new aura_script<spell_item_tot_stack_trinket>("spell_item_tot_stack_trinket");
-    new aura_script<spell_item_rune_of_re_organization>("spell_item_rune_of_re_organization");
-    new spell_script<spell_chief_engineer_jards_journal>("spell_chief_engineer_jards_journal");
-    new spell_script<spell_learn_some_ingredient_and_its_uses>("spell_learn_some_ingredient_and_its_uses");
-    new aura_script<spell_memory_of_mr_smite>("spell_memory_of_mr_smite");
-    new spell_script<spell_item_potion_of_illusion>("spell_item_potion_of_illusion");
-    new aura_script<spell_item_multistrike_trinket_damage>("spell_item_multistrike_trinket_damage");
-    new aura_script<spell_item_multistrike_trinket_heal>("spell_item_multistrike_trinket_heal");
-    new aura_script<spell_item_evil_eye_of_galakras>("spell_item_evil_eye_of_galakras");
-    new aura_script<spell_item_assurance_of_consequence>("spell_item_assurance_of_consequence");
-    new aura_script<spell_item_vial_of_living_corruption>("spell_item_vial_of_living_corruption");
-    new aura_script<spell_item_restless_stat_trinket>("spell_item_restless_stat_trinket");
-    new aura_script<spell_item_soo_stack_trinket>("spell_item_soo_stack_trinket");
-    new aura_script<spell_item_soo_trinket_aoe_damage>("spell_item_soo_trinket_aoe_damage");
-    new aura_script<spell_item_soo_trinket_aoe_heal>("spell_item_soo_trinket_aoe_heal");
-    new spell_script<spell_item_soo_trinket_aoe_effect>("spell_item_soo_trinket_aoe_effect");
-    new aura_script<spell_item_juggernauts_focusing_crystal>("spell_item_juggernauts_focusing_crystal");
-    new aura_script<spell_item_legendary_cloak>("spell_item_legendary_cloak");
-    new aura_script<spell_item_legendary_cloak_animation_reset>("spell_item_legendary_cloak_animation_reset");
-    new aura_script<spell_item_legendary_cloak_flurry_of_huen>("spell_item_legendary_cloak_flurry_of_huen");
-    new aura_script<spell_item_legendary_cloak_essence_of_yu_lon>("spell_item_legendary_cloak_essence_of_yu_lon");
-    new aura_script<spell_item_legendary_cloak_essence_of_yu_lon_periodic>("spell_item_legendary_cloak_essence_of_yu_lon_periodic");
-    new aura_script<spell_item_legendary_cloak_endurance_of_niuzao>("spell_item_legendary_cloak_endurance_of_niuzao");
-    new aura_script<spell_item_legendary_cloak_spirit_of_chi_ji_proc>("spell_item_legendary_cloak_spirit_of_chi_ji_proc");
-    new aura_script<spell_item_legendary_cloak_spirit_of_chi_ji>("spell_item_legendary_cloak_spirit_of_chi_ji");
-    new spell_script<spell_item_spirit_of_chi_ji_heal>("spell_item_spirit_of_chi_ji_heal");
-    new spell_script<spell_item_celestial_defender>("spell_item_celestial_defender");
-    new spell_script<spell_item_spectral_grog>("spell_item_spectral_grog");
-    new spell_script<spell_item_symbiotic_growth>("spell_item_symbiotic_growth");
-    new aura_script<spell_item_symbiotic_growth_aura>("spell_item_symbiotic_growth_aura");
-    new aura_script<spell_item_heals_proc_int>("spell_item_heals_proc_int");
-    new spell_script<spell_item_chirping_box>("spell_item_chirping_box");
-    new aura_script<spell_item_zen_alchemist_stone>("spell_item_zen_alchemist_stone");
-    new spell_script<spell_item_blood_soaked_invitation>("spell_item_blood_soaked_invitation");
-    new spell_script<spell_item_ai_li_skymirror>("spell_item_ai_li_skymirror");
+    register_spell_script(spell_item_wormhole_pandaria);
+    register_spell_script(spell_item_flippable_table);
+    register_aura_script(spell_item_stardust_no_2);
+    register_spell_script(spell_jewelcrafting_daily_quests_cata);
+    register_spell_script(spell_item_alchemists_flask);
+    register_aura_script(spell_item_swarmkeepers_speed);
+    register_aura_script(spell_item_arrival_of_the_naaru);
+    register_spell_script(spell_item_teleport_with_error);
+    register_spell_script(spell_item_taunt_flag_targeting);
+    register_spell_script(spell_item_summon_sword_dancers);
+    register_aura_script(spell_item_spark_of_zandalari_proc_aura);
+    register_aura_script(spell_item_spark_of_zandalari);
+    register_aura_script(spell_item_relic_of_zuldazar_shield);
+    register_spell_script(spell_item_relic_of_zuldazar);
+    register_aura_script(spell_item_lightning_chalice_proc_aura);
+    register_aura_script(spell_infinite_power);
+    register_spell_script(spell_item_hardened_shell);
+    register_aura_script(spell_item_soul_barrier);
+    register_aura_script(spell_item_proc_ji_kuns_rising_winds);
+    register_aura_script(spell_item_tot_stack_trinket);
+    register_aura_script(spell_item_rune_of_re_organization);
+    register_spell_script(spell_chief_engineer_jards_journal);
+    register_spell_script(spell_learn_some_ingredient_and_its_uses);
+    register_aura_script(spell_memory_of_mr_smite);
+    register_spell_script(spell_item_potion_of_illusion);
+    register_aura_script(spell_item_multistrike_trinket_damage);
+    register_aura_script(spell_item_multistrike_trinket_heal);
+    register_aura_script(spell_item_evil_eye_of_galakras);
+    register_aura_script(spell_item_assurance_of_consequence);
+    register_aura_script(spell_item_vial_of_living_corruption);
+    register_aura_script(spell_item_restless_stat_trinket);
+    register_aura_script(spell_item_soo_stack_trinket);
+    register_aura_script(spell_item_soo_trinket_aoe_damage);
+    register_aura_script(spell_item_soo_trinket_aoe_heal);
+    register_spell_script(spell_item_soo_trinket_aoe_effect);
+    register_aura_script(spell_item_juggernauts_focusing_crystal);
+    register_aura_script(spell_item_legendary_cloak);
+    register_aura_script(spell_item_legendary_cloak_animation_reset);
+    register_aura_script(spell_item_legendary_cloak_flurry_of_huen);
+    register_aura_script(spell_item_legendary_cloak_essence_of_yu_lon);
+    register_aura_script(spell_item_legendary_cloak_essence_of_yu_lon_periodic);
+    register_aura_script(spell_item_legendary_cloak_endurance_of_niuzao);
+    register_aura_script(spell_item_legendary_cloak_spirit_of_chi_ji_proc);
+    register_aura_script(spell_item_legendary_cloak_spirit_of_chi_ji);
+    register_spell_script(spell_item_spirit_of_chi_ji_heal);
+    register_spell_script(spell_item_celestial_defender);
+    register_spell_script(spell_item_spectral_grog);
+    register_spell_script(spell_item_symbiotic_growth);
+    register_aura_script(spell_item_symbiotic_growth_aura);
+    register_aura_script(spell_item_heals_proc_int);
+    register_spell_script(spell_item_chirping_box);
+    register_aura_script(spell_item_zen_alchemist_stone);
+    register_spell_script(spell_item_blood_soaked_invitation);
+    register_spell_script(spell_item_ai_li_skymirror);
     new atrigger_script<sat_magic_banana>("sat_magic_banana");
-    new spell_script<spell_item_party_grenade_eff>("spell_item_party_grenade_eff");
-    new aura_script<spell_item_party_grenade>("spell_item_party_grenade");
-    new spell_script<spell_item_seesaw>("spell_item_seesaw");
+    register_spell_script(spell_item_party_grenade_eff);
+    register_aura_script(spell_item_party_grenade);
+    register_spell_script(spell_item_seesaw);
 }

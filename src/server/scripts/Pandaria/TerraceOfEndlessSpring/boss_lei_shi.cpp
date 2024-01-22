@@ -1490,7 +1490,7 @@ void AddSC_boss_lei_shi()
     new npc_lei_shi_corrupted_protector();
     new npc_lei_shi_hidden();
     new npc_lei_shi_reflection();
-    new creature_script<npc_parasitoid_sha>("npc_parasitoid_sha");
+    register_creature_script(npc_parasitoid_sha);
     new spell_get_away();
     new spell_get_away_dmg();
     new spell_hide();
@@ -1498,6 +1498,6 @@ void AddSC_boss_lei_shi()
     new spell_scary_fog_dot();
     new spell_scary_fog_stacks();
     new spell_lei_shi_disperse();
-    new aura_script<spell_player_vehicle_aura>("spell_player_vehicle_aura");
+    register_aura_script(spell_player_vehicle_aura);
     new atrigger_script<sat_leishi_get_away>("sat_leishi_get_away");
 }

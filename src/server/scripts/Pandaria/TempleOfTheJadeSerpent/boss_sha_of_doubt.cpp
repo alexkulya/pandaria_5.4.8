@@ -710,11 +710,11 @@ void AddSC_boss_sha_of_doubt()
 {
     new boss_sha_of_doubt();
     new npc_figment_of_doubt();
-    new creature_script<npc_ghost_of_lin_dagu>("npc_ghost_of_lin_dagu");
+    register_creature_script(npc_ghost_of_lin_dagu);
     new spell_sod_release_doubt();
-    new aura_script<spell_tjs_seed_of_doubt>("spell_tjs_seed_of_doubt");
-    new spell_script<spell_noodles>("spell_noodles");
-    new spell_script<spell_dash_of_spice>("spell_dash_of_spice");
+    register_aura_script(spell_tjs_seed_of_doubt);
+    register_spell_script(spell_noodles);
+    register_spell_script(spell_dash_of_spice);
     new atrigger_script<sat_noodles>("sat_noodles");
     new atrigger_script<sat_dsah_of_spice>("sat_dsah_of_spice");
 }

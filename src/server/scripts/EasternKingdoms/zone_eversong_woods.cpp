@@ -265,5 +265,5 @@ void AddSC_eversong_woods()
 {
     new npc_apprentice_mirveda();
     new npc_infused_crystal();
-    new spell_script<spell_lorthemar_mass_charm>("spell_lorthemar_mass_charm");
+    register_spell_script(spell_lorthemar_mass_charm);
 }

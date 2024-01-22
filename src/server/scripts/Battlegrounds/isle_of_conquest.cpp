@@ -381,12 +381,12 @@ class spell_ioc_repair_cannon : public AuraScript
 
 void AddSC_isle_of_conquest()
 {
-    new creature_script<boss_isle_of_conquest>("boss_isle_of_conquest");
-    new creature_script<npc_four_car_garage>("npc_four_car_garage");
-    new creature_script<npc_ioc_gunship_captain>("npc_ioc_gunship_captain");
-    new creature_script<npc_ioc_keep_cannon>("npc_ioc_keep_cannon");
-    new spell_script<spell_ioc_gunship_portal>("spell_ioc_gunship_portal");
-    new aura_script<spell_ioc_parachute_ic>("spell_ioc_parachute_ic");
-    new spell_script<spell_ioc_launch>("spell_ioc_launch");
-    new aura_script<spell_ioc_repair_cannon>("spell_ioc_repair_cannon");
+    register_creature_script(boss_isle_of_conquest);
+    register_creature_script(npc_four_car_garage);
+    register_creature_script(npc_ioc_gunship_captain);
+    register_creature_script(npc_ioc_keep_cannon);
+    register_spell_script(spell_ioc_gunship_portal);
+    register_aura_script(spell_ioc_parachute_ic);
+    register_spell_script(spell_ioc_launch);
+    register_aura_script(spell_ioc_repair_cannon);
 }

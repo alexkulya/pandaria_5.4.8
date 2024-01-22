@@ -715,26 +715,26 @@ class sat_thunder_king_treasure_sentry : public IAreaTriggerAura
 
 void AddSC_thunder_king_citadel()
 {
-    new creature_script<npc_lightning_pillar_master>("npc_lightning_pillar_master");
-    new creature_script<npc_stone_sentinel>("npc_stone_sentinel");
-    new creature_script<npc_thunder_king_treasure_sentry_totem>("npc_thunder_king_treasure_sentry_totem");
-    new creature_script<npc_thunder_king_treasure_stasis_rune>("npc_thunder_king_treasure_stasis_rune");
-    new creature_script<npc_thunder_king_treasure_speed_rune>("npc_thunder_king_treasure_speed_rune");
-    new creature_script<npc_thunder_king_treasure_zandalari_arcweaver>("npc_thunder_king_treasure_zandalari_arcweaver");
-    new creature_script<npc_thunder_king_treasure_sentry_beam_bunny>("npc_thunder_king_treasure_sentry_beam_bunny");
-    new creature_script<npc_god_hulk_gulkan>("npc_god_hulk_gulkan");
-    new creature_script<npc_zandalari_venomblade>("npc_zandalari_venomblade");
-    new creature_script<npc_thunder_king_treasure_stone_watcher>("npc_thunder_king_treasure_stone_watcher");
+    register_creature_script(npc_lightning_pillar_master);
+    register_creature_script(npc_stone_sentinel);
+    register_creature_script(npc_thunder_king_treasure_sentry_totem);
+    register_creature_script(npc_thunder_king_treasure_stasis_rune);
+    register_creature_script(npc_thunder_king_treasure_speed_rune);
+    register_creature_script(npc_thunder_king_treasure_zandalari_arcweaver);
+    register_creature_script(npc_thunder_king_treasure_sentry_beam_bunny);
+    register_creature_script(npc_god_hulk_gulkan);
+    register_creature_script(npc_zandalari_venomblade);
+    register_creature_script(npc_thunder_king_treasure_stone_watcher);
     new npc_thunder_king_treasure_taoshi();
     new npc_thunder_king_treasure_tenwu_of_the_red_smoke();
     new npc_thunder_king_treasure_taoshi_queue();
     new go_thunder_king_treasure_lever();
     new go_thunder_king_treasure_mogu_chest();
 
-    new aura_script<spell_thunder_king_treasure_rune_trap>("spell_thunder_king_treasure_rune_trap");
-    new aura_script<spell_thunder_king_treasure_limited_time>("spell_thunder_king_treasure_limited_time");
-    new aura_script<spell_thunder_king_treasure_scenario_completion_blackout>("spell_thunder_king_treasure_scenario_completion_blackout");
-    new spell_script<spell_thunder_king_treasure_lightning_surge>("spell_thunder_king_treasure_lightning_surge");
-    new spell_script<spell_thunder_king_treasure_lightning_surge_eff>("spell_thunder_king_treasure_lightning_surge_eff");
+    register_aura_script(spell_thunder_king_treasure_rune_trap);
+    register_aura_script(spell_thunder_king_treasure_limited_time);
+    register_aura_script(spell_thunder_king_treasure_scenario_completion_blackout);
+    register_spell_script(spell_thunder_king_treasure_lightning_surge);
+    register_spell_script(spell_thunder_king_treasure_lightning_surge_eff);
     new atrigger_script<sat_thunder_king_treasure_sentry>("sat_thunder_king_treasure_sentry");
 }

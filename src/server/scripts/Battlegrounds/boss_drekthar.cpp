@@ -131,5 +131,5 @@ private:
 
 void AddSC_boss_drekthar()
 {
-    new creature_script<boss_drekthar>("boss_drekthar");
+    register_creature_script(boss_drekthar);
 }

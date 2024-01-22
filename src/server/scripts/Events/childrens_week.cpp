@@ -29,7 +29,7 @@ enum Orphans
     ORPHAN_BLOOD_ELF                        = 22817,
     ORPHAN_DRAENEI                          = 22818,
     ORPHAN_HUMAN                            = 14305,
-    ORPHAN_ORCISH                           = 14444,
+    ORPHAN_ORCISH                           = 14444
 };
 
 enum Texts
@@ -131,7 +131,7 @@ enum Quests
     QUEST_THE_BIGGEST_DIAMOND_EVER          = 29106,
     QUEST_MALFURION_HAS_RETURNED            = 29107,
     QUEST_THE_FALLEN_CHIEFTAIN              = 29176,
-    QUEST_THE_BANSHEE_QUEEN                 = 29167,
+    QUEST_THE_BANSHEE_QUEEN                 = 29167
 };
 
 enum Areatriggers
@@ -151,7 +151,7 @@ enum Areatriggers
     NPC_SILVERMOON_01_CW_TRIGGER            = 22866,
     NPC_KRASUS                              = 27990,
     NPC_AZEROTH_CHILDRENS_WEEK_TRIGGER      = 34281,
-    NPC_NORTHREND_CHILDRENS_WEEK_TRIGGER    = 34381,
+    NPC_NORTHREND_CHILDRENS_WEEK_TRIGGER    = 34381
 };
 
 enum Misc
@@ -169,7 +169,7 @@ enum Misc
     NPC_ADVISOR_BELGRUM                     = 2918,
     NPC_HONOR_GUARD_DUNSTAD                 = 52321,
     NPC_MALFURION                           = 43845,
-    NPC_ETYMIDIAN                           = 28092,
+    NPC_ETYMIDIAN                           = 28092
 };
 
 uint64 getOrphanGUID(Player* player, uint32 orphan)
@@ -181,552 +181,483 @@ uint64 getOrphanGUID(Player* player, uint32 orphan)
     return 0;
 }
 
-/*######
-## npc_winterfin_playmate
-######*/
-class npc_winterfin_playmate : public CreatureScript
+struct npc_winterfin_playmate : public ScriptedAI
 {
-    public:
-        npc_winterfin_playmate() : CreatureScript("npc_winterfin_playmate") { }
+    npc_winterfin_playmate(Creature* creature) : ScriptedAI(creature)
+    {
+        me->SetReactState(REACT_AGGRESSIVE); // To make MoveInLineOfSight work
+    }
 
-        struct npc_winterfin_playmateAI : public ScriptedAI
-        {
-            npc_winterfin_playmateAI(Creature* creature) : ScriptedAI(creature)
-            {
-                me->SetReactState(REACT_AGGRESSIVE); // To make MoveInLineOfSight work
-            }
+    void Reset() override
+    {
+        timer = 0;
+        phase = 0;
+        playerGUID = 0;
+        orphanGUID = 0;
+    }
 
-            void Reset() override
-            {
-                timer = 0;
-                phase = 0;
-                playerGUID = 0;
-                orphanGUID = 0;
-            }
-
-            void MoveInLineOfSight(Unit* who) override
-            {
-                if (!phase && who && who->GetDistance2d(me) < 10.0f)
-                    if (Player* player = who->ToPlayer())
-                        if (player->GetQuestStatus(QUEST_PLAYMATE_ORACLE) == QUEST_STATUS_INCOMPLETE)
-                        {
-                            playerGUID = player->GetGUID();
-                            orphanGUID = getOrphanGUID(player, ORPHAN_ORACLE);
-                            if (orphanGUID)
-                                phase = 1;
-                        }
-            }
-
-            void UpdateAI(uint32 diff) override
-            {
-                if (!phase)
-                    return;
-
-                if (timer <= diff)
+    void MoveInLineOfSight(Unit* who) override
+    {
+        if (!phase && who && who->GetDistance2d(me) < 10.0f)
+            if (Player* player = who->ToPlayer())
+                if (player->GetQuestStatus(QUEST_PLAYMATE_ORACLE) == QUEST_STATUS_INCOMPLETE)
                 {
-                    Player* player = ObjectAccessor::GetPlayer(*me, playerGUID);
-                    Creature* orphan = ObjectAccessor::GetCreature(*me, orphanGUID);
+                    playerGUID = player->GetGUID();
+                    orphanGUID = getOrphanGUID(player, ORPHAN_ORACLE);
 
-                    if (!orphan || !player)
-                    {
-                        Reset();
-                        return;
-                    }
-
-                    switch (phase)
-                    {
-                        case 1:
-                            orphan->GetMotionMaster()->MovePoint(0, me->GetPositionX() + cos(me->GetOrientation()) * 5, me->GetPositionY() + sin(me->GetOrientation()) * 5, me->GetPositionZ());
-                            orphan->AI()->Talk(TEXT_ORACLE_ORPHAN_1);
-                            timer = 3000;
-                            break;
-                        case 2:
-                            orphan->SetFacingToObject(me);
-                            Talk(TEXT_WINTERFIN_PLAYMATE_1);
-                            me->HandleEmoteCommand(EMOTE_STATE_DANCE);
-                            timer = 3000;
-                            break;
-                        case 3:
-                            orphan->AI()->Talk(TEXT_ORACLE_ORPHAN_2);
-                            timer = 3000;
-                            break;
-                        case 4:
-                            Talk(TEXT_WINTERFIN_PLAYMATE_2);
-                            timer = 5000;
-                            break;
-                        case 5:
-                            orphan->AI()->Talk(TEXT_ORACLE_ORPHAN_3);
-                            me->HandleEmoteCommand(EMOTE_STATE_NONE);
-                            player->GroupEventHappens(QUEST_PLAYMATE_ORACLE, me);
-                            orphan->GetMotionMaster()->MoveFollow(player, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
-                            Reset();
-                            return;
-                    }
-                    ++phase;
+                    if (orphanGUID)
+                        phase = 1;
                 }
-                else
-                    timer -= diff;
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (!phase)
+            return;
+
+        if (timer <= diff)
+        {
+            Player* player = ObjectAccessor::GetPlayer(*me, playerGUID);
+            Creature* orphan = ObjectAccessor::GetCreature(*me, orphanGUID);
+
+            if (!orphan || !player)
+            {
+                Reset();
+                return;
             }
 
-        private:
-            uint32 timer;
-            int8 phase;
-            uint64 playerGUID;
-            uint64 orphanGUID;
-
-        };
-
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new npc_winterfin_playmateAI(creature);
+            switch (phase)
+            {
+                case 1:
+                    orphan->GetMotionMaster()->MovePoint(0, me->GetPositionX() + cos(me->GetOrientation()) * 5, me->GetPositionY() + sin(me->GetOrientation()) * 5, me->GetPositionZ());
+                    orphan->AI()->Talk(TEXT_ORACLE_ORPHAN_1);
+                    timer = 3000;
+                    break;
+                case 2:
+                    orphan->SetFacingToObject(me);
+                    Talk(TEXT_WINTERFIN_PLAYMATE_1);
+                    me->HandleEmoteCommand(EMOTE_STATE_DANCE);
+                    timer = 3000;
+                    break;
+                case 3:
+                    orphan->AI()->Talk(TEXT_ORACLE_ORPHAN_2);
+                    timer = 3000;
+                    break;
+                case 4:
+                    Talk(TEXT_WINTERFIN_PLAYMATE_2);
+                    timer = 5000;
+                    break;
+                case 5:
+                    orphan->AI()->Talk(TEXT_ORACLE_ORPHAN_3);
+                    me->HandleEmoteCommand(EMOTE_STATE_NONE);
+                    player->GroupEventHappens(QUEST_PLAYMATE_ORACLE, me);
+                    orphan->GetMotionMaster()->MoveFollow(player, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
+                    Reset();
+                    return;
+            }
+            ++phase;
         }
+        else
+            timer -= diff;
+    }
+
+private:
+    uint32 timer;
+    int8 phase;
+    uint64 playerGUID;
+    uint64 orphanGUID;
+
 };
 
-/*######
-## npc_snowfall_glade_playmate
-######*/
-class npc_snowfall_glade_playmate : public CreatureScript
+struct npc_snowfall_glade_playmate : public ScriptedAI
 {
-    public:
-        npc_snowfall_glade_playmate() : CreatureScript("npc_snowfall_glade_playmate") { }
+    npc_snowfall_glade_playmate(Creature* creature) : ScriptedAI(creature)
+    {
+        me->SetReactState(REACT_AGGRESSIVE); // To make MoveInLineOfSight work
+    }
 
-        struct npc_snowfall_glade_playmateAI : public ScriptedAI
-        {
-            npc_snowfall_glade_playmateAI(Creature* creature) : ScriptedAI(creature)
-            {
-                me->SetReactState(REACT_AGGRESSIVE); // To make MoveInLineOfSight work
-            }
+    void Reset() override
+    {
+        timer = 0;
+        phase = 0;
+        playerGUID = 0;
+        orphanGUID = 0;
+    }
 
-            void Reset() override
-            {
-                timer = 0;
-                phase = 0;
-                playerGUID = 0;
-                orphanGUID = 0;
-            }
-
-            void MoveInLineOfSight(Unit* who) override
-            {
-                if (!phase && who && who->GetDistance2d(me) < 10.0f)
-                    if (Player* player = who->ToPlayer())
-                        if (player->GetQuestStatus(QUEST_PLAYMATE_WOLVAR) == QUEST_STATUS_INCOMPLETE)
-                        {
-                            playerGUID = player->GetGUID();
-                            orphanGUID = getOrphanGUID(player, ORPHAN_WOLVAR);
-                            if (orphanGUID)
-                                phase = 1;
-                        }
-            }
-
-            void UpdateAI(uint32 diff) override
-            {
-                if (!phase)
-                    return;
-
-                if (timer <= diff)
+    void MoveInLineOfSight(Unit* who) override
+    {
+        if (!phase && who && who->GetDistance2d(me) < 10.0f)
+            if (Player* player = who->ToPlayer())
+                if (player->GetQuestStatus(QUEST_PLAYMATE_WOLVAR) == QUEST_STATUS_INCOMPLETE)
                 {
-                    Player* player = ObjectAccessor::GetPlayer(*me, playerGUID);
-                    Creature* orphan = ObjectAccessor::GetCreature(*me, orphanGUID);
+                    playerGUID = player->GetGUID();
+                    orphanGUID = getOrphanGUID(player, ORPHAN_WOLVAR);
 
-                    if (!orphan || !player)
-                    {
-                        Reset();
-                        return;
-                    }
-
-                    switch (phase)
-                    {
-                        case 1:
-                            orphan->GetMotionMaster()->MovePoint(0, me->GetPositionX() + cos(me->GetOrientation()) * 5, me->GetPositionY() + sin(me->GetOrientation()) * 5, me->GetPositionZ());
-                            orphan->AI()->Talk(TEXT_WOLVAR_ORPHAN_1);
-                            timer = 5000;
-                            break;
-                        case 2:
-                            orphan->SetFacingToObject(me);
-                            Talk(TEXT_SNOWFALL_GLADE_PLAYMATE_1);
-                            DoCast(orphan, SPELL_SNOWBALL);
-                            timer = 5000;
-                            break;
-                        case 3:
-                            Talk(TEXT_SNOWFALL_GLADE_PLAYMATE_2);
-                            timer = 5000;
-                            break;
-                        case 4:
-                            orphan->AI()->Talk(TEXT_WOLVAR_ORPHAN_2);
-                            orphan->AI()->DoCast(me, SPELL_SNOWBALL);
-                            timer = 5000;
-                            break;
-                        case 5:
-                            orphan->AI()->Talk(TEXT_WOLVAR_ORPHAN_3);
-                            player->GroupEventHappens(QUEST_PLAYMATE_WOLVAR, me);
-                            orphan->GetMotionMaster()->MoveFollow(player, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
-                            Reset();
-                            return;
-                    }
-                    ++phase;
+                    if (orphanGUID)
+                        phase = 1;
                 }
-                else
-                    timer -= diff;
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (!phase)
+            return;
+
+        if (timer <= diff)
+        {
+            Player* player = ObjectAccessor::GetPlayer(*me, playerGUID);
+            Creature* orphan = ObjectAccessor::GetCreature(*me, orphanGUID);
+
+            if (!orphan || !player)
+            {
+                Reset();
+                return;
             }
 
-        private:
-            uint32 timer;
-            int8 phase;
-            uint64 playerGUID;
-            uint64 orphanGUID;
-        };
-
-        CreatureAI* GetAI(Creature* pCreature) const
-        {
-            return new npc_snowfall_glade_playmateAI(pCreature);
+            switch (phase)
+            {
+                case 1:
+                    orphan->GetMotionMaster()->MovePoint(0, me->GetPositionX() + cos(me->GetOrientation()) * 5, me->GetPositionY() + sin(me->GetOrientation()) * 5, me->GetPositionZ());
+                    orphan->AI()->Talk(TEXT_WOLVAR_ORPHAN_1);
+                    timer = 5000;
+                    break;
+                case 2:
+                    orphan->SetFacingToObject(me);
+                    Talk(TEXT_SNOWFALL_GLADE_PLAYMATE_1);
+                    DoCast(orphan, SPELL_SNOWBALL);
+                    timer = 5000;
+                    break;
+                case 3:
+                    Talk(TEXT_SNOWFALL_GLADE_PLAYMATE_2);
+                    timer = 5000;
+                    break;
+                case 4:
+                    orphan->AI()->Talk(TEXT_WOLVAR_ORPHAN_2);
+                    orphan->AI()->DoCast(me, SPELL_SNOWBALL);
+                    timer = 5000;
+                    break;
+                case 5:
+                    orphan->AI()->Talk(TEXT_WOLVAR_ORPHAN_3);
+                    player->GroupEventHappens(QUEST_PLAYMATE_WOLVAR, me);
+                    orphan->GetMotionMaster()->MoveFollow(player, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
+                    Reset();
+                    return;
+            }
+            ++phase;
         }
+        else
+            timer -= diff;
+    }
+
+private:
+    uint32 timer;
+    int8 phase;
+    uint64 playerGUID;
+    uint64 orphanGUID;
 };
 
-/*######
-## npc_high_oracle_soo_roo
-######*/
-class npc_high_oracle_soo_roo : public CreatureScript
+struct npc_high_oracle_soo_roo : public ScriptedAI
 {
-    public:
-        npc_high_oracle_soo_roo() : CreatureScript("npc_high_oracle_soo_roo") { }
+    npc_high_oracle_soo_roo(Creature* creature) : ScriptedAI(creature)
+    {
+        me->SetReactState(REACT_AGGRESSIVE); // To make MoveInLineOfSight work
+    }
 
-        struct npc_high_oracle_soo_rooAI : public ScriptedAI
-        {
-            npc_high_oracle_soo_rooAI(Creature* creature) : ScriptedAI(creature)
-            {
-                me->SetReactState(REACT_AGGRESSIVE); // To make MoveInLineOfSight work
-            }
+    void Reset() override
+    {
+        timer = 0;
+        phase = 0;
+        playerGUID = 0;
+        orphanGUID = 0;
+    }
 
-            void Reset() override
-            {
-                timer = 0;
-                phase = 0;
-                playerGUID = 0;
-                orphanGUID = 0;
-            }
-
-            void MoveInLineOfSight(Unit* who) override
-            {
-                if (!phase && who && who->GetDistance2d(me) < 10.0f)
-                    if (Player* player = who->ToPlayer())
-                        if (player->GetQuestStatus(QUEST_THE_BRONZE_DRAGONSHRINE_ORACLE) == QUEST_STATUS_INCOMPLETE)
-                        {
-                            playerGUID = player->GetGUID();
-                            orphanGUID = getOrphanGUID(player, ORPHAN_ORACLE);
-                            if (orphanGUID)
-                                phase = 1;
-                        }
-            }
-
-            void UpdateAI(uint32 diff) override
-            {
-                if (!phase)
-                    return;
-
-                if (timer <= diff)
+    void MoveInLineOfSight(Unit* who) override
+    {
+        if (!phase && who && who->GetDistance2d(me) < 10.0f)
+            if (Player* player = who->ToPlayer())
+                if (player->GetQuestStatus(QUEST_THE_BRONZE_DRAGONSHRINE_ORACLE) == QUEST_STATUS_INCOMPLETE)
                 {
-                    Player* player = ObjectAccessor::GetPlayer(*me, playerGUID);
-                    Creature* orphan = ObjectAccessor::GetCreature(*me, orphanGUID);
+                    playerGUID = player->GetGUID();
+                    orphanGUID = getOrphanGUID(player, ORPHAN_ORACLE);
 
-                    if (!orphan || !player)
-                    {
-                        Reset();
-                        return;
-                    }
-
-                    switch (phase)
-                    {
-                        case 1:
-                            orphan->GetMotionMaster()->MovePoint(0, me->GetPositionX() + cos(me->GetOrientation()) * 5, me->GetPositionY() + sin(me->GetOrientation()) * 5, me->GetPositionZ());
-                            orphan->AI()->Talk(TEXT_ORACLE_ORPHAN_5);
-                            timer = 3000;
-                            break;
-                        case 2:
-                            orphan->SetFacingToObject(me);
-                            Talk(TEXT_SOO_ROO_1);
-                            timer = 6000;
-                            break;
-                        case 3:
-                            orphan->AI()->Talk(TEXT_ORACLE_ORPHAN_6);
-                            player->GroupEventHappens(QUEST_THE_BRONZE_DRAGONSHRINE_ORACLE, me);
-                            orphan->GetMotionMaster()->MoveFollow(player, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
-                            Reset();
-                            return;
-                    }
-                    ++phase;
+                    if (orphanGUID)
+                        phase = 1;
                 }
-                else
-                    timer -= diff;
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (!phase)
+            return;
+
+        if (timer <= diff)
+        {
+            Player* player = ObjectAccessor::GetPlayer(*me, playerGUID);
+            Creature* orphan = ObjectAccessor::GetCreature(*me, orphanGUID);
+
+            if (!orphan || !player)
+            {
+                Reset();
+                return;
             }
 
-        private:
-            uint32 timer;
-            int8 phase;
-            uint64 playerGUID;
-            uint64 orphanGUID;
-
-        };
-
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new npc_high_oracle_soo_rooAI(creature);
+            switch (phase)
+            {
+                case 1:
+                    orphan->GetMotionMaster()->MovePoint(0, me->GetPositionX() + cos(me->GetOrientation()) * 5, me->GetPositionY() + sin(me->GetOrientation()) * 5, me->GetPositionZ());
+                    orphan->AI()->Talk(TEXT_ORACLE_ORPHAN_5);
+                    timer = 3000;
+                    break;
+                case 2:
+                    orphan->SetFacingToObject(me);
+                    Talk(TEXT_SOO_ROO_1);
+                    timer = 6000;
+                    break;
+                case 3:
+                    orphan->AI()->Talk(TEXT_ORACLE_ORPHAN_6);
+                    player->GroupEventHappens(QUEST_THE_BRONZE_DRAGONSHRINE_ORACLE, me);
+                    orphan->GetMotionMaster()->MoveFollow(player, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
+                    Reset();
+                    return;
+            }
+            ++phase;
         }
+        else
+            timer -= diff;
+    }
+
+private:
+    uint32 timer;
+    int8 phase;
+    uint64 playerGUID;
+    uint64 orphanGUID;
+
 };
 
-/*######
-## npc_elder_kekek
-######*/
-class npc_elder_kekek : public CreatureScript
+struct npc_elder_kekek : public ScriptedAI
 {
-    public:
-        npc_elder_kekek() : CreatureScript("npc_elder_kekek") { }
+    npc_elder_kekek(Creature* creature) : ScriptedAI(creature)
+    {
+        me->SetReactState(REACT_AGGRESSIVE); // To make MoveInLineOfSight work
+    }
 
-        struct npc_elder_kekekAI : public ScriptedAI
-        {
-            npc_elder_kekekAI(Creature* creature) : ScriptedAI(creature)
-            {
-                me->SetReactState(REACT_AGGRESSIVE); // To make MoveInLineOfSight work
-            }
+    void Reset() override
+    {
+        timer = 0;
+        phase = 0;
+        playerGUID = 0;
+        orphanGUID = 0;
+    }
 
-            void Reset() override
-            {
-                timer = 0;
-                phase = 0;
-                playerGUID = 0;
-                orphanGUID = 0;
-            }
-
-            void MoveInLineOfSight(Unit* who) override
-            {
-                if (!phase && who && who->GetDistance2d(me) < 10.0f)
-                    if (Player* player = who->ToPlayer())
-                        if (player->GetQuestStatus(QUEST_THE_BRONZE_DRAGONSHRINE_WOLVAR) == QUEST_STATUS_INCOMPLETE)
-                        {
-                            playerGUID = player->GetGUID();
-                            orphanGUID = getOrphanGUID(player, ORPHAN_WOLVAR);
-                            if (orphanGUID)
-                                phase = 1;
-                        }
-            }
-
-            void UpdateAI(uint32 diff) override
-            {
-                if (!phase)
-                    return;
-
-                if (timer <= diff)
+    void MoveInLineOfSight(Unit* who) override
+    {
+        if (!phase && who && who->GetDistance2d(me) < 10.0f)
+            if (Player* player = who->ToPlayer())
+                if (player->GetQuestStatus(QUEST_THE_BRONZE_DRAGONSHRINE_WOLVAR) == QUEST_STATUS_INCOMPLETE)
                 {
-                    Player* player = ObjectAccessor::GetPlayer(*me, playerGUID);
-                    Creature* orphan = ObjectAccessor::GetCreature(*me, orphanGUID);
+                    playerGUID = player->GetGUID();
+                    orphanGUID = getOrphanGUID(player, ORPHAN_WOLVAR);
 
-                    if (!player || !orphan)
-                    {
-                        Reset();
-                        return;
-                    }
-
-                    switch (phase)
-                    {
-                        case 1:
-                            orphan->GetMotionMaster()->MovePoint(0, me->GetPositionX() + cos(me->GetOrientation()) * 5, me->GetPositionY() + sin(me->GetOrientation()) * 5, me->GetPositionZ());
-                            orphan->AI()->Talk(TEXT_WOLVAR_ORPHAN_4);
-                            timer = 3000;
-                            break;
-                        case 2:
-                            Talk(TEXT_ELDER_KEKEK_1);
-                            timer = 6000;
-                            break;
-                        case 3:
-                            orphan->AI()->Talk(TEXT_WOLVAR_ORPHAN_5);
-                            player->GroupEventHappens(QUEST_THE_BRONZE_DRAGONSHRINE_WOLVAR, me);
-                            orphan->GetMotionMaster()->MoveFollow(player, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
-                            Reset();
-                            return;
-                    }
-                    ++phase;
+                    if (orphanGUID)
+                        phase = 1;
                 }
-                else
-                    timer -= diff;
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (!phase)
+            return;
+
+        if (timer <= diff)
+        {
+            Player* player = ObjectAccessor::GetPlayer(*me, playerGUID);
+            Creature* orphan = ObjectAccessor::GetCreature(*me, orphanGUID);
+
+            if (!player || !orphan)
+            {
+                Reset();
+                return;
             }
 
-        private:
-            uint32 timer;
-            int8 phase;
-            uint64 playerGUID;
-            uint64 orphanGUID;
-
-        };
-
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new npc_elder_kekekAI(creature);
+            switch (phase)
+            {
+                case 1:
+                    orphan->GetMotionMaster()->MovePoint(0, me->GetPositionX() + cos(me->GetOrientation()) * 5, me->GetPositionY() + sin(me->GetOrientation()) * 5, me->GetPositionZ());
+                    orphan->AI()->Talk(TEXT_WOLVAR_ORPHAN_4);
+                    timer = 3000;
+                    break;
+                case 2:
+                    Talk(TEXT_ELDER_KEKEK_1);
+                    timer = 6000;
+                    break;
+                case 3:
+                    orphan->AI()->Talk(TEXT_WOLVAR_ORPHAN_5);
+                    player->GroupEventHappens(QUEST_THE_BRONZE_DRAGONSHRINE_WOLVAR, me);
+                    orphan->GetMotionMaster()->MoveFollow(player, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
+                    Reset();
+                    return;
+            }
+            ++phase;
         }
+        else
+            timer -= diff;
+    }
+
+private:
+    uint32 timer;
+    int8 phase;
+    uint64 playerGUID;
+    uint64 orphanGUID;
+
 };
 
-/*######
-## npc_cw_alexstrasza_trigger
-######*/
-class npc_alexstraza_the_lifebinder : public CreatureScript
+struct npc_alexstraza_the_lifebinder : public ScriptedAI
 {
-    public:
-        npc_alexstraza_the_lifebinder() : CreatureScript("npc_alexstraza_the_lifebinder") { }
+    npc_alexstraza_the_lifebinder(Creature* creature) : ScriptedAI(creature) { }
 
-        struct npc_alexstraza_the_lifebinderAI : public ScriptedAI
+    void Reset() override
+    {
+        timer = 0;
+        phase = 0;
+        playerGUID = 0;
+        orphanGUID = 0;
+        me->SetReactState(REACT_AGGRESSIVE); // To make MoveInLineOfSight work
+    }
+
+    void SetData(uint32 type, uint32 data) override
+    {
+        // Existing SmartAI
+        if (type == 0)
         {
-            npc_alexstraza_the_lifebinderAI(Creature* creature) : ScriptedAI(creature) { }
-
-            void Reset() override
+            switch (data)
             {
-                timer = 0;
-                phase = 0;
-                playerGUID = 0;
-                orphanGUID = 0;
-                me->SetReactState(REACT_AGGRESSIVE); // To make MoveInLineOfSight work
+                case 1:
+                    me->SetOrientation(1.6049f);
+                    break;
+                case 2:
+                    me->SetOrientation(me->GetHomePosition().GetOrientation());
+                    break;
             }
-
-            void SetData(uint32 type, uint32 data) override
-            {
-                // Existing SmartAI
-                if (type == 0)
-                {
-                    switch (data)
-                    {
-                        case 1:
-                            me->SetOrientation(1.6049f);
-                            break;
-                        case 2:
-                            me->SetOrientation(me->GetHomePosition().GetOrientation());
-                            break;
-                    }
-                }
-            }
-
-            void MoveInLineOfSight(Unit* who) override
-            {
-                if (!phase && who && who->GetDistance2d(me) < 10.0f)
-                    if (Player* player = who->ToPlayer())
-                    {
-                        if (player->GetQuestStatus(QUEST_THE_DRAGON_QUEEN_ORACLE) == QUEST_STATUS_INCOMPLETE)
-                        {
-                            playerGUID = player->GetGUID();
-                            orphanGUID = getOrphanGUID(player, ORPHAN_ORACLE);
-                            if (orphanGUID)
-                                phase = 1;
-                        }
-                        else if (player->GetQuestStatus(QUEST_THE_DRAGON_QUEEN_WOLVAR) == QUEST_STATUS_INCOMPLETE)
-                        {
-                            playerGUID = player->GetGUID();
-                            orphanGUID = getOrphanGUID(player, ORPHAN_WOLVAR);
-                            if (orphanGUID)
-                                phase = 7;
-                        }
-                    }
-            }
-
-            void UpdateAI(uint32 diff) override
-            {
-                if (!phase)
-                    return;
-
-                if (timer <= diff)
-                {
-                    Player* player = ObjectAccessor::GetPlayer(*me, playerGUID);
-                    Creature* orphan = ObjectAccessor::GetCreature(*me, orphanGUID);
-
-                    if (!orphan || !player)
-                    {
-                        Reset();
-                        return;
-                    }
-
-                    switch (phase)
-                    {
-                        case 1:
-                            orphan->GetMotionMaster()->MovePoint(0, me->GetPositionX() + cos(me->GetOrientation()) * 5, me->GetPositionY() + sin(me->GetOrientation()) * 5, me->GetPositionZ());
-                            orphan->AI()->Talk(TEXT_ORACLE_ORPHAN_11);
-                            timer = 5000;
-                            break;
-                        case 2:
-                            orphan->SetFacingToObject(me);
-                            orphan->AI()->Talk(TEXT_ORACLE_ORPHAN_12);
-                            timer = 5000;
-                            break;
-                        case 3:
-                            orphan->AI()->Talk(TEXT_ORACLE_ORPHAN_13);
-                            timer = 5000;
-                            break;
-                        case 4:
-                            Talk(TEXT_ALEXSTRASZA_2);
-                            me->SetStandState(UNIT_STAND_STATE_KNEEL);
-                            me->SetFacingToObject(orphan);
-                            timer = 5000;
-                            break;
-                        case 5:
-                            orphan->AI()->Talk(TEXT_ORACLE_ORPHAN_14);
-                            timer = 5000;
-                            break;
-                        case 6:
-                            me->SetStandState(UNIT_STAND_STATE_STAND);
-                            me->SetOrientation(me->GetHomePosition().GetOrientation());
-                            player->GroupEventHappens(QUEST_THE_DRAGON_QUEEN_ORACLE, me);
-                            orphan->GetMotionMaster()->MoveFollow(player, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
-                            Reset();
-                            return;
-                        case 7:
-                            orphan->GetMotionMaster()->MovePoint(0, me->GetPositionX() + cos(me->GetOrientation()) * 5, me->GetPositionY() + sin(me->GetOrientation()) * 5, me->GetPositionZ());
-                            orphan->AI()->Talk(TEXT_WOLVAR_ORPHAN_11);
-                            timer = 5000;
-                            break;
-                        case 8:
-                            if (Creature* krasus = me->FindNearestCreature(NPC_KRASUS, 10.0f))
-                            {
-                                orphan->SetFacingToObject(krasus);
-                                krasus->AI()->Talk(TEXT_KRASUS_8);
-                            }
-                            timer = 5000;
-                            break;
-                        case 9:
-                            orphan->AI()->Talk(TEXT_WOLVAR_ORPHAN_12);
-                            timer = 5000;
-                            break;
-                        case 10:
-                            orphan->SetFacingToObject(me);
-                            Talk(TEXT_ALEXSTRASZA_2);
-                            timer = 5000;
-                            break;
-                        case 11:
-                            orphan->AI()->Talk(TEXT_WOLVAR_ORPHAN_13);
-                            timer = 5000;
-                            break;
-                        case 12:
-                            player->GroupEventHappens(QUEST_THE_DRAGON_QUEEN_WOLVAR, me);
-                            orphan->GetMotionMaster()->MoveFollow(player, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
-                            Reset();
-                            return;
-                    }
-                    ++phase;
-                }
-                else
-                    timer -= diff;
-            }
-
-            private:
-                int8 phase;
-                uint32 timer;
-                uint64 playerGUID;
-                uint64 orphanGUID;
-
-        };
-
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new npc_alexstraza_the_lifebinderAI(creature);
         }
-};
+    }
 
-/*######
-## at_bring_your_orphan_to
-######*/
+    void MoveInLineOfSight(Unit* who) override
+    {
+        if (!phase && who && who->GetDistance2d(me) < 10.0f)
+            if (Player* player = who->ToPlayer())
+            {
+                if (player->GetQuestStatus(QUEST_THE_DRAGON_QUEEN_ORACLE) == QUEST_STATUS_INCOMPLETE)
+                {
+                    playerGUID = player->GetGUID();
+                    orphanGUID = getOrphanGUID(player, ORPHAN_ORACLE);
+
+                    if (orphanGUID)
+                        phase = 1;
+                }
+                else if (player->GetQuestStatus(QUEST_THE_DRAGON_QUEEN_WOLVAR) == QUEST_STATUS_INCOMPLETE)
+                {
+                    playerGUID = player->GetGUID();
+                    orphanGUID = getOrphanGUID(player, ORPHAN_WOLVAR);
+
+                    if (orphanGUID)
+                        phase = 7;
+                }
+            }
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        if (!phase)
+            return;
+
+        if (timer <= diff)
+        {
+            Player* player = ObjectAccessor::GetPlayer(*me, playerGUID);
+            Creature* orphan = ObjectAccessor::GetCreature(*me, orphanGUID);
+
+            if (!orphan || !player)
+            {
+                Reset();
+                return;
+            }
+
+            switch (phase)
+            {
+                case 1:
+                    orphan->GetMotionMaster()->MovePoint(0, me->GetPositionX() + cos(me->GetOrientation()) * 5, me->GetPositionY() + sin(me->GetOrientation()) * 5, me->GetPositionZ());
+                    orphan->AI()->Talk(TEXT_ORACLE_ORPHAN_11);
+                    timer = 5000;
+                    break;
+                case 2:
+                    orphan->SetFacingToObject(me);
+                    orphan->AI()->Talk(TEXT_ORACLE_ORPHAN_12);
+                    timer = 5000;
+                    break;
+                case 3:
+                    orphan->AI()->Talk(TEXT_ORACLE_ORPHAN_13);
+                    timer = 5000;
+                    break;
+                case 4:
+                    Talk(TEXT_ALEXSTRASZA_2);
+                    me->SetStandState(UNIT_STAND_STATE_KNEEL);
+                    me->SetFacingToObject(orphan);
+                    timer = 5000;
+                    break;
+                case 5:
+                    orphan->AI()->Talk(TEXT_ORACLE_ORPHAN_14);
+                    timer = 5000;
+                    break;
+                case 6:
+                    me->SetStandState(UNIT_STAND_STATE_STAND);
+                    me->SetOrientation(me->GetHomePosition().GetOrientation());
+                    player->GroupEventHappens(QUEST_THE_DRAGON_QUEEN_ORACLE, me);
+                    orphan->GetMotionMaster()->MoveFollow(player, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
+                    Reset();
+                    return;
+                case 7:
+                    orphan->GetMotionMaster()->MovePoint(0, me->GetPositionX() + cos(me->GetOrientation()) * 5, me->GetPositionY() + sin(me->GetOrientation()) * 5, me->GetPositionZ());
+                    orphan->AI()->Talk(TEXT_WOLVAR_ORPHAN_11);
+                    timer = 5000;
+                    break;
+                case 8:
+                    if (Creature* krasus = me->FindNearestCreature(NPC_KRASUS, 10.0f))
+                    {
+                        orphan->SetFacingToObject(krasus);
+                        krasus->AI()->Talk(TEXT_KRASUS_8);
+                    }
+                    timer = 5000;
+                    break;
+                case 9:
+                    orphan->AI()->Talk(TEXT_WOLVAR_ORPHAN_12);
+                    timer = 5000;
+                    break;
+                case 10:
+                    orphan->SetFacingToObject(me);
+                    Talk(TEXT_ALEXSTRASZA_2);
+                    timer = 5000;
+                    break;
+                case 11:
+                    orphan->AI()->Talk(TEXT_WOLVAR_ORPHAN_13);
+                    timer = 5000;
+                    break;
+                case 12:
+                    player->GroupEventHappens(QUEST_THE_DRAGON_QUEEN_WOLVAR, me);
+                    orphan->GetMotionMaster()->MoveFollow(player, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
+                    Reset();
+                    return;
+            }
+            ++phase;
+        }
+        else
+            timer -= diff;
+    }
+
+    private:
+        int8 phase;
+        uint32 timer;
+        uint64 playerGUID;
+        uint64 orphanGUID;
+};
 
 class at_bring_your_orphan_to : public AreaTriggerScript
 {
@@ -768,18 +699,18 @@ class at_bring_your_orphan_to : public AreaTriggerScript
         }
 };
 
-struct DialogBuilder
+struct SceneBuilder
 {
-    DialogBuilder(Unit* me) : me(me) { }
+    SceneBuilder(Unit* me) : me(me) { }
 
-    DialogBuilder& Move(Creature* who, Position const& pos)
+    SceneBuilder& Move(Creature* who, Position const& pos)
     {
         who->GetMotionMaster()->MovePoint(0, pos);
         currentTimer += Milliseconds(who->movespline->Duration());
         return *this;
     }
 
-    DialogBuilder& MoveRandom(Creature* who, float dist, TimeValue time)
+    SceneBuilder& MoveRandom(Creature* who, float dist, TimeValue time)
     {
         Unit* host = me;
         uint64 guid = who->GetGUID();
@@ -794,7 +725,7 @@ struct DialogBuilder
         return *this;
     }
 
-    DialogBuilder& Turn(Creature* who, WorldObject* to)
+    SceneBuilder& Turn(Creature* who, WorldObject* to)
     {
         Unit* host = me;
         uint64 guid = who->GetGUID();
@@ -805,6 +736,7 @@ struct DialogBuilder
             if (Creature* npc = ObjectAccessor::GetCreature(*host, guid))
             {
                 npc->StopMoving();
+
                 if (WorldObject* to = ObjectAccessor::GetWorldObject(*host, toGuid))
                     npc->SetFacingToObject(to);
             }
@@ -812,7 +744,7 @@ struct DialogBuilder
         return *this;
     }
 
-    DialogBuilder& Talk(Creature* speaker, uint32 text, TimeValue delay)
+    SceneBuilder& Talk(Creature* speaker, uint32 text, TimeValue delay)
     {
         Unit* host = me;
         uint64 guid = speaker->GetGUID();
@@ -826,7 +758,7 @@ struct DialogBuilder
         return *this;
     }
 
-    DialogBuilder& Evade(Creature* who)
+    SceneBuilder& Evade(Creature* who)
     {
         Unit* host = me;
         uint64 guid = who->GetGUID();
@@ -839,7 +771,7 @@ struct DialogBuilder
         return *this;
     }
 
-    DialogBuilder& Cast(Creature* who, uint32 spell, Unit* target)
+    SceneBuilder& Cast(Creature* who, uint32 spell, Unit* target)
     {
         Unit* host = me;
         uint64 guid = who->GetGUID();
@@ -856,9 +788,6 @@ struct DialogBuilder
     Unit* me;
 };
 
-/*######
-## npc_cw_area_trigger
-######*/
 struct npc_cw_area_trigger : public ScriptedAI
 {
     npc_cw_area_trigger(Creature* creature) : ScriptedAI(creature)
@@ -909,10 +838,12 @@ struct npc_cw_area_trigger : public ScriptedAI
                             if (player->GetQuestStatus(QUEST_NOW_WHEN_I_GROW_UP) == QUEST_STATUS_INCOMPLETE && getOrphanGUID(player, ORPHAN_BLOOD_ELF))
                             {
                                 player->AreaExploredOrEventHappens(QUEST_NOW_WHEN_I_GROW_UP);
+
                                 if (player->GetQuestStatus(QUEST_NOW_WHEN_I_GROW_UP) == QUEST_STATUS_COMPLETE)
                                     if (Creature* samuro = me->FindNearestCreature(25151, 20.0f))
                                     {
                                         uint32 emote = 0;
+
                                         switch (urand(1, 5))
                                         {
                                         case 1:
@@ -946,6 +877,7 @@ struct npc_cw_area_trigger : public ScriptedAI
                     }
 
                     uint64 orphanGuid = getOrphanGUID(player, orphanId);
+
                     if (orphanGuid && player->GetQuestStatus(questId) == QUEST_STATUS_INCOMPLETE)
                         CompleteQuest(player, questId, orphanGuid);
                 }
@@ -985,12 +917,24 @@ struct npc_cw_area_trigger : public ScriptedAI
 
         switch (questId)
         {
-            case QUEST_THE_BANSHEE_QUEEN:           RunSceneTheBanseeQueen(orphanGuid);         break;
-            case QUEST_THE_FALLEN_CHIEFTAIN:        RunSceneTheFallenChieftain(orphanGuid);     break;
-            case QUEST_THE_BIGGEST_DIAMOND_EVER:    RunSceneTheBiggestDiamondEver(orphanGuid);  break;
-            case QUEST_MALFURION_HAS_RETURNED:      RunSceneMalfurionHasReturned(orphanGuid);   break;
-            case QUEST_THE_BIGGEST_TREE_EVER:       RunSceneTheBiggestTreeEver(orphanGuid);     break;
-            case QUEST_MEETING_A_GREAT_ONE:         RunSceneMeetingGreateOne(orphanGuid);       break;
+            case QUEST_THE_BANSHEE_QUEEN:
+                RunSceneTheBanseeQueen(orphanGuid);
+                break;
+            case QUEST_THE_FALLEN_CHIEFTAIN:
+                RunSceneTheFallenChieftain(orphanGuid);
+                break;
+            case QUEST_THE_BIGGEST_DIAMOND_EVER:
+                RunSceneTheBiggestDiamondEver(orphanGuid);
+                break;
+            case QUEST_MALFURION_HAS_RETURNED:
+                RunSceneMalfurionHasReturned(orphanGuid);
+                break;
+            case QUEST_THE_BIGGEST_TREE_EVER:
+                RunSceneTheBiggestTreeEver(orphanGuid);
+                break;
+            case QUEST_MEETING_A_GREAT_ONE:
+                RunSceneMeetingGreateOne(orphanGuid);
+                break;
         }
     }
 
@@ -1003,25 +947,26 @@ struct npc_cw_area_trigger : public ScriptedAI
         if (!orphan || !ambassador || !sylvanas)
             return;
 
-        DialogBuilder{ me }
+        SceneBuilder{ me }
             .Move(orphan, Position{ 1292.0f, 322.68f, -57.85f })
             .Turn(orphan, sylvanas)
-            .Talk(orphan,     TEXT_THE_BANSHEE_QUEEN_ORPHAN_1,   Seconds(4))
-            .Talk(orphan,     TEXT_THE_BANSHEE_QUEEN_ORPHAN_2,   Seconds(7))
+            .Talk(orphan, TEXT_THE_BANSHEE_QUEEN_ORPHAN_1, Seconds(4))
+            .Talk(orphan, TEXT_THE_BANSHEE_QUEEN_ORPHAN_2, Seconds(7))
             .Talk(ambassador, TEXT_THE_BANSHEE_QUEEN_AMBASSADOR, Seconds(6))
-            .Talk(sylvanas,   TEXT_THE_BANSHEE_QUEEN_SYLVANAS_1, Seconds(7))
-            .Talk(sylvanas,   TEXT_THE_BANSHEE_QUEEN_SYLVANAS_2, Seconds(6))
-            .Talk(orphan,     TEXT_THE_BANSHEE_QUEEN_ORPHAN_3,   Seconds(6))
-            .Talk(sylvanas,   TEXT_THE_BANSHEE_QUEEN_SYLVANAS_3, Seconds(5))
+            .Talk(sylvanas, TEXT_THE_BANSHEE_QUEEN_SYLVANAS_1, Seconds(7))
+            .Talk(sylvanas, TEXT_THE_BANSHEE_QUEEN_SYLVANAS_2, Seconds(6))
+            .Talk(orphan, TEXT_THE_BANSHEE_QUEEN_ORPHAN_3, Seconds(6))
+            .Talk(sylvanas, TEXT_THE_BANSHEE_QUEEN_SYLVANAS_3, Seconds(5))
             .Evade(orphan);
     }
 
     void RunSceneTheFallenChieftain(uint64 orphanGuid)
     {
         Creature* orphan = ObjectAccessor::GetCreature(*me, orphanGuid);
+
         if (orphan)
 
-        DialogBuilder{ me }
+        SceneBuilder{ me }
             .Move(orphan, Position{ -1008.22f, -1105.63f, 44.41f })
             .Talk(orphan, TEXT_THE_FALLEN_CHIEFTAIN_ORPHAN, Seconds(5))
             .Evade(orphan);
@@ -1036,17 +981,17 @@ struct npc_cw_area_trigger : public ScriptedAI
         if (!orphan || !guard || !advisor)
             return;
 
-        DialogBuilder{ me }
-            .Move(orphan,  Position{ -4822.51f, -977.43f, 464.7f })
-            .Talk(orphan,  TEXT_THE_BIGGEST_DIAMOND_EVER_ORPHAN_1, Seconds(5))
-            .Talk(orphan,  TEXT_THE_BIGGEST_DIAMOND_EVER_ORPHAN_2, Seconds(5))
-            .Turn(guard,   orphan)
-            .Talk(guard,   TEXT_THE_BIGGEST_DIAMOND_EVER_GUARD_1,  Seconds(6))
-            .Talk(orphan,  TEXT_THE_BIGGEST_DIAMOND_EVER_ORPHAN_3, Seconds(5))
+        SceneBuilder{ me }
+            .Move(orphan, Position{ -4822.51f, -977.43f, 464.7f })
+            .Talk(orphan, TEXT_THE_BIGGEST_DIAMOND_EVER_ORPHAN_1, Seconds(5))
+            .Talk(orphan, TEXT_THE_BIGGEST_DIAMOND_EVER_ORPHAN_2, Seconds(5))
+            .Turn(guard, orphan)
+            .Talk(guard, TEXT_THE_BIGGEST_DIAMOND_EVER_GUARD_1, Seconds(6))
+            .Talk(orphan, TEXT_THE_BIGGEST_DIAMOND_EVER_ORPHAN_3, Seconds(5))
             .Turn(advisor, guard)
-            .Talk(advisor, TEXT_THE_BIGGEST_DIAMOND_EVER_ADVISOR,  Seconds(5))
-            .Talk(orphan,  TEXT_THE_BIGGEST_DIAMOND_EVER_ORPHAN_4, Seconds(5))
-            .Talk(guard,   TEXT_THE_BIGGEST_DIAMOND_EVER_GUARD_2,  Seconds(3))
+            .Talk(advisor, TEXT_THE_BIGGEST_DIAMOND_EVER_ADVISOR, Seconds(5))
+            .Talk(orphan, TEXT_THE_BIGGEST_DIAMOND_EVER_ORPHAN_4, Seconds(5))
+            .Talk(guard, TEXT_THE_BIGGEST_DIAMOND_EVER_GUARD_2, Seconds(3))
             .Evade(orphan)
             .Evade(guard)
             .Evade(advisor);
@@ -1060,29 +1005,30 @@ struct npc_cw_area_trigger : public ScriptedAI
         if (!orphan || !malfurion)
             return;
 
-        DialogBuilder{ me }
+        SceneBuilder{ me }
             .Move(orphan, Position{ 9665.75f, 2523.22f, 1359.99f })
             .Turn(orphan, malfurion)
-            .Talk(orphan,    TEXT_MALFURION_HAS_RETURNED_1_ORPHAN,    Seconds(4))
-            .Talk(orphan,    TEXT_MALFURION_HAS_RETURNED_2_ORPHAN,    Seconds(6))
-            .Talk(orphan,    TEXT_MALFURION_HAS_RETURNED_3_ORPHAN,    Seconds(6))
+            .Talk(orphan, TEXT_MALFURION_HAS_RETURNED_1_ORPHAN, Seconds(4))
+            .Talk(orphan, TEXT_MALFURION_HAS_RETURNED_2_ORPHAN, Seconds(6))
+            .Talk(orphan, TEXT_MALFURION_HAS_RETURNED_3_ORPHAN, Seconds(6))
             .Talk(malfurion, TEXT_MALFURION_HAS_RETURNED_4_MALFURION, Seconds(9))
-            .Talk(orphan,    TEXT_MALFURION_HAS_RETURNED_5_ORPHAN,    Seconds(6))
-            .Talk(orphan,    TEXT_MALFURION_HAS_RETURNED_6_ORPHAN,    Seconds(0))
-            .Cast(orphan,    SPELL_MALFURION_GIVES_YOU_WINGS,         orphan);
+            .Talk(orphan, TEXT_MALFURION_HAS_RETURNED_5_ORPHAN, Seconds(6))
+            .Talk(orphan, TEXT_MALFURION_HAS_RETURNED_6_ORPHAN, Seconds(0))
+            .Cast(orphan, SPELL_MALFURION_GIVES_YOU_WINGS, orphan);
         // Random movement started in aura script and handled in AI
     }
 
     void RunSceneTheBiggestTreeEver(uint64 orphanGuid)
     {
         Creature* orphan = ObjectAccessor::GetCreature(*me, orphanGuid);
+
         if (!orphan)
             return;
 
         Position pos = *me;
         pos.RelocateOffset(0, 5);
 
-        DialogBuilder{ me }
+        SceneBuilder{ me }
             .Move(orphan, pos)
             .Turn(orphan, me)
             .Talk(orphan, TEXT_THE_BIGGEST_TREE_EVER, Seconds(5))
@@ -1093,13 +1039,14 @@ struct npc_cw_area_trigger : public ScriptedAI
     {
         Creature* orphan = ObjectAccessor::GetCreature(*me, orphanGuid);
         Creature* etymidian = me->FindNearestCreature(NPC_ETYMIDIAN, 50.0f);
+
         if (!orphan || !etymidian)
             return;
 
         Position pos = etymidian->GetPosition();
         pos.RelocateOffset(0, 5);
 
-        DialogBuilder{ me }
+        SceneBuilder{ me }
             .Move(orphan, pos)
             .Turn(orphan, etymidian)
             .Talk(orphan, TEXT_MEETING_A_GREAT_ONE_1, Seconds(5))
@@ -1110,39 +1057,25 @@ struct npc_cw_area_trigger : public ScriptedAI
     }
 };
 
-/*######
-## npc_grizzlemaw_cw_trigger
-######*/
-class npc_grizzlemaw_cw_trigger : public CreatureScript
+struct npc_grizzlemaw_cw_trigger : public ScriptedAI
 {
-    public:
-        npc_grizzlemaw_cw_trigger() : CreatureScript("npc_grizzlemaw_cw_trigger") { }
+    npc_grizzlemaw_cw_trigger(Creature* creature) : ScriptedAI(creature)
+    {
+        me->SetDisplayId(DISPLAY_INVISIBLE);
+        me->SetReactState(REACT_AGGRESSIVE); // To make MoveInLineOfSight work
+    }
 
-        struct npc_grizzlemaw_cw_triggerAI : public ScriptedAI
-        {
-            npc_grizzlemaw_cw_triggerAI(Creature* creature) : ScriptedAI(creature)
-            {
-                me->SetDisplayId(DISPLAY_INVISIBLE);
-                me->SetReactState(REACT_AGGRESSIVE); // To make MoveInLineOfSight work
-            }
-
-            void MoveInLineOfSight(Unit* who) override
-            {
-                if (who && who->GetDistance2d(me) < 10.0f)
-                    if (Player* player = who->ToPlayer())
-                        if (player->GetQuestStatus(QUEST_HOME_OF_THE_BEAR_MEN) == QUEST_STATUS_INCOMPLETE)
-                            if (Creature* orphan = Creature::GetCreature(*me, getOrphanGUID(player, ORPHAN_WOLVAR)))
-                            {
-                                player->AreaExploredOrEventHappens(QUEST_HOME_OF_THE_BEAR_MEN);
-                                orphan->AI()->Talk(TEXT_WOLVAR_ORPHAN_10);
-                            }
-            }
-        };
-
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new npc_grizzlemaw_cw_triggerAI(creature);
-        }
+    void MoveInLineOfSight(Unit* who) override
+    {
+        if (who && who->GetDistance2d(me) < 10.0f)
+            if (Player* player = who->ToPlayer())
+                if (player->GetQuestStatus(QUEST_HOME_OF_THE_BEAR_MEN) == QUEST_STATUS_INCOMPLETE)
+                    if (Creature* orphan = Creature::GetCreature(*me, getOrphanGUID(player, ORPHAN_WOLVAR)))
+                    {
+                        player->AreaExploredOrEventHappens(QUEST_HOME_OF_THE_BEAR_MEN);
+                        orphan->AI()->Talk(TEXT_WOLVAR_ORPHAN_10);
+                    }
+    }
 };
 
 // 14444, 14305, 22817, 22818, 33533, 33532
@@ -1333,18 +1266,18 @@ class spell_throw_paper_zeppelin_to_orphan : public SpellScript
 
 void AddSC_event_childrens_week()
 {
-    new npc_elder_kekek();
-    new npc_high_oracle_soo_roo();
-    new npc_winterfin_playmate();
-    new npc_snowfall_glade_playmate();
+    register_creature_script(npc_winterfin_playmate);
+    register_creature_script(npc_snowfall_glade_playmate);
+    register_creature_script(npc_high_oracle_soo_roo);
+    register_creature_script(npc_elder_kekek);
+    register_creature_script(npc_alexstraza_the_lifebinder);
     new at_bring_your_orphan_to();
-    new npc_grizzlemaw_cw_trigger();
-    new creature_script<npc_cw_area_trigger>("npc_cw_area_trigger");
-    new npc_alexstraza_the_lifebinder();
-    new creature_script<npc_summoned_orphan>("npc_summoned_orphan");
-    new spell_script<spell_summon_orphan>("spell_summon_orphan");
-    new spell_script<spell_use_dragon_kite_2_pack>("spell_use_dragon_kite_2_pack");
-    new spell_script<spell_eat_cone_of_cold>("spell_eat_cone_of_cold");
-    new aura_script<spell_malfurion_gives_you_wings>("spell_malfurion_gives_you_wings");
-    new spell_script<spell_throw_paper_zeppelin_to_orphan>("spell_throw_paper_zeppelin_to_orphan");
+    register_creature_script(npc_cw_area_trigger);
+    register_creature_script(npc_grizzlemaw_cw_trigger);
+    register_creature_script(npc_summoned_orphan);
+    register_spell_script(spell_summon_orphan);
+    register_spell_script(spell_use_dragon_kite_2_pack);
+    register_spell_script(spell_eat_cone_of_cold);
+    register_aura_script(spell_malfurion_gives_you_wings);
+    register_spell_script(spell_throw_paper_zeppelin_to_orphan);
 }

@@ -2028,7 +2028,7 @@ class spell_alysrazor_firestorm : public SpellScriptLoader
 void AddSC_boss_alysrazor()
 {
     new boss_alysrazor();
-    new creature_script<npc_alysrazor_molten_feather>("npc_alysrazor_molten_feather");
+    register_creature_script(npc_alysrazor_molten_feather);
     new npc_alysrazor_blazing_power();
     new npc_alysrazor_incindiary_cloud();
     new npc_alysrazor_fiery_vortex();

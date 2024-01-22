@@ -1349,7 +1349,7 @@ void AddSC_wandering_island_north()
 {
     new npc_master_shang_xi();
     new go_wandering_weapon_rack();
-    new creature_script<npc_training_target>("npc_training_target");
+    register_creature_script(npc_training_target);
     new npc_tushui_trainee();
     new npc_huojin_trainee();
     new boss_jaomin_ro();

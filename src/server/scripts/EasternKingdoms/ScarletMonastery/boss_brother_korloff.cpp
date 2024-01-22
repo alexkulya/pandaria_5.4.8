@@ -354,9 +354,9 @@ class spell_korloff_burning_man : public AuraScript
 void AddSC_boss_brother_korloff()
 {
     new boss_brother_korloff();
-    new creature_script<npc_trigger_scorched_flame>("npc_trigger_scorched_flame");
+    register_creature_script(npc_trigger_scorched_flame);
 
-    new aura_script<spell_scorched_earth>("spell_scorched_earth");
-    new aura_script<spell_firestorm_kick>("spell_firestorm_kick");
-    new aura_script<spell_korloff_burning_man>("spell_korloff_burning_man");
+    register_aura_script(spell_scorched_earth);
+    register_aura_script(spell_firestorm_kick);
+    register_aura_script(spell_korloff_burning_man);
 }

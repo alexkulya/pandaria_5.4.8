@@ -22,65 +22,78 @@
 #include "ScriptedEscortAI.h"
 #include "Group.h"
 
-enum eSpells
+enum ValeOfEternalBlossomsSpellData
 {
-    SPELL_THUNDER_BREATH        = 125787,
-    SPELL_DISARM                = 8379,
-    SPELL_NIMBUS_SHROUD         = 126188,
-    SPELL_OVERPOWERING_STRENGTH = 126181,
-    SPELL_DOMINATING_STRIKE_1   = 126177,
-    SPELL_DOMINATING_STRIKE_2   = 126189,
-    SPELL_IRON_FIST             = 126307,
-    SPELL_IMPERION_WARCRY       = 126353,
-    SPELL_CALL_SWARMERS         = 126652,
-    SPELL_VENOMOUS_SPIT         = 126669,
-    SPELL_CRUSHING_BLOW_1       = 127492,
-    SPELL_CRUSHING_BLOW_2       = 126235,
-    SPELL_CRUSHING_STRIKE       = 127189,
-    SPELL_IMPACT                = 126378,
-    SPELL_BLUE_GRANIT           = 126405,
-    SPELL_GREEN_GRANIT          = 126401,
-    SPELL_RED_GRANIT            = 126384,
-    SPELL_FIRE_PAWS             = 126414,
-    SPELL_MIST                  = 126429,
-    SPELL_MIST_EFF              = 126430,
-    SPELL_FRAGMENT              = 126417,
-    SPELL_LIGHTNING_SWEEP       = 127253,
-    SPELL_LIGHTNING_BREATH      = 127255,
-    SPELL_LIGHTNING_POOL        = 128142,
-    SPELL_CRUSHING_BLOW         = 126356,
-    SPELL_IMPALE                = 126360,
-    SPELL_ELECTROCUTE           = 126350,
-    SPELL_THUNDER               = 128999,
-    SPELL_THUNDERS_CALL_AURA    = 126915,
-    SPELL_THUNDERS_CALL         = 126913,
-    SPELL_MOLTEN_FISTS          = 126908,
-    SPELL_MOLTEN_FISTS_AURA     = 126909,
-    SPELL_SHADOWS_FURY          = 126911,
-    SPELL_SHADOWS_FURY_AURA     = 126914,
-    SPELL_DEVASTATING_LEAP      = 126903,
-    SPELL_DEVASTATING_LEAP_EFF  = 126902,
-    SPELL_ICY_DESTRUCTION_EFF   = 127465,
-    SPELL_ICY_DESTRUCTION       = 127463,
-    SPELL_ANCIENT_MAGIC         = 127466,
-    SPELL_SHADOW_BOLT           = 125212,
-    SPELL_VOIDCLOUD             = 125241,
-    SPELL_REND_SOUL             = 126202,
-    SPELL_SHADOW_STRIKES        = 126209,
-    SPELL_SUMMON_KAMU           = 115872,
-    SPELL_QUILEN_FLURRY         = 125124,
-    SPELL_POUNCE                = 125094,
-    SPELL_CLAW_SWIPE            = 36996,
-    SPELL_SUMMON_VISAGES        = 133797,
-    SPELL_HARDEN_SKIN           = 133794,
-    SPELL_GUO_LAI_CACHE_REP     = 127172,
-    SPELL_TRAINEE_DEFEAT_CREDIT = 143259,
-    SPELL_WHY_DO_WE_FIGHT       = 147165,
+    SPELL_THUNDER_BREATH                    = 125787,
+    SPELL_DISARM                            = 8379,
+    SPELL_NIMBUS_SHROUD                     = 126188,
+    SPELL_OVERPOWERING_STRENGTH             = 126181,
+    SPELL_DOMINATING_STRIKE_1               = 126177,
+    SPELL_DOMINATING_STRIKE_2               = 126189,
+    SPELL_IRON_FIST                         = 126307,
+    SPELL_IMPERION_WARCRY                   = 126353,
+    SPELL_CALL_SWARMERS                     = 126652,
+    SPELL_VENOMOUS_SPIT                     = 126669,
+    SPELL_CRUSHING_BLOW_1                   = 127492,
+    SPELL_CRUSHING_BLOW_2                   = 126235,
+    SPELL_CRUSHING_STRIKE                   = 127189,
+    SPELL_IMPACT                            = 126378,
+    SPELL_BLUE_GRANIT                       = 126405,
+    SPELL_GREEN_GRANIT                      = 126401,
+    SPELL_RED_GRANIT                        = 126384,
+    SPELL_FIRE_PAWS                         = 126414,
+    SPELL_MIST                              = 126429,
+    SPELL_MIST_EFF                          = 126430,
+    SPELL_FRAGMENT                          = 126417,
+    SPELL_LIGHTNING_SWEEP                   = 127253,
+    SPELL_LIGHTNING_BREATH                  = 127255,
+    SPELL_LIGHTNING_POOL                    = 128142,
+    SPELL_CRUSHING_BLOW                     = 126356,
+    SPELL_IMPALE                            = 126360,
+    SPELL_ELECTROCUTE                       = 126350,
+    SPELL_THUNDER                           = 128999,
+    SPELL_THUNDERS_CALL_AURA                = 126915,
+    SPELL_THUNDERS_CALL                     = 126913,
+    SPELL_MOLTEN_FISTS                      = 126908,
+    SPELL_MOLTEN_FISTS_AURA                 = 126909,
+    SPELL_SHADOWS_FURY                      = 126911,
+    SPELL_SHADOWS_FURY_AURA                 = 126914,
+    SPELL_DEVASTATING_LEAP                  = 126903,
+    SPELL_DEVASTATING_LEAP_EFF              = 126902,
+    SPELL_ICY_DESTRUCTION_EFF               = 127465,
+    SPELL_ICY_DESTRUCTION                   = 127463,
+    SPELL_ANCIENT_MAGIC                     = 127466,
+    SPELL_SHADOW_BOLT                       = 125212,
+    SPELL_VOIDCLOUD                         = 125241,
+    SPELL_REND_SOUL                         = 126202,
+    SPELL_SHADOW_STRIKES                    = 126209,
+    SPELL_SUMMON_KAMU                       = 115872,
+    SPELL_QUILEN_FLURRY                     = 125124,
+    SPELL_POUNCE                            = 125094,
+    SPELL_CLAW_SWIPE                        = 36996,
+    SPELL_SUMMON_VISAGES                    = 133797,
+    SPELL_HARDEN_SKIN                       = 133794,
+    SPELL_GUO_LAI_CACHE_REP                 = 127172,
+    SPELL_TRAINEE_DEFEAT_CREDIT             = 143259,
+    SPELL_WHY_DO_WE_FIGHT                   = 147165,
+    SPELL_TORNADO                           = 126015,
+    SPELL_WINDSONG                          = 126014,
+    SPELL_AETHA_CREDIT                      = 129950,
+    SPELL_HYDRO_LANCE                       = 125988,
+    SPELL_WATER_BLOSSOM                     = 125980,
+    SPELL_WATER_BOLT                        = 125995,
+    SPELL_QUID_CREDIT                       = 129949,
+    SPELL_STORYTIME                         = 120589,
+    SPELL_STORYTIME_OVER                    = 126250,
+    SPELL_BELLOWING_RAGE                    = 124297,
+    SPELL_RUSHING_CHARGE                    = 124302,
+    SPELL_YAUNGOL_STOMP                     = 124289,
+    SPELL_WELL_OF_SOULS_SOUL_VISUAL         = 126262
 };
 
-enum eEvents
+enum ValeOfEternalBlossomsEvents
 {
-    EVENT_OVERPOWER_STRENGTH = 1,
+    EVENT_OVERPOWER_STRENGTH                = 1,
     EVENT_DOMINATING_STRIKE,
     EVENT_THUNDER_BREATH,
     EVENT_DISARM,
@@ -108,26 +121,48 @@ enum eEvents
     EVENT_QUILEN_FLURRY,
     EVENT_POUNCE,
     EVENT_CLAW_SWIPE,
+    EVENT_TORNADO,
+    EVENT_WINDSONG,
+    EVENT_HYDRO_LANCE,
+    EVENT_WATER_BLOSSOM,
+    EVENT_WATER_BOLT,
+    EVENT_BELLOWING_RAGE,
+    EVENT_RUSHING_CHARGE,
+    EVENT_YAUNGOL_STOMP
 };
 
-enum eCreatures
+enum ValeOfEternalBlossomsTexts
 {
-    NPC_ALANI                 = 64403,
-    NPC_MIST                  = 64690,
-    NPC_THUNDERS_CALL         = 64915,
-    NPC_MOLTEN_FISTS          = 64913,
-    NPC_SHADOWS_FURY          = 64914,
-    NPC_ECHO_OF_PANDAREN_MONK = 58669,
-    NPC_MERCURIAL_GUARDIAN    = 67833,
-    NPC_INVESTIGATE_GUARDIAN  = 63852,
+    NPC_MERCURIAL_GUARDIAN_TEXT_01          = 0,
+    NPC_MERCURIAL_GUARDIAN_TEXT_02          = 1,
+    NPC_FANLYR_SILVERHORN_01                = 0,
+    SAY_YORIK_AGGRO                         = 0
 };
 
-enum Quests
+enum ValeOfEternalBlossomsCreatures
 {
-    QUEST_VOICE_OF_THE_GODS = 32257,
+    NPC_ALANI                               = 64403,
+    NPC_MIST                                = 64690,
+    NPC_THUNDERS_CALL                       = 64915,
+    NPC_MOLTEN_FISTS                        = 64913,
+    NPC_SHADOWS_FURY                        = 64914,
+    NPC_ECHO_OF_PANDAREN_MONK               = 58669,
+    NPC_MERCURIAL_GUARDIAN                  = 67833,
+    NPC_INVESTIGATE_GUARDIAN                = 63852,
+    NPC_DOMINATED_SCALELORD                 = 63045
 };
 
-// Alani 64403
+enum ValeOfEternalBlossomsQuests
+{
+    QUEST_VOICE_OF_THE_GODS                 = 32257
+};
+
+enum ValeOfEternalBlossomsFactions
+{
+    FACTION_FRIEND                          = 35,
+    FACTION_ENEMY                           = 14
+};
+
 struct npc_alani : public ScriptedAI
 {
     npc_alani(Creature* creature) : ScriptedAI(creature) { }
@@ -143,8 +178,8 @@ struct npc_alani : public ScriptedAI
     void EnterCombat(Unit* /*who*/) override
     {
         me->SetHomePosition(*me);
-        events.ScheduleEvent(EVENT_THUNDER_BREATH, urand(9.5 * IN_MILLISECONDS, 12.5 * IN_MILLISECONDS));
-        events.ScheduleEvent(EVENT_DISARM, 20 * IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_THUNDER_BREATH, randtime(9s + 500ms, 12s + 500ms));
+        events.ScheduleEvent(EVENT_DISARM, 20s);
     }
 
     void UpdateAI(uint32 diff) override
@@ -165,13 +200,13 @@ struct npc_alani : public ScriptedAI
                     if (Unit* vict = me->GetVictim())
                         DoCast(vict, SPELL_THUNDER_BREATH);
 
-                    events.ScheduleEvent(EVENT_THUNDER_BREATH, urand(12.5 * IN_MILLISECONDS, 17.5 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_THUNDER_BREATH, randtime(12s + 500ms, 17s + 500ms));
                     break;
                 case EVENT_DISARM:
                     if (Unit* vict = me->GetVictim())
                         DoCast(vict, SPELL_DISARM);
 
-                    events.ScheduleEvent(EVENT_DISARM, 20 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_DISARM, 20s);
                     break;
             }
         }
@@ -180,7 +215,6 @@ struct npc_alani : public ScriptedAI
     }
 };
 
-// Shao-Tien Dominator 63610
 struct npc_shao_tien_dominator : public ScriptedAI
 {
     npc_shao_tien_dominator(Creature* creature) : ScriptedAI(creature) { }
@@ -194,8 +228,8 @@ struct npc_shao_tien_dominator : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_OVERPOWER_STRENGTH, urand(10 * IN_MILLISECONDS, 20 * IN_MILLISECONDS));
-        events.ScheduleEvent(EVENT_DOMINATING_STRIKE, urand(4.5 * IN_MILLISECONDS, 12 * IN_MILLISECONDS));
+        events.ScheduleEvent(EVENT_OVERPOWER_STRENGTH, randtime(10s, 20s));
+        events.ScheduleEvent(EVENT_DOMINATING_STRIKE, randtime(4s + 500ms, 12s));
     }
 
     void UpdateAI(uint32 diff) override
@@ -211,13 +245,13 @@ struct npc_shao_tien_dominator : public ScriptedAI
             {
                 case EVENT_OVERPOWER_STRENGTH:
                     DoCast(me, SPELL_OVERPOWERING_STRENGTH);
-                    events.ScheduleEvent(EVENT_OVERPOWER_STRENGTH, urand(10 * IN_MILLISECONDS, 20 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_OVERPOWER_STRENGTH, randtime(10s, 20s));
                     break;
                 case EVENT_DOMINATING_STRIKE:
                     if (Unit* target = me->GetVictim())
                         DoCast(target, urand(0, 1) ? SPELL_DOMINATING_STRIKE_1 : SPELL_DOMINATING_STRIKE_2, true);
 
-                    events.ScheduleEvent(EVENT_DOMINATING_STRIKE, urand(7 * IN_MILLISECONDS, 16 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_DOMINATING_STRIKE, randtime(7s, 16s));
                     break;
             }
         }
@@ -226,7 +260,6 @@ struct npc_shao_tien_dominator : public ScriptedAI
     }
 };
 
-// Gochao The Iron Fist 62880
 struct npc_gochao_the_iron_fist : public ScriptedAI
 {
     npc_gochao_the_iron_fist(Creature* creature) : ScriptedAI(creature) { }
@@ -238,14 +271,14 @@ struct npc_gochao_the_iron_fist : public ScriptedAI
     void Reset() override
     {
         events.Reset();
-        delay      = 0;
+        delay = 0;
         targetGUID = 0;
     }
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_IRONFIST, urand(5 * IN_MILLISECONDS, 8 * IN_MILLISECONDS));
-        events.ScheduleEvent(EVENT_WARCRY, 10 * IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_IRONFIST, randtime(5s, 8s));
+        events.ScheduleEvent(EVENT_WARCRY, 10s);
     }
 
     void UpdateAI(uint32 diff) override
@@ -274,7 +307,7 @@ struct npc_gochao_the_iron_fist : public ScriptedAI
                             me->RemoveChanneledCast(targetGUID);
                         });
                     }
-                    events.ScheduleEvent(EVENT_IRONFIST, urand(9 * IN_MILLISECONDS, 20 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_IRONFIST, randtime(9s, 20s));
                     break;
                 case EVENT_WARCRY:
                     if (Unit* target = me->GetVictim())
@@ -288,7 +321,7 @@ struct npc_gochao_the_iron_fist : public ScriptedAI
                             me->RemoveChanneledCast(targetGUID);
                         });
                     }
-                    events.ScheduleEvent(EVENT_WARCRY, 15 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_WARCRY, 15s);
                     break;
             }
         }
@@ -297,7 +330,6 @@ struct npc_gochao_the_iron_fist : public ScriptedAI
     }
 };
 
-// Bloodtip 58474
 struct npc_bloodtip : public ScriptedAI
 {
     npc_bloodtip(Creature* creature) : ScriptedAI(creature) { }
@@ -312,8 +344,8 @@ struct npc_bloodtip : public ScriptedAI
     void EnterCombat(Unit* /*who*/) override
     {
         DoCast(me, SPELL_CALL_SWARMERS);
-        events.ScheduleEvent(EVENT_VENOM_SPIT, urand(3.5 * IN_MILLISECONDS, 9 * IN_MILLISECONDS));
-        events.ScheduleEvent(EVENT_CALL_SWARMERS, 20 * IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_VENOM_SPIT, randtime(3s + 500ms, 9s));
+        events.ScheduleEvent(EVENT_CALL_SWARMERS, 20s);
     }
 
     void UpdateAI(uint32 diff) override
@@ -331,11 +363,11 @@ struct npc_bloodtip : public ScriptedAI
                     if (Unit* target = me->GetVictim())
                         DoCast(target, SPELL_VENOMOUS_SPIT);
 
-                    events.ScheduleEvent(EVENT_VENOM_SPIT, urand(15.5 * IN_MILLISECONDS, 25 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_VENOM_SPIT, randtime(15s + 500ms, 25s));
                     break;
                 case EVENT_CALL_SWARMERS:
                     DoCast(me, SPELL_CALL_SWARMERS);
-                    events.ScheduleEvent(EVENT_CALL_SWARMERS, 20 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_CALL_SWARMERS, 20s);
                     break;
             }
         }
@@ -344,7 +376,6 @@ struct npc_bloodtip : public ScriptedAI
     }
 };
 
-// Jade Guardian 60296
 struct npc_mogu_jade_guardian : public ScriptedAI
 {
     npc_mogu_jade_guardian(Creature* creature) : ScriptedAI(creature) { }
@@ -358,13 +389,13 @@ struct npc_mogu_jade_guardian : public ScriptedAI
     {
         events.Reset();
         prevSpellId = 0;
-        delay       = 0;
+        delay = 0;
         targetGUID  = 0;
     }
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_CRUSHING_BLOW, 6 * IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_CRUSHING_BLOW, 6s);
     }
 
     void UpdateAI(uint32 diff) override
@@ -398,7 +429,7 @@ struct npc_mogu_jade_guardian : public ScriptedAI
                     });
                 }
 
-                events.ScheduleEvent(EVENT_CRUSHING_BLOW, urand(10 * IN_MILLISECONDS, 15 * IN_MILLISECONDS));
+                events.ScheduleEvent(EVENT_CRUSHING_BLOW, randtime(10s, 15s));
             }
             break;
         }
@@ -414,7 +445,6 @@ const std::map<uint32, uint32> invMatchType =
     { SPELL_GREEN_GRANIT, SPELL_FRAGMENT },
 };
 
-// Wulon - 63510
 struct npc_wulon : public ScriptedAI
 {
     npc_wulon(Creature* creature) : ScriptedAI(creature), summons(me) { }
@@ -437,8 +467,8 @@ struct npc_wulon : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_SWITCH_GRANIT, 1 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_IMPACT, urand(4.5 * IN_MILLISECONDS, 12 * IN_MILLISECONDS));
+        events.ScheduleEvent(EVENT_SWITCH_GRANIT, 1s);
+        events.ScheduleEvent(EVENT_IMPACT, randtime(4s + 500ms, 12s));
         me->SetStandState(UNIT_STAND_STATE_STAND);
     }
 
@@ -486,20 +516,20 @@ struct npc_wulon : public ScriptedAI
                     prevSpellId = Trinity::Containers::SelectRandomContainerElement(SpellStorage);
 
                     if (prevSpellId == SPELL_BLUE_GRANIT)
-                        events.ScheduleEvent(EVENT_MIST, 1.5 * IN_MILLISECONDS);
+                        events.ScheduleEvent(EVENT_MIST, 1s + 500ms);
                     else if (uint32 matchSpell = invMatchType.find(prevSpellId)->second)
                         DoCast(me, matchSpell);
 
-                    events.ScheduleEvent(EVENT_SWITCH_GRANIT, urand(17 * IN_MILLISECONDS, 25 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_SWITCH_GRANIT, randtime(17s, 25s));
                     break;
                 }
                 case EVENT_IMPACT:
                     DoCastVictim(SPELL_IMPACT);
-                    events.ScheduleEvent(EVENT_IMPACT, urand(6 * IN_MILLISECONDS, 14.5 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_IMPACT, randtime(6s, 14s + 500ms));
                     break;
                 case EVENT_MIST:
                     DoCastVictim(SPELL_MIST);
-                    events.ScheduleEvent(EVENT_MIST, urand(5 * IN_MILLISECONDS, 7 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_MIST, randtime(5s, 7s));
                     break;
             }
         }
@@ -508,7 +538,6 @@ struct npc_wulon : public ScriptedAI
     }
 };
 
-// Milau 64965
 struct npc_milau : public ScriptedAI
 {
     npc_milau(Creature* creature) : ScriptedAI(creature) { }
@@ -528,8 +557,8 @@ struct npc_milau : public ScriptedAI
     {
         me->OverrideInhabitType(INHABIT_GROUND);
         me->UpdateMovementFlags();
-        events.ScheduleEvent(EVENT_LIGHTNING_BREATH, 4 * IN_MILLISECONDS);
-        //events.ScheduleEvent(EVENT_LIGHTNING_POOL, urand(9 * IN_MILLISECONDS, 19.5 * IN_MILLISECONDS));
+        events.ScheduleEvent(EVENT_LIGHTNING_BREATH, 4s);
+        //events.ScheduleEvent(EVENT_LIGHTNING_POOL, randtime(9s, 19s + 500ms));
     }
 
     void DamageTaken(Unit* attacker, uint32& damage) override
@@ -566,13 +595,13 @@ struct npc_milau : public ScriptedAI
                     if (Unit* target = me->GetVictim())
                         DoCast(target, SPELL_LIGHTNING_BREATH);
 
-                    events.ScheduleEvent(EVENT_LIGHTNING_BREATH, urand(11 * IN_MILLISECONDS, 19 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_LIGHTNING_BREATH, randtime(11s, 19s));
                     break;
                 case EVENT_LIGHTNING_POOL:
                     if (Unit* target = me->GetVictim())
                         DoCast(target, SPELL_LIGHTNING_POOL);
 
-                    events.ScheduleEvent(EVENT_LIGHTNING_POOL, urand(17 * IN_MILLISECONDS, 32 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_LIGHTNING_POOL, randtime(17s, 32s));
                     break;
             }
         }
@@ -581,7 +610,6 @@ struct npc_milau : public ScriptedAI
     }
 };
 
-// Ancient Mogu Spirit 58671
 struct npc_ancient_mogu_spirit : public ScriptedAI
 {
     npc_ancient_mogu_spirit(Creature* creature) : ScriptedAI(creature) { }
@@ -595,8 +623,8 @@ struct npc_ancient_mogu_spirit : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_IMPALE, urand(3 * IN_MILLISECONDS, 15 * IN_MILLISECONDS));
-        events.ScheduleEvent(EVENT_ELECTROCUTE, 6 * IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_IMPALE, randtime(3s, 15s));
+        events.ScheduleEvent(EVENT_ELECTROCUTE, 6s);
     }
 
     void UpdateAI(uint32 diff) override
@@ -617,13 +645,13 @@ struct npc_ancient_mogu_spirit : public ScriptedAI
                     if (Unit* target = me->GetVictim())
                         DoCast(target, urand(0, 1) ? SPELL_CRUSHING_BLOW : SPELL_IMPALE);
 
-                    events.ScheduleEvent(EVENT_IMPALE, urand(6.5 * IN_MILLISECONDS, 15 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_IMPALE, randtime(6s + 500ms, 15s));
                     break;
                 case EVENT_ELECTROCUTE:
                     if (Unit* target = me->GetVictim())
                         DoCast(target, SPELL_ELECTROCUTE);
 
-                    events.ScheduleEvent(EVENT_ELECTROCUTE, urand(8 * IN_MILLISECONDS, 19.5 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_ELECTROCUTE, randtime(8s, 19s + 500ms));
                     break;
             }
         }
@@ -648,6 +676,7 @@ struct npc_aetha_tornado : public ScriptedAI
         y = me->GetPositionY();
 
         Movement::MoveSplineInit init(me);
+
         for (uint8 i = 1; i < 13; ++i)
         {
             float newX = x + 2.0f * cos(i * M_PI / 6);
@@ -663,7 +692,6 @@ struct npc_aetha_tornado : public ScriptedAI
     void EnterEvadeMode() override { }
 };
 
-// Thundermaw 58456
 struct npc_thundermaw : public ScriptedAI
 {
     npc_thundermaw(Creature* creature) : ScriptedAI(creature) { }
@@ -677,7 +705,7 @@ struct npc_thundermaw : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_THUNDER, urand(4 * IN_MILLISECONDS, 18 * IN_MILLISECONDS));
+        events.ScheduleEvent(EVENT_THUNDER, randtime(4s, 18s));
     }
 
     void UpdateAI(uint32 diff) override
@@ -694,7 +722,7 @@ struct npc_thundermaw : public ScriptedAI
                 if (Unit* target = me->GetVictim())
                     DoCast(target, SPELL_THUNDER);
 
-                events.ScheduleEvent(EVENT_THUNDER, urand(4 * IN_MILLISECONDS, 18 * IN_MILLISECONDS));
+                events.ScheduleEvent(EVENT_THUNDER, randtime(4s, 18s));
             }
             break;
         }
@@ -703,7 +731,6 @@ struct npc_thundermaw : public ScriptedAI
     }
 };
 
-// Shao-Tien Fist 58927
 struct npc_shao_tien_fist : public ScriptedAI
 {
     npc_shao_tien_fist(Creature* creature) : ScriptedAI(creature), summons(me) { }
@@ -721,8 +748,8 @@ struct npc_shao_tien_fist : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_ELEMENTAL_CALL, urand(5 * IN_MILLISECONDS, 15 * IN_MILLISECONDS));
-        events.ScheduleEvent(EVENT_DEVASTATING_LEAP, 8 * IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_ELEMENTAL_CALL, randtime(5s, 15s));
+        events.ScheduleEvent(EVENT_DEVASTATING_LEAP, 8s);
     }
 
     void JustSummoned(Creature* summon) override
@@ -767,7 +794,7 @@ struct npc_shao_tien_fist : public ScriptedAI
                     if (Unit* target = me->GetVictim())
                         DoCast(target, SPELL_DEVASTATING_LEAP);
 
-                    events.ScheduleEvent(EVENT_DEVASTATING_LEAP, 15.5 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_DEVASTATING_LEAP, 15s + 500ms);
                     break;
                 case EVENT_ELEMENTAL_CALL:
                     std::vector<uint32> SpellStorage = { SPELL_THUNDERS_CALL, SPELL_MOLTEN_FISTS, SPELL_SHADOWS_FURY };
@@ -781,7 +808,7 @@ struct npc_shao_tien_fist : public ScriptedAI
                     if (Unit* target = me->GetVictim())
                         DoCast(target, prevSpellId);
 
-                    events.ScheduleEvent(EVENT_ELEMENTAL_CALL, urand(8 * IN_MILLISECONDS, 22.5 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_ELEMENTAL_CALL, randtime(8s, 22s + 500ms));
                     break;
             }
         }
@@ -790,7 +817,6 @@ struct npc_shao_tien_fist : public ScriptedAI
     }
 };
 
-// Shao-Tien Antiquator 58928
 struct npc_shao_tien_antiquator : public ScriptedAI
 {
     npc_shao_tien_antiquator(Creature* creature) : ScriptedAI(creature) { }
@@ -804,8 +830,8 @@ struct npc_shao_tien_antiquator : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_ANCIENT_MAGIC, 1 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_ICY_DESTRUCTION, 8 * IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_ANCIENT_MAGIC, 1s);
+        events.ScheduleEvent(EVENT_ICY_DESTRUCTION, 8s);
     }
 
     void UpdateAI(uint32 diff) override
@@ -821,13 +847,13 @@ struct npc_shao_tien_antiquator : public ScriptedAI
             {
                 case EVENT_ANCIENT_MAGIC:
                     DoCast(me, SPELL_ANCIENT_MAGIC);
-                    events.ScheduleEvent(EVENT_ANCIENT_MAGIC, urand(13 * IN_MILLISECONDS, 23 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_ANCIENT_MAGIC, randtime(13s, 23s));
                     break;
                 case EVENT_ICY_DESTRUCTION:
                     if (Unit* target = me->GetVictim())
                         DoCast(target, SPELL_ICY_DESTRUCTION);
 
-                    events.ScheduleEvent(EVENT_ICY_DESTRUCTION, urand(15.5 * IN_MILLISECONDS, 25 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_ICY_DESTRUCTION, randtime(15s + 500ms, 25s));
                     break;
             }
         }
@@ -836,7 +862,6 @@ struct npc_shao_tien_antiquator : public ScriptedAI
     }
 };
 
-// Kang the Soul Thief 50349
 struct npc_kang_the_soul_thief : public ScriptedAI
 {
     npc_kang_the_soul_thief(Creature* creature) : ScriptedAI(creature) { }
@@ -850,8 +875,8 @@ struct npc_kang_the_soul_thief : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_SHADOW_BOLT, urand(4.5 * IN_MILLISECONDS, 12 * IN_MILLISECONDS));
-        events.ScheduleEvent(EVENT_VOID_CLOUD, 8.5 * IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_SHADOW_BOLT, randtime(4s + 500ms, 12s));
+        events.ScheduleEvent(EVENT_VOID_CLOUD, 8s + 500ms);
     }
 
     void UpdateAI(uint32 diff) override
@@ -872,13 +897,13 @@ struct npc_kang_the_soul_thief : public ScriptedAI
                     if (Unit* target = me->GetVictim())
                         DoCast(target, SPELL_SHADOW_BOLT);
 
-                    events.ScheduleEvent(EVENT_SHADOW_BOLT, urand(6 * IN_MILLISECONDS, 13.5 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_SHADOW_BOLT, randtime(6s, 13s + 500ms));
                     break;
                 case EVENT_VOID_CLOUD:
                     if (Unit* target = me->GetVictim())
                         DoCast(target, SPELL_VOIDCLOUD);
 
-                    events.ScheduleEvent(EVENT_VOID_CLOUD, urand(9.5 * IN_MILLISECONDS, 18 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_VOID_CLOUD, randtime(9s + 500ms, 18s));
                     break;
             }
         }
@@ -887,7 +912,6 @@ struct npc_kang_the_soul_thief : public ScriptedAI
     }
 };
 
-// Shao-Tien Soul-Caller 63611
 struct npc_shao_tien_soul_caller : public ScriptedAI
 {
     npc_shao_tien_soul_caller(Creature* creature) : ScriptedAI(creature) { }
@@ -901,8 +925,8 @@ struct npc_shao_tien_soul_caller : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_SHADOW_STRIKES, urand(3 * IN_MILLISECONDS, 5 * IN_MILLISECONDS));
-        events.ScheduleEvent(EVENT_REND_SOUL, urand(5.5 * IN_MILLISECONDS, 15 * IN_MILLISECONDS));
+        events.ScheduleEvent(EVENT_SHADOW_STRIKES, randtime(3s, 5s));
+        events.ScheduleEvent(EVENT_REND_SOUL, randtime(5s + 500ms, 15s));
     }
 
     void UpdateAI(uint32 diff) override
@@ -921,13 +945,13 @@ struct npc_shao_tien_soul_caller : public ScriptedAI
             {
                 case EVENT_SHADOW_STRIKES:
                     DoCast(me, SPELL_SHADOW_STRIKES);
-                    events.ScheduleEvent(EVENT_SHADOW_STRIKES, 15 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_SHADOW_STRIKES, 15s);
                     break;
                 case EVENT_REND_SOUL:
                     if (Unit* target = me->GetVictim())
                         DoCast(target, SPELL_REND_SOUL);
 
-                    events.ScheduleEvent(EVENT_REND_SOUL, urand(6 * IN_MILLISECONDS, 15.5 * IN_MILLISECONDS));
+                    events.ScheduleEvent(EVENT_REND_SOUL, randtime(6s, 15s + 500ms));
                     break;
             }
         }
@@ -936,7 +960,6 @@ struct npc_shao_tien_soul_caller : public ScriptedAI
     }
 };
 
-// Dagou 59977
 struct npc_dagou : public customCreatureAI
 {
     npc_dagou(Creature* creature) : customCreatureAI(creature) { }
@@ -950,8 +973,8 @@ struct npc_dagou : public customCreatureAI
     {
         DoCast(me, SPELL_SUMMON_KAMU);
 
-        events.ScheduleEvent(EVENT_POUNCE, urand(3.5 * IN_MILLISECONDS, 8 * IN_MILLISECONDS));
-        events.ScheduleEvent(EVENT_QUILEN_FLURRY, urand(10 * IN_MILLISECONDS, 13 * IN_MILLISECONDS));
+        events.ScheduleEvent(EVENT_POUNCE, randtime(3s + 500ms, 8s));
+        events.ScheduleEvent(EVENT_QUILEN_FLURRY, randtime(10s, 13s));
     }
 
     void JustSummoned(Creature* summon) override
@@ -990,7 +1013,6 @@ struct npc_dagou : public customCreatureAI
     }
 };
 
-// Mercurial Guardian 67833
 struct npc_mercurial_guardian : public customCreatureAI
 {
     npc_mercurial_guardian(Creature* creature) : customCreatureAI(creature) { }
@@ -1003,7 +1025,7 @@ struct npc_mercurial_guardian : public customCreatureAI
     void Reset() override
     {
         events.Reset();
-        me->SetFaction(35);
+        me->SetFaction(FACTION_FRIEND);
         me->SetFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
         targetGUID = 0;
         hasTriggered = false;
@@ -1014,7 +1036,7 @@ struct npc_mercurial_guardian : public customCreatureAI
     {
         me->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_SPELLCLICK);
         targetGUID = clicker->GetGUID();
-        Talk(0);
+        Talk(NPC_MERCURIAL_GUARDIAN_TEXT_01);
 
         if (clicker->ToPlayer())
             clicker->ToPlayer()->KilledMonsterCredit(NPC_INVESTIGATE_GUARDIAN);
@@ -1022,7 +1044,7 @@ struct npc_mercurial_guardian : public customCreatureAI
         scheduler
             .Schedule(Milliseconds(2000), [this](TaskContext context)
         {
-            me->SetFaction(14);
+            me->SetFaction(FACTION_ENEMY);
 
             if (Unit* target = ObjectAccessor::GetUnit(*me, targetGUID))
                 AttackStart(target);
@@ -1035,7 +1057,7 @@ struct npc_mercurial_guardian : public customCreatureAI
         {
             hasTriggered = true;
             DoCast(me, SPELL_HARDEN_SKIN);
-            Talk(1);
+            Talk(NPC_MERCURIAL_GUARDIAN_TEXT_02);
 
             // Summon Guardians
             for (uint8 i = 0; i < 6; i++)
@@ -1045,7 +1067,7 @@ struct npc_mercurial_guardian : public customCreatureAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_CLAW_SWIPE, 3.5 * IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_CLAW_SWIPE, 3s + 500ms);
     }
 
     void SummonedCreatureDies(Creature* /*summon*/, Unit* /*killer*/)
@@ -1076,42 +1098,30 @@ struct npc_mercurial_guardian : public customCreatureAI
     }
 };
 
-// Fanlyr Silverhorn 67834
 class npc_fanlyr_silverhorn : public CreatureScript
 {
-    public:
-        npc_fanlyr_silverhorn() : CreatureScript("npc_fanlyr_silverhorn") { }
+public:
+    npc_fanlyr_silverhorn() : CreatureScript("npc_fanlyr_silverhorn") { }
 
-        bool OnQuestReward(Player* player, Creature* creature, const Quest *_Quest, uint32 /*slot*/) override
-        {
-            if (_Quest->GetQuestId() == QUEST_VOICE_OF_THE_GODS)
-                creature->AI()->Talk(0, player);
+    bool OnQuestReward(Player* player, Creature* creature, const Quest *_Quest, uint32 /*slot*/) override
+    {
+        if (_Quest->GetQuestId() == QUEST_VOICE_OF_THE_GODS)
+            creature->AI()->Talk(NPC_FANLYR_SILVERHORN_01, player);
 
-            return true;
-        }
+        return true;
+    }
 
-        struct npc_fanlyr_silverhornAI : public ScriptedAI
-        {
-            npc_fanlyr_silverhornAI(Creature* creature) : ScriptedAI(creature) { }
-        };
+    struct npc_fanlyr_silverhornAI : public ScriptedAI
+    {
+        npc_fanlyr_silverhornAI(Creature* creature) : ScriptedAI(creature) { }
+    };
 
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new npc_fanlyr_silverhornAI(creature);
-        }
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_fanlyr_silverhornAI(creature);
+    }
 };
 
-enum Aetha
-{
-    EVENT_TORNADO      = 1,
-    EVENT_WINDSONG     = 2,
-
-    SPELL_TORNADO      = 126015,
-    SPELL_WINDSONG     = 126014,
-    SPELL_AETHA_CREDIT = 129950,
-};
-
-// Aetha - 58778
 struct npc_aetha : public ScriptedAI
 {
     npc_aetha(Creature* creature) : ScriptedAI(creature) { }
@@ -1125,8 +1135,8 @@ struct npc_aetha : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_TORNADO, 10 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_WINDSONG, 3 * IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_TORNADO, 10s);
+        events.ScheduleEvent(EVENT_WINDSONG, 3s);
     }
 
     void JustDied(Unit* killer) override
@@ -1150,11 +1160,11 @@ struct npc_aetha : public ScriptedAI
             {
                 case EVENT_TORNADO:
                     DoCastVictim(SPELL_TORNADO);
-                    events.ScheduleEvent(EVENT_TORNADO, 10 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_TORNADO, 10s);
                     break;
                 case EVENT_WINDSONG:
                     DoCast(me, SPELL_WINDSONG);
-                    events.ScheduleEvent(EVENT_WINDSONG, 30 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_WINDSONG, 30s);
                     break;
             }
         }
@@ -1163,19 +1173,6 @@ struct npc_aetha : public ScriptedAI
     }
 };
 
-enum Quid
-{
-    EVENT_HYDRO_LANCE   = 1,
-    EVENT_WATER_BLOSSOM = 2,
-    EVENT_WATER_BOLT    = 3,
-
-    SPELL_HYDRO_LANCE   = 125988,
-    SPELL_WATER_BLOSSOM = 125980,
-    SPELL_WATER_BOLT    = 125995,
-    SPELL_QUID_CREDIT   = 129949,
-};
-
-// Quid - 58771
 struct npc_quid : public ScriptedAI
 {
     npc_quid(Creature* creature) : ScriptedAI(creature) { }
@@ -1189,9 +1186,9 @@ struct npc_quid : public ScriptedAI
 
     void EnterCombat(Unit* /*who*/) override
     {
-        events.ScheduleEvent(EVENT_HYDRO_LANCE,   15 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_WATER_BLOSSOM, 60 * IN_MILLISECONDS);
-        events.ScheduleEvent(EVENT_WATER_BOLT,    5  * IN_MILLISECONDS);
+        events.ScheduleEvent(EVENT_HYDRO_LANCE, 15s);
+        events.ScheduleEvent(EVENT_WATER_BLOSSOM, 1min);
+        events.ScheduleEvent(EVENT_WATER_BOLT, 5s);
     }
 
     void JustDied(Unit* killer) override
@@ -1215,15 +1212,15 @@ struct npc_quid : public ScriptedAI
             {
                 case EVENT_HYDRO_LANCE:
                     DoCastVictim(SPELL_HYDRO_LANCE);
-                    events.ScheduleEvent(EVENT_HYDRO_LANCE, 20 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_HYDRO_LANCE, 20s);
                     break;
                 case EVENT_WATER_BLOSSOM:
                     DoCast(me, SPELL_WATER_BLOSSOM);
-                    events.ScheduleEvent(EVENT_WATER_BLOSSOM, 60 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_WATER_BLOSSOM, 1min);
                     break;
                 case EVENT_WATER_BOLT:
                     DoCastVictim(SPELL_WATER_BOLT);
-                    events.ScheduleEvent(EVENT_WATER_BOLT, 7 * IN_MILLISECONDS);
+                    events.ScheduleEvent(EVENT_WATER_BOLT, 7s);
                     break;
             }
         }
@@ -1232,7 +1229,6 @@ struct npc_quid : public ScriptedAI
     }
 };
 
-// Nimbus Shroud 126188
 class spell_nimbus_shroud : public AuraScript
 {
     PrepareAuraScript(spell_nimbus_shroud);
@@ -1256,7 +1252,6 @@ class spell_nimbus_shroud : public AuraScript
     }
 };
 
-// Remove Protections 126182
 class spell_alani_remove_protections : public SpellScript
 {
     PrepareSpellScript(spell_alani_remove_protections);
@@ -1283,7 +1278,6 @@ class spell_alani_remove_protections : public SpellScript
                 target->Attack(caster, true);
             }
         }
-
     }
 
     void Register() override
@@ -1293,7 +1287,6 @@ class spell_alani_remove_protections : public SpellScript
     }
 };
 
-// Devastating Leap 126903
 class spell_devastating_leap : public SpellScript
 {
     PrepareSpellScript(spell_devastating_leap);
@@ -1310,7 +1303,6 @@ class spell_devastating_leap : public SpellScript
     }
 };
 
-// Icy Destruction 127463
 class spell_icy_destruction : public AuraScript
 {
     PrepareAuraScript(spell_icy_destruction);
@@ -1341,7 +1333,6 @@ class spell_icy_destruction : public AuraScript
     }
 };
 
-// Crush Uprising 126455
 class spell_crush_uprising : public SpellScript
 {
     PrepareSpellScript(spell_crush_uprising);
@@ -1357,38 +1348,18 @@ class spell_crush_uprising : public SpellScript
     }
 };
 
-enum Stories
-{
-    SPELL_STORYTIME      = 120589,
-    SPELL_STORYTIME_OVER = 126250,
-};
-
 class scene_lorewalker_stories : public SceneScript
 {
-    public:
-        scene_lorewalker_stories() : SceneScript("scene_lorewalker_stories") { }
+public:
+    scene_lorewalker_stories() : SceneScript("scene_lorewalker_stories") { }
 
-        void OnSceneComplete(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/) override
-        {
-            if (player->HasAura(SPELL_STORYTIME))
-                player->CastSpell(player, SPELL_STORYTIME_OVER);
-        }
+    void OnSceneComplete(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/) override
+    {
+        if (player->HasAura(SPELL_STORYTIME))
+            player->CastSpell(player, SPELL_STORYTIME_OVER);
+    }
 };
 
-enum YorikSharpeye
-{
-    SAY_YORIK_AGGRO      = 0,
-
-    EVENT_BELLOWING_RAGE = 1,
-    EVENT_RUSHING_CHARGE = 2,
-    EVENT_YAUNGOL_STOMP  = 3,
-
-    SPELL_BELLOWING_RAGE = 124297,
-    SPELL_RUSHING_CHARGE = 124302,
-    SPELL_YAUNGOL_STOMP  = 124289
-};
-
-// Yorik Sharpeye - 50336
 struct npc_yorik_sharpeye : public ScriptedAI
 {
     npc_yorik_sharpeye(Creature* creature) : ScriptedAI(creature) { }
@@ -1404,9 +1375,9 @@ struct npc_yorik_sharpeye : public ScriptedAI
     {
         Talk(SAY_YORIK_AGGRO);
 
-        events.ScheduleEvent(EVENT_BELLOWING_RAGE, 5000);
-        events.ScheduleEvent(EVENT_RUSHING_CHARGE, 25000);
-        events.ScheduleEvent(EVENT_YAUNGOL_STOMP, 15000);
+        events.ScheduleEvent(EVENT_BELLOWING_RAGE, 5s);
+        events.ScheduleEvent(EVENT_RUSHING_CHARGE, 25s);
+        events.ScheduleEvent(EVENT_YAUNGOL_STOMP, 15s);
     }
 
     void UpdateAI(uint32 diff) override
@@ -1423,15 +1394,15 @@ struct npc_yorik_sharpeye : public ScriptedAI
         {
             case EVENT_BELLOWING_RAGE:
                 DoCastVictim(SPELL_BELLOWING_RAGE, false);
-                events.ScheduleEvent(EVENT_BELLOWING_RAGE, 30000);
+                events.ScheduleEvent(EVENT_BELLOWING_RAGE, 30s);
                 break;
             case EVENT_RUSHING_CHARGE:
                 DoCastVictim(SPELL_RUSHING_CHARGE, false);
-                events.ScheduleEvent(EVENT_RUSHING_CHARGE, 30000);
+                events.ScheduleEvent(EVENT_RUSHING_CHARGE, 30s);
                 break;
             case EVENT_YAUNGOL_STOMP:
                 DoCastVictim(SPELL_YAUNGOL_STOMP, false);
-                events.ScheduleEvent(EVENT_YAUNGOL_STOMP, 30000);
+                events.ScheduleEvent(EVENT_YAUNGOL_STOMP, 30s);
                 break;
             default:
                 break;
@@ -1441,7 +1412,6 @@ struct npc_yorik_sharpeye : public ScriptedAI
     }
 };
 
-// General Temuja - 63101
 struct npc_general_temuja : public ScriptedAI
 {
     npc_general_temuja(Creature* creature) : ScriptedAI(creature) { }
@@ -1459,10 +1429,12 @@ struct npc_general_temuja : public ScriptedAI
         minions.clear();
 
         Position sumPos = me->GetPosition();
+
         for (uint32 i = 0; i < 2; i++)
         {
             sumPos.RelocateOffset(i == 0 ? 2.6f : 3.7f, 3.0f);
-            if (Creature* summon = me->SummonCreature(63045, sumPos))
+
+            if (Creature* summon = me->SummonCreature(NPC_DOMINATED_SCALELORD, sumPos))
             {
                 summon->GetMotionMaster()->MoveFollow(me, 3.0f, i == 0 ? 2.6f : 3.7f);
                 minions.push_back(summon->GetGUID());
@@ -1479,7 +1451,7 @@ struct npc_general_temuja : public ScriptedAI
 
     void JustDied(Unit* /*killer*/) override
     {
-        DoCast(126262);
+        DoCast(SPELL_WELL_OF_SOULS_SOUL_VISUAL);
 
         for (auto&& guid : minions)
             if (Creature* minion = sObjectAccessor->GetCreature(*me, guid))
@@ -1488,7 +1460,6 @@ struct npc_general_temuja : public ScriptedAI
     }
 };
 
-// Shado-Pan Trainee 58992
 struct npc_veb_shado_pan_trainee : public ScriptedAI
 {
     npc_veb_shado_pan_trainee(Creature* creature) : ScriptedAI(creature) { }
@@ -1502,61 +1473,59 @@ struct npc_veb_shado_pan_trainee : public ScriptedAI
     }
 };
 
-// Guo-Lai Treasure 214388
 class go_guo_lai_treasure_cache : public GameObjectScript
 {
-    public:
-        go_guo_lai_treasure_cache() : GameObjectScript("go_guo_lai_treasure_cache") { }
+public:
+    go_guo_lai_treasure_cache() : GameObjectScript("go_guo_lai_treasure_cache") { }
 
-        void OnLootStateChanged(GameObject* go, uint32 state, Unit* unit) override
-        {
-            if (state == GO_ACTIVATED)
-                unit->CastSpell(unit, SPELL_GUO_LAI_CACHE_REP, true);
-        }
+    void OnLootStateChanged(GameObject* go, uint32 state, Unit* unit) override
+    {
+        if (state == GO_ACTIVATED)
+            unit->CastSpell(unit, SPELL_GUO_LAI_CACHE_REP, true);
+    }
 };
 
-// SceneId 244
 class scene_why_do_we_fight : public SceneScript
 {
-    public:
-        scene_why_do_we_fight() : SceneScript("scene_why_do_we_fight") { }
+public:
+    scene_why_do_we_fight() : SceneScript("scene_why_do_we_fight") { }
 
-        void OnSceneCancel(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/) override
-        {
-            player->RemoveAurasDueToSpell(SPELL_WHY_DO_WE_FIGHT);
-        }
+    void OnSceneCancel(Player* player, uint32 /*sceneInstanceID*/, SceneTemplate const* /*sceneTemplate*/) override
+    {
+        player->RemoveAurasDueToSpell(SPELL_WHY_DO_WE_FIGHT);
+    }
 };
 
 void AddSC_vale_of_eternal_blossoms()
 {
-    new creature_script<npc_alani>("npc_alani");
-    new creature_script<npc_shao_tien_dominator>("npc_shao_tien_dominator");
-    new creature_script<npc_gochao_the_iron_fist>("npc_gochao_the_iron_fist");
-    new creature_script<npc_bloodtip>("npc_bloodtip");
-    new creature_script<npc_mogu_jade_guardian>("npc_mogu_jade_guardian");
-    new creature_script<npc_wulon>("npc_wulon");
-    new creature_script<npc_milau>("npc_milau");
-    new creature_script<npc_ancient_mogu_spirit>("npc_ancient_mogu_spirit");
-    new creature_script<npc_aetha_tornado>("npc_aetha_tornado");
-    new creature_script<npc_thundermaw>("npc_thundermaw");
-    new creature_script<npc_shao_tien_fist>("npc_shao_tien_fist");
-    new creature_script<npc_shao_tien_antiquator>("npc_shao_tien_antiquator");
-    new creature_script<npc_kang_the_soul_thief>("npc_kang_the_soul_thief");
-    new creature_script<npc_shao_tien_soul_caller>("npc_shao_tien_soul_caller");
-    new creature_script<npc_dagou>("npc_dagou");
-    new creature_script<npc_mercurial_guardian>("npc_mercurial_guardian");
+    register_creature_script(npc_alani);
+    register_creature_script(npc_shao_tien_dominator);
+    register_creature_script(npc_gochao_the_iron_fist);
+    register_creature_script(npc_bloodtip);
+    register_creature_script(npc_mogu_jade_guardian);
+    register_creature_script(npc_wulon);
+    register_creature_script(npc_milau);
+    register_creature_script(npc_ancient_mogu_spirit);
+    register_creature_script(npc_aetha_tornado);
+    register_creature_script(npc_thundermaw);
+    register_creature_script(npc_shao_tien_fist);
+    register_creature_script(npc_shao_tien_antiquator);
+    register_creature_script(npc_kang_the_soul_thief);
+    register_creature_script(npc_shao_tien_soul_caller);
+    register_creature_script(npc_dagou);
+    register_creature_script(npc_mercurial_guardian);
     new npc_fanlyr_silverhorn();
-    new creature_script<npc_aetha>("npc_aetha");
-    new creature_script<npc_quid>("npc_quid");
-    new aura_script<spell_nimbus_shroud>("spell_nimbus_shroud");
-    new spell_script<spell_alani_remove_protections>("spell_alani_remove_protections");
-    new spell_script<spell_devastating_leap>("spell_devastating_leap");
-    new aura_script<spell_icy_destruction>("spell_icy_destruction");
-    new spell_script<spell_crush_uprising>("spell_crush_uprising");
+    register_creature_script(npc_aetha);
+    register_creature_script(npc_quid);
+    register_aura_script(spell_nimbus_shroud);
+    register_spell_script(spell_alani_remove_protections);
+    register_spell_script(spell_devastating_leap);
+    register_aura_script(spell_icy_destruction);
+    register_spell_script(spell_crush_uprising);
     new scene_lorewalker_stories();
-    new creature_script<npc_yorik_sharpeye>("npc_yorik_sharpeye");
-    new creature_script<npc_general_temuja>("npc_general_temuja");
-    new creature_script<npc_veb_shado_pan_trainee>("npc_veb_shado_pan_trainee");
+    register_creature_script(npc_yorik_sharpeye);
+    register_creature_script(npc_general_temuja);
+    register_creature_script(npc_veb_shado_pan_trainee);
     new go_guo_lai_treasure_cache();
     new scene_why_do_we_fight();
 }

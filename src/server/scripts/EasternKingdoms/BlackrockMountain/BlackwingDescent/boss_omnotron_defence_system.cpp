@@ -1349,8 +1349,8 @@ void AddSC_boss_omnotron_defence_system()
     new spell_omnotron_active_trigger();
     new spell_magmatron_flamethrower();
     new spell_magmatron_barrier();
-    new spell_script<spell_omnotron_static_shock>("spell_omnotron_static_shock");
-    new spell_script<spell_omnotron_arcane_annihilator>("spell_omnotron_arcane_annihilator");
-    new spell_script<spell_omnotron_poison_bomb>("spell_omnotron_poison_bomb");
-    new spell_script<spell_omnotron_flamethower>("spell_omnotron_flamethower");
+    register_spell_script(spell_omnotron_static_shock);
+    register_spell_script(spell_omnotron_arcane_annihilator);
+    register_spell_script(spell_omnotron_poison_bomb);
+    register_spell_script(spell_omnotron_flamethower);
 }

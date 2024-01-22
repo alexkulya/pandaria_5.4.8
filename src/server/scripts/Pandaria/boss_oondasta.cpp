@@ -34,12 +34,6 @@ enum OondastaSpellData
     SPELL_KILL_DOHAMAN                      = 138859
 };
 
-enum OondastaTexts
-{
-    TALK_INTRO,
-    TALK_DEATH
-};
-
 enum OondastaEvents
 {
     EVENT_CRUSH                             = 1,
@@ -50,6 +44,12 @@ enum OondastaEvents
     EVENT_SPIRITFIRE_BEAM_2,
 };
 
+enum OondastaTexts
+{
+    TALK_INTRO,
+    TALK_DEATH
+};
+
 enum OondastaCreatures
 {
     NPC_DOHAMAN_THE_BEAST_LORD              = 69926, // init combat event (BITE!)
@@ -58,179 +58,168 @@ enum OondastaCreatures
 
 const Position DohamanSummPos = { 6039.462f, 1111.173f, 55.538712f, 0.0f };
 
-class boss_oondasta : public CreatureScript
+struct boss_oondasta : public ScriptedAI
 {
-    public:
-        boss_oondasta() : CreatureScript("boss_oondasta") { }
+    boss_oondasta(Creature* creature) : ScriptedAI(creature), summons(me)
+    {
+        // Boss immune to any taunt spells - see alpha male
+        me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, true);
+        me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_ATTACK_ME, true);
+    }
 
-        struct boss_oondastaAI : public ScriptedAI
+    SummonList summons;
+    TaskScheduler scheduler;
+    EventMap events;
+    uint64 targetGUID;
+    uint32 spiritFireCount;
+
+    void Reset() override
+    {
+        scheduler.CancelAll();
+        summons.DespawnAll();
+        events.Reset();
+        me->SetReactState(REACT_DEFENSIVE);
+        targetGUID = 0;
+        spiritFireCount = 0;
+
+        scheduler
+            .Schedule(Seconds(1), [this](TaskContext context)
         {
-            boss_oondastaAI(Creature* creature) : ScriptedAI(creature), summons(me)
+            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED | UNIT_FLAG_NON_ATTACKABLE);
+            me->SummonCreature(NPC_DOHAMAN_THE_BEAST_LORD, DohamanSummPos, TEMPSUMMON_MANUAL_DESPAWN);
+        });
+    }
+
+    void EnterCombat(Unit* /*who*/) override
+    {
+        if (Creature* dohaman = me->FindNearestCreature(NPC_DOHAMAN_THE_BEAST_LORD, 150.0f, true))
+            dohaman->AI()->Talk(TALK_INTRO);
+
+        scheduler.Schedule(Seconds(7), [this](TaskContext context)
+        {
+            if (Creature* dohaman = me->FindNearestCreature(NPC_DOHAMAN_THE_BEAST_LORD, 150.0f, true))
+                dohaman->AI()->Talk(TALK_DEATH);
+
+            DoCast(me, SPELL_KILL_DOHAMAN, true);
+        });
+
+        DoCast(me, SPELL_ALPHA_MALE);
+
+        events.ScheduleEvent(EVENT_CRUSH, 3s);
+        events.ScheduleEvent(EVENT_FRILL_BLAST, 40s);
+        events.ScheduleEvent(EVENT_PIERCING_ROAR, 20s);
+        events.ScheduleEvent(EVENT_SPIRITFIRE_BEAM, 5s);
+        events.ScheduleEvent(EVENT_SPIRITFIRE_BEAM_2, randtime(35s, 1min)); // additional spirit fire, not in chain
+        events.ScheduleEvent(EVENT_GROWING_FURY, 18s +500ms);
+    }
+
+    void JustSummoned(Creature* summon) override
+    {
+        summons.Summon(summon);
+    }
+
+    void KilledUnit(Unit* victim) override
+    {
+        if (victim->GetTypeId() == TYPEID_PLAYER)
+            //Talk(TALK_SLAY);
+            return;
+    }
+
+    void JustDied(Unit* killer) override
+    {
+        summons.DespawnAll();
+    }
+
+    void EnterEvadeMode() override
+    {
+        ScriptedAI::EnterEvadeMode();
+        me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED | UNIT_FLAG_NON_ATTACKABLE);
+        summons.DespawnAll();
+
+        uint32 corpseDelay = me->GetCorpseDelay();
+        uint32 respawnDelay = me->GetRespawnDelay();
+
+        me->SetCorpseDelay(1);
+        me->SetRespawnDelay(29);
+
+        me->DespawnOrUnsummon();
+
+        me->SetCorpseDelay(corpseDelay);
+        me->SetRespawnDelay(respawnDelay);
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        scheduler.Update(diff);
+
+        if (!UpdateVictim())
+            return;
+
+        events.Update(diff);
+
+        if (me->HasUnitState(UNIT_STATE_CASTING))
+            return;
+
+        while (uint32 eventId = events.ExecuteEvent())
+        {
+            switch (eventId)
             {
-                // Boss immune to any taunt spells - see alpha male
-                me->ApplySpellImmune(0, IMMUNITY_STATE, SPELL_AURA_MOD_TAUNT, true);
-                me->ApplySpellImmune(0, IMMUNITY_EFFECT, SPELL_EFFECT_ATTACK_ME, true);
-            }
+                case EVENT_CRUSH:
+                    if (Unit* vict = me->GetVictim())
+                        DoCast(vict, SPELL_CRUSH);
 
-            SummonList summons;
-            TaskScheduler scheduler;
-            EventMap events;
-            uint64 targetGUID;
-            uint32 spiritFireCount;
+                    events.ScheduleEvent(EVENT_CRUSH, 30s);
+                    break;
+                case EVENT_FRILL_BLAST:
+                    if (Unit* target = me->GetVictim())
+                        targetGUID = target->GetGUID();
 
-            void Reset() override
-            {
-                scheduler.CancelAll();
-                summons.DespawnAll();
-                events.Reset();
-                me->SetReactState(REACT_DEFENSIVE);
-                targetGUID = 0;
-                spiritFireCount = 0;
+                    me->PrepareChanneledCast(me->GetOrientation(), SPELL_FRILL_BLAST);
 
-                scheduler
-                    .Schedule(Seconds(1), [this](TaskContext context)
-                {
-                    me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED | UNIT_FLAG_NON_ATTACKABLE);
-                    me->SummonCreature(NPC_DOHAMAN_THE_BEAST_LORD, DohamanSummPos, TEMPSUMMON_MANUAL_DESPAWN);
-                });
-            }
-
-            void EnterCombat(Unit* /*who*/) override 
-            {
-                if (Creature* dohaman = me->FindNearestCreature(NPC_DOHAMAN_THE_BEAST_LORD, 150.0f, true))
-                    dohaman->AI()->Talk(TALK_INTRO);
-
-                scheduler.Schedule(Seconds(7), [this](TaskContext context)
-                {
-                    if (Creature* dohaman = me->FindNearestCreature(NPC_DOHAMAN_THE_BEAST_LORD, 150.0f, true))
-                        dohaman->AI()->Talk(TALK_DEATH);
-
-                    DoCast(me, SPELL_KILL_DOHAMAN, true);
-                });
-
-                DoCast(me, SPELL_ALPHA_MALE);
-
-                events.ScheduleEvent(EVENT_CRUSH, 3s);
-                events.ScheduleEvent(EVENT_FRILL_BLAST, 40s);
-                events.ScheduleEvent(EVENT_PIERCING_ROAR, 20s);
-                events.ScheduleEvent(EVENT_SPIRITFIRE_BEAM, 5s);
-                events.ScheduleEvent(EVENT_SPIRITFIRE_BEAM_2, randtime(35s, 1min)); // additional spirit fire, not in chain
-                events.ScheduleEvent(EVENT_GROWING_FURY, 18s +500ms);
-            }
-
-            void JustSummoned(Creature* summon) override
-            {
-                summons.Summon(summon);
-            }
-
-            void KilledUnit(Unit* victim) override
-            {
-                if (victim->GetTypeId() == TYPEID_PLAYER)
-                    //Talk(TALK_SLAY);
-                    return;
-            }
-
-            void JustDied(Unit* killer) override
-            {
-                summons.DespawnAll();
-            }
-
-            void EnterEvadeMode() override
-            {
-                ScriptedAI::EnterEvadeMode();
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_PACIFIED | UNIT_FLAG_NON_ATTACKABLE);
-                summons.DespawnAll();
-
-                uint32 corpseDelay = me->GetCorpseDelay();
-                uint32 respawnDelay = me->GetRespawnDelay();
-
-                me->SetCorpseDelay(1);
-                me->SetRespawnDelay(29);
-
-                me->DespawnOrUnsummon();
-
-                me->SetCorpseDelay(corpseDelay);
-                me->SetRespawnDelay(respawnDelay);
-            }
-
-            void UpdateAI(uint32 diff) override
-            {
-                scheduler.Update(diff);
-
-                if (!UpdateVictim())
-                    return;
-
-                events.Update(diff);
-
-                if (me->HasUnitState(UNIT_STATE_CASTING))
-                    return;
-
-                while (uint32 eventId = events.ExecuteEvent())
-                {
-                    switch (eventId)
+                    me->m_Events.Schedule(2500, [this]()
                     {
-                        case EVENT_CRUSH:
-                            if (Unit* vict = me->GetVictim())
-                                DoCast(vict, SPELL_CRUSH);
-                        
-                            events.ScheduleEvent(EVENT_CRUSH, 30s);
-                            break;
-                        case EVENT_FRILL_BLAST:
-                            if (Unit* target = me->GetVictim())
-                                targetGUID = target->GetGUID();
-                        
-                            me->PrepareChanneledCast(me->GetOrientation(), SPELL_FRILL_BLAST);
-                        
-                            me->m_Events.Schedule(2500, [this]()
-                            {
-                                me->RemoveChanneledCast(targetGUID);
-                            });
-                        
-                            events.ScheduleEvent(EVENT_FRILL_BLAST, randtime(25s, 30s));
-                            break;
-                        case EVENT_PIERCING_ROAR:
-                            DoCast(me, SPELL_PIERCING_ROAR);
-                            events.ScheduleEvent(EVENT_PIERCING_ROAR, randtime(26s, 1min));
-                            break;
-                        case EVENT_SPIRITFIRE_BEAM:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, CasterSpecTargetSelector()))
-                                DoCast(target, SPELL_SPIRITFIRE_BEAM);
-                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
-                                DoCast(target, SPELL_SPIRITFIRE_BEAM);
-                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
-                                DoCast(target, SPELL_SPIRITFIRE_BEAM);
+                        me->RemoveChanneledCast(targetGUID);
+                    });
 
-                            // Cast twice in chain
-                            if (++spiritFireCount >= 2)
-                                spiritFireCount = 0;
+                    events.ScheduleEvent(EVENT_FRILL_BLAST, randtime(25s, 30s));
+                    break;
+                case EVENT_PIERCING_ROAR:
+                    DoCast(me, SPELL_PIERCING_ROAR);
+                    events.ScheduleEvent(EVENT_PIERCING_ROAR, randtime(26s, 1min));
+                    break;
+                case EVENT_SPIRITFIRE_BEAM:
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, CasterSpecTargetSelector()))
+                        DoCast(target, SPELL_SPIRITFIRE_BEAM);
+                    else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
+                        DoCast(target, SPELL_SPIRITFIRE_BEAM);
+                    else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+                        DoCast(target, SPELL_SPIRITFIRE_BEAM);
 
-                            events.ScheduleEvent(EVENT_SPIRITFIRE_BEAM, spiritFireCount == 0 ? 45s : 5s);
-                            break;
-                        case EVENT_SPIRITFIRE_BEAM_2:
-                            if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, CasterSpecTargetSelector()))
-                                DoCast(target, SPELL_SPIRITFIRE_BEAM);
-                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
-                                DoCast(target, SPELL_SPIRITFIRE_BEAM);
-                            else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
-                                DoCast(target, SPELL_SPIRITFIRE_BEAM);
+                    // Cast twice in chain
+                    if (++spiritFireCount >= 2)
+                        spiritFireCount = 0;
 
-                            events.ScheduleEvent(EVENT_SPIRITFIRE_BEAM_2, randtime(35s, 1min));
-                            break;
-                        case EVENT_GROWING_FURY:
-                            DoCast(me, SPELL_GROWING_FURY);
-                            events.ScheduleEvent(EVENT_GROWING_FURY, 30s);
-                            break;
-                    }
-                }
+                    events.ScheduleEvent(EVENT_SPIRITFIRE_BEAM, spiritFireCount == 0 ? 45s : 5s);
+                    break;
+                case EVENT_SPIRITFIRE_BEAM_2:
+                    if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, CasterSpecTargetSelector()))
+                        DoCast(target, SPELL_SPIRITFIRE_BEAM);
+                    else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankSpecTargetSelector()))
+                        DoCast(target, SPELL_SPIRITFIRE_BEAM);
+                    else if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, NonTankTargetSelector(me)))
+                        DoCast(target, SPELL_SPIRITFIRE_BEAM);
 
-                DoMeleeAttackIfReady();
+                    events.ScheduleEvent(EVENT_SPIRITFIRE_BEAM_2, randtime(35s, 1min));
+                    break;
+                case EVENT_GROWING_FURY:
+                    DoCast(me, SPELL_GROWING_FURY);
+                    events.ScheduleEvent(EVENT_GROWING_FURY, 30s);
+                    break;
             }
-        };
-
-        CreatureAI* GetAI(Creature* creature) const override
-        {
-            return new boss_oondastaAI(creature);
         }
+
+        DoMeleeAttackIfReady();
+    }
 };
 
 class spell_alpha_male_eff : public SpellScript
@@ -266,7 +255,7 @@ class spell_kill_dohaman : public SpellScript
 
 void AddSC_boss_oondasta()
 {
-    new boss_oondasta();
-    new spell_script<spell_alpha_male_eff>("spell_alpha_male_eff");
-    new spell_script<spell_kill_dohaman>("spell_kill_dohaman");
+    register_creature_script(boss_oondasta);
+    register_spell_script(spell_alpha_male_eff);
+    register_spell_script(spell_kill_dohaman);
 }

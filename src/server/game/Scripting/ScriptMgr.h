@@ -1241,20 +1241,6 @@ class ScriptMgr
 };
 
 template <class T>
-struct aura_script : SpellScriptLoader
-{
-    aura_script(char const* name) : SpellScriptLoader(name) { }
-    AuraScript* GetAuraScript() const override { return new T(); }
-};
-
-template <class T>
-struct spell_script : SpellScriptLoader
-{
-    spell_script(char const* name) : SpellScriptLoader(name) { }
-    SpellScript* GetSpellScript() const override { return new T(); }
-};
-
-template <class T>
 struct atrigger_script : public SpellAreaTriggerScript
 {
     atrigger_script(char const* name) : SpellAreaTriggerScript(name) { }
@@ -1262,18 +1248,81 @@ struct atrigger_script : public SpellAreaTriggerScript
 };
 
 template <class T>
-struct creature_script: public CreatureScript
+struct spell_script_name : SpellScriptLoader
 {
-    creature_script(char const* name) : CreatureScript(name) { }
-    CreatureAI* GetAI(Creature* creature) const override { return new T(creature); }
+    spell_script_name(char const* name) : SpellScriptLoader(name) { }
+    SpellScript* GetSpellScript() const override { return new T(); }
 };
 
-// For derives from PetAI to prevent crashes on spawn without player owner
 template <class T>
-struct pet_script : public CreatureScript
+struct aura_script_name : SpellScriptLoader
 {
-    pet_script(char const* name) : CreatureScript(name) { }
-    CreatureAI* GetAI(Creature* creature) const override { return ScriptMgr::CanHavePetAI(creature) ? new T(creature) : nullptr; }
+    aura_script_name(char const* name) : SpellScriptLoader(name) { }
+    AuraScript* GetAuraScript() const override { return new T(); }
 };
+
+template <class S>
+class GenericSpellScriptLoader : public SpellScriptLoader
+{
+    public:
+        GenericSpellScriptLoader(char const* name) : SpellScriptLoader(name) { }
+        SpellScript* GetSpellScript() const { return new S(); }
+};
+#define register_spell_script(spell_script) new GenericSpellScriptLoader<spell_script>(#spell_script)
+
+template <class A>
+class GenericAuraScriptLoader : public SpellScriptLoader
+{
+    public:
+        GenericAuraScriptLoader(char const* name) : SpellScriptLoader(name) { }
+        AuraScript* GetAuraScript() const { return new A(); }
+};
+#define register_aura_script(aura_script) new GenericAuraScriptLoader<aura_script>(#aura_script)
+
+template <class S, class A>
+class GenericSpellAndAuraScriptLoader : public SpellScriptLoader
+{
+    public:
+        GenericSpellAndAuraScriptLoader(char const* name) : SpellScriptLoader(name) { }
+        SpellScript* GetSpellScript() const { return new S(); }
+        AuraScript* GetAuraScript() const { return new A(); }
+};
+#define register_spell_and_aura_script_pair(spell_script, aura_script) new GenericSpellAndAuraScriptLoader<spell_script, aura_script>(#spell_script)
+
+template <class AI>
+class GenericCreatureScript : public CreatureScript
+{
+    public:
+        GenericCreatureScript(char const* name) : CreatureScript(name) { }
+        CreatureAI* GetAI(Creature* creature) const { return new AI(creature); }
+};
+#define register_creature_script(ai_name) new GenericCreatureScript<ai_name>(#ai_name)
+
+template <class AI, AI*(*AIFactory)(Creature*)>
+class FactoryCreatureScript : public CreatureScript
+{
+    public:
+        FactoryCreatureScript(char const* name) : CreatureScript(name) { }
+        CreatureAI* GetAI(Creature* creature) const { return AIFactory(creature); }
+};
+#define register_creature_script_with_factory(ai_name, factory_fn) new FactoryCreatureScript<ai_name, &factory_fn>(#ai_name)
+
+template <class AI>
+class GenericGameObjectScript : public GameObjectScript
+{
+    public:
+        GenericGameObjectScript(char const* name) : GameObjectScript(name) { }
+        GameObjectAI* GetAI(GameObject* go) const { return new AI(go); }
+};
+#define register_gameobject_script(ai_name) new GenericGameObjectScript<ai_name>(#ai_name)
+
+template <class AI>
+class GenericPetScript : public CreatureScript
+{
+    public:
+        GenericPetScript(char const* name) : CreatureScript(name) { }
+        CreatureAI* GetAI(Creature* creature) const { return ScriptMgr::CanHavePetAI(creature) ? new AI(creature) : NULL; }
+};
+#define register_pet_script(ai_name) new GenericPetScript<ai_name>(#ai_name)
 
 #endif

@@ -497,8 +497,8 @@ class spell_sprouting : public SpellScript
 
 void AddSC_boss_headless_horseman()
 {
-    new creature_script<boss_headless_horseman>("boss_headless_horseman");
-    new creature_script<npc_horseman_head>("npc_horseman_head");
+    register_creature_script(boss_headless_horseman);
+    register_creature_script(npc_horseman_head);
     new go_pumpkin_shrine();
-    new spell_script<spell_sprouting>("spell_sprouting");
+    register_spell_script(spell_sprouting);
 }

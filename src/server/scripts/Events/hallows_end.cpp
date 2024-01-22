@@ -1304,19 +1304,19 @@ class at_the_collectors_agent : public AreaTriggerScript
 
 void AddSC_event_hallows_end()
 {
-    new creature_script<npc_hallowend>("npc_hallowend");
-    new creature_script<npc_wickerman_guardian>("npc_wickerman_guardian");
-    new creature_script<npc_kali_remik>("npc_kali_remik");
-    new creature_script<npc_headless_horseman_fire>("npc_headless_horseman_fire");
-    new creature_script<npc_shade_of_the_horseman>("npc_shade_of_the_horseman");
-    new creature_script<npc_start_stink_bombs_away>("npc_start_stink_bombs_away");
+    register_creature_script(npc_hallowend);
+    register_creature_script(npc_wickerman_guardian);
+    register_creature_script(npc_kali_remik);
+    register_creature_script(npc_headless_horseman_fire);
+    register_creature_script(npc_shade_of_the_horseman);
+    register_creature_script(npc_start_stink_bombs_away);
     new go_wickerman_ember;
-    new spell_script<spell_halloween_wand>("spell_halloween_wand");
-    new spell_script<spell_bucket_lands>("spell_bucket_lands");
-    new spell_script<spell_clean_up_stink_bomb>("spell_clean_up_stink_bomb");
-    new spell_script<spell_stink_bombs_away_leave>("spell_stink_bombs_away_leave");
-    new aura_script<spell_stink_bombs_away_aura>("spell_stink_bombs_away_aura");
-    new spell_script<spell_toss_stink_bomb_credit>("spell_toss_stink_bomb_credit");
+    register_spell_script(spell_halloween_wand);
+    register_spell_script(spell_bucket_lands);
+    register_spell_script(spell_clean_up_stink_bomb);
+    register_spell_script(spell_stink_bombs_away_leave);
+    register_aura_script(spell_stink_bombs_away_aura);
+    register_spell_script(spell_toss_stink_bomb_credit);
     new item_hallowsend_tricky_treat();
     new at_shopping_around();
     new at_the_collectors_agent();

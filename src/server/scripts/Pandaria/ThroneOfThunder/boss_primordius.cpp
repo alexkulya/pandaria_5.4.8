@@ -1321,22 +1321,22 @@ void AddSC_boss_primordius()
 {
     new boss_primordius();
     new npc_living_fluid();
-    new creature_script<npc_primordius_at_stalker>("npc_primordius_at_stalker");
-    new creature_script<npc_primordius_viscous_horror>("npc_primordius_viscous_horror");
+    register_creature_script(npc_primordius_at_stalker);
+    register_creature_script(npc_primordius_viscous_horror);
 
-    new spell_script<spell_acidic_explosion_selector>("spell_acidic_explosion_selector");
-    new spell_script<spell_caustic_gas>("spell_caustic_gas");
-    new spell_script<spell_evolve_primordius>("spell_evolve_primordius");
+    register_spell_script(spell_acidic_explosion_selector);
+    register_spell_script(spell_caustic_gas);
+    register_spell_script(spell_evolve_primordius);
     new spell_mutation_primordius();
     new spell_primordius_mutation_aura();
     new spell_submerge_cosmetic_aura();
-    new aura_script<spell_malformed_blood>("spell_malformed_blood");
-    new aura_script<spell_primordius_black_blood>("spell_primordius_black_blood");
-    new spell_script<spell_erupting_pustules_selector>("spell_erupting_pustules_selector");
-    new spell_script<spell_primordius_player_mutation>("spell_primordius_player_mutation");
-    new aura_script<spell_volatile_mutation_player>("spell_volatile_mutation_player");
-    new aura_script<spell_fully_mutated_by_player>("spell_fully_mutated_by_player");
-    new spell_script<spell_primordius_proximity_check_eff>("spell_primordius_proximity_check_eff");
+    register_aura_script(spell_malformed_blood);
+    register_aura_script(spell_primordius_black_blood);
+    register_spell_script(spell_erupting_pustules_selector);
+    register_spell_script(spell_primordius_player_mutation);
+    register_aura_script(spell_volatile_mutation_player);
+    register_aura_script(spell_fully_mutated_by_player);
+    register_spell_script(spell_primordius_proximity_check_eff);
     new atrigger_script<sat_mutagenic_pool>("sat_mutagenic_pool");
     new atrigger_script<sat_volatile_pool_player>("sat_volatile_pool_player");
     new AreaTrigger_at_primordius_intro();

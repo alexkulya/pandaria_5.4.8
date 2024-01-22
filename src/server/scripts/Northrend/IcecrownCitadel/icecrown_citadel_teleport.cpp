@@ -135,5 +135,5 @@ void AddSC_icecrown_citadel_teleport()
 {
     new icecrown_citadel_teleport();
     new at_frozen_throne_teleport();
-    new aura_script<spell_frozen_throne_teleport_hack>("spell_frozen_throne_teleport_hack");
+    register_aura_script(spell_frozen_throne_teleport_hack);
 }

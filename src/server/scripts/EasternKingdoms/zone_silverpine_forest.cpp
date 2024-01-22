@@ -219,5 +219,5 @@ private:
 void AddSC_silverpine_forest()
 {
     new npc_deathstalker_erland();
-    new creature_script<npc_fenwick_thatros>("npc_fenwick_thatros");
+    register_creature_script(npc_fenwick_thatros);
 }

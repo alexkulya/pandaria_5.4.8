@@ -450,7 +450,7 @@ void AddSC_boss_sha_of_violence()
 {
     new boss_sha_of_violence();
     new npc_sv_lesser();
-    new creature_script<npc_achiev_prisoned_sha>("npc_achiev_prisoned_sha");
+    register_creature_script(npc_achiev_prisoned_sha);
     new spell_sv_smoke_blades();
     new go_containment_override();
 }

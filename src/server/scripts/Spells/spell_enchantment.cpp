@@ -193,11 +193,11 @@ class spell_ench_synapse_springs : public SpellScript
 
 void AddSC_enchantment_spell_scripts()
 {
-    new aura_script<spell_ench_dancing_steel>("spell_ench_dancing_steel");
-    new aura_script<spell_ench_windsong>("spell_ench_windsong");
-    new aura_script<spell_ench_jade_spirit_passive>("spell_ench_jade_spirit_passive");
-    new aura_script<spell_ench_jade_spirit>("spell_ench_jade_spirit");
-    new aura_script<spell_ench_elemental_force>("spell_ench_elemental_force");
-    new aura_script<spell_ench_colossus>("spell_ench_colossus");
-    new spell_script<spell_ench_synapse_springs>("spell_ench_synapse_springs");
+    register_aura_script(spell_ench_dancing_steel);
+    register_aura_script(spell_ench_windsong);
+    register_aura_script(spell_ench_jade_spirit_passive);
+    register_aura_script(spell_ench_jade_spirit);
+    register_aura_script(spell_ench_elemental_force);
+    register_aura_script(spell_ench_colossus);
+    register_spell_script(spell_ench_synapse_springs);
 }

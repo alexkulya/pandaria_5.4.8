@@ -2052,6 +2052,6 @@ void AddSC_hour_of_twilight()
     new npc_faceless_minions();
     new npc_crystalline_elemental();
     new npc_ice_wall_exit_stalker();
-    new spell_script<spell_hour_of_twilight_molten_fury>("spell_hour_of_twilight_molten_fury");
+    register_spell_script(spell_hour_of_twilight_molten_fury);
     new go_hot_time_transit_device();
 }

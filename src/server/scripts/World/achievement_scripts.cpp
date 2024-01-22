@@ -284,5 +284,5 @@ void AddSC_achievement_scripts()
     new achievement_tilted();
     new achievement_flirt_with_disaster_perf_check();
     new achievement_killed_exp_or_honor_target();
-    new aura_script<spell_achievement_youll_feel_right_as_rain>("spell_achievement_youll_feel_right_as_rain");
+    register_aura_script(spell_achievement_youll_feel_right_as_rain);
 }

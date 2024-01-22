@@ -1473,36 +1473,36 @@ class sat_high_seas_fire : public IAreaTriggerAura
 
 void AddSC_battle_on_the_high_seas()
 {
-    new creature_script<npc_high_seas_cannoneer>("npc_high_seas_cannoneer");
-    new creature_script<npc_high_seas_swashbuckler>("npc_high_seas_swashbuckler");
-    new creature_script<npc_high_seas_cannon_exploder>("npc_high_seas_cannon_exploder");
-    new creature_script<npc_high_seas_admiral_hagman>("npc_high_seas_admiral_hagman");
-    new creature_script<npc_high_seas_transport_cannon>("npc_high_seas_transport_cannon");
-    new creature_script<npc_high_seas_horde_captain>("npc_high_seas_horde_captain");
-    new creature_script<npc_high_seas_horde_squalsharper>("npc_high_seas_horde_squalsharper");
-    new creature_script<npc_high_seas_zip>("npc_high_seas_zip");
-    new creature_script<npc_high_seas_zip_back>("npc_high_seas_zip_back");
-    new creature_script<npc_high_seas_bomb>("npc_high_seas_bomb");
-    new creature_script<npc_high_seas_fuse>("npc_high_seas_fuse");
-    new creature_script<npc_high_seas_triad_of_lieutenants>("npc_high_seas_triad_of_lieutenants");
-    new creature_script<npc_high_seas_explosive_barrel_trigger>("npc_high_seas_explosive_barrel_trigger");
-    new creature_script<npc_high_seas_explosive_barrel>("npc_high_seas_explosive_barrel");
-    new creature_script<npc_high_seas_admiral_hodgson>("npc_high_seas_admiral_hodgson");
-    new creature_script<npc_high_seas_net_climber>("npc_high_seas_net_climber");
+    register_creature_script(npc_high_seas_cannoneer);
+    register_creature_script(npc_high_seas_swashbuckler);
+    register_creature_script(npc_high_seas_cannon_exploder);
+    register_creature_script(npc_high_seas_admiral_hagman);
+    register_creature_script(npc_high_seas_transport_cannon);
+    register_creature_script(npc_high_seas_horde_captain);
+    register_creature_script(npc_high_seas_horde_squalsharper);
+    register_creature_script(npc_high_seas_zip);
+    register_creature_script(npc_high_seas_zip_back);
+    register_creature_script(npc_high_seas_bomb);
+    register_creature_script(npc_high_seas_fuse);
+    register_creature_script(npc_high_seas_triad_of_lieutenants);
+    register_creature_script(npc_high_seas_explosive_barrel_trigger);
+    register_creature_script(npc_high_seas_explosive_barrel);
+    register_creature_script(npc_high_seas_admiral_hodgson);
+    register_creature_script(npc_high_seas_net_climber);
 
-    new spell_script<spell_high_seas_cannon_launch>("spell_high_seas_cannon_launch");
-    new spell_script<spell_high_seas_activate_random_barrel_selector>("spell_high_seas_activate_random_barrel_selector");
-    new aura_script<spell_high_seas_bomb>("spell_high_seas_bomb");
-    new spell_script<spell_high_seas_bomb_eff>("spell_high_seas_bomb_eff");
-    new spell_script<spell_high_seas_activate_random_barrel_eff>("spell_high_seas_activate_random_barrel_eff");
-    new spell_script<spell_high_seas_sticky_bomb>("spell_high_seas_sticky_bomb");
-    new aura_script<spell_high_seas_sticky_bomb_aura>("spell_high_seas_sticky_bomb_aura");
-    new spell_script<spell_high_seas_barrel_explosion_eff>("spell_high_seas_barrel_explosion_eff");
-    new spell_script<spell_high_seas_shotgun_targeting>("spell_high_seas_shotgun_targeting");
-    new spell_script<spell_high_seas_shotgun>("spell_high_seas_shotgun");
-    new aura_script<spell_high_seas_shotgun_ammo>("spell_high_seas_shotgun_ammo");
-    new spell_script<spell_high_seas_gather_explosives>("spell_high_seas_gather_explosives");
-    new spell_script<spell_high_seas_priming>("spell_high_seas_priming");
-    new spell_script<spell_high_seas_bombs_away_eff>("spell_high_seas_bombs_away_eff");
+    register_spell_script(spell_high_seas_cannon_launch);
+    register_spell_script(spell_high_seas_activate_random_barrel_selector);
+    register_aura_script(spell_high_seas_bomb);
+    register_spell_script(spell_high_seas_bomb_eff);
+    register_spell_script(spell_high_seas_activate_random_barrel_eff);
+    register_spell_script(spell_high_seas_sticky_bomb);
+    register_aura_script(spell_high_seas_sticky_bomb_aura);
+    register_spell_script(spell_high_seas_barrel_explosion_eff);
+    register_spell_script(spell_high_seas_shotgun_targeting);
+    register_spell_script(spell_high_seas_shotgun);
+    register_aura_script(spell_high_seas_shotgun_ammo);
+    register_spell_script(spell_high_seas_gather_explosives);
+    register_spell_script(spell_high_seas_priming);
+    register_spell_script(spell_high_seas_bombs_away_eff);
     new atrigger_script<sat_high_seas_fire>("sat_high_seas_fire");
 }

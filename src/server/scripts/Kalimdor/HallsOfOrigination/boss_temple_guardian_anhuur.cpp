@@ -404,5 +404,5 @@ void AddSC_boss_temple_guardian_anhuur()
     new boss_temple_guardian_anhuur();
     new npc_pit_snake();
     new go_beacon_of_light();
-    new aura_script<spell_halls_of_orig_reverberating_hymn>("spell_halls_of_orig_reverberating_hymn");
+    register_aura_script(spell_halls_of_orig_reverberating_hymn);
 }

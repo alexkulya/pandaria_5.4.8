@@ -408,10 +408,9 @@ class spell_harlan_light_blades_eff : public SpellScript
 void AddSC_boss_armsmaster_harlan()
 {
     new boss_armsmaster_harlan();
-    new creature_script<npc_scarlet_defender>("npc_scarlet_defender");
-
-    new aura_script<spell_heavy_armor>("spell_heavy_armor");
-    new spell_script<spell_harlan_light_blades>("spell_harlan_light_blades");
-    new spell_script<spell_harlan_light_blades_proc>("spell_harlan_light_blades_proc");
-    new spell_script<spell_harlan_light_blades_eff>("spell_harlan_light_blades_eff");
+    register_creature_script(npc_scarlet_defender);
+    register_aura_script(spell_heavy_armor);
+    register_spell_script(spell_harlan_light_blades);
+    register_spell_script(spell_harlan_light_blades_proc);
+    register_spell_script(spell_harlan_light_blades_eff);
 }

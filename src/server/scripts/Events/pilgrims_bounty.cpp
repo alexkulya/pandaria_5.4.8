@@ -443,10 +443,10 @@ class spell_pilgrims_bounty_buff_drink : public AuraScript
 
 void AddSC_event_pilgrims_bounty()
 {
-    new creature_script<npc_wild_turkey>("npc_wild_turkey");
-    new creature_script<npc_lonely_turkey>("npc_lonely_turkey");
-    new spell_script<spell_gen_turkey_tracker>("spell_gen_turkey_tracker");
-    new spell_script<spell_gen_feast_on>("spell_gen_feast_on");
+    register_creature_script(npc_wild_turkey);
+    register_creature_script(npc_lonely_turkey);
+    register_spell_script(spell_gen_turkey_tracker);
+    register_spell_script(spell_gen_feast_on);
     new spell_gen_well_fed_pilgrims_bounty("spell_gen_well_fed_pilgrims_bounty_ap", SPELL_A_SERVING_OF_TURKEY, SPELL_WELL_FED_AP);
     new spell_gen_well_fed_pilgrims_bounty("spell_gen_well_fed_pilgrims_bounty_zm", SPELL_A_SERVING_OF_CRANBERRIES, SPELL_WELL_FED_ZM);
     new spell_gen_well_fed_pilgrims_bounty("spell_gen_well_fed_pilgrims_bounty_hit", SPELL_A_SERVING_OF_STUFFING, SPELL_WELL_FED_HIT);
@@ -457,12 +457,12 @@ void AddSC_event_pilgrims_bounty()
     new spell_gen_on_plate_pilgrims_bounty("spell_gen_on_plate_pilgrims_bounty_stuffing", SPELL_ON_PLATE_STUFFING, SPELL_PASS_THE_STUFFING);
     new spell_gen_on_plate_pilgrims_bounty("spell_gen_on_plate_pilgrims_bounty_sweet_potatoes", SPELL_ON_PLATE_SWEET_POTATOES, SPELL_PASS_THE_SWEET_POTATOES);
     new spell_gen_on_plate_pilgrims_bounty("spell_gen_on_plate_pilgrims_bounty_pie", SPELL_ON_PLATE_PIE, SPELL_PASS_THE_PIE);
-    new spell_script<spell_gen_bountiful_feast>("spell_gen_bountiful_feast");
+    register_spell_script(spell_gen_bountiful_feast);
     new spell_pilgrims_bounty_buff_food("spell_gen_slow_roasted_turkey", SPELL_WELL_FED_AP_TRIGGER);
     new spell_pilgrims_bounty_buff_food("spell_gen_cranberry_chutney", SPELL_WELL_FED_ZM_TRIGGER);
     new spell_pilgrims_bounty_buff_food("spell_gen_spice_bread_stuffing", SPELL_WELL_FED_HIT_TRIGGER);
     new spell_pilgrims_bounty_buff_food("spell_gen_pumpkin_pie", SPELL_WELL_FED_SPIRIT_TRIGGER);
     new spell_pilgrims_bounty_buff_food("spell_gen_candied_sweet_potato", SPELL_WELL_FED_HASTE_TRIGGER);
     new spell_pilgrims_bounty_buff_food("spell_pilgrims_bounty_buff_food");
-    new aura_script<spell_pilgrims_bounty_buff_drink>("spell_pilgrims_bounty_buff_drink");
+    register_aura_script(spell_pilgrims_bounty_buff_drink);
 }

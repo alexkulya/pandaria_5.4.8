@@ -1428,23 +1428,23 @@ void AddSC_korkron_dark_shamans()
     new boss_earthbreaker_haromm();
     new boss_wavebinder_kardris();
 
-    new creature_script<npc_dark_shamans_wolf>("npc_dark_shamans_wolf");
-    new creature_script<npc_foul_slime>("npc_foul_slime");
-    new creature_script<npc_dark_shamans_toxic_storm>("npc_dark_shamans_toxic_storm");
-    new creature_script<npc_dark_shamans_toxic_tornado>("npc_dark_shamans_toxic_tornado");
-    new creature_script<npc_dark_shamans_falling_ash>("npc_dark_shamans_falling_ash");
-    new creature_script<npc_dark_shamans_ashen_elemental>("npc_dark_shamans_ashen_elemental");
-    new creature_script<npc_dark_shamans_iron_tomb>("npc_dark_shamans_iron_tomb");
+    register_creature_script(npc_dark_shamans_wolf);
+    register_creature_script(npc_foul_slime);
+    register_creature_script(npc_dark_shamans_toxic_storm);
+    register_creature_script(npc_dark_shamans_toxic_tornado);
+    register_creature_script(npc_dark_shamans_falling_ash);
+    register_creature_script(npc_dark_shamans_ashen_elemental);
+    register_creature_script(npc_dark_shamans_iron_tomb);
 
-    new spell_script<spell_dark_shamans_toxic_mist>("spell_dark_shamans_toxic_mist");
-    new aura_script<spell_dark_shamans_toxic_mist_aura>("spell_dark_shamans_toxic_mist_aura");
-    new spell_script<spell_dark_shamans_ashen_wall>("spell_dark_shamans_ashen_wall");
-    new spell_script<spell_dark_shamans_foul_geyser>("spell_dark_shamans_foul_geyser");
-    new aura_script<spell_dark_shamans_foul_geyser_aura>("spell_dark_shamans_foul_geyser_aura");
-    new spell_script<spell_dark_shamans_bloodlust>("spell_dark_shamans_bloodlust");
-    new spell_script<spell_dark_shamans_falling_ash>("spell_dark_shamans_falling_ash");
-    new spell_script<spell_dark_shamans_foul_geyser_eff>("spell_dark_shamans_foul_geyser_eff");
-    new spell_script<spell_dark_shamans_iron_tomb_selector>("spell_dark_shamans_iron_tomb_selector");
-    new spell_script<spell_dark_shamans_iron_prison>("spell_dark_shamans_iron_prison");
-    new aura_script<spell_dark_shamans_iron_prison_aura>("spell_dark_shamans_iron_prison_aura");
+    register_spell_script(spell_dark_shamans_toxic_mist);
+    register_aura_script(spell_dark_shamans_toxic_mist_aura);
+    register_spell_script(spell_dark_shamans_ashen_wall);
+    register_spell_script(spell_dark_shamans_foul_geyser);
+    register_aura_script(spell_dark_shamans_foul_geyser_aura);
+    register_spell_script(spell_dark_shamans_bloodlust);
+    register_spell_script(spell_dark_shamans_falling_ash);
+    register_spell_script(spell_dark_shamans_foul_geyser_eff);
+    register_spell_script(spell_dark_shamans_iron_tomb_selector);
+    register_spell_script(spell_dark_shamans_iron_prison);
+    register_aura_script(spell_dark_shamans_iron_prison_aura);
 }

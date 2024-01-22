@@ -5,7 +5,7 @@ Discord link: https://discord.gg/y3zspxan7k
 
 Client exe files" https://mega.nz/file/xUJDkIDA#I3TMdPymMw8ISNwIUgSaXLl5oHJHYFxAKyPNMXUQjgY
 
-Compiled exe files: https://mega.nz/file/0dxU1b4I#axVg6aXsNfgQeKcglV_RLHOPV4gXB_kpd2uSP1_OTOw
+Compiled exe files: https://mega.nz/file/9F4QmTKZ#01FXoHbDAYmTcc51b7I2xeFq2_2hk_aPqmOxBgYHEsc
 
 Geodata (RU dbc): https://mega.nz/file/EAZUmZiD#PxdHN7jcEKCA8qaIBTIWLWLGZcT5PdsKfIgkygTZgTs
 

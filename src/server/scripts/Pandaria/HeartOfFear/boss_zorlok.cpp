@@ -2123,8 +2123,8 @@ void AddSC_boss_zorlok()
     new spell_pheromones_of_zeal();     // 124018 - Pheromones of Zeal
     new spell_zorlok_exhale();          // 122761 - Exhale
     new spell_zorlok_exhale_damage();   // 122760 - Exhale (damage aura)
-    new spell_script<spell_convert>("spell_convert");             // 122740 - Convert
-    new spell_script<spell_zorlok_achievement_loot_bug>("spell_zorlok_achievement_loot_bug");
+    register_spell_script(spell_convert);             // 122740 - Convert
+    register_spell_script(spell_zorlok_achievement_loot_bug);
     new atrigger_script<sat_pheromones_of_zeal>("sat_pheromones_of_zeal");
     new atrigger_script<sat_zorlok_create_noise_cancelling>("sat_zorlok_create_noise_cancelling");
 }

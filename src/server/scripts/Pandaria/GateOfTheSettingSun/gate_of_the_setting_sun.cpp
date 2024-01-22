@@ -1791,5 +1791,5 @@ void AddSC_gate_of_the_setting_sun()
     new spell_gss_pick_a_player();
     new spell_gss_sabotage_vehicle();
     new spell_gss_sabotage_explosion();
-    new aura_script<spell_gss_resin_residue>("spell_gss_resin_residue");
+    register_aura_script(spell_gss_resin_residue);
 }

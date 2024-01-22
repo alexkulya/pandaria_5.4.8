@@ -351,5 +351,5 @@ private:
 void AddSC_boss_coren_direbrew()
 {
     new npc_coren_direbrew();
-    new creature_script<npc_brewmaiden>("npc_brewmaiden");
+    register_creature_script(npc_brewmaiden);
 }

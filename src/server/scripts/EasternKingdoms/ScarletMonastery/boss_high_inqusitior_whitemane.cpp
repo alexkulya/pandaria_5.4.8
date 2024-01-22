@@ -603,6 +603,6 @@ void AddSC_boss_whitemane_and_durand()
 {
     new boss_commander_durand();
     new boss_high_inqusitior_whitemane();
-    new spell_script<spell_sc_scarlet_ressurection>("spell_sc_scarlet_ressurection");
-    new spell_script<spell_sc_mass_ressurection>("spell_sc_mass_ressurection");
+    register_spell_script(spell_sc_scarlet_ressurection);
+    register_spell_script(spell_sc_mass_ressurection);
 }

@@ -276,5 +276,5 @@ void AddSC_eastern_plaguelands()
     new npc_augustus_the_touched();
     new npc_darrowshire_spirit();
     new npc_tirion_fordring();
-    new creature_script<npc_scourge_siege_engineer>("npc_scourge_siege_engineer");
+    register_creature_script(npc_scourge_siege_engineer);
 }

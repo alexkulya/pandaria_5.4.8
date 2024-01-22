@@ -151,7 +151,7 @@ class spell_deadmines_off_line : public SpellScriptLoader
 
 void AddSC_deadmines()
 {
-    new creature_script<npc_deadmines_prototype_reaper>("npc_deadmines_prototype_reaper");
+    register_creature_script(npc_deadmines_prototype_reaper);
     new go_defias_cannon();
     new go_deadmines_teleport();
     new spell_deadmines_off_line();

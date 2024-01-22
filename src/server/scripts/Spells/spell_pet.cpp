@@ -30,33 +30,33 @@
 
 enum HunterPetCalculate
 {
-     SPELL_TAMED_PET_PASSIVE_06         = 19591,
-     SPELL_TAMED_PET_PASSIVE_07         = 20784,
-     SPELL_TAMED_PET_PASSIVE_08         = 34666,
-     SPELL_TAMED_PET_PASSIVE_09         = 34667,
-     SPELL_TAMED_PET_PASSIVE_10         = 34675,
-     SPELL_HUNTER_PET_SCALING_01        = 34902,
-     SPELL_HUNTER_PET_SCALING_02        = 34903,
-     SPELL_HUNTER_PET_SCALING_03        = 34904,
-     SPELL_HUNTER_PET_SCALING_04        = 61017,
-     SPELL_HUNTER_ANIMAL_HANDLER        = 34453,
+    SPELL_TAMED_PET_PASSIVE_06         = 19591,
+    SPELL_TAMED_PET_PASSIVE_07         = 20784,
+    SPELL_TAMED_PET_PASSIVE_08         = 34666,
+    SPELL_TAMED_PET_PASSIVE_09         = 34667,
+    SPELL_TAMED_PET_PASSIVE_10         = 34675,
+    SPELL_HUNTER_PET_SCALING_01        = 34902,
+    SPELL_HUNTER_PET_SCALING_02        = 34903,
+    SPELL_HUNTER_PET_SCALING_03        = 34904,
+    SPELL_HUNTER_PET_SCALING_04        = 61017,
+    SPELL_HUNTER_ANIMAL_HANDLER        = 34453
 };
 
 enum WarlockPetCalculate
 {
-     SPELL_PET_PASSIVE_CRIT             = 35695,
-     SPELL_PET_PASSIVE_DAMAGE_TAKEN     = 35697,
-     SPELL_WARLOCK_PET_SCALING_01       = 34947,
-     SPELL_WARLOCK_PET_SCALING_02       = 34956,
-     SPELL_WARLOCK_PET_SCALING_03       = 34957,
-     SPELL_WARLOCK_PET_SCALING_04       = 34958,
-     SPELL_WARLOCK_PET_SCALING_05       = 61013,
-     ENTRY_FELGUARD                     = 17252,
-     ENTRY_VOIDWALKER                   = 1860,
-     ENTRY_FELHUNTER                    = 417,
-     ENTRY_SUCCUBUS                     = 1863,
-     ENTRY_IMP                          = 416,
-     SPELL_WARLOCK_GLYPH_OF_VOIDWALKER  = 56247,
+    SPELL_PET_PASSIVE_CRIT             = 35695,
+    SPELL_PET_PASSIVE_DAMAGE_TAKEN     = 35697,
+    SPELL_WARLOCK_PET_SCALING_01       = 34947,
+    SPELL_WARLOCK_PET_SCALING_02       = 34956,
+    SPELL_WARLOCK_PET_SCALING_03       = 34957,
+    SPELL_WARLOCK_PET_SCALING_04       = 34958,
+    SPELL_WARLOCK_PET_SCALING_05       = 61013,
+    ENTRY_FELGUARD                     = 17252,
+    ENTRY_VOIDWALKER                   = 1860,
+    ENTRY_FELHUNTER                    = 417,
+    ENTRY_SUCCUBUS                     = 1863,
+    ENTRY_IMP                          = 416,
+    SPELL_WARLOCK_GLYPH_OF_VOIDWALKER  = 56247
 };
 
 enum DKPetCalculate
@@ -67,7 +67,7 @@ enum DKPetCalculate
     SPELL_DEATH_KNIGHT_PET_SCALING_03   = 61697,
     SPELL_NIGHT_OF_THE_DEAD             = 55620,
     ENTRY_ARMY_OF_THE_DEAD_GHOUL        = 24207,
-    SPELL_DEATH_KNIGHT_GLYPH_OF_GHOUL   = 58686,
+    SPELL_DEATH_KNIGHT_GLYPH_OF_GHOUL   = 58686
 };
 
 enum ShamanPetCalculate
@@ -75,15 +75,15 @@ enum ShamanPetCalculate
     SPELL_FERAL_SPIRIT_PET_UNK_01      = 35674,
     SPELL_FERAL_SPIRIT_PET_UNK_02      = 35675,
     SPELL_FERAL_SPIRIT_PET_UNK_03      = 35676,
-    SPELL_FERAL_SPIRIT_PET_SCALING_04  = 61783,
+    SPELL_FERAL_SPIRIT_PET_SCALING_04  = 61783
 };
 
 enum MiscPetCalculate
 {
-     SPELL_MAGE_PET_PASSIVE_ELEMENTAL   = 44559,
-     SPELL_PET_HEALTH_SCALING           = 61679,
-     SPELL_PET_UNK_01                   = 67561,
-     SPELL_PET_UNK_02                   = 67557,
+    SPELL_MAGE_PET_PASSIVE_ELEMENTAL   = 44559,
+    SPELL_PET_HEALTH_SCALING           = 61679,
+    SPELL_PET_UNK_01                   = 67561,
+    SPELL_PET_UNK_02                   = 67557
 };
 
 class spell_gen_pet_calculate : public SpellScriptLoader

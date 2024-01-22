@@ -503,8 +503,8 @@ public:
 
 void AddSC_azshara()
 {
-    new creature_script<npc_azshara_awol_grunt>("npc_azshara_awol_grunt");
-    new spell_script<spell_azshara_chewing_out>("spell_azshara_chewing_out");
+    register_creature_script(npc_azshara_awol_grunt);
+    register_spell_script(spell_azshara_chewing_out);
     new npc_voljin_ancient_enemy();
     new npc_zarjira();
     new npc_fire_of_the_seas();

@@ -933,16 +933,16 @@ void AddSC_boss_garalon()
     new npc_garalon_body();
     new npc_garalon_leg();
     new npc_pheromone_trail();
-    new spell_script<spell_garalon_furious_swipe>("spell_garalon_furious_swipe");
-    new spell_script<spell_garalon_pheromones_forcecast>("spell_garalon_pheromones_forcecast");
-    new spell_script<spell_garalon_mend_leg_trigger>("spell_garalon_mend_leg_trigger");
-    new spell_script<spell_garalon_mend_leg>("spell_garalon_mend_leg");
-    new spell_script<spell_garalon_crush_trigger>("spell_garalon_crush_trigger");
-    new spell_script<spell_garalon_damaged>("spell_garalon_damaged");
-    new spell_script<spell_garalon_pheromones_summon>("spell_garalon_pheromones_summon");
-    new spell_script<spell_garalon_pheromones_trail_dmg>("spell_garalon_pheromones_trail_dmg");
-    new spell_script<spell_garalon_pheromones_switch>("spell_garalon_pheromones_switch");
-    new aura_script<spell_garalon_pheromones_dummy>("spell_garalon_pheromones_dummy");
-    new spell_script<spell_garalon_pheromones_damage_eff>("spell_garalon_pheromones_damage_eff");
-    new spell_script<spell_garalon_borken_leg>("spell_garalon_borken_leg");
+    register_spell_script(spell_garalon_furious_swipe);
+    register_spell_script(spell_garalon_pheromones_forcecast);
+    register_spell_script(spell_garalon_mend_leg_trigger);
+    register_spell_script(spell_garalon_mend_leg);
+    register_spell_script(spell_garalon_crush_trigger);
+    register_spell_script(spell_garalon_damaged);
+    register_spell_script(spell_garalon_pheromones_summon);
+    register_spell_script(spell_garalon_pheromones_trail_dmg);
+    register_spell_script(spell_garalon_pheromones_switch);
+    register_aura_script(spell_garalon_pheromones_dummy);
+    register_spell_script(spell_garalon_pheromones_damage_eff);
+    register_spell_script(spell_garalon_borken_leg);
 }

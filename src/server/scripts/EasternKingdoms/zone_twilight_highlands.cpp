@@ -1382,18 +1382,18 @@ class gob_thundermar_ale_keg : public GameObjectScript
  
 void AddSC_twilight_highlands()
 {
-    new creature_script<npc_dunwald_victim>("npc_dunwald_victim");
+    register_creature_script(npc_dunwald_victim);
     new npc_quest_mullan_gryphon();
     new npc_gurgthock_twilands();
 
-    new creature_script<npc_twilight_hurp_derp>("npc_twilight_hurp_derp");
-    new creature_script<npc_twilight_faction_champions>("npc_twilight_faction_champions");
-    new creature_script<npc_twilight_calders_creation>("npc_twilight_calders_creation");
-    new creature_script<npc_twilight_lord_tulvan>("npc_twilight_lord_tulvan");
-    new creature_script<npc_twilight_emberscar_devourer>("npc_twilight_emberscar_devourer");
-    new creature_script<npc_twilight_firebeads_patrol>("npc_twilight_firebeads_patrol");
+    register_creature_script(npc_twilight_hurp_derp);
+    register_creature_script(npc_twilight_faction_champions);
+    register_creature_script(npc_twilight_calders_creation);
+    register_creature_script(npc_twilight_lord_tulvan);
+    register_creature_script(npc_twilight_emberscar_devourer);
+    register_creature_script(npc_twilight_firebeads_patrol);
 
-    new spell_script<spell_twilight_activate_pools>("spell_twilight_activate_pools");
-    new spell_script<spell_twilight_douse_fire>("spell_twilight_douse_fire");
+    register_spell_script(spell_twilight_activate_pools);
+    register_spell_script(spell_twilight_douse_fire);
     new gob_thundermar_ale_keg();
 }

@@ -65,5 +65,5 @@ class spell_defending_cart_arua : public SpellScript
 
 void AddSC_silvershard_mines()
 {
-    new spell_script<spell_defending_cart_arua>("spell_defending_cart_arua");
+    register_spell_script(spell_defending_cart_arua);
 }

@@ -352,10 +352,10 @@ class spell_romogg_skullcracker_eff : public SpellScript
 void AddSC_boss_romogg_bonecrusher()
 {
     new boss_romogg_bonecrusher();
-    new spell_script<spell_chains_of_woe>("spell_chains_of_woe");
-    new spell_script<spell_chains_of_woe_eff>("spell_chains_of_woe_eff");
-    new spell_script<spell_chains_of_woe_teleport>("spell_chains_of_woe_teleport");
-    new spell_script<spell_skullcracker>("spell_skullcracker");
-    new aura_script<spell_chains_of_woe_caster_aura>("spell_chains_of_woe_caster_aura");
-    new spell_script<spell_romogg_skullcracker_eff>("spell_romogg_skullcracker_eff");
+    register_spell_script(spell_chains_of_woe);
+    register_spell_script(spell_chains_of_woe_eff);
+    register_spell_script(spell_chains_of_woe_teleport);
+    register_spell_script(spell_skullcracker);
+    register_aura_script(spell_chains_of_woe_caster_aura);
+    register_spell_script(spell_romogg_skullcracker_eff);
 }

@@ -229,8 +229,8 @@ class go_totem_of_ruumbo : public GameObjectScript
 
 void AddSC_felwood()
 {
-    new spell_script<spell_terrifyng_rainbow>("spell_terrifyng_rainbow");
-    new creature_script<npc_felwood_honey_bunny>("npc_felwood_honey_bunny");
-    new creature_script<npc_feelwood_ferli_drizzle>("npc_feelwood_ferli_drizzle");
+    register_spell_script(spell_terrifyng_rainbow);
+    register_creature_script(npc_felwood_honey_bunny);
+    register_creature_script(npc_feelwood_ferli_drizzle);
     new go_totem_of_ruumbo();
 }
