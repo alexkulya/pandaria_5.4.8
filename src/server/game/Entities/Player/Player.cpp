@@ -10017,8 +10017,9 @@ void Player::SendLoot(uint64 guid, LootType lootType, bool isAoE)
             go->SetLootState(GO_ACTIVATED, this);
         }
 
-        if (go->GetGOInfo()->type == GAMEOBJECT_TYPE_CHEST)
-            go->SetGoState(GO_STATE_ACTIVE);
+        // temporarily fix alexkulya#122
+        //if (go->GetGOInfo()->type == GAMEOBJECT_TYPE_CHEST)
+        //    go->SetGoState(GO_STATE_ACTIVE);
 
         if (go->getLootState() == GO_ACTIVATED)
         {
