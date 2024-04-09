@@ -3138,19 +3138,21 @@ void Spell::EffectEnchantItemPerm(SpellEffIndex effIndex)
                 item_owner->GetName().c_str(), item_owner->GetSession()->GetAccountId());
         }
 
-        EnchantmentSlot slot = PERM_ENCHANTMENT_SLOT;
-
-        if (enchant->RequiredSkill == SKILL_ENGINEERING && enchant->Type[0] == ITEM_ENCHANTMENT_TYPE_USE_SPELL)
-            slot = ENGINEERING_ENCHANTMENT_SLOT;
-
         // remove old enchanting before applying new if equipped
-        item_owner->ApplyEnchantment(itemTarget, slot, false);
-
-        itemTarget->SetEnchantment(PERM_ENCHANTMENT_SLOT, enchant_id, 0, enchant->Charges, m_caster->GetGUID());
-
-        // add new enchanting if equipped
-        item_owner->ApplyEnchantment(itemTarget, slot, true);
-
+        if (IsPartOfSkillLine(SKILL_ENGINEERING, m_spellInfo->Id))
+        {
+            item_owner->ApplyEnchantment(itemTarget, ENGINEERING_ENCHANTMENT_SLOT, false);
+            itemTarget->SetEnchantment(ENGINEERING_ENCHANTMENT_SLOT, enchant_id, 0, 0, m_caster->GetGUID());
+            // add new enchanting if equipped
+            item_owner->ApplyEnchantment(itemTarget, ENGINEERING_ENCHANTMENT_SLOT, true);
+        }
+        else
+        {
+            item_owner->ApplyEnchantment(itemTarget, PERM_ENCHANTMENT_SLOT, false);
+            itemTarget->SetEnchantment(PERM_ENCHANTMENT_SLOT, enchant_id, 0, 0, m_caster->GetGUID());
+            // add new enchanting if equipped
+            item_owner->ApplyEnchantment(itemTarget, PERM_ENCHANTMENT_SLOT, true);
+        }
         itemTarget->ClearSoulboundTradeable(item_owner);
     }
 }
