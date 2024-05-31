@@ -1354,19 +1354,19 @@ void AddSC_assault_on_zanvess()
     new npc_zanvess_nalley();
     new npc_zanvess_sonic_control_tower();
     new npc_zanvess_scenario_controller();
-    register_creature_script(npc_zanvess_scorpid_relocator);
+    new creature_script<npc_zanvess_scorpid_relocator>("npc_zanvess_scorpid_relocator");
     new npc_zanvess_zanthik_brutalizer();
     new npc_zanvess_zanthik_ambermancer();
     new npc_zanvess_7th_legion_infiltrator();
     new npc_zanvess_7th_legion_priest();
     new npc_zanvess_team_leader_scooter();
     new npc_zanvess_commander_telvrak();
-    register_creature_script(npc_zanvess_zarthik_guardian);
-    register_creature_script(npc_zanvess_strafing_ran_trigger);
+    new creature_script<npc_zanvess_zarthik_guardian>("npc_zanvess_zarthik_guardian");
+    new creature_script<npc_zanvess_strafing_ran_trigger>("npc_zanvess_strafing_ran_trigger");
 
-    register_aura_script(spell_zanvess_whirlwind);
-    register_spell_script(spell_zanvess_devastating_smash);
-    register_spell_script(spell_zanvess_swap_weapon);
-    register_spell_script(spell_zanvess_bombard);
+    new aura_script<spell_zanvess_whirlwind>("spell_zanvess_whirlwind");
+    new spell_script<spell_zanvess_devastating_smash>("spell_zanvess_devastating_smash");
+    new spell_script<spell_zanvess_swap_weapon>("spell_zanvess_swap_weapon");
+    new spell_script<spell_zanvess_bombard>("spell_zanvess_bombard");
     new AreaTrigger_at_zanvess_heart();
 }

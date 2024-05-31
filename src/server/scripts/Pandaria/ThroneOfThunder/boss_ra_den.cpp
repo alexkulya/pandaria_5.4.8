@@ -26,7 +26,7 @@ enum Spells
     SPELL_LINGERING_ENERGIES       = 138450, // on aborb any sphere
     SPELL_SUMMON_ESSENCE_OF_VITA   = 138324,
     SPELL_SUMMON_ESSENCE_OF_ANIMA  = 138323,
-
+                                   
     /*Vita*/                       
     SPELL_EMBUED_WITH_VITA         = 138332,
     SPELL_UNLEASHED_VITA           = 138330,
@@ -65,7 +65,7 @@ enum Spells
     SPELL_TWISTED_VITA             = 139078, // chain lightning
     SPELL_TWISTED_ANIMA            = 139075, // aoe. if not cause anyone - cast 140998
     SPELL_CALL_ESSENSE             = 139040,
-
+                                   
     /*Cosmetic*/                   
     SPELL_HEAVY_CHAINS_RIGHT       = 140030,
     SPELL_HEAVY_CHAINS_LEFT        = 140032,
@@ -1351,25 +1351,25 @@ class AreaTrigger_forward_ra_den : public AreaTriggerScript
 void AddSC_boss_ra_den()
 {
     new boss_ra_den();
-    register_creature_script(npc_essence_of_creation);
-    register_creature_script(npc_corrupted_essence_of_creation);
-    register_creature_script(npc_crackling_stalker);
-    register_creature_script(npc_sanguine_horror);
-    register_spell_script(spell_raden_fatal_strike);
-    register_aura_script(spell_embued_with_vita);
-    register_spell_script(spell_unstable_vita_visual);
-    register_spell_script(spell_unstable_vita_eff);
-    register_spell_script(spell_unstable_vita_init);
-    register_aura_script(spell_unstable_vita_aura);
-    register_spell_script(spell_unstable_vita);
-    register_spell_script(spell_materials_of_creation);
-    register_aura_script(spell_embued_with_anima);
-    register_spell_script(spell_call_essence);
-    register_aura_script(spell_unstable_anima_aura);
-    register_spell_script(spell_unstable_anima);
-    register_spell_script(spell_unstable_anima_eff);
-    register_spell_script(spell_twisted_anima);
-    register_aura_script(spell_murderous_strike);
-    register_aura_script(spell_draw_vita);
+    new creature_script<npc_essence_of_creation>("npc_essence_of_creation");
+    new creature_script<npc_corrupted_essence_of_creation>("npc_corrupted_essence_of_creation");
+    new creature_script<npc_crackling_stalker>("npc_crackling_stalker");
+    new creature_script<npc_sanguine_horror>("npc_sanguine_horror");
+    new spell_script<spell_raden_fatal_strike>("spell_raden_fatal_strike");
+    new aura_script<spell_embued_with_vita>("spell_embued_with_vita");
+    new spell_script<spell_unstable_vita_visual>("spell_unstable_vita_visual");
+    new spell_script<spell_unstable_vita_eff>("spell_unstable_vita_eff");
+    new spell_script<spell_unstable_vita_init>("spell_unstable_vita_init");
+    new aura_script<spell_unstable_vita_aura>("spell_unstable_vita_aura");
+    new spell_script<spell_unstable_vita>("spell_unstable_vita");
+    new spell_script<spell_materials_of_creation>("spell_materials_of_creation");
+    new aura_script<spell_embued_with_anima>("spell_embued_with_anima");
+    new spell_script<spell_call_essence>("spell_call_essence");
+    new aura_script<spell_unstable_anima_aura>("spell_unstable_anima_aura");
+    new spell_script<spell_unstable_anima>("spell_unstable_anima");
+    new spell_script<spell_unstable_anima_eff>("spell_unstable_anima_eff");
+    new spell_script<spell_twisted_anima>("spell_twisted_anima");
+    new aura_script<spell_murderous_strike>("spell_murderous_strike");
+    new aura_script<spell_draw_vita>("spell_draw_vita");
     new AreaTrigger_forward_ra_den();
 }

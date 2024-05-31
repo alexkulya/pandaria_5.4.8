@@ -246,5 +246,5 @@ private:
 void AddSC_boss_balinda()
 {
     new npc_water_elemental("npc_water_elemental");
-    register_creature_script(boss_balinda);
+    new creature_script<boss_balinda>("boss_balinda");
 };

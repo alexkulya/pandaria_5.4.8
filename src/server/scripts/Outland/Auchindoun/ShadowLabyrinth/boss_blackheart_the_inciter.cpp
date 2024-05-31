@@ -176,5 +176,5 @@ class spell_blackheart_incite_chaos : public SpellScript
 void AddSC_boss_blackheart_the_inciter()
 {
     new boss_blackheart_the_inciter();
-    register_spell_script(spell_blackheart_incite_chaos);
+    new spell_script<spell_blackheart_incite_chaos>("spell_blackheart_incite_chaos");
 }

@@ -743,7 +743,7 @@ void AddSC_boss_mandokir()
     new boss_mandokir();
     new npc_ohgan();
     new npc_chained_spirit();
-    register_spell_script(spell_mandokir_decapitate);
+    new spell_script<spell_mandokir_decapitate>("spell_mandokir_decapitate");
     new spell_mandokir_bloodletting();
     new spell_mandokir_spirit_vengeance_cancel();
     new spell_mandokir_devastating_slam();

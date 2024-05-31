@@ -1438,6 +1438,6 @@ void AddSC_boss_stone_guard()
     new spell_jasper_chains_damage();
     new spell_energized_tiles();
     new spell_petrification_overload();
-    register_spell_script(spell_cobalt_mine_selector);
+    new spell_script<spell_cobalt_mine_selector>("spell_cobalt_mine_selector");
     new atrigger_script<sat_amethyst_pool>("sat_amethyst_pool");
 }

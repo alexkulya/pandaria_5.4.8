@@ -3463,11 +3463,11 @@ void AddSC_dread_wastes()
     // Standard Mobs
     new npc_overgrown_seacarp();
     new npc_hisek_the_swarmkeeper_2();
-    register_creature_script(npc_shekzeer_clutch_keeper);
-    register_creature_script(npc_mistblade_reapper);
-    register_creature_script(npc_coldbite_matriarch);
-    register_creature_script(npc_ik_thik_whisperer);
-    register_creature_script(npc_ik_thik_clutch_guard);
+    new creature_script<npc_shekzeer_clutch_keeper>("npc_shekzeer_clutch_keeper");
+    new creature_script<npc_mistblade_reapper>("npc_mistblade_reapper");
+    new creature_script<npc_coldbite_matriarch>("npc_coldbite_matriarch");
+    new creature_script<npc_ik_thik_whisperer>("npc_ik_thik_whisperer");
+    new creature_script<npc_ik_thik_clutch_guard>("npc_ik_thik_clutch_guard");
     // Extending the Vocerage
     new spell_zet_uk_sha_eruption();
     new spell_zet_uk_sha_eruption_periodic_summon();
@@ -3479,22 +3479,22 @@ void AddSC_dread_wastes()
     new npc_hisek_the_swarmkeeper_summon();
     new npc_klaxxiva_ik();
     new AreaTrigger_q31185;
-    register_spell_script(spell_q31182);
-    register_spell_script(spell_q31487);
-    register_creature_script(npc_amber_tap);
+    new spell_script<spell_q31182>("spell_q31182");
+    new spell_script<spell_q31487>("spell_q31487");
+    new creature_script<npc_amber_tap>("npc_amber_tap");
     new npc_kilruk_wind_reaver();
     new npc_kilruk_quest_shadow_of_empire();
     new npc_malik_the_unscathed_quest_empress_gambit();
     new npc_malik_the_unscathed_quest_empress_gambit_trigger();
     new npc_grand_vizier_zorlok_quest_empress_gambit();
-    register_spell_script(spell_q31233);
-    register_aura_script(spell_empress_gambit_quest);
-    register_spell_script(spell_zorlok_shout);
+    new spell_script<spell_q31233>("spell_q31233");
+    new aura_script<spell_empress_gambit_quest>("spell_empress_gambit_quest");
+    new spell_script<spell_zorlok_shout>("spell_zorlok_shout");
     new scene_klaxxi_head_explosion();
     new AreaTrigger_q31087();
     new go_silent_beacon();
-    register_creature_script(npc_dread_waster_dread_lurker);
-    register_creature_script(npc_dread_waster_nagging_dreadling);
-    register_spell_script(spell_dread_waster_gather_shade);
-    register_spell_script(spell_dread_waster_sonic_emission);
+    new creature_script<npc_dread_waster_dread_lurker>("npc_dread_waster_dread_lurker");
+    new creature_script<npc_dread_waster_nagging_dreadling>("npc_dread_waster_nagging_dreadling");
+    new spell_script<spell_dread_waster_gather_shade>("spell_dread_waster_gather_shade");
+    new spell_script<spell_dread_waster_sonic_emission>("spell_dread_waster_sonic_emission");
 }

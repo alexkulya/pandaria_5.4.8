@@ -903,24 +903,24 @@ class spell_little_patience_terrified : public AuraScript
 
 void AddSC_little_patience()
 {
-    register_creature_script(npc_little_patience_muckmaw_crocolisk);
-    register_creature_script(npc_little_patience_commander_scargash);
-    register_creature_script(npc_little_patience_krasari_stalker);
-    register_creature_script(npc_little_patience_king_varian_wrynn);
-    register_creature_script(npc_little_patience_faction_leader);
-    register_creature_script(npc_little_patience_riverblade_marauder);
-    register_creature_script(npc_little_patience_bogrot);
-    register_creature_script(npc_little_patience_swamp_gas);
-    register_creature_script(npc_little_patience_wakened_mogu);
-    register_creature_script(npc_little_patience_spirit_bomb);
+    new creature_script<npc_little_patience_muckmaw_crocolisk>("npc_little_patience_muckmaw_crocolisk");
+    new creature_script<npc_little_patience_commander_scargash>("npc_little_patience_commander_scargash");
+    new creature_script<npc_little_patience_krasari_stalker>("npc_little_patience_krasari_stalker");
+    new creature_script<npc_little_patience_king_varian_wrynn>("npc_little_patience_king_varian_wrynn");
+    new creature_script<npc_little_patience_faction_leader>("npc_little_patience_faction_leader");
+    new creature_script<npc_little_patience_riverblade_marauder>("npc_little_patience_riverblade_marauder");
+    new creature_script<npc_little_patience_bogrot>("npc_little_patience_bogrot");
+    new creature_script<npc_little_patience_swamp_gas>("npc_little_patience_swamp_gas");
+    new creature_script<npc_little_patience_wakened_mogu>("npc_little_patience_wakened_mogu");
+    new creature_script<npc_little_patience_spirit_bomb>("npc_little_patience_spirit_bomb");
 
-    register_spell_script(spell_little_patience_blood_rage_fixate);
-    register_aura_script(spell_little_patience_blood_rage);
-    register_spell_script(spell_little_patience_inspired_night_elf);
-    register_spell_script(spell_little_patience_inspired_jinyu);
-    register_spell_script(spell_little_patience_inspired_gnome);
-    register_spell_script(spell_little_patience_inspired_dwarf);
-    register_spell_script(spell_little_patience_construction_bar_movement);
-    register_aura_script(spell_little_patience_faction_construction_progress);
-    register_aura_script(spell_little_patience_terrified);
+    new spell_script<spell_little_patience_blood_rage_fixate>("spell_little_patience_blood_rage_fixate");
+    new aura_script<spell_little_patience_blood_rage>("spell_little_patience_blood_rage");
+    new spell_script<spell_little_patience_inspired_night_elf>("spell_little_patience_inspired_night_elf");
+    new spell_script<spell_little_patience_inspired_jinyu>("spell_little_patience_inspired_jinyu");
+    new spell_script<spell_little_patience_inspired_gnome>("spell_little_patience_inspired_gnome");
+    new spell_script<spell_little_patience_inspired_dwarf>("spell_little_patience_inspired_dwarf");
+    new spell_script<spell_little_patience_construction_bar_movement>("spell_little_patience_construction_bar_movement");
+    new aura_script<spell_little_patience_faction_construction_progress>("spell_little_patience_faction_construction_progress");
+    new aura_script<spell_little_patience_terrified>("spell_little_patience_terrified");
 }

@@ -179,5 +179,5 @@ class spell_superheated_quicksilver_armor : public AuraScript
 void AddSC_boss_karsh_steelbender()
 {
     new boss_karsh_steelbender();
-    register_aura_script(spell_superheated_quicksilver_armor);
+    new aura_script<spell_superheated_quicksilver_armor>("spell_superheated_quicksilver_armor");
 }

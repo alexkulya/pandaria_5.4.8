@@ -629,11 +629,11 @@ class spell_feralas_rally_wild_mountain_giant : public SpellScript
 
 void AddSC_feralas()
 {
-    register_creature_script(npc_feralas_wisp);
-    register_creature_script(npc_feralas_hippogryph);
-    register_creature_script(npc_feralas_wandering_forest_walker);
-    register_creature_script(npc_feralas_horde_poacher);
-    register_creature_script(npc_feralas_mountain_giant);
-    register_spell_script(spell_feralas_rally_wild_treant);
-    register_spell_script(spell_feralas_rally_wild_mountain_giant);
+    new creature_script<npc_feralas_wisp>("npc_feralas_wisp");
+    new creature_script<npc_feralas_hippogryph>("npc_feralas_hippogryph");
+    new creature_script<npc_feralas_wandering_forest_walker>("npc_feralas_wandering_forest_walker");
+    new creature_script<npc_feralas_horde_poacher>("npc_feralas_horde_poacher");
+    new creature_script<npc_feralas_mountain_giant>("npc_feralas_mountain_giant");
+    new spell_script<spell_feralas_rally_wild_treant>("spell_feralas_rally_wild_treant");
+    new spell_script<spell_feralas_rally_wild_mountain_giant>("spell_feralas_rally_wild_mountain_giant");
 }

@@ -406,11 +406,11 @@ class sat_spirit_gale : public IAreaTriggerAura
 void AddSC_boss_thalnos_the_soulrender()
 {
     new boss_thalnos_the_soulrender();
-    register_creature_script(npc_evicted_soul);
-    register_creature_script(npc_fallen_crusader);
-    register_creature_script(npc_empowering_spirit);
-    register_creature_script(npc_empowered_zombie);
+    new creature_script<npc_evicted_soul>("npc_evicted_soul");
+    new creature_script<npc_fallen_crusader>("npc_fallen_crusader");
+    new creature_script<npc_empowering_spirit>("npc_empowering_spirit");
+    new creature_script<npc_empowered_zombie>("npc_empowered_zombie");
 
-    register_aura_script(spell_raise_fallen_crusader);
+    new aura_script<spell_raise_fallen_crusader>("spell_raise_fallen_crusader");
     new atrigger_script<sat_spirit_gale>("sat_spirit_gale");
 }

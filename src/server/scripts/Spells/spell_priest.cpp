@@ -1103,39 +1103,50 @@ class spell_pri_power_word_shield : public AuraScript
 };
 
 // 32592 - Mass Dispel
-class spell_pri_mass_dispel : public SpellScript
+class spell_pri_mass_dispel : public SpellScriptLoader
 {
-    PrepareSpellScript(spell_pri_mass_dispel);
+    public:
+        spell_pri_mass_dispel() : SpellScriptLoader("spell_pri_mass_dispel") { }
 
-    bool _hasImmunity;
+        class spell_pri_mass_dispel_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_pri_mass_dispel_SpellScript);
 
-    bool Load() override
-    {
-        _hasImmunity = false;
-        return true;
-    }
+            bool _hasImmunity;
 
-    void CheckAuras()
-    {
-        // Check if Immunity aura is on target
-        if (Unit* target = GetHitUnit())
-            if (target->HasAuraWithMechanic(1 << MECHANIC_IMMUNE_SHIELD))
-                _hasImmunity = true;
-    }
+            bool Load() override
+            {
+                _hasImmunity = false;
+                return true;
+            }
 
-    void HandleScript(SpellEffIndex effIndex)
-    {
-        // Glyph of Mass Dispel - Prevent dispel effect when target has immunity and no glyph is applied
-        if (_hasImmunity)
-            if (!GetCaster()->HasAura(55691))
-                PreventHitEffect(effIndex);
-    }
+            void CheckAuras()
+            {
+                // Check if Immunity aura is on target
+                if (Unit* target = GetHitUnit())
+                    if (target->HasAuraWithMechanic(1 << MECHANIC_IMMUNE_SHIELD))
+                        _hasImmunity = true;
+            }
 
-    void Register() override
-    {
-        OnEffectHitTarget += SpellEffectFn(spell_pri_mass_dispel::HandleScript, EFFECT_0, SPELL_EFFECT_DISPEL);
-        BeforeHit += SpellHitFn(spell_pri_mass_dispel::CheckAuras);
-    }
+            void HandleScript(SpellEffIndex effIndex)
+            {
+                // Glyph of Mass Dispel - Prevent dispel effect when target has immunity and no glyph is applied
+                if (_hasImmunity)
+                    if (!GetCaster()->HasAura(55691))
+                        PreventHitEffect(effIndex);
+            }
+
+            void Register() override
+            {
+                OnEffectHitTarget += SpellEffectFn(spell_pri_mass_dispel_SpellScript::HandleScript, EFFECT_0, SPELL_EFFECT_DISPEL);
+                BeforeHit += SpellHitFn(spell_pri_mass_dispel_SpellScript::CheckAuras);
+            }
+        };
+
+        SpellScript* GetSpellScript() const override
+        {
+            return new spell_pri_mass_dispel_SpellScript();
+        }
 };
 
 // Mind Blast - 8092
@@ -3817,125 +3828,125 @@ class spell_pri_glyph_of_inspired_hymns : public AuraScript
 void AddSC_priest_spell_scripts()
 {
     new spell_pri_power_word_fortitude();
-    register_spell_script(spell_pri_void_tendrils);
-    register_aura_script(spell_pri_void_tendrils_grasp);
+    new spell_script<spell_pri_void_tendrils>("spell_pri_void_tendrils");
+    new aura_script<spell_pri_void_tendrils_grasp>("spell_pri_void_tendrils_grasp");
     new spell_pri_phantasm_proc();
-    register_spell_script(spell_pri_item_s12_2p_heal);
-    register_aura_script(spell_pri_holy_spark);
+    new spell_script<spell_pri_item_s12_2p_heal>("spell_pri_item_s12_2p_heal");
+    new aura_script<spell_pri_holy_spark>("spell_pri_holy_spark");
     new spell_pri_item_s12_2p_shadow();
-    register_spell_script(spell_pri_power_word_solace);
-    register_aura_script(spell_pri_solace_and_insanity);
+    new spell_script<spell_pri_power_word_solace>("spell_pri_power_word_solace");
+    new aura_script<spell_pri_solace_and_insanity>("spell_pri_solace_and_insanity");
     new spell_pri_shadowfiend();
     new spell_pri_strength_of_soul();
-    register_spell_script(spell_pri_spirit_shell);
+    new spell_script<spell_pri_spirit_shell>("spell_pri_spirit_shell");
     new spell_pri_devouring_plague();
     new spell_pri_phantasm();
     new spell_pri_inner_fire_or_will();
-    register_spell_script(spell_pri_leap_of_faith);
-    register_spell_script(spell_pri_psychic_horror);
+    new spell_script<spell_pri_leap_of_faith>("spell_pri_leap_of_faith");
+    new spell_script<spell_pri_psychic_horror>("spell_pri_psychic_horror");
     new spell_pri_guardian_spirit();
-    register_spell_script(spell_pri_penance);
+    new spell_script<spell_pri_penance>("spell_pri_penance");
     new spell_pri_prayer_of_mending_heal();
-    register_aura_script(spell_pri_rapid_renewal);
-    register_aura_script(spell_pri_shadowform);
-    register_aura_script(spell_pri_glyph_of_shadow);
-    register_aura_script(spell_pri_evangelism);
-    register_spell_script(spell_pri_archangel);
+    new aura_script<spell_pri_rapid_renewal>("spell_pri_rapid_renewal");
+    new aura_script<spell_pri_shadowform>("spell_pri_shadowform");
+    new aura_script<spell_pri_glyph_of_shadow>("spell_pri_glyph_of_shadow");
+    new aura_script<spell_pri_evangelism>("spell_pri_evangelism");
+    new spell_script<spell_pri_archangel>("spell_pri_archangel");
     new spell_pri_levitate();
-    register_aura_script(spell_pri_divine_aegis);
-    register_aura_script(spell_pri_power_word_shield);
-    register_spell_script(spell_pri_mass_dispel);
+    new aura_script<spell_pri_divine_aegis>("spell_pri_divine_aegis");
+    new aura_script<spell_pri_power_word_shield>("spell_pri_power_word_shield");
+    new spell_pri_mass_dispel();
     new spell_pri_mind_blast();
     new spell_pri_confession();
-    register_spell_script(spell_pri_devouring_plague);
-    register_aura_script(spell_pri_devouring_plague_heal);
-    register_aura_script(spell_pri_twist_of_fate);
-    register_aura_script(spell_pri_echo_of_light);
-    register_aura_script(spell_pri_holy_word_sanctuary);
-    register_aura_script(spell_pri_shadowy_recall);
-    register_aura_script(spell_pri_spirit_of_redemption);
-    register_aura_script(spell_pri_spirit_of_redemption_form);
-    register_spell_script(spell_pri_shadow_word_death);
-    register_spell_script(spell_pri_shadow_word_death_glyphed);
-    register_aura_script(spell_pri_shadow_orbs);
-    register_aura_script(spell_pri_angelic_bulwark);
-    register_aura_script(spell_pri_divine_insight_talent);
-    register_spell_script(spell_pri_divine_insight_shadow);
-    register_spell_script(spell_pri_divine_insight_holy);
-    register_aura_script(spell_pri_prayer_of_mending_divine_insight);
-    register_aura_script(spell_pri_focused_will);
-    register_spell_script(spell_pri_mind_fly_selector);
-    register_aura_script(spell_pri_mind_flay);
-    register_aura_script(spell_pri_mind_flay_insanity);
-    register_spell_script(spell_pri_mind_flay_shadowy_recall);
-    register_aura_script(spell_pri_vampiric_embrace);
-    register_spell_script(spell_pri_vampiric_embrace_heal);
-    register_spell_script(spell_pri_mind_spike);
-    register_spell_script(spell_pri_surge_of_light_consumer);
-    register_aura_script(spell_pri_from_darkness_comes_light);
-    register_aura_script(spell_pri_vampiric_touch);
-    register_aura_script(spell_pri_surge_of);
-    register_aura_script(spell_pri_train_of_thought);
-    register_aura_script(spell_pri_glyph_of_mind_spike);
-    register_spell_script(spell_pri_void_shift);
-    register_spell_script(spell_pri_devouring_plague_shadowy_recall);
-    register_aura_script(spell_pri_psychic_scream);
-    register_aura_script(spell_pri_divine_star);
-    register_spell_script(spell_pri_divine_star_dummy);
-    register_spell_script(spell_pri_divine_star_damage_heal);
-    register_aura_script(spell_pri_atonement);
-    register_spell_script(spell_pri_atonement_heal);
-    register_aura_script(spell_pri_chakra_serenity);
-    register_spell_script(spell_pri_spectral_guise);
-    register_aura_script(spell_pri_spectral_guise_remove);
-    register_aura_script(spell_pri_spectral_guise_stacks);
-    register_spell_script(spell_pri_glyph_of_purify);
-    register_spell_script(spell_pri_glyph_of_dispel_magic);
-    register_aura_script(spell_pri_mana_leech);
-    register_aura_script(spell_pri_shadowy_appartions);
-    register_spell_script(spell_pri_shadowy_appartion);
-    register_creature_script(npc_pri_lightwell);
-    register_creature_script(npc_pri_lightwell_periodic);
-    register_aura_script(spell_pri_lightwell_charges);
-    register_spell_script(spell_pri_lightwell_renew_trigger);
-    register_spell_script(spell_pri_lightwell_renew);
-    register_aura_script(spell_pri_lightwell_renew_hot);
-    register_creature_script(npc_pri_psy_fiend);
-    register_spell_script(spell_pri_psychic_terror);
-    register_aura_script(spell_pri_psychic_terror_aura);
-    register_aura_script(spell_pri_psyfiend_hit_me_driver);
-    register_spell_script(spell_pri_mind_sear_check);
-    register_spell_script(spell_pri_mind_sear);
-    register_spell_script(spell_pri_halo);
-    register_spell_script(spell_pri_halo_visual);
-    register_spell_script(spell_pri_halo_effect);
+    new spell_script<spell_pri_devouring_plague>("spell_pri_devouring_plague");
+    new aura_script<spell_pri_devouring_plague_heal>("spell_pri_devouring_plague_heal");
+    new aura_script<spell_pri_twist_of_fate>("spell_pri_twist_of_fate");
+    new aura_script<spell_pri_echo_of_light>("spell_pri_echo_of_light");
+    new aura_script<spell_pri_holy_word_sanctuary>("spell_pri_holy_word_sanctuary");
+    new aura_script<spell_pri_shadowy_recall>("spell_pri_shadowy_recall");
+    new aura_script<spell_pri_spirit_of_redemption>("spell_pri_spirit_of_redemption");
+    new aura_script<spell_pri_spirit_of_redemption_form>("spell_pri_spirit_of_redemption_form");
+    new spell_script<spell_pri_shadow_word_death>("spell_pri_shadow_word_death");
+    new spell_script<spell_pri_shadow_word_death_glyphed>("spell_pri_shadow_word_death_glyphed");
+    new aura_script<spell_pri_shadow_orbs>("spell_pri_shadow_orbs");
+    new aura_script<spell_pri_angelic_bulwark>("spell_pri_angelic_bulwark");
+    new aura_script<spell_pri_divine_insight_talent>("spell_pri_divine_insight_talent");
+    new spell_script<spell_pri_divine_insight_shadow>("spell_pri_divine_insight_shadow");
+    new spell_script<spell_pri_divine_insight_holy>("spell_pri_divine_insight_holy");
+    new aura_script<spell_pri_prayer_of_mending_divine_insight>("spell_pri_prayer_of_mending_divine_insight");
+    new aura_script<spell_pri_focused_will>("spell_pri_focused_will");
+    new spell_script<spell_pri_mind_fly_selector>("spell_pri_mind_fly_selector");
+    new aura_script<spell_pri_mind_flay>("spell_pri_mind_flay");
+    new aura_script<spell_pri_mind_flay_insanity>("spell_pri_mind_flay_insanity");
+    new spell_script<spell_pri_mind_flay_shadowy_recall>("spell_pri_mind_flay_shadowy_recall");
+    new aura_script<spell_pri_vampiric_embrace>("spell_pri_vampiric_embrace");
+    new spell_script<spell_pri_vampiric_embrace_heal>("spell_pri_vampiric_embrace_heal");
+    new spell_script<spell_pri_mind_spike>("spell_pri_mind_spike");
+    new spell_script<spell_pri_surge_of_light_consumer>("spell_pri_surge_of_light_consumer");
+    new aura_script<spell_pri_from_darkness_comes_light>("spell_pri_from_darkness_comes_light");
+    new aura_script<spell_pri_vampiric_touch>("spell_pri_vampiric_touch");
+    new aura_script<spell_pri_surge_of>("spell_pri_surge_of");
+    new aura_script<spell_pri_train_of_thought>("spell_pri_train_of_thought");
+    new aura_script<spell_pri_glyph_of_mind_spike>("spell_pri_glyph_of_mind_spike");
+    new spell_script<spell_pri_void_shift>("spell_pri_void_shift");
+    new spell_script<spell_pri_devouring_plague_shadowy_recall>("spell_pri_devouring_plague_shadowy_recall");
+    new aura_script<spell_pri_psychic_scream>("spell_pri_psychic_scream");
+    new aura_script<spell_pri_divine_star>("spell_pri_divine_star");
+    new spell_script<spell_pri_divine_star_dummy>("spell_pri_divine_star_dummy");
+    new spell_script<spell_pri_divine_star_damage_heal>("spell_pri_divine_star_damage_heal");
+    new aura_script<spell_pri_atonement>("spell_pri_atonement");
+    new spell_script<spell_pri_atonement_heal>("spell_pri_atonement_heal");
+    new aura_script<spell_pri_chakra_serenity>("spell_pri_chakra_serenity");
+    new spell_script<spell_pri_spectral_guise>("spell_pri_spectral_guise");
+    new aura_script<spell_pri_spectral_guise_remove>("spell_pri_spectral_guise_remove");
+    new aura_script<spell_pri_spectral_guise_stacks>("spell_pri_spectral_guise_stacks");
+    new spell_script<spell_pri_glyph_of_purify>("spell_pri_glyph_of_purify");
+    new spell_script<spell_pri_glyph_of_dispel_magic>("spell_pri_glyph_of_dispel_magic");
+    new aura_script<spell_pri_mana_leech>("spell_pri_mana_leech");
+    new aura_script<spell_pri_shadowy_appartions>("spell_pri_shadowy_appartions");
+    new spell_script<spell_pri_shadowy_appartion>("spell_pri_shadowy_appartion");
+    new creature_script<npc_pri_lightwell>("npc_pri_lightwell");
+    new creature_script<npc_pri_lightwell_periodic>("npc_pri_lightwell_periodic");
+    new aura_script<spell_pri_lightwell_charges>("spell_pri_lightwell_charges");
+    new spell_script<spell_pri_lightwell_renew_trigger>("spell_pri_lightwell_renew_trigger");
+    new spell_script<spell_pri_lightwell_renew>("spell_pri_lightwell_renew");
+    new aura_script<spell_pri_lightwell_renew_hot>("spell_pri_lightwell_renew_hot");
+    new creature_script<npc_pri_psy_fiend>("npc_pri_psy_fiend");
+    new spell_script<spell_pri_psychic_terror>("spell_pri_psychic_terror");
+    new aura_script<spell_pri_psychic_terror_aura>("spell_pri_psychic_terror_aura");
+    new aura_script<spell_pri_psyfiend_hit_me_driver>("spell_pri_psyfiend_hit_me_driver");
+    new spell_script<spell_pri_mind_sear_check>("spell_pri_mind_sear_check");
+    new spell_script<spell_pri_mind_sear>("spell_pri_mind_sear");
+    new spell_script<spell_pri_halo>("spell_pri_halo");
+    new spell_script<spell_pri_halo_visual>("spell_pri_halo_visual");
+    new spell_script<spell_pri_halo_effect>("spell_pri_halo_effect");
     new atrigger_script<sat_pri_halo>("sat_pri_halo");
     new atrigger_script<sat_priest_power_word_barrier>("sat_priest_power_word_barrier");
-    register_spell_script(spell_pri_glyph_of_prayer_of_mending);
-    register_spell_script(spell_pri_cascade);
-    register_spell_script(spell_pri_cascade_missile);
-    register_spell_script(spell_pri_cascade_selector);
-    register_spell_script(spell_pri_prayer_of_mending);
-    register_spell_script(spell_pri_t15_healer_2p_bonus);
-    register_aura_script(spell_pri_t15_healer_4p_bonus);
-    register_spell_script(spell_pri_t15_shadow_2p_bonus);
-    new aura_script_name<spell_pri_shadowy_appartions>("spell_pri_t15_shadow_p4_bonus");
-    register_aura_script(spell_pri_t16_healer_2p_bonus);
-    register_aura_script(spell_pri_t16_healer_4p_bonus);
-    register_aura_script(spell_pri_absolution);
-    register_aura_script(spell_pri_t16_shadow_4p_bonus);
-    register_spell_script(spell_pri_glyph_of_smite);
-    register_spell_script(spell_pri_angelic_feather);
+    new spell_script<spell_pri_glyph_of_prayer_of_mending>("spell_pri_glyph_of_prayer_of_mending");
+    new spell_script<spell_pri_cascade>("spell_pri_cascade");
+    new spell_script<spell_pri_cascade_missile>("spell_pri_cascade_missile");
+    new spell_script<spell_pri_cascade_selector>("spell_pri_cascade_selector");
+    new spell_script<spell_pri_prayer_of_mending>("spell_pri_prayer_of_mending");
+    new spell_script<spell_pri_t15_healer_2p_bonus>("spell_pri_t15_healer_2p_bonus");
+    new aura_script<spell_pri_t15_healer_4p_bonus>("spell_pri_t15_healer_4p_bonus");
+    new spell_script<spell_pri_t15_shadow_2p_bonus>("spell_pri_t15_shadow_2p_bonus");
+    new aura_script<spell_pri_shadowy_appartions>("spell_pri_t15_shadow_p4_bonus");
+    new aura_script<spell_pri_t16_healer_2p_bonus>("spell_pri_t16_healer_2p_bonus");
+    new aura_script<spell_pri_t16_healer_4p_bonus>("spell_pri_t16_healer_4p_bonus");
+    new aura_script<spell_pri_absolution>("spell_pri_absolution");
+    new aura_script<spell_pri_t16_shadow_4p_bonus>("spell_pri_t16_shadow_4p_bonus");
+    new spell_script<spell_pri_glyph_of_smite>("spell_pri_glyph_of_smite");
+    new spell_script<spell_pri_angelic_feather>("spell_pri_angelic_feather");
     new atrigger_script<sat_pri_angelic_feather>("sat_pri_angelic_feather");
-    register_spell_script(spell_pri_glyph_of_inner_sanctum);
-    register_spell_script(spell_pri_glyph_of_leap_of_faith);
-    register_spell_script(spell_pri_desperate_prayer);
-    register_spell_script(spell_pri_circle_of_healing);
-    register_spell_script(spell_pri_binding_heal);
-    register_aura_script(spell_pri_fear_ward);
-    register_aura_script(spell_pri_glyph_of_heavens);
-    register_aura_script(spell_pri_glyph_of_levitate);
-    register_aura_script(spell_pri_prayer_of_mending_proc);
-    register_aura_script(spell_pri_chakra_chastise);
-    register_aura_script(spell_pri_glyph_of_inspired_hymns);
+    new spell_script<spell_pri_glyph_of_inner_sanctum>("spell_pri_glyph_of_inner_sanctum");
+    new spell_script<spell_pri_glyph_of_leap_of_faith>("spell_pri_glyph_of_leap_of_faith");
+    new spell_script<spell_pri_desperate_prayer>("spell_pri_desperate_prayer");
+    new spell_script<spell_pri_circle_of_healing>("spell_pri_circle_of_healing");
+    new spell_script<spell_pri_binding_heal>("spell_pri_binding_heal");
+    new aura_script<spell_pri_fear_ward>("spell_pri_fear_ward");
+    new aura_script<spell_pri_glyph_of_heavens>("spell_pri_glyph_of_heavens");
+    new aura_script<spell_pri_glyph_of_levitate>("spell_pri_glyph_of_levitate");
+    new aura_script<spell_pri_prayer_of_mending_proc>("spell_pri_prayer_of_mending_proc");
+    new aura_script<spell_pri_chakra_chastise>("spell_pri_chakra_chastise");
+    new aura_script<spell_pri_glyph_of_inspired_hymns>("spell_pri_glyph_of_inspired_hymns");
 }

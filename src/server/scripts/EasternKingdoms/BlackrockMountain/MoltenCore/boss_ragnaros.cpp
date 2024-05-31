@@ -440,5 +440,5 @@ void AddSC_boss_ragnaros()
     new boss_ragnaros();
     new npc_son_of_flame();
     new npc_majordomo_executus_ragnaros();
-    register_spell_script(spell_summon_ragnaros);
+    new spell_script<spell_summon_ragnaros>("spell_summon_ragnaros");
 }

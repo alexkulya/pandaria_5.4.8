@@ -499,6 +499,6 @@ void AddSC_storm_peaks()
     new npc_freed_protodrake();
     new npc_icefang();
     new npc_hyldsmeet_protodrake();
-    register_creature_script(npc_dead_irongiant);
+    new creature_script<npc_dead_irongiant>("npc_dead_irongiant");
     new spell_close_rift();
 }

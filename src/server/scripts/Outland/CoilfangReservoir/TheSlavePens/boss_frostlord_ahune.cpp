@@ -647,8 +647,8 @@ void AddSC_boss_frostlord_ahune()
 {
     new boss_frostlord_ahune();
     new npc_ahune_ice_spear();
-    register_creature_script(npc_frozen_core);
+    new creature_script<npc_frozen_core>("npc_frozen_core");
     new go_ahune_ice_stone();
-    register_spell_script(spell_ahune_slippery_floor);
-    register_spell_script(spell_spank_force_bunny_to_knock_you_to);
+    new spell_script<spell_ahune_slippery_floor>("spell_ahune_slippery_floor");
+    new spell_script<spell_spank_force_bunny_to_knock_you_to>("spell_spank_force_bunny_to_knock_you_to");
 };

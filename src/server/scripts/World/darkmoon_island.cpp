@@ -417,12 +417,12 @@ class spell_darkmoon_moonfang_curse : public SpellScript
 void AddSC_darkmoon_island()
 {
     new npc_darkmoon_deathmatch_announcer();
-    register_creature_script(npc_darkmoon_moonfang);
+    new creature_script<npc_darkmoon_moonfang>("npc_darkmoon_moonfang");
     new go_darkmoon_treasure_chest();
     new spell_darkmoon_deathmatch();
     new transport_merry_go_round();
-    register_spell_script(spell_whee_trigger);
-    register_spell_script(spell_darkmoon_free_your_mind);
-    register_spell_script(spell_darkmoon_moonfang_tears);
-    register_spell_script(spell_darkmoon_moonfang_curse);
+    new spell_script<spell_whee_trigger>("spell_whee_trigger");
+    new spell_script<spell_darkmoon_free_your_mind>("spell_darkmoon_free_your_mind");
+    new spell_script<spell_darkmoon_moonfang_tears>("spell_darkmoon_moonfang_tears");
+    new spell_script<spell_darkmoon_moonfang_curse>("spell_darkmoon_moonfang_curse");
 }

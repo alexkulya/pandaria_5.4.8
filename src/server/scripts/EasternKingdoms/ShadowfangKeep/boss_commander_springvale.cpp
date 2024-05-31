@@ -402,5 +402,6 @@ void AddSC_boss_commander_springvale()
     new npc_springvale_wailing_guardsman();
     new npc_springvale_tormented_officer();
     new npc_springvale_desecration_bunny();
-    register_spell_script(spell_shadowfang_unholy_empowerment);
+
+    new spell_script<spell_shadowfang_unholy_empowerment>("spell_shadowfang_unholy_empowerment");
 }

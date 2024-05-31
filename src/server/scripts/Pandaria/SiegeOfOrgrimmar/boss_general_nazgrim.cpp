@@ -25,7 +25,7 @@ enum Spells
     SPELL_BATTLE_STANCE           = 143589,
     SPELL_BERSERKER_STANCE        = 143594,
     SPELL_DEFENSIVE_STANCE        = 143593,
-
+                                  
     SPELL_BONECRACKER             = 143638,
     SPELL_COOLING_OFF             = 143484,
     SPELL_HEROIC_SHOCKWAVE        = 143716,
@@ -1720,33 +1720,33 @@ void AddSC_general_nazgrim()
 {
     new boss_general_nazgrim();
 
-    register_creature_script(npc_orgrimmar_faithful);
-    register_creature_script(npc_nazgrim_korkron_ironblade);
-    register_creature_script(npc_nazgrim_korkron_arcweaver);
-    register_creature_script(npc_nazgrim_korkron_assassin);
-    register_creature_script(npc_nazgrim_korkron_warshaman);
-    register_creature_script(npc_nazgrim_korkron_sniper);
-    register_creature_script(npc_nazgrim_korkron_banner);
-    register_creature_script(npc_nazgrim_korkron_healing_tide_totem);
-    register_creature_script(npc_nazgrim_heroic_shockwave);
-    register_creature_script(npc_nazgrim_ravager);
+    new creature_script<npc_orgrimmar_faithful>("npc_orgrimmar_faithful");
+    new creature_script<npc_nazgrim_korkron_ironblade>("npc_nazgrim_korkron_ironblade");
+    new creature_script<npc_nazgrim_korkron_arcweaver>("npc_nazgrim_korkron_arcweaver");
+    new creature_script<npc_nazgrim_korkron_assassin>("npc_nazgrim_korkron_assassin");
+    new creature_script<npc_nazgrim_korkron_warshaman>("npc_nazgrim_korkron_warshaman");
+    new creature_script<npc_nazgrim_korkron_sniper>("npc_nazgrim_korkron_sniper");
+    new creature_script<npc_nazgrim_korkron_banner>("npc_nazgrim_korkron_banner");
+    new creature_script<npc_nazgrim_korkron_healing_tide_totem>("npc_nazgrim_korkron_healing_tide_totem");
+    new creature_script<npc_nazgrim_heroic_shockwave>("npc_nazgrim_heroic_shockwave");
+    new creature_script<npc_nazgrim_ravager>("npc_nazgrim_ravager");
 
-    register_spell_script(spell_ravager_eff);
-    register_spell_script(spell_nazgrim_sundering_blow);
-    register_spell_script(spell_nazgrim_bonecracker);
-    register_spell_script(spell_nazgrim_heroic_shockwave_aftershock);
-    register_spell_script(spell_nazgrim_energize);
-    register_aura_script(spell_nazgrim_ironstorm);
-    register_spell_script(spell_nazgrim_assassing_mark);
-    register_aura_script(spell_nazgrim_assassing_mark_aura);
-    register_aura_script(spell_nazgrim_cooling_off);
-    register_aura_script(spell_nazgrim_defensive_stance);
-    register_spell_script(spell_nazgrim_korkron_banner);
-    register_spell_script(spell_nazgrim_healing_tide_eff);
-    register_spell_script(spell_nazgrim_heroic_shockwave);
-    register_spell_script(spell_nazgrim_aftershock);
-    register_spell_script(spell_nazgrim_hunters_mark);
-    register_aura_script(spell_nazgrim_hunters_mark_aura);
-    register_spell_script(spell_nazgrim_multi_shot);
+    new spell_script<spell_ravager_eff>("spell_ravager_eff");
+    new spell_script<spell_nazgrim_sundering_blow>("spell_nazgrim_sundering_blow");
+    new spell_script<spell_nazgrim_bonecracker>("spell_nazgrim_bonecracker");
+    new spell_script<spell_nazgrim_heroic_shockwave_aftershock>("spell_nazgrim_heroic_shockwave_aftershock");
+    new spell_script<spell_nazgrim_energize>("spell_nazgrim_energize");
+    new aura_script<spell_nazgrim_ironstorm>("spell_nazgrim_ironstorm");
+    new spell_script<spell_nazgrim_assassing_mark>("spell_nazgrim_assassing_mark");
+    new aura_script<spell_nazgrim_assassing_mark_aura>("spell_nazgrim_assassing_mark_aura");
+    new aura_script<spell_nazgrim_cooling_off>("spell_nazgrim_cooling_off");
+    new aura_script<spell_nazgrim_defensive_stance>("spell_nazgrim_defensive_stance");
+    new spell_script<spell_nazgrim_korkron_banner>("spell_nazgrim_korkron_banner");
+    new spell_script<spell_nazgrim_healing_tide_eff>("spell_nazgrim_healing_tide_eff");
+    new spell_script<spell_nazgrim_heroic_shockwave>("spell_nazgrim_heroic_shockwave");
+    new spell_script<spell_nazgrim_aftershock>("spell_nazgrim_aftershock");
+    new spell_script<spell_nazgrim_hunters_mark>("spell_nazgrim_hunters_mark");
+    new aura_script<spell_nazgrim_hunters_mark_aura>("spell_nazgrim_hunters_mark_aura");
+    new spell_script<spell_nazgrim_multi_shot>("spell_nazgrim_multi_shot");
     new AreaTrigger_at_soo_leftside_nazgrim();
 };

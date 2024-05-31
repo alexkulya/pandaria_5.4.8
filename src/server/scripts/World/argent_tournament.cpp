@@ -510,5 +510,5 @@ void AddSC_argent_tournament()
 {
     new npc_ring_valiants();
     new npc_ring_champions();
-    register_aura_script(spell_argent_tournament_defend);
+    new aura_script<spell_argent_tournament_defend>("spell_argent_tournament_defend");
 }

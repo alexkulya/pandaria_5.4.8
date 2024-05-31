@@ -44,5 +44,5 @@ class spell_westfall_wake_harvest_golem : public SpellScript
 
 void AddSC_westfall()
 {
-    register_spell_script(spell_westfall_wake_harvest_golem);
+    new spell_script<spell_westfall_wake_harvest_golem>("spell_westfall_wake_harvest_golem");
 }

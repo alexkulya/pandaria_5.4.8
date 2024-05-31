@@ -1686,19 +1686,19 @@ void AddSC_boss_unsok()
     new npc_amber_pool_stalker();
     new npc_amber_globule();
     new spell_amber_scalpel();
-    register_spell_script(spell_amber_strike);
+    new spell_script<spell_amber_strike>("spell_amber_strike");
     new spell_consume_amber();
-    register_spell_script(spell_break_free);
-    register_spell_script(spell_fling_dummy);
-    register_spell_script(spell_fling);
-    register_spell_script(spell_fling_jump);
+    new spell_script<spell_break_free>("spell_break_free");
+    new spell_script<spell_fling_dummy>("spell_fling_dummy");
+    new spell_script<spell_fling>("spell_fling");
+    new spell_script<spell_fling_jump>("spell_fling_jump");
     new spell_burst_living_amber();
     new spell_unsok_reshape_of_life();
-    register_aura_script(spell_unsok_reshape_of_life);
+    new aura_script<spell_unsok_reshape_of_life>("spell_unsok_reshape_of_life");
     new spell_unsok_parasitic_growth();
     new spell_amber_globule_detonation();
     new spell_reshape_life();
     new spell_destroy_will();
-    register_aura_script(spell_unsok_burning_amber_triggering);
+    new aura_script<spell_unsok_burning_amber_triggering>("spell_unsok_burning_amber_triggering");
     new AreaTrigger_at_behind_unsok();
 }

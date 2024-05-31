@@ -670,19 +670,19 @@ class event_brewfest_month : GameEventScript
 
 void AddSC_event_brewfest()
 {
-    register_aura_script(spell_brewfest_giddyup);
-    register_aura_script(spell_brewfest_ram);
-    register_aura_script(spell_brewfest_ram_fatigue);
-    register_aura_script(spell_brewfest_apple_trap);
-    register_spell_script(spell_brewfest_throw_keg_player);
-    register_spell_script(spell_brewfest_botm_weak_alcohol);
-    register_spell_script(spell_brewfest_botm_empty_bottle_throw_resolve);
-    register_aura_script(spell_brewfest_botm_bloated);
-    register_aura_script(spell_brewfest_botm_internal_combustion);
-    register_spell_script(spell_brewfest_botm_teach_language);
-    register_aura_script(spell_brewfest_botm_the_beast_within);
-    register_aura_script(spell_brewfest_botm_gassy);
-    register_spell_script(spell_brewfest_botm_jungle_madness);
+    new aura_script<spell_brewfest_giddyup>("spell_brewfest_giddyup");
+    new aura_script<spell_brewfest_ram>("spell_brewfest_ram");
+    new aura_script<spell_brewfest_ram_fatigue>("spell_brewfest_ram_fatigue");
+    new aura_script<spell_brewfest_apple_trap>("spell_brewfest_apple_trap");
+    new spell_script<spell_brewfest_throw_keg_player>("spell_brewfest_throw_keg_player");
+    new spell_script<spell_brewfest_botm_weak_alcohol>("spell_brewfest_botm_weak_alcohol");
+    new spell_script<spell_brewfest_botm_empty_bottle_throw_resolve>("spell_brewfest_botm_empty_bottle_throw_resolve");
+    new aura_script<spell_brewfest_botm_bloated>("spell_brewfest_botm_bloated");
+    new aura_script<spell_brewfest_botm_internal_combustion>("spell_brewfest_botm_internal_combustion");
+    new spell_script<spell_brewfest_botm_teach_language>("spell_brewfest_botm_teach_language");
+    new aura_script<spell_brewfest_botm_the_beast_within>("spell_brewfest_botm_the_beast_within");
+    new aura_script<spell_brewfest_botm_gassy>("spell_brewfest_botm_gassy");
+    new spell_script<spell_brewfest_botm_jungle_madness>("spell_brewfest_botm_jungle_madness");
 
     new at_brewfest_bark();
 

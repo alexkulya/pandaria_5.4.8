@@ -170,74 +170,107 @@ enum HunterSpells
 };
 
 // Glyph of Aspect of the Beast - 125042
-class spell_hun_glyph_of_aspect_of_the_beast : public AuraScript
+class spell_hun_glyph_of_aspect_of_the_beast : public SpellScriptLoader
 {
-    PrepareAuraScript(spell_hun_glyph_of_aspect_of_the_beast);
+    public:
+        spell_hun_glyph_of_aspect_of_the_beast() : SpellScriptLoader("spell_hun_glyph_of_aspect_of_the_beast") { }
 
-    void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-    {
-        if (Player* _player = GetTarget()->ToPlayer())
-            _player->LearnSpell(HUNTER_SPELL_ASPECT_OF_THE_BEAST, false);
-    }
+        class spell_hun_glyph_of_aspect_of_the_beast_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(spell_hun_glyph_of_aspect_of_the_beast_AuraScript);
 
-    void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-    {
-        if (Player* _player = GetTarget()->ToPlayer())
-            if (_player->HasSpell(HUNTER_SPELL_ASPECT_OF_THE_BEAST))
-                _player->RemoveSpell(HUNTER_SPELL_ASPECT_OF_THE_BEAST, false, false);
-    }
+            void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+            {
+                if (Player* _player = GetTarget()->ToPlayer())
+                    _player->LearnSpell(HUNTER_SPELL_ASPECT_OF_THE_BEAST, false);
+            }
 
-    void Register() override
-    {
-        OnEffectApply += AuraEffectApplyFn(spell_hun_glyph_of_aspect_of_the_beast::OnApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
-        OnEffectRemove += AuraEffectRemoveFn(spell_hun_glyph_of_aspect_of_the_beast::OnRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
-    }
+            void OnRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+            {
+                if (Player* _player = GetTarget()->ToPlayer())
+                    if (_player->HasSpell(HUNTER_SPELL_ASPECT_OF_THE_BEAST))
+                        _player->RemoveSpell(HUNTER_SPELL_ASPECT_OF_THE_BEAST, false, false);
+            }
+
+            void Register() override
+            {
+                OnEffectApply += AuraEffectApplyFn(spell_hun_glyph_of_aspect_of_the_beast_AuraScript::OnApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+                OnEffectRemove += AuraEffectRemoveFn(spell_hun_glyph_of_aspect_of_the_beast_AuraScript::OnRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+            }
+        };
+
+        AuraScript* GetAuraScript() const override
+        {
+            return new spell_hun_glyph_of_aspect_of_the_beast_AuraScript();
+        }
 };
 
 // Tracking - 118424
-class spell_hun_tracking : public AuraScript
+class spell_hun_tracking : public SpellScriptLoader
 {
-    PrepareAuraScript(spell_hun_tracking);
+    public:
+        spell_hun_tracking() : SpellScriptLoader("spell_hun_tracking") { }
 
-    void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
-    {
-        if (!GetCaster())
-            return;
-
-        if (Player* _player = GetCaster()->ToPlayer())
+        class spell_hun_tracking_AuraScript : public AuraScript
         {
-            _player->LearnSpell(HUNTER_SPELL_TRACK_BEASTS, false);
-            _player->LearnSpell(HUNTER_SPELL_TRACK_DEMONS, false);
-            _player->LearnSpell(HUNTER_SPELL_TRACK_DRAGONKIN, false);
-            _player->LearnSpell(HUNTER_SPELL_TRACK_ELEMENTALS, false);
-            _player->LearnSpell(HUNTER_SPELL_TRACK_GIANTS, false);
-            _player->LearnSpell(HUNTER_SPELL_TRACK_HUMANOIDS, false);
-            _player->LearnSpell(HUNTER_SPELL_TRACK_UNDEAD, false);
-            _player->LearnSpell(HUNTER_SPELL_TRACK_HIDDEN, false);
-        }
-    }
+            PrepareAuraScript(spell_hun_tracking_AuraScript);
 
-    void Register() override
-    {
-        AfterEffectApply += AuraEffectApplyFn(spell_hun_tracking::OnApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
-    }
+            void OnApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+            {
+                if (!GetCaster())
+                    return;
+
+                if (Player* _player = GetCaster()->ToPlayer())
+                {
+                    _player->LearnSpell(HUNTER_SPELL_TRACK_BEASTS,      false);
+                    _player->LearnSpell(HUNTER_SPELL_TRACK_DEMONS,      false);
+                    _player->LearnSpell(HUNTER_SPELL_TRACK_DRAGONKIN,   false);
+                    _player->LearnSpell(HUNTER_SPELL_TRACK_ELEMENTALS,  false);
+                    _player->LearnSpell(HUNTER_SPELL_TRACK_GIANTS,      false);
+                    _player->LearnSpell(HUNTER_SPELL_TRACK_HUMANOIDS,   false);
+                    _player->LearnSpell(HUNTER_SPELL_TRACK_UNDEAD,      false);
+                    _player->LearnSpell(HUNTER_SPELL_TRACK_HIDDEN,      false);
+                }
+            }
+
+            void Register() override
+            {
+                AfterEffectApply += AuraEffectApplyFn(spell_hun_tracking_AuraScript::OnApply, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+            }
+        };
+
+        AuraScript* GetAuraScript() const override
+        {
+            return new spell_hun_tracking_AuraScript();
+        }
 };
 
 // Dash - 113073
-class spell_hun_dash : public SpellScript
+class spell_hun_dash : public SpellScriptLoader
 {
-    PrepareSpellScript(spell_hun_dash);
+    public:
+        spell_hun_dash() : SpellScriptLoader("spell_hun_dash") { }
 
-    void HandleOnHit()
-    {
-        if (Player* _player = GetCaster()->ToPlayer())
-            _player->RemoveMovementImpairingAuras();
-    }
+        class spell_hun_dash_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_hun_dash_SpellScript);
 
-    void Register() override
-    {
-        OnHit += SpellHitFn(spell_hun_dash::HandleOnHit);
-    }
+            void HandleOnHit()
+            {
+                if (Player* _player = GetCaster()->ToPlayer())
+                    _player->RemoveMovementImpairingAuras();
+            }
+
+            void Register() override
+            {
+                OnHit += SpellHitFn(spell_hun_dash_SpellScript::HandleOnHit);
+            }
+        };
+
+        SpellScript* GetSpellScript() const override
+        {
+            return new spell_hun_dash_SpellScript();
+        }
 };
 
 // 121818 - Stampede
@@ -699,30 +732,41 @@ class spell_hunt_improved_serpent_sting : public AuraScript
 };
 
 // Chimera Shot - 53209
-class spell_hun_chimera_shot : public SpellScript
+class spell_hun_chimera_shot : public SpellScriptLoader
 {
-    PrepareSpellScript(spell_hun_chimera_shot);
+    public:
+        spell_hun_chimera_shot() : SpellScriptLoader("spell_hun_chimera_shot") { }
 
-    void HandleOnHit()
-    {
-        if (Player* _player = GetCaster()->ToPlayer())
+        class spell_hun_chimera_shot_SpellScript : public SpellScript
         {
-            if (Unit* target = GetHitUnit())
+            PrepareSpellScript(spell_hun_chimera_shot_SpellScript);
+
+            void HandleOnHit()
             {
-                AuraEffect const* serpentSting = target->GetAuraEffect(SPELL_HUNT_SERPENT_STING, EFFECT_0, _player->GetGUID());
+                if (Player* _player = GetCaster()->ToPlayer())
+                {
+                    if (Unit* target = GetHitUnit())
+                    {
+                        AuraEffect const* serpentSting = target->GetAuraEffect(SPELL_HUNT_SERPENT_STING, EFFECT_0, _player->GetGUID());
 
-                if (serpentSting)
-                    serpentSting->GetBase()->RefreshDuration();
+                        if (serpentSting)
+                            serpentSting->GetBase()->RefreshDuration();
 
-                _player->CastSpell(_player, HUNTER_SPELL_CHIMERA_SHOT_HEAL, true);
+                        _player->CastSpell(_player, HUNTER_SPELL_CHIMERA_SHOT_HEAL, true);
+                    }
+                }
             }
-        }
-    }
 
-    void Register() override
-    {
-        OnHit += SpellHitFn(spell_hun_chimera_shot::HandleOnHit);
-    }
+            void Register() override
+            {
+                OnHit += SpellHitFn(spell_hun_chimera_shot_SpellScript::HandleOnHit);
+            }
+        };
+
+        SpellScript* GetSpellScript() const override
+        {
+            return new spell_hun_chimera_shot_SpellScript();
+        }
 };
 
 // 53478 - Last Stand
@@ -1032,22 +1076,33 @@ class spell_hun_tame_beast : public SpellScriptLoader
 };
 
 // Dust Cloud - 50285
-class spell_hun_pet_dust_cloud : public SpellScript
+class spell_hun_pet_dust_cloud : public SpellScriptLoader
 {
-    PrepareSpellScript(spell_hun_pet_dust_cloud);
+    public:
+        spell_hun_pet_dust_cloud() : SpellScriptLoader("spell_hun_pet_dust_cloud") { }
 
-    void HandleEffect(SpellEffIndex /*effIndex*/)
-    {
-        auto caster = GetCaster();
-        if (Unit* target = GetHitUnit())
-            for (uint32 i = 0; i < 3; ++i)
-                caster->CastSpell(target, HUNTER_SPELL_WEAKENED_ARMOR, true);
-    }
+        class spell_hun_pet_dust_cloud_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_hun_pet_dust_cloud_SpellScript);
 
-    void Register() override
-    {
-        OnEffectHitTarget += SpellEffectFn(spell_hun_pet_dust_cloud::HandleEffect, EFFECT_0, SPELL_EFFECT_DUMMY);
-    }
+            void HandleEffect(SpellEffIndex /*effIndex*/)
+            {
+                auto caster = GetCaster();
+                if (Unit* target = GetHitUnit())
+                    for (uint32 i = 0; i < 3; ++i)
+                        caster->CastSpell(target, HUNTER_SPELL_WEAKENED_ARMOR, true);
+            }
+
+            void Register() override
+            {
+                OnEffectHitTarget += SpellEffectFn(spell_hun_pet_dust_cloud_SpellScript::HandleEffect, EFFECT_0, SPELL_EFFECT_DUMMY);
+            }
+        };
+
+        SpellScript* GetSpellScript() const override
+        {
+            return new spell_hun_pet_dust_cloud_SpellScript();
+        }
 };
 
 // Explosive Trap - 13812
@@ -3295,105 +3350,105 @@ class spell_hunt_glyph_of_lesser_proportions : public AuraScript
 
 void AddSC_hunter_spell_scripts()
 {
-    register_aura_script(spell_hun_glyph_of_aspect_of_the_beast);
-    register_aura_script(spell_hun_tracking);
-    register_spell_script(spell_hun_dash);
-    register_spell_script(spell_hunt_stampede);
-    register_spell_script(spell_hunt_dire_beast);
-    register_aura_script(spell_hunt_dire_beast_focus_driver);
+    new spell_hun_glyph_of_aspect_of_the_beast();
+    new spell_hun_tracking();
+    new spell_hun_dash();
+    new spell_script<spell_hunt_stampede>("spell_hunt_stampede");
+    new spell_script<spell_hunt_dire_beast>("spell_hunt_dire_beast");
+    new aura_script<spell_hunt_dire_beast_focus_driver>("spell_hunt_dire_beast_focus_driver");
     new spell_hun_focus_fire();
     new spell_hun_frenzy();
-    register_aura_script(spell_hunt_beast_cleave_proc);
-    register_spell_script(spell_hunt_beast_cleave_damage);
-    register_spell_script(spell_hunt_binding_shot_missile);
-    register_aura_script(spell_hunt_binding_shot);
-    register_aura_script(spell_hunt_binding_shot_zone);
-    register_aura_script(spell_hunt_improved_serpent_sting);
-    register_spell_script(spell_hun_chimera_shot);
-    register_spell_script(spell_hunt_last_stand_pet);
-    register_spell_script(spell_hunt_masters_call);
+    new aura_script<spell_hunt_beast_cleave_proc>("spell_hunt_beast_cleave_proc");
+    new spell_script<spell_hunt_beast_cleave_damage>("spell_hunt_beast_cleave_damage");
+    new spell_script<spell_hunt_binding_shot_missile>("spell_hunt_binding_shot_missile");
+    new aura_script<spell_hunt_binding_shot>("spell_hunt_binding_shot");
+    new aura_script<spell_hunt_binding_shot_zone>("spell_hunt_binding_shot_zone");
+    new aura_script<spell_hunt_improved_serpent_sting>("spell_hunt_improved_serpent_sting");
+    new spell_hun_chimera_shot();
+    new spell_script<spell_hunt_last_stand_pet>("spell_hunt_last_stand_pet");
+    new spell_script<spell_hunt_masters_call>("spell_hunt_masters_call");
     new spell_hun_scatter_shot();
     new spell_hun_sniper_training();
     new spell_hun_pet_carrion_feeder();
     new spell_hun_tame_beast();
-    register_spell_script(spell_hun_pet_dust_cloud);
-    register_spell_script(spell_hunt_explosive_trap);
-    register_spell_script(spell_hunt_ice_trap);
+    new spell_hun_pet_dust_cloud();
+    new spell_script<spell_hunt_explosive_trap>("spell_hunt_explosive_trap");
+    new spell_script<spell_hunt_ice_trap>("spell_hunt_ice_trap");
     new atrigger_script<sat_hunt_ice_trap>("sat_hunt_ice_trap");
     new atrigger_script<sat_hunt_ice_trap_black_ice>("sat_hunt_ice_trap_black_ice");
-    register_aura_script(spell_hunt_entrapment);
-    register_aura_script(spell_hunt_wild_quiver);
-    register_aura_script(spell_hunt_glaive_toss);
-    register_spell_script(spell_hunt_glaive_toss_damage);
-    register_spell_script(spell_hunt_glaive_toss_missile);
-    register_spell_script(spell_hunt_steady_cobra_shot);
-    register_aura_script(spell_hunt_cobra_strikes);
-    register_spell_script(spell_hunt_cobra_strikes_stacks);
-    register_aura_script(spell_hunt_lock_and_load);
-    register_spell_script(spell_hunt_lock_and_load_cooldown);
-    register_spell_script(spell_hunt_kill_command);
-    register_spell_script(spell_hunt_kill_command_damage);
-    register_spell_script(spell_hunt_hunters_mark_trigger);
-    register_aura_script(spell_hunt_camouflage_driver);
-    register_aura_script(spell_hunt_camouflage);
-    register_aura_script(spell_hunt_camouflage_invisibility_driver);
-    register_spell_script(spell_hunt_cobra_shot);
-    register_spell_script(spell_hunt_chimera_shot_heal);
-    register_aura_script(spell_hunt_master_marksman);
-    register_aura_script(spell_hunt_ready_set_aim);
-    register_aura_script(spell_hunt_fire);
-    register_spell_script(spell_hunt_fervor);
-    register_spell_script(spell_hunt_multishot);
-    register_aura_script(spell_hunt_steady_focus);
-    register_aura_script(spell_hunt_aspect_of_the_iron_hawk);
-    register_aura_script(spell_hunt_misdirection);
-    register_aura_script(spell_hunt_misdirection_proc);
-    register_spell_script(spell_hunt_pet_basic_attack);
-    register_aura_script(spell_hunt_spirit_bond);
-    register_spell_script(spell_hunt_spirit_bond_heal);
-    register_aura_script(spell_hunt_lynx_rush);
-    register_spell_script(spell_hunt_lynx_rush_selector);
-    register_aura_script(spell_hunt_lynx_rush_dot);
-    register_spell_script(spell_hunt_powershot);
-    register_aura_script(spell_hunt_bestial_wrath);
-    register_spell_script(spell_hunt_beast_within);
-    register_aura_script(spell_hunt_mastery_master_of_the_beasts);
-    register_aura_script(spell_hunt_invigoration);
-    register_aura_script(spell_hunt_thrill_of_the_hunt);
-    register_spell_script(spell_hunt_barrage);
-    register_spell_script(spell_hunt_heart_of_the_phoenix);
-    register_spell_script(spell_hunt_blink_strikes);
-    register_spell_script(spell_hunt_a_murder_of_crows);
-    register_aura_script(spell_hunt_a_murder_of_crows_dot);
-    register_aura_script(spell_hunt_piercing_shots);
-    register_spell_script(spell_hunt_spirit_mend);
-    register_aura_script(spell_hunt_spirit_mend_hot);
-    register_spell_script(spell_spirit_beast_blessing);
+    new aura_script<spell_hunt_entrapment>("spell_hunt_entrapment");
+    new aura_script<spell_hunt_wild_quiver>("spell_hunt_wild_quiver");
+    new aura_script<spell_hunt_glaive_toss>("spell_hunt_glaive_toss");
+    new spell_script<spell_hunt_glaive_toss_damage>("spell_hunt_glaive_toss_damage");
+    new spell_script<spell_hunt_glaive_toss_missile>("spell_hunt_glaive_toss_missile");
+    new spell_script<spell_hunt_steady_cobra_shot>("spell_hunt_steady_cobra_shot");
+    new aura_script<spell_hunt_cobra_strikes>("spell_hunt_cobra_strikes");
+    new spell_script<spell_hunt_cobra_strikes_stacks>("spell_hunt_cobra_strikes_stacks");
+    new aura_script<spell_hunt_lock_and_load>("spell_hunt_lock_and_load");
+    new spell_script<spell_hunt_lock_and_load_cooldown>("spell_hunt_lock_and_load_cooldown");
+    new spell_script<spell_hunt_kill_command>("spell_hunt_kill_command");
+    new spell_script<spell_hunt_kill_command_damage>("spell_hunt_kill_command_damage");
+    new spell_script<spell_hunt_hunters_mark_trigger>("spell_hunt_hunters_mark_trigger");
+    new aura_script<spell_hunt_camouflage_driver>("spell_hunt_camouflage_driver");
+    new aura_script<spell_hunt_camouflage>("spell_hunt_camouflage");
+    new aura_script<spell_hunt_camouflage_invisibility_driver>("spell_hunt_camouflage_invisibility_driver");
+    new spell_script<spell_hunt_cobra_shot>("spell_hunt_cobra_shot");
+    new spell_script<spell_hunt_chimera_shot_heal>("spell_hunt_chimera_shot_heal");
+    new aura_script<spell_hunt_master_marksman>("spell_hunt_master_marksman");
+    new aura_script<spell_hunt_ready_set_aim>("spell_hunt_ready_set_aim");
+    new aura_script<spell_hunt_fire>("spell_hunt_fire");
+    new spell_script<spell_hunt_fervor>("spell_hunt_fervor");
+    new spell_script<spell_hunt_multishot>("spell_hunt_multishot");
+    new aura_script<spell_hunt_steady_focus>("spell_hunt_steady_focus");
+    new aura_script<spell_hunt_aspect_of_the_iron_hawk>("spell_hunt_aspect_of_the_iron_hawk");
+    new aura_script<spell_hunt_misdirection>("spell_hunt_misdirection");
+    new aura_script<spell_hunt_misdirection_proc>("spell_hunt_misdirection_proc");
+    new spell_script<spell_hunt_pet_basic_attack>("spell_hunt_pet_basic_attack");
+    new aura_script<spell_hunt_spirit_bond>("spell_hunt_spirit_bond");
+    new spell_script<spell_hunt_spirit_bond_heal>("spell_hunt_spirit_bond_heal");
+    new aura_script<spell_hunt_lynx_rush>("spell_hunt_lynx_rush");
+    new spell_script<spell_hunt_lynx_rush_selector>("spell_hunt_lynx_rush_selector");
+    new aura_script<spell_hunt_lynx_rush_dot>("spell_hunt_lynx_rush_dot");
+    new spell_script<spell_hunt_powershot>("spell_hunt_powershot");
+    new aura_script<spell_hunt_bestial_wrath>("spell_hunt_bestial_wrath");
+    new spell_script<spell_hunt_beast_within>("spell_hunt_beast_within");
+    new aura_script<spell_hunt_mastery_master_of_the_beasts>("spell_hunt_mastery_master_of_the_beasts");
+    new aura_script<spell_hunt_invigoration>("spell_hunt_invigoration");
+    new aura_script<spell_hunt_thrill_of_the_hunt>("spell_hunt_thrill_of_the_hunt");
+    new spell_script<spell_hunt_barrage>("spell_hunt_barrage");
+    new spell_script<spell_hunt_heart_of_the_phoenix >("spell_hunt_heart_of_the_phoenix");
+    new spell_script<spell_hunt_blink_strikes>("spell_hunt_blink_strikes");
+    new spell_script<spell_hunt_a_murder_of_crows>("spell_hunt_a_murder_of_crows");
+    new aura_script<spell_hunt_a_murder_of_crows_dot>("spell_hunt_a_murder_of_crows_dot");
+    new aura_script<spell_hunt_piercing_shots>("spell_hunt_piercing_shots");
+    new spell_script<spell_hunt_spirit_mend>("spell_hunt_spirit_mend");
+    new aura_script<spell_hunt_spirit_mend_hot>("spell_hunt_spirit_mend_hot");
+    new spell_script<spell_spirit_beast_blessing>("spell_spirit_beast_blessing");
     new atrigger_script<sat_hunt_flare>("sat_hunt_flare");
-    register_aura_script(spell_hunt_glyph_of_mend_pet);
-    register_aura_script(spell_hunt_aspect_of_the_cheetah);
-    register_spell_script(spell_hunt_posthaste);
-    register_spell_script(spell_hunt_narrow_escape);
-    register_spell_script(spell_hunt_narrow_escape_selector);
-    register_spell_script(spell_hunt_froststorm_breath);
-    register_spell_script(spell_hunt_thunderstomp);
-    register_spell_script(spell_hunt_burrow_attack);
-    register_spell_script(spell_glyph_of_the_aspects);
-    register_spell_script(spell_hunt_dissmiss_pet);
-    register_spell_script(spell_hunt_fireworks);
-    register_spell_script(spell_hunt_fetch);
-    register_spell_script(spell_hunt_fetch_loot);
-    register_spell_script(spell_hunt_glyph_of_distracting_shot);
-    register_spell_script(spell_hunt_mastery_roar_target_fix);
-    register_aura_script(spell_hunt_glyph_of_distracting_shot_taunt);
-    register_aura_script(spell_hunt_deterrence);
-    register_aura_script(spell_hunt_glyph_of_deterrence);
-    register_creature_script(npc_pet_hunter_snake);
-    register_creature_script(npc_hunter_thunderhawk);
-    register_aura_script(spell_hunt_crowd_control_dot_hack);
-    register_aura_script(spell_hunt_t16_2p_bonus);
-    register_aura_script(spell_hunt_t16_4p_bonus);
-    register_aura_script(spell_hunt_t16_4p_bonus_survival);
-    register_aura_script(spell_hunt_remove_brutal_kinship);
-    register_aura_script(spell_hunt_glyph_of_lesser_proportions);
+    new aura_script<spell_hunt_glyph_of_mend_pet>("spell_hunt_glyph_of_mend_pet");
+    new aura_script<spell_hunt_aspect_of_the_cheetah>("spell_hunt_aspect_of_the_cheetah");
+    new spell_script<spell_hunt_posthaste>("spell_hunt_posthaste");
+    new spell_script<spell_hunt_narrow_escape>("spell_hunt_narrow_escape");
+    new spell_script<spell_hunt_narrow_escape_selector>("spell_hunt_narrow_escape_selector");
+    new spell_script<spell_hunt_froststorm_breath>("spell_hunt_froststorm_breath");
+    new spell_script<spell_hunt_thunderstomp>("spell_hunt_thunderstomp");
+    new spell_script<spell_hunt_burrow_attack>("spell_hunt_burrow_attack");
+    new spell_script<spell_glyph_of_the_aspects>("spell_glyph_of_the_aspects");
+    new spell_script<spell_hunt_dissmiss_pet>("spell_hunt_dissmiss_pet");
+    new spell_script<spell_hunt_fireworks>("spell_hunt_fireworks");
+    new spell_script<spell_hunt_fetch>("spell_hunt_fetch");
+    new spell_script<spell_hunt_fetch_loot>("spell_hunt_fetch_loot");
+    new spell_script<spell_hunt_glyph_of_distracting_shot>("spell_hunt_glyph_of_distracting_shot");
+    new spell_script<spell_hunt_mastery_roar_target_fix>("spell_hunt_mastery_roar_target_fix");
+    new aura_script<spell_hunt_glyph_of_distracting_shot_taunt>("spell_hunt_glyph_of_distracting_shot_taunt");
+    new aura_script<spell_hunt_deterrence>("spell_hunt_deterrence");
+    new aura_script<spell_hunt_glyph_of_deterrence>("spell_hunt_glyph_of_deterrence");
+    new creature_script<npc_pet_hunter_snake>("npc_pet_hunter_snake");
+    new creature_script<npc_hunter_thunderhawk>("npc_hunter_thunderhawk");
+    new aura_script<spell_hunt_crowd_control_dot_hack>("spell_hunt_crowd_control_dot_hack");
+    new aura_script<spell_hunt_t16_2p_bonus>("spell_hunt_t16_2p_bonus");
+    new aura_script<spell_hunt_t16_4p_bonus>("spell_hunt_t16_4p_bonus");
+    new aura_script<spell_hunt_t16_4p_bonus_survival>("spell_hunt_t16_4p_bonus_survival");
+    new aura_script<spell_hunt_remove_brutal_kinship>("spell_hunt_remove_brutal_kinship");
+    new aura_script<spell_hunt_glyph_of_lesser_proportions>("spell_hunt_glyph_of_lesser_proportions");
 }

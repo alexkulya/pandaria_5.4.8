@@ -667,7 +667,7 @@ void AddSC_wandering_island_east()
     new npc_tushui_monk();
     new spell_rock_jump();
     new npc_shu_water_spirit();
-    register_aura_script(spell_shu_benediction);
+    new aura_script<spell_shu_benediction>("spell_shu_benediction");
     new spell_grab_carriage();
     new npc_nourished_yak();
     new npc_water_spirit_dailo();

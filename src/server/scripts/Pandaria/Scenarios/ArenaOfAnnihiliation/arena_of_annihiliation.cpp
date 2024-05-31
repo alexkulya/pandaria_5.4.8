@@ -1482,14 +1482,14 @@ void AddSC_arena_of_annihiliation()
     new npc_arena_of_annihiliation_assassin();
     new spell_arena_of_annihiliation_stone_spin();
     new spell_arena_of_annihiliation_ill_tempered();
-    register_spell_script(spell_arena_of_annihiliation_headbutt);
+    new spell_script<spell_arena_of_annihiliation_headbutt>("spell_arena_of_annihiliation_headbutt");
     new spell_arena_of_annihiliation_slam();
-    register_aura_script(spell_arena_of_annihiliation_flame_line);
+    new aura_script<spell_arena_of_annihiliation_flame_line>("spell_arena_of_annihiliation_flame_line");
     new spell_arena_of_annihiliation_flame_wall();
     new spell_arena_of_annihiliation_trailblaze();
     new spell_arena_of_annihiliation_serpent_kick();
-    register_spell_script(spell_arena_of_annihiliation_lava_pool);
-    register_aura_script(spell_arena_of_annihiliation_whirlpool);
+    new spell_script<spell_arena_of_annihiliation_lava_pool>("spell_arena_of_annihiliation_lava_pool");
+    new aura_script<spell_arena_of_annihiliation_whirlpool>("spell_arena_of_annihiliation_whirlpool");
     new atrigger_script<sat_arena_of_annihiliation_whirlpool>("sat_arena_of_annihiliation_whirlpool");
     new go_arena_of_annihiliation_gong();
 }

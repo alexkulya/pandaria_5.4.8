@@ -2186,7 +2186,7 @@ void AddSC_halls_of_reflection()
     new npc_frostworn_general();
     new npc_spiritual_reflection();
     new npc_queldelar();
-    register_creature_script(npc_queldelar_weapon);
+    new creature_script<npc_queldelar_weapon>("npc_queldelar_weapon");
     new go_ice_wall();
     new transport_hor_gunship();
     new at_hor_shadow_throne_entrance();

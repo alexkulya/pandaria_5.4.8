@@ -794,6 +794,6 @@ void AddSC_tanaris()
     new npc_OOX17();
     new npc_steamwheedle_balloon();
     new npc_steamwheedle_balloon_escort();
-    register_creature_script(npc_balloon_throwing_station);
-    register_spell_script(spell_emergency_rocket_pack);
+    new creature_script<npc_balloon_throwing_station>("npc_balloon_throwing_station");
+    new spell_script<spell_emergency_rocket_pack>("spell_emergency_rocket_pack");
 }

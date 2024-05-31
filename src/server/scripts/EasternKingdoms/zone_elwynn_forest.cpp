@@ -1200,16 +1200,16 @@ struct npc_minion_of_hogger : public ScriptedAI
 
 void AddSC_elwynn_forest()
 {
-    register_creature_script(npc_stormwind_infantry);
-    register_creature_script(npc_blackrock_battle_worg);
-    register_creature_script(npc_brother_paxton);
-    register_creature_script(npc_blackrock_spy);
-    register_creature_script(npc_goblin_assassin);
-    register_creature_script(npc_blackrock_invader);
+    new creature_script<npc_stormwind_infantry>("npc_stormwind_infantry");
+    new creature_script<npc_blackrock_battle_worg>("npc_blackrock_battle_worg");
+    new creature_script<npc_brother_paxton>("npc_brother_paxton");
+    new creature_script<npc_blackrock_spy>("npc_blackrock_spy");
+    new creature_script<npc_goblin_assassin>("npc_goblin_assassin");
+    new creature_script<npc_blackrock_invader>("npc_blackrock_invader");
     new npc_king_varian_wrynn();
     new npc_varian_wrynn_alliance_way_quest();
     new npc_ayisa_jojo_alliance_way_quest();
-    register_spell_script(spell_summ_varian_alliance_way);
-    register_creature_script(npc_hogger);
-    register_creature_script(npc_minion_of_hogger);
+    new spell_script<spell_summ_varian_alliance_way>("spell_summ_varian_alliance_way");
+    new creature_script<npc_hogger>("npc_hogger");
+    new creature_script<npc_minion_of_hogger>("npc_minion_of_hogger");
 }

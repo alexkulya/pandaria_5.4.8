@@ -904,14 +904,14 @@ class sat_blanches_elexir : public IAreaTriggerAura
 void AddSC_brewing_storm_scenario()
 {
     new npc_brewmaster_blanche();
-    register_creature_script(npc_viletongue_sauroks);
-    register_creature_script(npc_brewkeg);
-    register_creature_script(npc_viletongue_stalker);
-    register_creature_script(npc_borokhula_the_destroyer);
-    register_creature_script(npc_viletongue_decimator);
+    new creature_script<npc_viletongue_sauroks>("npc_viletongue_sauroks");
+    new creature_script<npc_brewkeg>("npc_brewkeg");
+    new creature_script<npc_viletongue_stalker>("npc_viletongue_stalker");
+    new creature_script<npc_borokhula_the_destroyer>("npc_borokhula_the_destroyer");
+    new creature_script<npc_viletongue_decimator>("npc_viletongue_decimator");
 
-    register_spell_script(spell_brewing_storm_lightning_impact);
-    register_aura_script(spell_brewing_storm_lightning_channel);
-    register_spell_script(spell_boomer_brew_strike);
+    new spell_script<spell_brewing_storm_lightning_impact>("spell_brewing_storm_lightning_impact");
+    new aura_script<spell_brewing_storm_lightning_channel>("spell_brewing_storm_lightning_channel");
+    new spell_script<spell_boomer_brew_strike>("spell_boomer_brew_strike");
     new atrigger_script<sat_blanches_elexir>("sat_blanches_elexir");
 }

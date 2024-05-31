@@ -1533,8 +1533,8 @@ void AddSC_scarlet_halls()
     new npc_scarlet_pupil();
     new spell_throw_bucket_meaty_dog();
     new spell_scarlet_halls_dog_food();
-    register_aura_script(spell_scarlet_halls_archery_target_vehicle_override);
-    register_spell_script(spell_scarlet_halls_archery_target_vehicle_override_eff);
-    register_aura_script(spell_scarlet_halls_heroic_defense);
+    new aura_script<spell_scarlet_halls_archery_target_vehicle_override>("spell_scarlet_halls_archery_target_vehicle_override");
+    new spell_script<spell_scarlet_halls_archery_target_vehicle_override_eff>("spell_scarlet_halls_archery_target_vehicle_override_eff");
+    new aura_script<spell_scarlet_halls_heroic_defense>("spell_scarlet_halls_heroic_defense");
     new AreaTrigger_at_commander_lindon();
 }

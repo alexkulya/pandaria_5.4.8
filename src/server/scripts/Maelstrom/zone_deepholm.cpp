@@ -344,9 +344,9 @@ class spell_deepholm_intro_teleport : public AuraScript
 void AddSC_deepholm()
 {
     new boss_aeonaxx();
-    register_creature_script(npc_deepholm_wyvern);
-    register_creature_script(npc_deepholm_wyvern_ride);
-    register_creature_script(npc_maelstorm_aggra);
+    new creature_script<npc_deepholm_wyvern>("npc_deepholm_wyvern");
+    new creature_script<npc_deepholm_wyvern_ride>("npc_deepholm_wyvern_ride");
+    new creature_script<npc_maelstorm_aggra>("npc_maelstorm_aggra");
 
-    register_aura_script(spell_deepholm_intro_teleport);
+    new aura_script<spell_deepholm_intro_teleport>("spell_deepholm_intro_teleport");
 }

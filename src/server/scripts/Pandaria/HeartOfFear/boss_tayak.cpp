@@ -1721,8 +1721,8 @@ void AddSC_boss_tayak()
     new npc_storm_unleashed_tornado();      // 63278
     new npc_gale_winds_stalker();           // 63292
     new npc_su_player_vehicle();            // 63567
-    register_creature_script(npc_burning_brazier);
-    register_creature_script(npc_achiev_brazier);
+    new creature_script<npc_burning_brazier>("npc_burning_brazier");
+    new creature_script<npc_achiev_brazier>("npc_achiev_brazier");
 
     new spell_tayak_wind_step();            // 123175
     new spell_tayak_wind_step_eff();        // 123459

@@ -1663,37 +1663,6 @@ public:
 
 };
 
-/*######
-## npc the lich king in dawn of light
-######*/
-
-class npc_the_lich_king_tirion_dawn : public CreatureScript
-{
-public:
-    npc_the_lich_king_tirion_dawn() : CreatureScript("npc_the_lich_king_tirion_dawn") { }
-
-    CreatureAI* GetAI(Creature* creature) const override
-    {
-        return new npc_the_lich_king_tirion_dawnAI(creature);
-    }
-
-    struct npc_the_lich_king_tirion_dawnAI : public ScriptedAI
-    {
-        npc_the_lich_king_tirion_dawnAI(Creature* creature) : ScriptedAI(creature)
-        {
-            Reset();
-        }
-
-        void Reset() override { }
-
-        void AttackStart(Unit* /*who*/) { } // very sample, just don't make them aggreesive override
-
-        void UpdateAI(uint32 /*diff*/) override { }
-
-        void JustDied(Unit* /*killer*/) override { }
-    };
-};
-
 // Patchwerk 31099
 struct npc_patchwerk_death_knight_quests : public ScriptedAI
 {
@@ -1718,9 +1687,33 @@ struct npc_patchwerk_death_knight_quests : public ScriptedAI
     }
 };
 
+/*######
+## npc the lich king in dawn of light
+######*/
+class npc_the_lich_king_tirion_dawn : public CreatureScript
+{
+public:
+    npc_the_lich_king_tirion_dawn() : CreatureScript("npc_the_lich_king_tirion_dawn") { }
+
+    CreatureAI* GetAI(Creature* creature) const override
+    {
+        return new npc_the_lich_king_tirion_dawnAI(creature);
+    }
+
+    struct npc_the_lich_king_tirion_dawnAI : public ScriptedAI
+    {
+        npc_the_lich_king_tirion_dawnAI(Creature* creature) : ScriptedAI(creature) { Reset(); }
+        void Reset() override { }
+        void AttackStart(Unit* /*who*/) { } // very sample, just don't make them aggreesive override
+        void UpdateAI(uint32 /*diff*/) override { }
+        void JustDied(Unit* /*killer*/) override { }
+    };
+
+};
+
 void AddSC_the_scarlet_enclave_c5()
 {
     new npc_highlord_darion_mograine();
     new npc_the_lich_king_tirion_dawn();
-    register_creature_script(npc_patchwerk_death_knight_quests);
+    new creature_script<npc_patchwerk_death_knight_quests>("npc_patchwerk_death_knight_quests");
 }

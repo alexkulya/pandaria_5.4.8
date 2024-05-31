@@ -211,6 +211,6 @@ class npc_stranglethorn_priestess_hurala : public CreatureScript
 void AddSC_stranglethorn_vale()
 {
     new npc_yenniku();
-    register_creature_script(npc_stranglethorn_emerine);
+    new creature_script<npc_stranglethorn_emerine>("npc_stranglethorn_emerine");
     new npc_stranglethorn_priestess_hurala();
 }

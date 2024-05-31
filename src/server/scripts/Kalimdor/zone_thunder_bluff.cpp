@@ -117,5 +117,5 @@ struct npc_baine_bloodhoof : public ScriptedAI
 
 void AddSC_thunder_bluff()
 {
-    register_creature_script(npc_baine_bloodhoof);
+    new creature_script<npc_baine_bloodhoof>("npc_baine_bloodhoof");
 }

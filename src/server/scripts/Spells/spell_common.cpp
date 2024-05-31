@@ -717,26 +717,26 @@ class spell_preparation : public AuraScript
 
 void AddSC_common_spells_script()
 {
-    register_aura_script(spell_common_battle_fatigue);
-    register_aura_script(spell_common_battle_fatigue_fix);
-    register_aura_script(spell_common_player_damage_reduction_fix);
-    register_aura_script(spell_common_player_damage_reduction_fix_90);
-    register_aura_script(spell_common_vengeance);
-    register_aura_script(spell_common_run_speed_marker);
-    register_spell_script(spell_common_combo_point_delayed);
-    register_spell_script(spell_common_smart_heal_one_target);
-    register_spell_script(spell_common_smart_heal_six_targets);
-    register_spell_script(spell_common_smart_heal_raid_25);
-    register_spell_script(spell_common_dispel_reset_cooldown);
-    register_spell_script(spell_common_raid_haste_30);
-    register_spell_script(spell_common_remove_snare_root);
-    register_spell_script(spell_common_inherit_masters_threat_list);
-    register_aura_script(spell_common_stealth_proc);
-    register_aura_script(spell_common_spell_slow_players);
-    register_spell_script(spell_common_check_destination_availability);
-    register_spell_script(spell_common_unlearn_talent);
-    register_spell_script(spell_monk_glyph_of_paralysis);
-    register_spell_script(spell_hunt_glyph_of_solace);
-    register_spell_script(spell_mage_glyph_of_polymorph);
-    register_aura_script(spell_preparation);
+    new aura_script<spell_common_battle_fatigue>("spell_common_battle_fatigue");
+    new aura_script<spell_common_battle_fatigue_fix>("spell_common_battle_fatigue_fix");
+    new aura_script<spell_common_player_damage_reduction_fix>("spell_common_player_damage_reduction_fix");
+    new aura_script<spell_common_player_damage_reduction_fix_90>("spell_common_player_damage_reduction_fix_90");
+    new aura_script<spell_common_vengeance>("spell_common_vengeance");
+    new aura_script<spell_common_run_speed_marker>("spell_common_run_speed_marker");
+    new spell_script<spell_common_combo_point_delayed>("spell_common_combo_point_delayed");
+    new spell_script<spell_common_smart_heal_one_target>("spell_common_smart_heal_one_target");
+    new spell_script<spell_common_smart_heal_six_targets>("spell_common_smart_heal_six_targets");
+    new spell_script<spell_common_smart_heal_raid_25>("spell_common_smart_heal_raid_25");
+    new spell_script<spell_common_dispel_reset_cooldown>("spell_common_dispel_reset_cooldown");
+    new spell_script<spell_common_raid_haste_30>("spell_common_raid_haste_30");
+    new spell_script<spell_common_remove_snare_root>("spell_common_remove_snare_root");
+    new spell_script<spell_common_inherit_masters_threat_list>("spell_common_inherit_masters_threat_list");
+    new aura_script<spell_common_stealth_proc>("spell_common_stealth_proc");
+    new aura_script<spell_common_spell_slow_players>("spell_common_spell_slow_players");
+    new spell_script<spell_common_check_destination_availability>("spell_common_check_destination_availability");
+    new spell_script<spell_common_unlearn_talent>("spell_common_unlearn_talent");
+    new spell_script<spell_monk_glyph_of_paralysis>("spell_monk_glyph_of_paralysis");
+    new spell_script<spell_hunt_glyph_of_solace>("spell_hunt_glyph_of_solace");
+    new spell_script<spell_mage_glyph_of_polymorph>("spell_mage_glyph_of_polymorph");
+    new aura_script<spell_preparation>("spell_preparation");
 }

@@ -818,18 +818,18 @@ class spell_secret_ing_waiting_for_food : public AuraScript
 
 void AddSC_secret_ingridient()
 {
-    register_creature_script(npc_secret_ing_sungshin_iron_paw);
-    register_creature_script(npc_secret_ing_noodle_stand);
-    register_creature_script(npc_secret_ing_scholar);
-    register_creature_script(npc_secret_ing_seat);
-    register_creature_script(npc_secret_ing_noodle_soup);
+    new creature_script<npc_secret_ing_sungshin_iron_paw>("npc_secret_ing_sungshin_iron_paw");
+    new creature_script<npc_secret_ing_noodle_stand>("npc_secret_ing_noodle_stand");
+    new creature_script<npc_secret_ing_scholar>("npc_secret_ing_scholar");
+    new creature_script<npc_secret_ing_seat>("npc_secret_ing_seat");
+    new creature_script<npc_secret_ing_noodle_soup>("npc_secret_ing_noodle_soup");
     new npc_secret_ing_sungshin_ironpaw_queue();
 
-    register_spell_script(spell_secret_ing_make_noodle_soup);
-    register_spell_script(spell_secret_ing_eating_noodle_soup);
-    register_aura_script(spell_secret_ing_eating_noodle_soup_aura);
-    register_aura_script(spell_secret_ing_eating_great_noodle_soup_aura);
-    register_spell_script(spell_secret_ing_make_great_noodle_soup);
-    register_aura_script(spell_secret_ing_soup_timer);
-    register_aura_script(spell_secret_ing_waiting_for_food);
+    new spell_script<spell_secret_ing_make_noodle_soup>("spell_secret_ing_make_noodle_soup");
+    new spell_script<spell_secret_ing_eating_noodle_soup>("spell_secret_ing_eating_noodle_soup");
+    new aura_script<spell_secret_ing_eating_noodle_soup_aura>("spell_secret_ing_eating_noodle_soup_aura");
+    new aura_script<spell_secret_ing_eating_great_noodle_soup_aura>("spell_secret_ing_eating_great_noodle_soup_aura");
+    new spell_script<spell_secret_ing_make_great_noodle_soup>("spell_secret_ing_make_great_noodle_soup");
+    new aura_script<spell_secret_ing_soup_timer>("spell_secret_ing_soup_timer");
+    new aura_script<spell_secret_ing_waiting_for_food>("spell_secret_ing_waiting_for_food");
 }

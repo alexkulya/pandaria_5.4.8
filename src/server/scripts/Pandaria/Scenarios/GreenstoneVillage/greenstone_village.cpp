@@ -1277,7 +1277,7 @@ void AddSC_greenstone_village()
     new spell_greenstone_jade_pounce();
     new spell_terror_shards_triggered_effect();
     new spell_greenstone_brew_bubble();
-    register_spell_script(spell_greenstone_volatile_greenstone_brew);
+    new spell_script<spell_greenstone_volatile_greenstone_brew>("spell_greenstone_volatile_greenstone_brew");
     new AreaTrigger_at_greenstone_village();
     new AreaTrigger_at_behind_tzu();
 }

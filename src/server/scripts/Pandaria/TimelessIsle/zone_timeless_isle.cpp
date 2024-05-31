@@ -4998,7 +4998,7 @@ class sat_sprite_ward : public IAreaTriggerAura
 
 void AddSC_timeless_isle()
 {
-    register_creature_script(npc_timeless_turtles);
+    new creature_script<npc_timeless_turtles>("npc_timeless_turtles");
     new npc_timeless_faction_sentries();
     new npc_timeless_adders();
     new npc_timeless_yaks();
@@ -5023,8 +5023,8 @@ void AddSC_timeless_isle()
     new npc_karkanos();
     new npc_zesqua();
     new npc_jademist_dancer();
-    register_creature_script(npc_cranegnasher);
-    register_creature_script(npc_nice_sprite);
+    new creature_script<npc_cranegnasher>("npc_cranegnasher");
+    new creature_script<npc_nice_sprite>("npc_nice_sprite");
     new npc_ordon_candlekeeper();
     new npc_garnia();
     new npc_rattleskew();
@@ -5036,12 +5036,12 @@ void AddSC_timeless_isle()
     new npc_hopswift();
     new npc_emperor_shaohao();
     new npc_senior_historian_evelyna();
-    register_creature_script(npc_highwind_albatross);
+    new creature_script<npc_highwind_albatross>("npc_highwind_albatross");
     new npc_fin_longpaw();
     new npc_zarhym_1();
     new npc_zarhym_2();
-    register_creature_script(npc_dread_ship_vazuvius);
-    register_creature_script(npc_evermaw);
+    new creature_script<npc_dread_ship_vazuvius>("npc_dread_ship_vazuvius");
+    new creature_script<npc_evermaw>("npc_evermaw");
 
     new go_time_lost_shrine_ti();
     new go_gleaming_crane_statue_ti();
@@ -5057,17 +5057,17 @@ void AddSC_timeless_isle()
     new spell_timeless_isle_cauterize();
     new spell_timeless_isle_burning_fury();
     new spell_spirit_world();
-    register_spell_script(spell_create_timeless_item);
-    register_spell_script(spell_create_timeless_item_from_cache);
-    register_aura_script(spell_bloody_coin_proc);
-    register_aura_script(spell_censer_of_eternal_agony);
-    register_aura_script(spell_book_of_the_ages);
-    register_spell_script(spell_eternitys_embrace);
-    register_aura_script(spell_gulp_frog_toxin);
-    register_spell_script(spell_cat_defensive_leap);
-    register_spell_script(spell_timelesscat_pounce);
-    register_spell_script(spell_evermaw_time_portals);
-    register_aura_script(spell_crane_wings);
+    new spell_script<spell_create_timeless_item>("spell_create_timeless_item");
+    new spell_script<spell_create_timeless_item_from_cache>("spell_create_timeless_item_from_cache");
+    new aura_script<spell_bloody_coin_proc>("spell_bloody_coin_proc");
+    new aura_script<spell_censer_of_eternal_agony>("spell_censer_of_eternal_agony");
+    new aura_script<spell_book_of_the_ages>("spell_book_of_the_ages");
+    new spell_script<spell_eternitys_embrace>("spell_eternitys_embrace");
+    new aura_script<spell_gulp_frog_toxin>("spell_gulp_frog_toxin");
+    new spell_script<spell_cat_defensive_leap>("spell_cat_defensive_leap");
+    new spell_script<spell_timelesscat_pounce>("spell_timelesscat_pounce");
+    new spell_script<spell_evermaw_time_portals>("spell_evermaw_time_portals");
+    new aura_script<spell_crane_wings>("spell_crane_wings");
 
     new at_path_to_ordos();
 

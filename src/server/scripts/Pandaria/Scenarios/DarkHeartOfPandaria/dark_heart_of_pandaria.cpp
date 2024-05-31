@@ -865,21 +865,21 @@ class sat_darkheart_heart_corruption_visual : public IAreaTriggerAura
 
 void AddSC_dark_heart_of_pandaria()
 {
-    register_creature_script(npc_darkheart_earthborn_hatred);
-    register_creature_script(npc_darkheart_fiery_anger);
-    register_creature_script(npc_darkheart_urtharges_the_destroyer);
+    new creature_script<npc_darkheart_earthborn_hatred>("npc_darkheart_earthborn_hatred");
+    new creature_script<npc_darkheart_fiery_anger>("npc_darkheart_fiery_anger");
+    new creature_script<npc_darkheart_urtharges_the_destroyer>("npc_darkheart_urtharges_the_destroyer");
     new npc_darkheart_grizzle_gearslip();
-    register_creature_script(npc_darkheart_mouth_of_terror);
+    new creature_script<npc_darkheart_mouth_of_terror>("npc_darkheart_mouth_of_terror");
     new npc_darkheart_crafty_the_ambitious();
-    register_creature_script(npc_darkheart_echo_of_yshaarj);
-    register_creature_script(npc_darkheart_malkorok);
+    new creature_script<npc_darkheart_echo_of_yshaarj>("npc_darkheart_echo_of_yshaarj");
+    new creature_script<npc_darkheart_malkorok>("npc_darkheart_malkorok");
 
-    register_aura_script(spell_darkheart_detonate);
-    register_aura_script(spell_darkheart_urtharges_shield_eff);
-    register_spell_script(spell_darkheart_rupture_line_launcher);
-    register_spell_script(spell_darkheart_detonate_eff);
-    register_aura_script(spell_darkheart_dark_blood);
-    register_spell_script(spell_darkheart_dark_blood_eff);
+    new aura_script<spell_darkheart_detonate>("spell_darkheart_detonate");
+    new aura_script<spell_darkheart_urtharges_shield_eff>("spell_darkheart_urtharges_shield_eff");
+    new spell_script<spell_darkheart_rupture_line_launcher>("spell_darkheart_rupture_line_launcher");
+    new spell_script<spell_darkheart_detonate_eff>("spell_darkheart_detonate_eff");
+    new aura_script<spell_darkheart_dark_blood>("spell_darkheart_dark_blood");
+    new spell_script<spell_darkheart_dark_blood_eff>("spell_darkheart_dark_blood_eff");
     new atrigger_script<sat_darkheart_artifact>("sat_darkheart_artifact");
     new atrigger_script<sat_darkheart_heart_corruption_visual>("sat_darkheart_heart_corruption_visual");
 }

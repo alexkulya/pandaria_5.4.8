@@ -751,7 +751,7 @@ class go_bristlelimb_cage : public GameObjectScript
 
 void AddSC_azuremyst_isle()
 {
-    register_creature_script(npc_draenei_survivor);
+    new creature_script<npc_draenei_survivor>("npc_draenei_survivor");
     new npc_engineer_spark_overgrind();
     new npc_injured_draenei();
     new npc_magwin();

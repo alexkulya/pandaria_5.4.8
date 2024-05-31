@@ -1065,5 +1065,5 @@ void AddSC_boss_ultraxion()
     new spell_ultraxion_last_defender_of_azeroth_dummy();
     new spell_ultraxion_heroic_will();
     new spell_ultraxion_time_loop();
-    register_aura_script(spell_ultraxion_achievement_aura);
+    new aura_script<spell_ultraxion_achievement_aura>("spell_ultraxion_achievement_aura");
 }

@@ -1769,6 +1769,7 @@ void AddSC_boss_sartharion()
     new npc_flame_tsunami();
     new npc_twilight_fissure();
     new npc_twilight_whelp();
-    register_spell_script(spell_sartharion_flame_tsunami);
+
+    new spell_script<spell_sartharion_flame_tsunami>("spell_sartharion_flame_tsunami");
     new achievement_gonna_go_when_the_volcano_blows();
 }

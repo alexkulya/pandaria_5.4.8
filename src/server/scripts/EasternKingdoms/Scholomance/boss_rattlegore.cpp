@@ -397,5 +397,5 @@ void AddSC_boss_rattlegore()
     new npc_bone_pile();
     new spell_bone_spike();
     new spell_soul_flame();
-    register_aura_script(spell_rattlegore_rusting);
+    new aura_script<spell_rattlegore_rusting>("spell_rattlegore_rusting");
 }

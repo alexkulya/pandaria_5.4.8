@@ -47,90 +47,101 @@ enum NalakEvents
     EVENT_LIGHTNING_TETHER
 };
 
-struct boss_nalak : public ScriptedAI
+class boss_nalak : public CreatureScript
 {
-    boss_nalak(Creature* creature) : ScriptedAI(creature) { }
-
-    EventMap events;
-
-    void Reset() override
-    {
-        Talk(SAY_NALAK_INTRO);
-
-        me->SetFloatValue(UNIT_FIELD_BOUNDING_RADIUS, 100.0f);
-        me->SetFloatValue(UNIT_FIELD_COMBAT_REACH, 25.0f);
-        events.Reset();
-    }
-
-    void EnterCombat(Unit* /*who*/) override
-    {
-        Talk(SAY_NALAK_AGGRO);
-        DoCast(me, SPELL_STATIC_SHIELD, true);
-
-        events.ScheduleEvent(EVENT_ARC_NOVA, 39s);
-        events.ScheduleEvent(EVENT_LIGHTNING_TETHER, 28s);
-        events.ScheduleEvent(EVENT_STORM_CLOUD, randtime(15s, 17s));
-    }
-
-    void EnterEvadeMode() override
-    {
-        ScriptedAI::EnterEvadeMode();
-
-        uint32 corpseDelay = me->GetCorpseDelay();
-        uint32 respawnDelay = me->GetRespawnDelay();
-
-        me->SetCorpseDelay(1);
-        me->SetRespawnDelay(29);
-
-        me->DespawnOrUnsummon();
-
-        me->SetCorpseDelay(corpseDelay);
-        me->SetRespawnDelay(respawnDelay);
-    }
-
-    void KilledUnit(Unit* /*victim*/) override
-    {
-        Talk(SAY_NALAK_SLAY);
-    }
-
-    void JustDied(Unit* /*killer*/) override
-    {
-        Talk(SAY_NALAK_DEATH);
-    }
-
-    void UpdateAI(uint32 diff) override
-    {
-        if (!UpdateVictim())
-            return;
-
-        events.Update(diff);
-
-        if (me->HasUnitState(UNIT_STATE_CASTING))
-            return;
-
-        while (uint32 eventId = events.ExecuteEvent())
+    public:
+        boss_nalak() : CreatureScript("boss_nalak") { }
+    
+        struct boss_nalakAI : public ScriptedAI
         {
-            switch (eventId)
-            {
-                case EVENT_ARC_NOVA:
-                    DoCast(me, SPELL_ARC_NOVA);
-                    events.ScheduleEvent(EVENT_ARC_NOVA, 42s);
-                    break;
-                case EVENT_LIGHTNING_TETHER:
-                    Talk(SAY_NALAK_LIGHTNING_TETHER);
-                    DoCast(me, SPELL_LIGHTNING_TETHER);
-                    events.ScheduleEvent(EVENT_LIGHTNING_TETHER, 35s);
-                    break;
-                case EVENT_STORM_CLOUD:
-                    Talk(SAY_NALAK_STORMCLOUD);
-                    DoCast(me, SPELL_STORM_CLOUD);
-                    events.ScheduleEvent(EVENT_STORM_CLOUD, 24s);
-                    break;
-            }
-        }
+            boss_nalakAI(Creature* creature) : ScriptedAI(creature) { }
 
-        DoMeleeAttackIfReady();
-    }
+            EventMap events;
+
+            void Reset() override
+            {
+                Talk(SAY_NALAK_INTRO);
+
+                me->SetFloatValue(UNIT_FIELD_BOUNDING_RADIUS, 100.0f);
+                me->SetFloatValue(UNIT_FIELD_COMBAT_REACH, 25.0f);
+                events.Reset();
+            }
+    
+            void EnterCombat(Unit* /*who*/) override
+            {
+                Talk(SAY_NALAK_AGGRO);
+                DoCast(me, SPELL_STATIC_SHIELD, true);
+
+                events.ScheduleEvent(EVENT_ARC_NOVA, 39s);
+                events.ScheduleEvent(EVENT_LIGHTNING_TETHER, 28s);
+                events.ScheduleEvent(EVENT_STORM_CLOUD, randtime(15s, 17s));
+            }
+
+            void EnterEvadeMode() override
+            {
+                ScriptedAI::EnterEvadeMode();
+
+                uint32 corpseDelay = me->GetCorpseDelay();
+                uint32 respawnDelay = me->GetRespawnDelay();
+
+                me->SetCorpseDelay(1);
+                me->SetRespawnDelay(29);
+
+                me->DespawnOrUnsummon();
+
+                me->SetCorpseDelay(corpseDelay);
+                me->SetRespawnDelay(respawnDelay);
+            }
+    
+            void KilledUnit(Unit* /*victim*/) override
+            {
+                Talk(SAY_NALAK_SLAY);
+            }
+    
+            void JustDied(Unit* /*killer*/) override
+            {
+                Talk(SAY_NALAK_DEATH);
+            }
+    
+            void UpdateAI(uint32 diff) override
+            {
+                if (!UpdateVictim())
+                    return;
+                
+                events.Update(diff);
+
+                if (me->HasUnitState(UNIT_STATE_CASTING))
+                    return;
+
+                while (uint32 eventId = events.ExecuteEvent())
+                {
+                    switch (eventId)
+                    {
+                        case EVENT_ARC_NOVA:
+                            DoCast(me, SPELL_ARC_NOVA);
+                            events.ScheduleEvent(EVENT_ARC_NOVA, 42s);
+                            break;
+                        case EVENT_LIGHTNING_TETHER:
+                            Talk(SAY_NALAK_LIGHTNING_TETHER);
+                            DoCast(me, SPELL_LIGHTNING_TETHER);
+                            events.ScheduleEvent(EVENT_LIGHTNING_TETHER, 35s);
+                            break;
+                        case EVENT_STORM_CLOUD:
+                            Talk(SAY_NALAK_STORMCLOUD);
+                            DoCast(me, SPELL_STORM_CLOUD);
+                            events.ScheduleEvent(EVENT_STORM_CLOUD, 24s);
+                            break;
+                    }
+                }
+    
+                DoMeleeAttackIfReady();
+            }
+        };
+    
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return new boss_nalakAI(creature);
+        }
 };
 
 class spell_nalak_lightning_tether : public SpellScript
@@ -264,9 +275,9 @@ class spell_nalak_storm_cloud : public SpellScript
 
 void AddSC_boss_nalak()
 {
-    register_creature_script(boss_nalak);
-    register_spell_script(spell_nalak_lightning_tether);
-    register_spell_script(spell_nalak_lightning_tether_eff);
-    register_spell_script(spell_nalak_lightning_teather_hit_eff);
-    register_spell_script(spell_nalak_storm_cloud);
+    new boss_nalak();
+    new spell_script<spell_nalak_lightning_tether>("spell_nalak_lightning_tether");
+    new spell_script<spell_nalak_lightning_tether_eff>("spell_nalak_lightning_tether_eff");
+    new spell_script<spell_nalak_lightning_teather_hit_eff>("spell_nalak_lightning_teather_hit_eff");
+    new spell_script<spell_nalak_storm_cloud>("spell_nalak_storm_cloud");
 }

@@ -137,5 +137,5 @@ private:
 
 void AddSC_boss_galvangar()
 {
-    register_creature_script(boss_galvangar);
+    new creature_script<boss_galvangar>("boss_galvangar");
 }

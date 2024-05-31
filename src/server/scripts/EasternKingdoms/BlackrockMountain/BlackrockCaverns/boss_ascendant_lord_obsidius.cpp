@@ -263,5 +263,5 @@ void AddSC_boss_ascendant_lord_obsidius()
 {
     new boss_ascendant_lord_obsidius();
     new npc_shadow_of_obsidius();
-    register_aura_script(spell_crepuscular_veil);
+    new aura_script<spell_crepuscular_veil>("spell_crepuscular_veil");
 }

@@ -1082,5 +1082,5 @@ void AddSC_boss_argent_challenge()
     new npc_memory();
     new npc_argent_soldier();
     new spell_light_rain();
-    register_spell_script(spell_paletress_summon_memory);
+    new spell_script<spell_paletress_summon_memory>("spell_paletress_summon_memory");
 }

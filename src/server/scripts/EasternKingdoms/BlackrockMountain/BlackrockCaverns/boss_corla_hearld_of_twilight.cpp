@@ -484,5 +484,5 @@ void AddSC_boss_corla_herald_of_twilight()
     new boss_corla_herald_of_twilight();
     new npc_twilight_zealot();
     new npc_corla_netheressence_trigger();
-    register_aura_script(spell_twilight_evolution);
+    new aura_script<spell_twilight_evolution>("spell_twilight_evolution");
 }

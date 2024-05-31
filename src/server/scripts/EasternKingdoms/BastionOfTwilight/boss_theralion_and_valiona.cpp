@@ -1535,7 +1535,7 @@ void AddSC_boss_theralion_and_valiona()
 {
     new boss_theralion();
     new boss_valiona();
-    register_creature_script(npc_dazzling_destruction_stalker);
+    new creature_script<npc_dazzling_destruction_stalker>("npc_dazzling_destruction_stalker");
     new npc_fabolous_flames();
     new npc_valiona_twilight_flames();
     new npc_unstable_twilight();
@@ -1543,12 +1543,12 @@ void AddSC_boss_theralion_and_valiona()
     //new npc_theralion_flight_target_stalker();
     new npc_twilight_sentry();
     new npc_twilight_rift();
-    register_creature_script(npc_theralion_twilight_fiend);
+    new creature_script<npc_theralion_twilight_fiend>("npc_theralion_twilight_fiend");
     new spell_valiona_blackout();
     new spell_valiona_twilight_meteorite();
     new spell_valiona_twilight_flame_dmg_1();
     new spell_valiona_twilight_flame_dmg_2();
-    register_spell_script(spell_theralion_dazzling_destruction);
+    new spell_script<spell_theralion_dazzling_destruction>("spell_theralion_dazzling_destruction");
     new spell_theralion_dazzling_destruction_dmg();
     new spell_valiona_devouring_flames_dmg();
     new spell_twilight_shift_stack();

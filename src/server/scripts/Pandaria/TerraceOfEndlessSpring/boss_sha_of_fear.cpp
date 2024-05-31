@@ -2446,7 +2446,7 @@ void AddSC_boss_sha_of_fear()
     new spell_breath_of_fear();
     new spell_conjure_terror_spawn();
     new spell_penetrating_bolt();
-    register_spell_script(spell_ominous_caclke_target);
+    new spell_script<spell_ominous_caclke_target>("spell_ominous_caclke_target");
     new npc_sha_of_fear_bowman();
     new spell_dread_spray_stackable();
     new spell_dread_spray();
@@ -2454,16 +2454,16 @@ void AddSC_boss_sha_of_fear()
     new spell_sha_globe_regen();
     new spell_breath_of_fear_fear();
     new spell_death_blossom();
-    register_spell_script(spell_teleport_to_dread_expanse);
-    register_spell_script(spell_huddle_in_terror);
+    new spell_script<spell_teleport_to_dread_expanse>("spell_teleport_to_dread_expanse");
+    new spell_script<spell_huddle_in_terror>("spell_huddle_in_terror");
     new spell_sha_waterspout();
     new spell_sha_submerge();
     new spell_sha_emerge();
-    register_spell_script(spell_transfer_light);
+    new spell_script<spell_transfer_light>("spell_transfer_light");
     new spell_light_wall_active();
-    register_aura_script(spell_ominous_cackle_morph);
-    register_aura_script(spell_heroic_transition_screen_eff);
-    register_spell_script(spell_heroic_sha_spine);
-    register_aura_script(spell_heroic_fading_light);
-    register_aura_script(spell_sha_of_fear_dread_spray_fear);
+    new aura_script<spell_ominous_cackle_morph>("spell_ominous_cackle_morph");
+    new aura_script<spell_heroic_transition_screen_eff>("spell_heroic_transition_screen_eff");
+    new spell_script<spell_heroic_sha_spine>("spell_heroic_sha_spine");
+    new aura_script<spell_heroic_fading_light>("spell_heroic_fading_light");
+    new aura_script<spell_sha_of_fear_dread_spray_fear>("spell_sha_of_fear_dread_spray_fear");
 }

@@ -49,5 +49,5 @@ class spell_thousand_needles_i_scream_cryocannon : public SpellScript
 
 void AddSC_thousand_needles()
 {
-    register_spell_script(spell_thousand_needles_i_scream_cryocannon);
+    new spell_script<spell_thousand_needles_i_scream_cryocannon>("spell_thousand_needles_i_scream_cryocannon");
 }

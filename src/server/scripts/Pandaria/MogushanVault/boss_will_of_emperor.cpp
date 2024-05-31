@@ -2244,15 +2244,15 @@ void AddSC_boss_will_of_emperor()
     new spell_magnetized_qin();
     new spell_titan_gas();
     new spell_titan_gas2();
-    register_spell_script(spell_titan_gas_players);
-    register_spell_script(spell_energizing_smash);
+    new spell_script<spell_titan_gas_players>("spell_titan_gas_players");
+    new spell_script<spell_energizing_smash>("spell_energizing_smash");
     new spell_woe_focused();
     new spell_devastation_arc_visual();
-    register_spell_script(spell_woe_stomp);
+    new spell_script<spell_woe_stomp>("spell_woe_stomp");
     new spell_woe_energy_of_creation();
     new spell_woe_energy_of_creation_visual();
-    register_spell_script(spell_devastating_arc_eff);
-    register_spell_script(spell_growing_opportunity);
+    new spell_script<spell_devastating_arc_eff>("spell_devastating_arc_eff");
+    new spell_script<spell_growing_opportunity>("spell_growing_opportunity");
     new go_ancien_control_console();
     new achievement_show_me_you_moves();
 }

@@ -1996,15 +1996,15 @@ void AddSC_boss_spirit_kings()
     new npc_undying_shadow();
     new spell_massive_attacks();
     new spell_volley();
-    register_spell_script(spell_pinned_down);
-    register_aura_script(spell_pinned_down_aura);
+    new spell_script<spell_pinned_down>("spell_pinned_down");
+    new aura_script<spell_pinned_down_aura>("spell_pinned_down_aura");
     new spell_maddening_shout();
     new spell_crazed_cowardice();
     new spell_crazy_thought();
     new spell_coalescing_shadow();
     new spell_pillage_charge();
     new spell_impervious_shield();
-    register_aura_script(spell_sleight_of_hand);
+    new aura_script<spell_sleight_of_hand>("spell_sleight_of_hand");
     new spell_pillage();
-    register_aura_script(spell_shield_of_darkness);
+    new aura_script<spell_shield_of_darkness>("spell_shield_of_darkness");
 }

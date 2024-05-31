@@ -370,7 +370,7 @@ private:
 
 void AddSC_dalaran()
 {
-    register_creature_script(npc_mageguard_dalaran);
-    register_creature_script(npc_minigob_manabonk);
-    register_creature_script(npc_archmage_landalock);
+    new creature_script<npc_mageguard_dalaran>("npc_mageguard_dalaran");
+    new creature_script<npc_minigob_manabonk>("npc_minigob_manabonk");
+    new creature_script<npc_archmage_landalock>("npc_archmage_landalock");
 }

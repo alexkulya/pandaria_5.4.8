@@ -303,6 +303,6 @@ class spell_summon_lurker_tempest : public SpellScript
 void AddSC_boss_grand_vizier_ertan()
 {
     new boss_grand_vizier_ertan();
-    register_creature_script(npc_ertan_vortex);
-    register_spell_script(spell_summon_lurker_tempest);
+    new creature_script<npc_ertan_vortex>("npc_ertan_vortex");
+    new spell_script<spell_summon_lurker_tempest>("spell_summon_lurker_tempest");
 }

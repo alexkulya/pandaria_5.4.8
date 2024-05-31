@@ -1808,9 +1808,9 @@ void AddSC_boss_feng()
     new spell_feng_spirit_bolts();
     new spell_feng_wildfire_spark();
     new spell_siphoning_shield_vehicle();
-    register_aura_script(spell_shroud_of_reversal);
-    register_spell_script(spell_siphoning_shield_missle);
-    register_spell_script(spell_achievement_anything_you_can_do_i_can_do_better);
+    new aura_script<spell_shroud_of_reversal>("spell_shroud_of_reversal");
+    new spell_script<spell_siphoning_shield_missle>("spell_siphoning_shield_missle");
+    new spell_script<spell_achievement_anything_you_can_do_i_can_do_better>("spell_achievement_anything_you_can_do_i_can_do_better");
     new atrigger_script<sat_nullification_barrier>("sat_nullification_barrier");
     new go_inversion;
     new go_cancel;

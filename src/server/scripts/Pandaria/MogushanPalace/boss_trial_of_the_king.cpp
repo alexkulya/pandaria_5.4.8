@@ -2180,8 +2180,8 @@ void AddSC_boss_trial_of_the_king()
     new spell_magnetic_pull();
     new spell_whirling_dervish();
     new spell_whirling_dervish_knock();
-    register_aura_script(spell_shockwave_kuai);
-    register_spell_script(spell_shockwave_kuai_eff);
+    new aura_script<spell_shockwave_kuai>("spell_shockwave_kuai");
+    new spell_script<spell_shockwave_kuai_eff>("spell_shockwave_kuai_eff");
     new spell_shockwave_targeting();
     new spell_haiyan_conflagrate_targeting();
     new spell_haiyan_conflagrate_aura();

@@ -2460,8 +2460,8 @@ void AddSC_heart_of_fear()
     new npc_amber_searsting();
     new npc_korthik_warsinger();
     new npc_zarthik_augurer();
-    register_creature_script(npc_zephyr_tornado);
+    new creature_script<npc_zephyr_tornado>("npc_zephyr_tornado");
     new npc_heart_of_fear_kazrik();
-    register_spell_script(spell_searing_slash);
-    register_spell_script(spell_amber_volley);
+    new spell_script<spell_searing_slash>("spell_searing_slash");
+    new spell_script<spell_amber_volley>("spell_amber_volley");
 }

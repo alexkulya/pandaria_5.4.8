@@ -192,9 +192,9 @@ struct npc_crashing_thrashin_flyer : public NullCreatureAI
 
 void AddSC_event_winter_veil()
 {
-    register_spell_script(spell_racer_slam_slamming);
-    register_spell_script(spell_racer_slam_hit_resolve);
-    register_spell_script(spell_racer_slam_death_scene_car_flip_get_dest);
-    register_spell_script(spell_rocket_attack);
-    register_creature_script(npc_crashing_thrashin_flyer);
+    new spell_script<spell_racer_slam_slamming>("spell_racer_slam_slamming");
+    new spell_script<spell_racer_slam_hit_resolve>("spell_racer_slam_hit_resolve");
+    new spell_script<spell_racer_slam_death_scene_car_flip_get_dest>("spell_racer_slam_death_scene_car_flip_get_dest");
+    new spell_script<spell_rocket_attack>("spell_rocket_attack");
+    new creature_script<npc_crashing_thrashin_flyer>("npc_crashing_thrashin_flyer");
 }

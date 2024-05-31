@@ -33,6 +33,16 @@ enum ShaOfAngerSpellData
     SPELL_UNLEASHED_WRATH                   = 119488
 };
 
+enum ShaOfAngerTexts
+{
+    TALK_INTRO                              = 0,
+    TALK_ANGER                              = 1,
+    TALK_SPAWN                              = 2,
+    TALK_RESET                              = 3,
+    TALK_SLAY                               = 4,
+    TALK_AGGRO                              = 5
+};
+
 enum ShaOfAngerEvents
 {
     EVENT_GROWING_ANGER_WARNING             = 1,
@@ -45,207 +55,208 @@ enum ShaOfAngerEvents
     EVENT_RANGE_ATTACK                      = 8
 };
 
-enum ShaOfAngerTexts
-{
-    TALK_INTRO                              = 0,
-    TALK_ANGER                              = 1,
-    TALK_SPAWN                              = 2,
-    TALK_RESET                              = 3,
-    TALK_SLAY                               = 4,
-    TALK_AGGRO                              = 5
-};
-
 enum ShaOfAngerCreatures
 {
     NPC_SHA_OF_ANGER                        = 56439,
     NPC_SHA_OF_ANGER_TRIGGER                = 61523
 };
 
-struct boss_sha_of_anger : public ScriptedAI
+class boss_sha_of_anger : public CreatureScript
 {
-    boss_sha_of_anger(Creature* creature) : ScriptedAI(creature), summons(me) { }
+    public:
+        boss_sha_of_anger() : CreatureScript("boss_sha_of_anger") { }
 
-    int _targetCount;
-    int _cloudCount;
-    int _maxTargetCount;
-    uint8 _dominateMindCount;
-    uint32 timer;
-    bool phase1;
-    bool range;
-    std::list<uint64> targetedDominationPlayerGuids;
-    EventMap events;
-    SummonList summons;
-
-    void Reset() override
-    {
-        SetCombatMovement(false);
-        me->SetPowerType(POWER_RAGE);
-        me->SetPower(POWER_RAGE, 0);
-
-        me->SetFloatValue(UNIT_FIELD_BOUNDING_RADIUS, 37.0f);
-        me->SetFloatValue(UNIT_FIELD_COMBAT_REACH, 37.0f);
-
-        summons.DespawnAll();
-
-        phase1 = true;
-        range = false;
-        _dominateMindCount = 2;
-        _cloudCount = 3;
-        _targetCount = 0;
-        _maxTargetCount = 5;
-        timer = 0;
-
-        Talk(TALK_RESET);
-
-        events.Reset();
-        events.ScheduleEvent(EVENT_GROWING_ANGER_WARNING, 19s);
-        events.ScheduleEvent(EVENT_SPAWN, 8s);
-        events.ScheduleEvent(EVENT_UNLEASHED_WRATH, 1min + 12s);
-        events.ScheduleEvent(EVENT_BERSERK, 15min);
-        events.ScheduleEvent(EVENT_UPDATE_RAGE, 4s);
-
-        targetedDominationPlayerGuids.clear();
-
-        std::list<Player*> playerList;
-        GetPlayerListInGrid(playerList, me, 100.0f);
-
-        for (auto&& itr : playerList)
-            itr->RemoveAura(SPELL_DOMINATE_MIND);
-    }
-
-    void KilledUnit(Unit* victim) override
-    {
-        if (victim->GetTypeId() == TYPEID_PLAYER)
-            Talk(TALK_SLAY);
-    }
-
-    void EnterCombat(Unit* /*who*/) override
-    {
-        Talk(TALK_AGGRO);
-    }
-
-    void JustSummoned(Creature* summon) override
-    {
-        summons.Summon(summon);
-
-        // Clouds
-        if (summon->GetEntry() == NPC_SHA_OF_ANGER_TRIGGER)
+        struct boss_sha_of_anger_AI : public ScriptedAI
         {
-            summon->CastSpell(summon, SPELL_BITTER_THOUGHTS, true);
-            summon->DespawnOrUnsummon(60 * IN_MILLISECONDS);
-        }
-    }
+            boss_sha_of_anger_AI(Creature* creature) : ScriptedAI(creature), summons(me) { }
 
-    void SummonedCreatureDespawn(Creature* summon) override
-    {
-        summons.Despawn(summon);
-    }
+            int _targetCount;
+            int _cloudCount;
+            int _maxTargetCount;
+            uint8 _dominateMindCount;
+            uint32 timer;
+            bool phase1;
+            bool range;
+            std::list<uint64> targetedDominationPlayerGuids;
+            EventMap events;
+            SummonList summons;
 
-    void UpdateAI(uint32 diff) override
-    {
-        if (!UpdateVictim())
-            return;
-
-        if (me->HasUnitState(UNIT_STATE_CASTING))
-            return;
-
-        events.Update(diff);
-
-        while (uint32 eventId = events.ExecuteEvent())
-        {
-            switch (eventId)
+            void Reset() override
             {
-                case EVENT_GROWING_ANGER_WARNING:
-                {
-                    Talk(TALK_ANGER);
+                SetCombatMovement(false);
+                me->SetPowerType(POWER_RAGE);
+                me->SetPower(POWER_RAGE, 0);
 
-                    for (uint8 i = 0; i < _dominateMindCount; ++i)
-                    {
-                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM))
-                        {
-                            targetedDominationPlayerGuids.push_back(target->GetGUID());
-                            me->CastSpell(target, SPELL_DOMINATE_MIND_WARNING, true);
-                        }
-                    }
+                me->SetFloatValue(UNIT_FIELD_BOUNDING_RADIUS, 37.0f);
+                me->SetFloatValue(UNIT_FIELD_COMBAT_REACH, 37.0f);
 
-                    events.ScheduleEvent(EVENT_GROWING_ANGER, 6s);
-                    break;
-                }
-                case EVENT_GROWING_ANGER:
-                {
-                    for (auto&& guid : targetedDominationPlayerGuids)
-                        if (Player* target = ObjectAccessor::GetPlayer(*me, guid))
-                            if (me->GetVictim() || target != me->GetVictim())
-                                me->CastSpell(target, SPELL_DOMINATE_MIND, false);
+                summons.DespawnAll();
 
-                    events.ScheduleEvent(EVENT_GROWING_ANGER_WARNING, 19s);
-                    break;
-                }
-                case EVENT_SPAWN:
-                {
-                    Talk(TALK_SPAWN);
+                phase1 = true;
+                range = false;
+                _dominateMindCount = 2;
+                _cloudCount = 3;
+                _targetCount = 0;
+                _maxTargetCount = 5;
+                timer = 0;
 
-                    for (uint8 i = 0; i < _cloudCount; ++i)
-                        if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
-                            me->CastSpell(target, SPELL_ENDLESS_RAGE, false);
+                Talk(TALK_RESET);
 
-                    events.ScheduleEvent(EVENT_SPAWN, 15s);
-                    break;
-                }
-                case EVENT_UPDATE_RAGE:
-                {
-                    if (phase1)
-                        timer += 20;
-                    else
-                        timer -= 20;
+                events.Reset();
+                events.ScheduleEvent(EVENT_GROWING_ANGER_WARNING, 19s);
+                events.ScheduleEvent(EVENT_SPAWN, 8s);
+                events.ScheduleEvent(EVENT_UNLEASHED_WRATH, 1min + 12s);
+                events.ScheduleEvent(EVENT_BERSERK, 15min);
+                events.ScheduleEvent(EVENT_UPDATE_RAGE, 4s);
 
-                    switch (me->GetPower(POWER_RAGE))
-                    {
-                        case 0:
-                            phase1 = true;
-                            break;
-                        case 1000:
-                            if (!phase1)
-                                break;
+                targetedDominationPlayerGuids.clear();
 
-                            phase1 = false;
-                            DoCast(me, SPELL_UNLEASHED_WRATH);
-                            break;
-                    }
+                std::list<Player*> playerList;
+                GetPlayerListInGrid(playerList, me, 100.0f);
 
-                    me->SetPower(POWER_RAGE, timer > 100 ? 100 : timer < 0 ? 0 : timer);
-                    events.ScheduleEvent(EVENT_UPDATE_RAGE, 1s);
-                    break;
-                }
-                case EVENT_BERSERK:
-                {
-                    me->CastSpell(me, SPELL_BERSERK, false);
-                    break;
-                }
-                case EVENT_RANGE_ATTACK:
-                {
-                    if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
-                    {
-                        me->CastSpell(target, SPELL_SHADOW_BOLT_ANGER, false);
-                        me->AddAura(SPELL_SEETHE_AURA, target);
-                    }
-
-                    range = false;
-                    break;
-                }
-                default:
-                    break;
+                for (auto&& itr : playerList)
+                    itr->RemoveAura(SPELL_DOMINATE_MIND);
             }
-        }
 
-        if (me->GetVictim() && !me->IsWithinMeleeRange(me->GetVictim(), 37.5f) && !range)
+            void KilledUnit(Unit* victim) override
+            {
+                if (victim->GetTypeId() == TYPEID_PLAYER)
+                    Talk(TALK_SLAY);
+            }
+
+            void EnterCombat(Unit* /*who*/) override
+            {
+                Talk(TALK_AGGRO);
+            }
+
+            void JustSummoned(Creature* summon) override
+            {
+                summons.Summon(summon);
+
+                // Clouds
+                if (summon->GetEntry() == NPC_SHA_OF_ANGER_TRIGGER)
+                {
+                    summon->CastSpell(summon, SPELL_BITTER_THOUGHTS, true);
+                    summon->DespawnOrUnsummon(60 * IN_MILLISECONDS);
+                }
+            }
+
+            void SummonedCreatureDespawn(Creature* summon) override
+            {
+                summons.Despawn(summon);
+            }
+
+            void UpdateAI(uint32 diff) override
+            {
+                if (!UpdateVictim())
+                    return;
+
+                if (me->HasUnitState(UNIT_STATE_CASTING))
+                    return;
+
+                events.Update(diff);
+
+                while (uint32 eventId = events.ExecuteEvent())
+                {
+                    switch (eventId)
+                    {
+                        case EVENT_GROWING_ANGER_WARNING:
+                        {
+                            Talk(TALK_ANGER);
+
+                            for (uint8 i = 0; i < _dominateMindCount; ++i)
+                            {
+                                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM))
+                                {
+                                    targetedDominationPlayerGuids.push_back(target->GetGUID());
+                                    me->CastSpell(target, SPELL_DOMINATE_MIND_WARNING, true);
+                                }
+                            }
+
+                            events.ScheduleEvent(EVENT_GROWING_ANGER, 6s);
+                            break;
+                        }
+                        case EVENT_GROWING_ANGER:
+                        {
+                            for (auto&& guid : targetedDominationPlayerGuids)
+                                if (Player* target = ObjectAccessor::GetPlayer(*me, guid))
+                                    if (me->GetVictim() || target != me->GetVictim())
+                                        me->CastSpell(target, SPELL_DOMINATE_MIND, false);
+
+                            events.ScheduleEvent(EVENT_GROWING_ANGER_WARNING, 19s);
+                            break;
+                        }
+                        case EVENT_SPAWN:
+                        {
+                            Talk(TALK_SPAWN);
+
+                            for (uint8 i = 0; i < _cloudCount; ++i)
+                                if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))
+                                    me->CastSpell(target, SPELL_ENDLESS_RAGE, false);
+
+                            events.ScheduleEvent(EVENT_SPAWN, 15s);
+                            break;
+                        }
+                        case EVENT_UPDATE_RAGE:
+                        {
+                            if (phase1)
+                                timer += 20;
+                            else
+                                timer -= 20;
+
+                            switch (me->GetPower(POWER_RAGE))
+                            {
+                                case 0:
+                                    phase1 = true;
+                                    break;
+                                case 1000:
+                                    if (!phase1)
+                                        break;
+
+                                    phase1 = false;
+                                    DoCast(me, SPELL_UNLEASHED_WRATH);
+                                    break;
+                            }
+
+                            me->SetPower(POWER_RAGE, timer > 100 ? 100 : timer < 0 ? 0 : timer);
+                            events.ScheduleEvent(EVENT_UPDATE_RAGE, 1s);
+                            break;
+                        }
+                        case EVENT_BERSERK:
+                        {
+                            me->CastSpell(me, SPELL_BERSERK, false);
+                            break;
+                        }
+                        case EVENT_RANGE_ATTACK:
+                        {
+                            if (Unit* target = SelectTarget(SELECT_TARGET_TOPAGGRO))
+                            {
+                                me->CastSpell(target, SPELL_SHADOW_BOLT_ANGER, false);
+                                me->AddAura(SPELL_SEETHE_AURA, target);
+                            }
+
+                            range = false;
+                            break;
+                        }
+                        default:
+                            break;
+                    }
+                }
+
+                if (me->GetVictim() && !me->IsWithinMeleeRange(me->GetVictim(), 37.5f) && !range)
+                {
+                    range = true;
+                    events.ScheduleEvent(EVENT_RANGE_ATTACK, 2s);
+                }
+
+                DoMeleeAttackIfReady();
+            }
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
         {
-            range = true;
-            events.ScheduleEvent(EVENT_RANGE_ATTACK, 2s);
+            return new boss_sha_of_anger_AI(creature);
         }
-
-        DoMeleeAttackIfReady();
-    }
 };
 
 struct npc_sha_of_anger_bunny : public ScriptedAI
@@ -360,8 +371,8 @@ class spell_sha_of_anger_overcome_by_anger : public AuraScript
 
 void AddSC_boss_sha_of_anger()
 {
-    register_creature_script(boss_sha_of_anger);
-    register_creature_script(npc_sha_of_anger_bunny);
-    register_aura_script(spell_sha_of_anger_aggressive_behaviour);
-    register_aura_script(spell_sha_of_anger_overcome_by_anger);
+    new boss_sha_of_anger();
+    new creature_script<npc_sha_of_anger_bunny>("npc_sha_of_anger_bunny");
+    new aura_script<spell_sha_of_anger_aggressive_behaviour>("spell_sha_of_anger_aggressive_behaviour");
+    new aura_script<spell_sha_of_anger_overcome_by_anger>("spell_sha_of_anger_overcome_by_anger");   
 }

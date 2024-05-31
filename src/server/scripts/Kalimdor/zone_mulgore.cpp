@@ -148,5 +148,5 @@ private:
 void AddSC_mulgore()
 {
     new npc_skorn_whitecloud();
-    register_creature_script(npc_mulgore_captured_brave);
+    new creature_script<npc_mulgore_captured_brave>("npc_mulgore_captured_brave");
 }

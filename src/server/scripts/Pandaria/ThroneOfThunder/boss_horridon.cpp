@@ -2305,11 +2305,11 @@ void AddSC_boss_horridon()
     new npc_war_god_jalak();
 
     // trash/mobs
-    register_creature_script(npc_horridon_trashs);
+    new creature_script<npc_horridon_trashs>("npc_horridon_trashs");
     new npc_horridon_summons();
     new npc_zandalari_dinomancer();
-    register_creature_script(npc_direhorn_spirit);
-    register_creature_script(npc_living_poison);
+    new creature_script<npc_direhorn_spirit>("npc_direhorn_spirit");
+    new creature_script<npc_living_poison>("npc_living_poison");
     new npc_venomous_effusion();
     new npc_amani_shi_warbear();
    
@@ -2319,13 +2319,13 @@ void AddSC_boss_horridon()
     // Spells
     new spell_horridon_chain_lightning();
     new spell_control_horridon();
-    register_spell_script(spell_horridon_sand_trap);
-    register_aura_script(spell_headache);
+    new spell_script<spell_horridon_sand_trap>("spell_horridon_sand_trap");
+    new aura_script<spell_headache>("spell_headache");
     new spell_double_swipe_aura();
-    register_spell_script(spell_tribe_orb_of_control);
-    register_spell_script(spell_horridon_dire_call);
-    register_spell_script(spell_horridon_summon_direhorn_spririt_selector);
-    register_aura_script(spell_horridon_weak_link);
+    new spell_script<spell_tribe_orb_of_control>("spell_tribe_orb_of_control");
+    new spell_script<spell_horridon_dire_call>("spell_horridon_dire_call");
+    new spell_script<spell_horridon_summon_direhorn_spririt_selector>("spell_horridon_summon_direhorn_spririt_selector");
+    new aura_script<spell_horridon_weak_link>("spell_horridon_weak_link");
 
     // AreaTriggers
     new AreaTrigger_at_forward_jalak();

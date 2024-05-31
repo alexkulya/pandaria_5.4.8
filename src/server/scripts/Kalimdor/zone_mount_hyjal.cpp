@@ -1081,13 +1081,13 @@ void AddSC_mount_hyjal()
     new npc_flame_lieutenant();
     new npc_morthis_whisperwing();
     new npc_baron_geddon();
-    register_creature_script(npc_hyjal_aronus);
-    register_creature_script(npc_hyjal_aronus_ride);
+    new creature_script<npc_hyjal_aronus>("npc_hyjal_aronus");
+    new creature_script<npc_hyjal_aronus_ride>("npc_hyjal_aronus_ride");
 
     new at_king_of_the_spider_hill();
     new spell_sethrias_roost_squad_aura();
     new spell_weakening();
     new spell_geddon_inferno();
-    register_aura_script(spell_twilight_firelance_equipped);
+    new aura_script<spell_twilight_firelance_equipped>("spell_twilight_firelance_equipped");
     new AreaTrigger_at_hyjal_alysra();
 }

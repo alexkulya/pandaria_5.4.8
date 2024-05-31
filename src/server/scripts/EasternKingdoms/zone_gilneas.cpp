@@ -2592,37 +2592,37 @@ public:
 
 void AddSC_gilneas()
 {
-    register_creature_script(npc_gilneas_crow);
-    register_creature_script(npc_gilneas_city_guard_gate);
-    register_creature_script(npc_prince_liam_greymane);
-    register_creature_script(npc_worgen_runt);
-    register_spell_script(spell_gen_gilneas_prison_periodic_dummy);
-    register_creature_script(npc_josiah_avery);
-    register_creature_script(npc_josiah_avery_worgen_form);
-    register_spell_script(spell_gilneas_pull_to);
+    new creature_script<npc_gilneas_crow>("npc_gilneas_crow");
+    new creature_script<npc_gilneas_city_guard_gate>("npc_gilneas_city_guard_gate");
+    new creature_script<npc_prince_liam_greymane>("npc_prince_liam_greymane");
+    new creature_script<npc_worgen_runt>("npc_worgen_runt");
+    new spell_script<spell_gen_gilneas_prison_periodic_dummy>("spell_gen_gilneas_prison_periodic_dummy");
+    new creature_script<npc_josiah_avery>("npc_josiah_avery");
+    new creature_script<npc_josiah_avery_worgen_form>("npc_josiah_avery_worgen_form");
+    new spell_script<spell_gilneas_pull_to>("spell_gilneas_pull_to");
     new npc_lorna_crowley_basement("npc_lorna_crowley_basement");
-    register_creature_script(npc_gilnean_mastiff);
-    register_creature_script(npc_bloodfang_lurker);
-    register_spell_script(spell_attack_lurker);
+    new creature_script<npc_gilnean_mastiff>("npc_gilnean_mastiff");
+    new creature_script<npc_bloodfang_lurker>("npc_bloodfang_lurker");
+    new spell_script<spell_attack_lurker>("spell_attack_lurker");
     new npc_king_genn_greymane();
     new npc_vehicle_genn_horse();
-    register_creature_script(npc_saved_aranas);
-    register_creature_script(npc_duskhaven_watchman);
-    register_creature_script(npc_forsaken_invader);
-    register_creature_script(npc_forsaken_footsoldier);
+    new creature_script<npc_saved_aranas>("npc_saved_aranas");
+    new creature_script<npc_duskhaven_watchman>("npc_duskhaven_watchman");
+    new creature_script<npc_forsaken_invader>("npc_forsaken_invader");
+    new creature_script<npc_forsaken_footsoldier>("npc_forsaken_footsoldier");
     new npc_forsaken_catapult();
-    register_spell_script(spell_catapult_boulder);
+    new spell_script<spell_catapult_boulder>("spell_catapult_boulder");
     new npc_gilneas_children("npc_james", SPELL_SAVE_JAMES, PLAYER_SAY_JAMES);
     new npc_gilneas_children("npc_ashley", SPELL_SAVE_ASHLEY, PLAYER_SAY_ASHLEY);
     new npc_gilneas_children("npc_cynthia", SPELL_SAVE_CYNTHIA, PLAYER_SAY_CYNTHIA);
     new npc_wahl("npc_wahl");
     new npc_lucius_the_cruel("npc_lucius_the_cruel");
-    register_creature_script(npc_chance_the_cat);
+    new creature_script<npc_chance_the_cat>("npc_chance_the_cat");
     new npc_mountain_horse("npc_mountain_horse");
-    register_creature_script(npc_mountain_horse_summoned);
-    register_spell_script(spell_gilneas_test_telescope);
+    new creature_script<npc_mountain_horse_summoned>("npc_mountain_horse_summoned");
+    new spell_script<spell_gilneas_test_telescope>("spell_gilneas_test_telescope");
     new npc_stagecoach_carriage_exodus("npc_stagecoach_carriage_exodus");
     new npc_stagecoach_harness("npc_stagecoach_harness");
-    register_creature_script(npc_koroth_the_hillbreaker);
+    new creature_script<npc_koroth_the_hillbreaker>("npc_koroth_the_hillbreaker");
     new go_koroth_banner("go_koroth_banner");
 }

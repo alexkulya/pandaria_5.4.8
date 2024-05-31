@@ -84,5 +84,5 @@ private:
 
 void AddSC_vashjir()
 {
-    register_creature_script(npc_drowning_soldier_and_warrior);
+    new creature_script<npc_drowning_soldier_and_warrior>("npc_drowning_soldier_and_warrior");
 }

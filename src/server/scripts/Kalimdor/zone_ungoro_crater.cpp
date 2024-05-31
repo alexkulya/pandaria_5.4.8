@@ -43,5 +43,5 @@ class spell_instakill_dinosaur : public SpellScript
 
 void AddSC_ungoro_crater()
 {
-    register_spell_script(spell_instakill_dinosaur);
+    new spell_script<spell_instakill_dinosaur>("spell_instakill_dinosaur");
 }

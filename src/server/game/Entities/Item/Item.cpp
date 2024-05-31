@@ -373,6 +373,7 @@ void Item::SaveToDB(SQLTransaction& trans)
 
             stmt->setInt16 (++index, GetItemRandomPropertyId());
             stmt->setUInt32(++index, GetDynamicUInt32Value(ITEM_DYNAMIC_MODIFIERS, ITEM_MODIFIER_INDEX_REFORGE));
+            stmt->setUInt32(++index, GetDynamicUInt32Value(ITEM_DYNAMIC_MODIFIERS, ITEM_MODIFIER_INDEX_TRANSMOGRIFICATION));
             stmt->setUInt32(++index, GetDynamicUInt32Value(ITEM_DYNAMIC_MODIFIERS, ITEM_MODIFIER_INDEX_UPGRADE));
             stmt->setUInt16(++index, GetUInt32Value(ITEM_FIELD_DURABILITY));
             stmt->setUInt32(++index, GetUInt32Value(ITEM_FIELD_CREATE_PLAYED_TIME));
@@ -394,17 +395,6 @@ void Item::SaveToDB(SQLTransaction& trans)
                 trans->Append(stmt);
             }
 
-            stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_ITEM_INSTANCE_TRANSMOG);
-            stmt->setUInt32(0, guid);
-            trans->Append(stmt);
-
-            if (GetDynamicUInt32Value(ITEM_DYNAMIC_MODIFIERS, ITEM_MODIFIER_INDEX_TRANSMOGRIFICATION) != 0)
-            {
-                stmt = CharacterDatabase.GetPreparedStatement(CHAR_INS_ITEM_INSTANCE_TRANSMOG);
-                stmt->setUInt32(0, guid);
-                stmt->setUInt32(1, GetDynamicUInt32Value(ITEM_DYNAMIC_MODIFIERS, ITEM_MODIFIER_INDEX_TRANSMOGRIFICATION));
-                trans->Append(stmt);
-            }
             break;
         }
         case ITEM_REMOVED:

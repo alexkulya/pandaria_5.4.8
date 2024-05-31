@@ -57,5 +57,5 @@ class spell_orb_of_power : public AuraScript
 
 void AddSC_temple_of_kotmogu()
 {
-    register_aura_script(spell_orb_of_power);
+    new aura_script<spell_orb_of_power>("spell_orb_of_power");
 }

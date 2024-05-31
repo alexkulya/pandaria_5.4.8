@@ -1612,22 +1612,22 @@ class AreaTrigger_at_ragefire_sealed_gate_items : public AreaTriggerScript
 
 void AddSC_secrets_of_ragefire()
 {
-    register_creature_script(npc_ragefire_grit);
-    register_creature_script(npc_ragefire_detonator);
-    register_creature_script(npc_ragefire_dark_shaman_xorenth);
-    register_creature_script(npc_ragefire_ruined_earth);
-    register_creature_script(npc_ragefire_korkron_dark_shaman);
-    register_creature_script(npc_ragefire_korkron_emberguard);
-    register_creature_script(npc_ragefire_investigated_item);
-    register_creature_script(npc_ragefire_korkron_shadowblade);
-    register_creature_script(npc_ragefire_bring_items);
-    register_creature_script(npc_ragefire_overseer_elaglo);
-    register_creature_script(npc_ragefire_korkron_dire_solder);
-    register_creature_script(npc_ragefire_poison_bolt_totem);
-    register_creature_script(npc_ragefire_flame_hound);
-    register_creature_script(npc_ragefire_shattered_earth);
+    new creature_script<npc_ragefire_grit>("npc_ragefire_grit");
+    new creature_script<npc_ragefire_detonator>("npc_ragefire_detonator");
+    new creature_script<npc_ragefire_dark_shaman_xorenth>("npc_ragefire_dark_shaman_xorenth");
+    new creature_script<npc_ragefire_ruined_earth>("npc_ragefire_ruined_earth");
+    new creature_script<npc_ragefire_korkron_dark_shaman>("npc_ragefire_korkron_dark_shaman");
+    new creature_script<npc_ragefire_korkron_emberguard>("npc_ragefire_korkron_emberguard");
+    new creature_script<npc_ragefire_investigated_item>("npc_ragefire_investigated_item");
+    new creature_script<npc_ragefire_korkron_shadowblade>("npc_ragefire_korkron_shadowblade");
+    new creature_script<npc_ragefire_bring_items>("npc_ragefire_bring_items");
+    new creature_script<npc_ragefire_overseer_elaglo>("npc_ragefire_overseer_elaglo");
+    new creature_script<npc_ragefire_korkron_dire_solder>("npc_ragefire_korkron_dire_solder");
+    new creature_script<npc_ragefire_poison_bolt_totem>("npc_ragefire_poison_bolt_totem");
+    new creature_script<npc_ragefire_flame_hound>("npc_ragefire_flame_hound");
+    new creature_script<npc_ragefire_shattered_earth>("npc_ragefire_shattered_earth");
 
-    register_spell_script(spell_ragefire_ruined_earth_selector);
+    new spell_script<spell_ragefire_ruined_earth_selector>("spell_ragefire_ruined_earth_selector");
     new atrigger_script<sat_ragefire_emberstrikes>("sat_ragefire_emberstrikes");
     new AreaTrigger_at_ragefire_sealed_gate();
     new AreaTrigger_at_ragefire_sealed_gate_items();

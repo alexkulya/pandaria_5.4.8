@@ -1140,10 +1140,10 @@ void AddSC_fall_of_theramore_horde_scenario()
     new npc_theramore_captain_drok();
     new npc_theramore_thalen_songweaver();
     new go_theramore_horde_portal();
-    register_spell_script(spell_theramore_rig_to_explode);
-    register_aura_script(spell_theramore_war_engine);
-    register_spell_script(spell_big_bessa_cannon);
-    register_spell_script(spell_big_bessa_cannon_shot);
+    new spell_script<spell_theramore_rig_to_explode>("spell_theramore_rig_to_explode");
+    new aura_script<spell_theramore_war_engine>("spell_theramore_war_engine");
+    new spell_script<spell_big_bessa_cannon>("spell_big_bessa_cannon");
+    new spell_script<spell_big_bessa_cannon_shot>("spell_big_bessa_cannon_shot");
     new AreaTrigger_at_theramore_songweaver_prison();
     new AreaTrigger_at_captain_drok_ship();
     new scene_theramore_explosion_horde();

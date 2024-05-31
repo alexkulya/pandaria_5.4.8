@@ -2269,9 +2269,9 @@ void AddSC_boss_elegon()
     new spell_grasping_energy_tendrils();
     new spell_unstable_energy();
     new spell_stability_flux();
-    register_spell_script(spell_destabilizing_energies);
-    register_spell_script(spell_total_annihilation);
-    register_spell_script(spell_total_annihilation_eff);
+    new spell_script<spell_destabilizing_energies>("spell_destabilizing_energies");
+    new spell_script<spell_total_annihilation>("spell_total_annihilation");
+    new spell_script<spell_total_annihilation_eff>("spell_total_annihilation_eff");
     new AreaTrigger_under_elegon_platform();
     new atrigger_script<sat_mv_energy_conduit>("sat_mv_energy_conduit");
 }

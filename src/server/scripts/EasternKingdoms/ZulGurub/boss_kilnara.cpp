@@ -540,6 +540,6 @@ void AddSC_boss_kilnara()
     new npc_kilnara_temple_rat();
     new spell_kilnara_wave_of_agony_target();
     new spell_kilnara_wave_of_agony_start();
-    register_spell_script(spell_create_rat);
-    register_spell_script(spell_kilnara_rat_lure);
+    new spell_script<spell_create_rat>("spell_create_rat");
+    new spell_script<spell_kilnara_rat_lure>("spell_kilnara_rat_lure");
 }

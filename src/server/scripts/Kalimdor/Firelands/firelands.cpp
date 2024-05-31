@@ -1937,8 +1937,8 @@ void AddSC_firelands()
     new npc_firelands_volcanus();
     new spell_firelands_siphon_essence();
     new npc_firelands_instance_portal();
-    register_creature_script(npc_firelands_majordomo_stagheim_event);
+    new creature_script<npc_firelands_majordomo_stagheim_event>("npc_firelands_majordomo_stagheim_event");
 
     new spell_firelands_kneel_to_the_flame();
-    register_aura_script(spell_firelands_object_channel);
+    new aura_script<spell_firelands_object_channel>("spell_firelands_object_channel");
 }

@@ -1412,30 +1412,30 @@ class AreaTrigger_at_bloodsnow_grimbolt : public AreaTriggerScript
 
 void AddSC_blood_in_the_snow()
 {
-    register_creature_script(npc_bloodsnow_varian_wrynn);
-    register_creature_script(npc_bloodsnow_mountainer_grimbolt);
-    register_creature_script(npc_bloodsnow_roasting_spit);
-    register_creature_script(npc_bloodsnow_scout_stonebeard);
-    register_creature_script(npc_bloodsnow_frostmane_flesh_eater);
-    register_creature_script(npc_bloodsnow_frostmane_headhunter);
-    register_creature_script(npc_bloodsnow_frostmane_snowstalker);
-    register_creature_script(npc_bloodsnow_frostmane_berserker);
-    register_creature_script(npc_bloodsnow_frostmane_bonechiller);
-    register_creature_script(npc_bloodsnow_farastu);
-    register_creature_script(npc_bloodsnow_freeze_solid);
-    register_creature_script(npc_bloodsnow_hekima_the_wise);
-    register_creature_script(npc_bloodsnow_frostmane_witch_doctor);
-    register_creature_script(npc_bloodsnow_ironforge_guardian);
-    register_creature_script(npc_bloodsnow_shimmerweed_basket);
-    register_creature_script(npc_bloodsnow_scout_boldbrew);
-    register_creature_script(npc_bloodsnow_scout_forgefellow);
-    register_creature_script(npc_bloodsnow_zandalari_rage_banner);
+    new creature_script<npc_bloodsnow_varian_wrynn>("npc_bloodsnow_varian_wrynn");
+    new creature_script<npc_bloodsnow_mountainer_grimbolt>("npc_bloodsnow_mountainer_grimbolt");
+    new creature_script<npc_bloodsnow_roasting_spit>("npc_bloodsnow_roasting_spit");
+    new creature_script<npc_bloodsnow_scout_stonebeard>("npc_bloodsnow_scout_stonebeard");
+    new creature_script<npc_bloodsnow_frostmane_flesh_eater>("npc_bloodsnow_frostmane_flesh_eater");
+    new creature_script<npc_bloodsnow_frostmane_headhunter>("npc_bloodsnow_frostmane_headhunter");
+    new creature_script<npc_bloodsnow_frostmane_snowstalker>("npc_bloodsnow_frostmane_snowstalker");
+    new creature_script<npc_bloodsnow_frostmane_berserker>("npc_bloodsnow_frostmane_berserker");
+    new creature_script<npc_bloodsnow_frostmane_bonechiller>("npc_bloodsnow_frostmane_bonechiller");
+    new creature_script<npc_bloodsnow_farastu>("npc_bloodsnow_farastu");
+    new creature_script<npc_bloodsnow_freeze_solid>("npc_bloodsnow_freeze_solid");
+    new creature_script<npc_bloodsnow_hekima_the_wise>("npc_bloodsnow_hekima_the_wise");
+    new creature_script<npc_bloodsnow_frostmane_witch_doctor>("npc_bloodsnow_frostmane_witch_doctor");
+    new creature_script<npc_bloodsnow_ironforge_guardian>("npc_bloodsnow_ironforge_guardian");
+    new creature_script<npc_bloodsnow_shimmerweed_basket>("npc_bloodsnow_shimmerweed_basket");
+    new creature_script<npc_bloodsnow_scout_boldbrew>("npc_bloodsnow_scout_boldbrew");
+    new creature_script<npc_bloodsnow_scout_forgefellow>("npc_bloodsnow_scout_forgefellow");
+    new creature_script<npc_bloodsnow_zandalari_rage_banner>("npc_bloodsnow_zandalari_rage_banner");
 
-    register_spell_script(spell_bloodsnow_free_scout_stonebeard);
-    register_aura_script(spell_bloodsnow_freeze_solid_launcher);
-    register_aura_script(spell_bloodsnow_freeze_solid_eff);
-    register_spell_script(spell_bloodsnow_zandalari_rage_eff);
-    register_spell_script(spell_bloodsnow_hekimas_wisdom);
+    new spell_script<spell_bloodsnow_free_scout_stonebeard>("spell_bloodsnow_free_scout_stonebeard");
+    new aura_script<spell_bloodsnow_freeze_solid_launcher>("spell_bloodsnow_freeze_solid_launcher");
+    new aura_script<spell_bloodsnow_freeze_solid_eff>("spell_bloodsnow_freeze_solid_eff");
+    new spell_script<spell_bloodsnow_zandalari_rage_eff>("spell_bloodsnow_zandalari_rage_eff");
+    new spell_script<spell_bloodsnow_hekimas_wisdom>("spell_bloodsnow_hekimas_wisdom");
     new atrigger_script<sat_bloodsnow_shimmerweed>("sat_bloodsnow_shimmerweed");
     new AreaTrigger_at_bloodsnow_grimbolt();
 }

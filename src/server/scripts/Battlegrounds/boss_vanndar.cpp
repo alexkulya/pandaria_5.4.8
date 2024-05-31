@@ -121,5 +121,5 @@ private:
 
 void AddSC_boss_vanndar()
 {
-    register_creature_script(boss_vanndar);
+    new creature_script<boss_vanndar>("boss_vanndar");
 }

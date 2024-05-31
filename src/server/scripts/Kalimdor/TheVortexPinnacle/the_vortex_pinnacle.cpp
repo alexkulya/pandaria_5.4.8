@@ -1418,7 +1418,7 @@ void AddSC_the_vortex_pinnacle()
     new npc_executor_of_the_caliph();
     new npc_gust_soldier();
     new npc_howling_gale();
-    register_creature_script(npc_lurking_tempest);
+    new creature_script<npc_lurking_tempest>("npc_lurking_tempest");
     new npc_minister_of_air();
     new npc_servant_of_asaad();
     new npc_temple_adept();
@@ -1428,6 +1428,6 @@ void AddSC_the_vortex_pinnacle()
     new npc_fall_catcher_5();
     new spell_minister_of_air_lightning_lash();
     //new spell_howling_gale_howling_gale();
-    register_aura_script(spell_vp_lurk);
+    new aura_script<spell_vp_lurk>("spell_vp_lurk");
     new at_catch_fall_5();
 };

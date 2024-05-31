@@ -1385,10 +1385,10 @@ void AddSC_crypt_of_forgotten_kings()
     new spell_cfk_sha_rain();
     new spell_cfk_shadow_step();
     new spell_cfk_trigger_fire_trap();
-    register_spell_script(spell_cfk_trigger_lightning_trap);
-    register_spell_script(spell_cfk_anger_eff);
-    register_spell_script(spell_achiev_fight_with_anger);
-    register_aura_script(spell_cfk_hate_periodic);
+    new spell_script<spell_cfk_trigger_lightning_trap>("spell_cfk_trigger_lightning_trap");
+    new spell_script<spell_cfk_anger_eff>("spell_cfk_anger_eff");
+    new spell_script<spell_achiev_fight_with_anger>("spell_achiev_fight_with_anger");
+    new aura_script<spell_cfk_hate_periodic>("spell_cfk_hate_periodic");
     new AreaTrigger_at_crypt_behind_abomination();
     new AreaTrigger_at_crypt_steam_trap();
     new AreaTrigger_at_crypt_quilen_trap();

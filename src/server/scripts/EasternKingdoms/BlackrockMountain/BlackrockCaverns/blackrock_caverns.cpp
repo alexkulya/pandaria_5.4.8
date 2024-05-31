@@ -268,6 +268,6 @@ void AddSC_blackrock_caverns()
 {
     new npc_raz_the_crazed();
     new blackrock_caverns_teleport();
-    register_spell_script(spell_aggro_nearby_target);
+    new spell_script<spell_aggro_nearby_target>("spell_aggro_nearby_target");
     new AreaTrigger_at_second_bridge_blackrock_caverns();
 }

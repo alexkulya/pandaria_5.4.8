@@ -264,10 +264,10 @@ class spell_trihorn_charge : public SpellScript
 
 void AddSC_isle_of_giants()
 {
-    register_creature_script(npc_young_primal_devilsaur);
-    register_creature_script(npc_pterrorwing_skyscreamer);
-    register_creature_script(npc_zandalari_dinomancer_2);
-    register_creature_script(npc_primal_direhorn_hatchling);
-    register_creature_script(npc_primal_direhorn);
-    register_spell_script(spell_trihorn_charge);
+    new creature_script<npc_young_primal_devilsaur>("npc_young_primal_devilsaur");
+    new creature_script<npc_pterrorwing_skyscreamer>("npc_pterrorwing_skyscreamer");
+    new creature_script<npc_zandalari_dinomancer_2>("npc_zandalari_dinomancer_2");
+    new creature_script<npc_primal_direhorn_hatchling>("npc_primal_direhorn_hatchling");
+    new creature_script<npc_primal_direhorn>("npc_primal_direhorn");
+    new spell_script<spell_trihorn_charge>("spell_trihorn_charge");
 }

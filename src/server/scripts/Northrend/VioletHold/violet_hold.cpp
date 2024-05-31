@@ -1450,5 +1450,5 @@ void AddSC_violet_hold()
     new npc_azure_saboteur();
     new npc_violet_hold_arcane_sphere();
     new go_activation_crystal();
-    register_spell_script(spell_violet_hold_arcane_lightning);
+    new spell_script<spell_violet_hold_arcane_lightning>("spell_violet_hold_arcane_lightning");
 }

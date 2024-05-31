@@ -283,6 +283,6 @@ struct npc_altairus_twister : public ScriptedAI
 void AddSC_boss_altairus()
 {
     new boss_altairus();
-    register_creature_script(npc_air_current);
-    register_creature_script(npc_altairus_twister);
+    new creature_script<npc_air_current>("npc_air_current");
+    new creature_script<npc_altairus_twister>("npc_altairus_twister");
 }

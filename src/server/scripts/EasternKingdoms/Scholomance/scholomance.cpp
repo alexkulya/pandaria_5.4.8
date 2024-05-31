@@ -1303,7 +1303,7 @@ void AddSC_scholomance()
     new npc_scholomance_neophyte();
     new npc_scholomance_risen_guard();
     new npc_shatter_soul_fragment();
-    register_creature_script(npc_scholomance_dark_candle);
+    new creature_script<npc_scholomance_dark_candle>("npc_scholomance_dark_candle");
     new npc_scholomance_candlestick_mage();
     new npc_scholomance_krastinoc_carvers();
     new npc_scholomance_flesh_horror();
