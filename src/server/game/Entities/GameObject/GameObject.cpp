@@ -826,6 +826,7 @@ void GameObject::SaveToDB(uint32 mapid, uint16 spawnMask, uint32 phaseMask)
     data.go_state = GetGoState();
     data.spawnMask = spawnMask;
     data.artKit = GetGoArtKit();
+    data.ScriptId = !data.ScriptId && goI->ScriptId ? goI->ScriptId : data.ScriptId; // Don't add to stmt to save in DB 
 
     // Update in DB
     SQLTransaction trans = WorldDatabase.BeginTransaction();
