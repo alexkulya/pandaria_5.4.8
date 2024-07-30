@@ -297,8 +297,8 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
     {
-        player->PlayerTalkClass->ClearMenus();
-        player->CLOSE_GOSSIP_MENU();
+        ClearGossipMenuFor(player);
+        CloseGossipMenuFor(player);
         if (action == GOSSIP_ACTION_INFO_DEF+1)
             creature->AI()->DoAction(1);
         player->KilledMonsterCredit(NPC_VOLJIN);

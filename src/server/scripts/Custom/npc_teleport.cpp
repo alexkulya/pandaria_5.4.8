@@ -380,7 +380,7 @@ class npc_teleport : public CreatureScript
 
     bool OnGossipSelect(Player* pPlayer, Creature* pCreature, uint32 /*uiSender*/, uint32 uiAction)
     {
-        pPlayer->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(pPlayer);
         pPlayer->ModifyMoney(-1 * Tele[uiAction].cost);
         uint32 Key = Tele[uiAction].next_menu_id;
 

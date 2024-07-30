@@ -164,11 +164,11 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
 
         if (action == GOSSIP_SENDER_INFO)
         {
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             player->KilledMonsterCredit(NPC_THERAMORE_GUARD, 0);
             creature->AI()->Talk(SAY_QUEST1);
             creature->CastSpell(creature, SPELL_DOCTORED_LEAFLET, false);
@@ -246,7 +246,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         if (action == GOSSIP_SENDER_INFO)
         {
             player->SEND_GOSSIP_MENU(7012, creature->GetGUID());
@@ -286,7 +286,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         if (action == GOSSIP_ACTION_TRADE)
             player->GetSession()->SendListInventory(creature->GetGUID());
 

@@ -400,7 +400,7 @@ class npc_finkle_einhorn : public CreatureScript
             InstanceScript* instance = creature->GetInstanceScript();
             if (!instance)
                 return false;
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             switch (action)
             {
                 case GOSSIP_ACTION_INFO_DEF+1:

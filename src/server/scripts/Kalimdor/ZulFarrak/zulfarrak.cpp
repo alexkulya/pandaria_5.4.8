@@ -70,10 +70,10 @@ class npc_sergeant_bly : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             if (action == GOSSIP_ACTION_INFO_DEF+1)
             {
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 CAST_AI(npc_sergeant_bly::npc_sergeant_blyAI, creature->AI())->PlayerGUID = player->GetGUID();
                 creature->AI()->DoAction(0);
             }
@@ -234,10 +234,10 @@ class npc_weegli_blastfuse : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             if (action == GOSSIP_ACTION_INFO_DEF+1)
             {
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 //here we make him run to door, set the charge and run away off to nowhere
                 creature->AI()->DoAction(0);
             }

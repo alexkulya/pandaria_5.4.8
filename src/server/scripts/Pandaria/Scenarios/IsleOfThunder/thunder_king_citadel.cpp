@@ -397,7 +397,7 @@ class npc_thunder_king_treasure_taoshi : public CreatureScript
     
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
     
             if (action == GOSSIP_ACTION_INFO_DEF + 1 && player->GetInstanceScript())
             {
@@ -409,7 +409,7 @@ class npc_thunder_king_treasure_taoshi : public CreatureScript
                 creature->CastSpell(player, SPELL_LIMITED_TIME, true);
             }
     
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
     
             return true;
         }
@@ -434,7 +434,7 @@ class npc_thunder_king_treasure_taoshi_queue : public CreatureScript
     
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
     
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -443,7 +443,7 @@ class npc_thunder_king_treasure_taoshi_queue : public CreatureScript
                 player->DestroyItemCount(94222, 1, true);
             }
     
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
     
             return true;
         }
@@ -509,12 +509,12 @@ class npc_thunder_king_treasure_tenwu_of_the_red_smoke : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
                 player->CastSpell(player, SPELL_TENWU_EXIT_TRIGGERED_CREDIT, true);
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             return true;
         }

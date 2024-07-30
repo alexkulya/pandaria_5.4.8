@@ -1220,7 +1220,7 @@ bool AFDRoyaleGossipSelectHook(Player* player, Creature* creature, uint32 sender
     {
         case ACTION_ROYALE_QUEUE:       sRoyale->EnterQueue(player); sScriptMgr->OnGossipHello(player, creature); break;
         case ACTION_ROYALE_LEAVE_QUEUE: sRoyale->LeaveQueue(player); sScriptMgr->OnGossipHello(player, creature); break;
-        case ACTION_ROYALE_LEAVE_GAME:  sRoyale->LeaveGame(player); player->CLOSE_GOSSIP_MENU(); break;
+        case ACTION_ROYALE_LEAVE_GAME:  sRoyale->LeaveGame(player); CloseGossipMenuFor(player); break;
     }
 
     return true;

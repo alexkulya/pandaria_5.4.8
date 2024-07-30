@@ -528,10 +528,10 @@ class npc_water_spirit_dailo : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             if (action == GOSSIP_ACTION_INFO_DEF+1)
             {
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 player->KilledMonsterCredit(55548);
                 player->RemoveAurasDueToSpell(59073); // Remove Phase 2, first water spirit disapear
 

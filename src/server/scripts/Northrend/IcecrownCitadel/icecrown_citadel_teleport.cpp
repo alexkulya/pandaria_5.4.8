@@ -65,8 +65,8 @@ class icecrown_citadel_teleport : public GameObjectScript
             if (player->HasItemCount(49278, 1, true))
                 player->DestroyItemCount(49278, 1, true);
 
-            player->PlayerTalkClass->ClearMenus();
-            player->CLOSE_GOSSIP_MENU();
+            ClearGossipMenuFor(player);
+            CloseGossipMenuFor(player);
 
             SpellInfo const* spell = sSpellMgr->GetSpellInfo(action);
             if (!spell)

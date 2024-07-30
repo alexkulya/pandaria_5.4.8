@@ -596,7 +596,7 @@ class npc_q29982 : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -1137,7 +1137,7 @@ struct npc_just_a_folk_story_quest : public ScriptedAI
 
     void sGossipSelect(Player* player, uint32 /*sender*/, uint32 /*action*/) override
     {
-        player->CLOSE_GOSSIP_MENU();
+        CloseGossipMenuFor(player);
         player->KilledMonsterCredit(me->GetEntry());
         Talk(0, player);
     }

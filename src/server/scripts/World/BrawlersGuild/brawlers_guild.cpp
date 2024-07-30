@@ -862,7 +862,7 @@ class npc_brawlers_guild_brawlgar_arena_grunt : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             switch (action)
             {
@@ -902,7 +902,7 @@ class npc_brawlers_guild_brawlgar_arena_grunt : public CreatureScript
                     break;
             }
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
     
             return true;
         }
@@ -4722,7 +4722,7 @@ class npc_brawlers_guild_card_traider : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
                 player->GetSession()->SendListInventory(creature->GetGUID());

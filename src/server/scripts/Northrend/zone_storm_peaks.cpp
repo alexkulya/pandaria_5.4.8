@@ -88,7 +88,7 @@ public:
         {
             if (sender == GOSSIP_ID && action == GOSSIP_OPTION_ID)
             {
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 me->SetFaction(113);
                 npc_escortAI::Start(true, true, player->GetGUID());
             }
@@ -145,7 +145,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         switch (action)
         {
         case GOSSIP_ACTION_TRAIN:

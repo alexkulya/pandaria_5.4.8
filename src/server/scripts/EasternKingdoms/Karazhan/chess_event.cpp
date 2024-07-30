@@ -200,7 +200,7 @@ class npc_echo_of_medivh : public CreatureScript
                     if (instance->GetData(TYPE_CHESS) == SPECIAL)
                         instance->SetData(TYPE_CHESS, DONE);
 
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
             }
 
             return true;
@@ -336,7 +336,7 @@ class npc_chess_piece : public CreatureScript
                     player->CastSpell(creature, SPELL_CONTROL_PIECE, true);
                 }
 
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
             }
 
             return true;

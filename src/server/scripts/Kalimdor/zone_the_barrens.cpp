@@ -65,7 +65,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         if (action == GOSSIP_ACTION_INFO_DEF +1)
         {
             player->SEND_GOSSIP_MENU(3558, creature->GetGUID());
@@ -671,7 +671,7 @@ class npc_razormane_pillager : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -679,7 +679,7 @@ class npc_razormane_pillager : public CreatureScript
                 player->CastSpell(player, SPELL_SUMMON_RAZORMANE, true);
             }
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             return true;
         }

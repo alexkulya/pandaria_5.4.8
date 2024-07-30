@@ -808,7 +808,7 @@ struct npc_start_stink_bombs_away : public ScriptedAI
 
     void sGossipHello(Player* player) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
 
         if (player->GetQuestStatus(stinkBombsAwayQuest[player->GetTeamId()]) != QUEST_STATUS_INCOMPLETE)
             return;
@@ -819,7 +819,7 @@ struct npc_start_stink_bombs_away : public ScriptedAI
 
     void sGossipSelect(Player* player, uint32 /*sender*/, uint32 /*action*/) override
     {
-        player->CLOSE_GOSSIP_MENU();
+        CloseGossipMenuFor(player);
 
         uint8 team = player->GetTeamId();
 
@@ -882,16 +882,16 @@ class go_wickerman_ember : public GameObjectScript
 
         bool OnGossipSelect(Player* player, GameObject* go, uint32 /*uiSender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             if (player->HasAura(SPELL_GRIM_VISAGE))
             {
                 player->SEND_GOSSIP_MENU(player->GetGossipTextId(go), go->GetGUID());
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
             }
             else if (action == GOSSIP_ACTION_INFO_DEF +1)
             {
                 go->CastSpell(player, SPELL_GRIM_VISAGE);
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
             }
             return true;
         }

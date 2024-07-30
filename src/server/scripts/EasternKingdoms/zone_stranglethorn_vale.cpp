@@ -198,12 +198,12 @@ class npc_stranglethorn_priestess_hurala : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1) // @Todo:: Event with teleport into Zul`Gurub
                 player->KilledMonsterCredit(NPC_CAPTURED_LASHTAIL_HATCHLING);
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             return true;
         }
 };

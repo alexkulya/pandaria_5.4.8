@@ -61,8 +61,8 @@ class go_ulduar_teleporter : public GameObjectScript
 
         bool OnGossipSelect(Player* player, GameObject* gameObject, uint32 sender, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
-            player->CLOSE_GOSSIP_MENU();
+            ClearGossipMenuFor(player);
+            CloseGossipMenuFor(player);
             SpellInfo const* spell = sSpellMgr->GetSpellInfo(action);
             if (!spell)
                 return false;

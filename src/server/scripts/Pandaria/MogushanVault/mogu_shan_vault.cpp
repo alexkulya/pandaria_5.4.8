@@ -1562,12 +1562,12 @@ class npc_msv_lorewalker_cho : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
                 creature->AI()->DoAction(ACTION_SPIRIT_KINGS_INTRO);
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             return true;
         }
@@ -2156,7 +2156,7 @@ class npc_mogushan_vaults_leng_windstaff : public CreatureScript
     
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
     
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -2166,7 +2166,7 @@ class npc_mogushan_vaults_leng_windstaff : public CreatureScript
                     creature->GetInstanceScript()->DoRemoveDampeningFromCreatures();
             }
     
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
     
             return true;
         }

@@ -735,7 +735,7 @@ struct npc_darkspear_jailor : public ScriptedAI
 
     void sGossipSelect(Player* player, uint32 /*sender*/, uint32 /*action*/) override
     {
-        player->CLOSE_GOSSIP_MENU();
+        CloseGossipMenuFor(player);
         player->KilledMonsterCredit(NPC_JAILOR);
 
         if (!me->FindNearestCreature(NPC_SCOUT, 30.0f)) // not ready yet

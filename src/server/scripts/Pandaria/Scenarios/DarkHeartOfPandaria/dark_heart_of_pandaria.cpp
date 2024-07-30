@@ -291,7 +291,7 @@ class npc_darkheart_grizzle_gearslip : public CreatureScript
         bool OnGossipHello(Player* player, Creature* creature) override
         {
             creature->AI()->DoAction(ACTION_START_INTRO);
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             return true;
         }
     
@@ -437,7 +437,7 @@ class npc_darkheart_crafty_the_ambitious : public CreatureScript
         bool OnGossipHello(Player* player, Creature* creature) override
         {
             creature->AI()->DoAction(ACTION_START_INTRO);
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             return true;
         }
     

@@ -2604,12 +2604,12 @@ class npc_scout_captain_elsia : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
                 player->CastSpell(player, SPELL_SUMMON_PLAYER_MOUNT_H, true);
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             return true;
         }
 
@@ -2760,12 +2760,12 @@ class npc_vereesa_windrunner : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
                 player->CastSpell(player, SPELL_SUMMON_PLAYER_MOUNT_A, true);
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             return true;
         }
@@ -3526,7 +3526,7 @@ class npc_assigment_map : public CreatureScript
     
         bool OnGossipHello(Player* player, Creature* creature) override
         {
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             creature->HandleSpellClick(player);
             return true;
         }

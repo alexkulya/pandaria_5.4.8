@@ -953,7 +953,7 @@ class npc_gunship_boss : public CreatureScript
 
             void sGossipSelect(Player* player, uint32 sender, uint32 action) override
             {
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 if (sender == AH(10875, 10954) && action == 0 && me->HasFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP))
                 {
                     DoAction(ACTION_INTRO_START);
@@ -1876,7 +1876,7 @@ class npc_zafod_boombox : public CreatureScript
 
             void sGossipSelect(Player* player, uint32 sender, uint32 action) override
             {
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 if (sender == 10885 && action == 0 && !player->HasItemCount(49278, 1, true))
                     player->AddItem(49278, 1);
             }

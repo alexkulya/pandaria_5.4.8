@@ -822,11 +822,11 @@ class npc_expedition_commander : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             switch (action)
             {
                 case GOSSIP_ACTION_INFO_DEF:
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     CAST_AI(npc_expedition_commanderAI, creature->AI())->Phase = 1;
                     break;
             }

@@ -147,7 +147,7 @@ class npc_barnes : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             npc_barnesAI* barnesAI = CAST_AI(npc_barnes::npc_barnesAI, creature->AI());
 
             switch (action)
@@ -157,21 +157,21 @@ class npc_barnes : public CreatureScript
                     player->SEND_GOSSIP_MENU(8971, creature->GetGUID());
                     break;
                 case GOSSIP_ACTION_INFO_DEF + 2:
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     barnesAI->StartEvent();
                     break;
                 case GOSSIP_ACTION_INFO_DEF + 3:
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     barnesAI->m_uiEventId = EVENT_OZ;
                     TC_LOG_DEBUG("scripts", "TSCR: player (GUID " UI64FMTD ") manually set Opera event to EVENT_OZ", player->GetGUID());
                     break;
                 case GOSSIP_ACTION_INFO_DEF + 4:
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     barnesAI->m_uiEventId = EVENT_HOOD;
                     TC_LOG_DEBUG("scripts", "TSCR: player (GUID " UI64FMTD ") manually set Opera event to EVENT_HOOD", player->GetGUID());
                     break;
                 case GOSSIP_ACTION_INFO_DEF + 5:
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     barnesAI->m_uiEventId = EVENT_RAJ;
                     TC_LOG_DEBUG("scripts", "TSCR: player (GUID " UI64FMTD ") manually set Opera event to EVENT_RAJ", player->GetGUID());
                     break;
@@ -437,7 +437,7 @@ class npc_berthold : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             switch (action)
             {
                 case GOSSIP_ACTION_INFO_DEF + 1:
@@ -450,7 +450,7 @@ class npc_berthold : public CreatureScript
                     player->SEND_GOSSIP_MENU(10114, creature->GetGUID());
                     break;
                 case GOSSIP_ACTION_INFO_DEF + 4:
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     player->CastSpell(player, SPELL_TELEPORT, true);
                     break;
             }

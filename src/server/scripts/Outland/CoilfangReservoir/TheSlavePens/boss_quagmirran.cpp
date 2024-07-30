@@ -135,12 +135,12 @@ class npc_naturalist_bite : public CreatureScript
     
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
     
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
                 player->KilledMonsterCredit(creature->GetEntry());
     
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
     
             return true;
         }

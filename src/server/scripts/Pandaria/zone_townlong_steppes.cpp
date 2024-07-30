@@ -1027,12 +1027,12 @@ class npc_lin_silentstrike : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
                 player->QuestObjectiveSatisfy(QUEST_OBJECTIVE_FREE_LIN_SILENTSTRIKE, 1);
                 creature->AI()->SetGUID(player->GetGUID(), 0);
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
             }
 
             return false;

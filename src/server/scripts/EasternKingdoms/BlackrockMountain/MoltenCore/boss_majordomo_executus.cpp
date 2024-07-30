@@ -200,7 +200,7 @@ class boss_majordomo : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 /*action*/) override
         {
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             creature->AI()->DoAction(ACTION_START_RAGNAROS);
             return true;
         }

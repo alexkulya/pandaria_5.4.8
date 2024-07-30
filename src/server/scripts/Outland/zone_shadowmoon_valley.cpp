@@ -422,7 +422,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         if (action == GOSSIP_ACTION_TRADE)
             player->GetSession()->SendListInventory(creature->GetGUID());
 
@@ -454,7 +454,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         if (action == GOSSIP_ACTION_INFO_DEF+1)
         {
             ItemPosCountVec dest;
@@ -462,7 +462,7 @@ public:
             if (msg == EQUIP_ERR_OK)
             {
                 player->StoreNewItem(dest, 30658, 1, true);
-                player->PlayerTalkClass->ClearMenus();
+                ClearGossipMenuFor(player);
             }
         }
         if (action == GOSSIP_ACTION_INFO_DEF+2)
@@ -472,7 +472,7 @@ public:
             if (msg == EQUIP_ERR_OK)
             {
                 player->StoreNewItem(dest, 30659, 1, true);
-                player->PlayerTalkClass->ClearMenus();
+                ClearGossipMenuFor(player);
             }
         }
         return true;
@@ -511,7 +511,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF+1:
@@ -578,7 +578,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         switch (action)
         {
             case GOSSIP_ACTION_TRADE:
@@ -609,7 +609,7 @@ public:
                 player->SEND_GOSSIP_MENU(10318, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF+6:
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 player->AreaExploredOrEventHappens(10519);
                 break;
         }

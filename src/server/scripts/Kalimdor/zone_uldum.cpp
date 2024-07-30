@@ -305,12 +305,12 @@ class npc_quest_impending_retribution : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
                 player->KilledMonsterCredit(CreditMatchType.find(creature->GetEntry())->second);
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             return true;
         }
@@ -390,7 +390,7 @@ class npc_quest_ramkahen_prisoner : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -400,7 +400,7 @@ class npc_quest_ramkahen_prisoner : public CreatureScript
                 player->SetPhaseMask(QUEST_NEFERSET_PRISON + 1, true);
             }
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             return true;
         }

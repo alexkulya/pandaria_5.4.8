@@ -176,7 +176,7 @@ class npc_warden_of_the_sunwell : public CreatureScript
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
                 player->CastSpell(player, SPELL_TELEPORT_INTO_SUNWELL, true);
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             return false;
         }
 

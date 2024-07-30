@@ -174,7 +174,7 @@ class npc_apothecary_hummel : public CreatureScript
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
                 creature->AI()->DoAction(START_INTRO);
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             return true;
         }
 
@@ -1532,8 +1532,8 @@ class npc_haunted_stable_hand_portal : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 sender, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
-            player->CLOSE_GOSSIP_MENU();
+            ClearGossipMenuFor(player);
+            CloseGossipMenuFor(player);
 
             if (action >= 4)
                 return false;

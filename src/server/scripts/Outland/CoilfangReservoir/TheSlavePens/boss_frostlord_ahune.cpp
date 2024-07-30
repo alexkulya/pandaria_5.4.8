@@ -589,7 +589,7 @@ class go_ahune_ice_stone : public GameObjectScript
 
         bool OnGossipSelect(Player* player, GameObject* go, uint32 /*sender*/, uint32 /*action*/)
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (Creature* ahune = go->FindNearestCreature(NPC_AHUNE, 200.0f, true))
             {

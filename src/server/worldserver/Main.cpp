@@ -30,6 +30,8 @@
 #include "Log.h"
 #include "Master.h"
 #include "World.h"
+#include <thread>  
+#include <chrono>
 
 #ifndef _TRINITY_CORE_CONFIG
 #define _TRINITY_CORE_CONFIG  "worldserver.conf"
@@ -148,6 +150,9 @@ extern int main(int argc, char** argv)
     // 0 - normal shutdown
     // 1 - shutdown at error
     // 2 - restart command used, this code can be used by restarter for restart Trinityd
+
+
+    std::this_thread::sleep_for(std::chrono::seconds(20));
 
     return ret;
 }

@@ -643,12 +643,12 @@ class npc_halfus_dragon : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             InstanceScript* instance;
             instance = (InstanceScript*)creature->GetInstanceScript();
             if (!instance) 
                 return false;
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             switch (action)
             {
                 case GOSSIP_ACTION_INFO_DEF+1:

@@ -69,7 +69,7 @@ class go_well_of_eternity_teleport : public GameObjectScript
 
         bool OnGossipSelect(Player* player, GameObject* go, uint32 sender, uint32 action) override
         {
-            //player->PlayerTalkClass->ClearMenus();
+            //ClearGossipMenuFor(player);
             if (player->IsInCombat())
                 return true;
 
@@ -81,15 +81,15 @@ class go_well_of_eternity_teleport : public GameObjectScript
             {
                 case START_TELEPORT:
                     player->CastSpell(player, SPELL_TELEPORT_TO_START, true);
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     break;
                 case AZSHARA_TELEPORT:
                     player->CastSpell(player, SPELL_TELEPORT_TO_AZSHARA_PALACE, true);
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     break;
                 case WOE_TELEPORT:
                     player->CastSpell(player, SPELL_TELEPORT_TO_WELL_OF_ETERNITY, true);
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     break;
             }
             

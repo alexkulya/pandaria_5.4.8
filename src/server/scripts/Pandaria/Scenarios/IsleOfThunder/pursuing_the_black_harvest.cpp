@@ -132,12 +132,12 @@ class npc_black_harvest_akama : public CreatureScript
     
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
     
             if (action == GOSSIP_ACTION_INFO_DEF + 1 && creature->GetInstanceScript())
                 creature->GetInstanceScript()->SetData(STEP_SEARCH_FOR_SIGNS, DONE);
     
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
     
             return true;
         }

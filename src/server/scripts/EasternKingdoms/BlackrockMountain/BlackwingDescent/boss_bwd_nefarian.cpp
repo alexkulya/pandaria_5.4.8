@@ -1472,7 +1472,7 @@ class go_orb_of_culmination : public GameObjectScript
                         if (Creature* stalker = go->FindNearestCreature(NPC_ORB_OF_CULMINATION_STALKER, 50))
                             stalker->SetVisible(false);
                         go->SetRespawnTime(WEEK);
-                        player->CLOSE_GOSSIP_MENU();
+                        CloseGossipMenuFor(player);
                     }
                 }
             }

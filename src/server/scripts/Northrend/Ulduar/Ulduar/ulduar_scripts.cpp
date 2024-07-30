@@ -296,7 +296,7 @@ class npc_brann_bronzebeard : public CreatureScript
 
                 if (menuId == 10355 && optionId == 0)
                 {
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
 
                     if (Creature* loreKeeper = me->FindNearestCreature(NPC_LOREKEEPER, 200.0f))
                         loreKeeper->AI()->DoAction(ACTION_START);

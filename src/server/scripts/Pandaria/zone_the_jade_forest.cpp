@@ -951,7 +951,7 @@ class npc_pandriarch_windfur : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -965,7 +965,7 @@ class npc_pandriarch_windfur : public CreatureScript
                     creature->AI()->Reset();
                     creature->CombatStart(player, true);
                 }
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
             }
 
             return true;
@@ -1100,7 +1100,7 @@ class npc_pandriarch_bramblestaff : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -1114,7 +1114,7 @@ class npc_pandriarch_bramblestaff : public CreatureScript
                     creature->AI()->Reset();
                     creature->CombatStart(player, true);
                 }
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
             }
 
             return true;
@@ -1252,7 +1252,7 @@ class npc_pandriarch_goldendraft : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -1266,7 +1266,7 @@ class npc_pandriarch_goldendraft : public CreatureScript
                     creature->AI()->Reset();
                     creature->CombatStart(player, true);
                 }
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
             }
 
             return true;
@@ -1393,7 +1393,7 @@ class npc_big_bao : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -1405,7 +1405,7 @@ class npc_big_bao : public CreatureScript
                     creature->AI()->Reset();
                     creature->CombatStart(player, true);
                 }
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
             }
 
             return true;
@@ -2768,7 +2768,7 @@ class npc_nectarbreeze_farmer : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -2779,7 +2779,7 @@ class npc_nectarbreeze_farmer : public CreatureScript
                     creature->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                     creature->DespawnOrUnsummon(2000);
                 }
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
             }
 
             return true;
@@ -2941,12 +2941,12 @@ class npc_the_pearlfin_situation_q : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
                 creature->AI()->Talk(0);
                 player->KilledMonsterCredit(creature->GetEntry());
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
             }
             else if (action == GOSSIP_ACTION_TRADE)
                 player->GetSession()->SendListInventory(creature->GetGUID());
@@ -3387,12 +3387,12 @@ class npc_instructor_bladewind : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
                 player->GetSceneMgr().PlayScene(218);
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             return true;
         }
@@ -3911,12 +3911,12 @@ class npc_prince_anduin_decision_questgiver : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
                 player->CastSpell(player, SPELL_SUMMON_ANDUIN, true);
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             return true;
         }

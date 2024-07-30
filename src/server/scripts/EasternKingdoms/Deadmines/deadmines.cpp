@@ -100,8 +100,8 @@ class go_deadmines_teleport : public GameObjectScript
 
         bool OnGossipSelect(Player* player, GameObject* /*go*/, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
-            player->CLOSE_GOSSIP_MENU();
+            ClearGossipMenuFor(player);
+            CloseGossipMenuFor(player);
 
             if (action >= 4)
                 return false;

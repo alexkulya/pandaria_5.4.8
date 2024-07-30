@@ -277,7 +277,7 @@ class npc_sinclari_vh : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             switch (action)
             {
                 case GOSSIP_ACTION_INFO_DEF + 1:
@@ -288,11 +288,11 @@ class npc_sinclari_vh : public CreatureScript
                 case GOSSIP_ACTION_INFO_DEF + 2:
                     CAST_AI(npc_sinclari_vh::npc_sinclariAI, (creature->AI()))->uiPhase = 1;
                     creature->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     break;
                 case GOSSIP_ACTION_INFO_DEF + 3:
                     player->NearTeleportTo(playerTeleportPosition.GetPositionX(),playerTeleportPosition.GetPositionY(),playerTeleportPosition.GetPositionZ(),playerTeleportPosition.GetOrientation(),true);
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     break;
                 case GOSSIP_ACTION_INFO_DEF + 4:
                 case GOSSIP_ACTION_INFO_DEF + 5:
@@ -308,7 +308,7 @@ class npc_sinclari_vh : public CreatureScript
                         instance->SetData(DATA_FIRST_BOSS, action - (GOSSIP_ACTION_INFO_DEF+4));
                         instance->SetData(DATA_SECOND_BOSS, 0);
                     }
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     break;
             }
             return true;

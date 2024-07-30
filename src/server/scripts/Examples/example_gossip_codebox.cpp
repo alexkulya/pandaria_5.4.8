@@ -66,12 +66,12 @@ class example_gossip_codebox : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             if (action == GOSSIP_ACTION_INFO_DEF+2)
             {
                 //Read comment in enum
                 creature->AI()->Talk(SAY_NOT_INTERESTED);
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
             }
 
             return true;
@@ -79,7 +79,7 @@ class example_gossip_codebox : public CreatureScript
 
         bool OnGossipSelectCode(Player* player, Creature* creature, uint32 sender, uint32 action, char const* code) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             if (sender == GOSSIP_SENDER_MAIN)
             {
                 switch (action)
@@ -97,7 +97,7 @@ class example_gossip_codebox : public CreatureScript
                         creature->AI()->Talk(SAY_CORRECT);
                         creature->CastSpell(player, SPELL_MARK_OF_THE_WILD, true);
                     }
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
 
                     return true;
                 }

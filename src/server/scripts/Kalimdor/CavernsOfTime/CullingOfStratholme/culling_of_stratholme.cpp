@@ -225,7 +225,7 @@ class npc_arthas : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             npc_arthasAI* pAI = CAST_AI(npc_arthas::npc_arthasAI, creature->AI());
 
             if (!pAI)
@@ -289,7 +289,7 @@ class npc_arthas : public CreatureScript
                     pAI->SetNextWaypoint(3);
                     break;
             }
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             pAI->SetDespawnAtFar(false);
             creature->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
             return true;
@@ -1337,7 +1337,7 @@ class npc_chromie : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             switch (action)
             {
@@ -1348,7 +1348,7 @@ class npc_chromie : public CreatureScript
                     player->TeleportTo(player->GetMapId(), ChromieEntranceSummonPos.GetPositionX() - 3.0f, ChromieEntranceSummonPos.GetPositionY() - 3.0f, ChromieEntranceSummonPos.GetPositionZ(), 0.0f);
                     break;
             }
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             return true;
         }
 

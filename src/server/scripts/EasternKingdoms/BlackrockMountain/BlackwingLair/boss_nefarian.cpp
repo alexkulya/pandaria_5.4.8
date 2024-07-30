@@ -363,7 +363,7 @@ class boss_victor_nefarius : public CreatureScript
             {
                 if (sender == GOSSIP_ID && action == GOSSIP_OPTION_ID)
                 {
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     Talk(SAY_GAMESBEGIN_1);
                     BeginEvent(player);
                 }

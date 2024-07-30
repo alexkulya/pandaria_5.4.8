@@ -61,7 +61,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF + 1:
@@ -90,7 +90,7 @@ public:
                 break;
             case GOSSIP_ACTION_INFO_DEF + 7:
                 player->AreaExploredOrEventHappens(10044);
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 break;
             case GOSSIP_ACTION_INFO_DEF + 10:
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SGG7, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 11);
@@ -114,7 +114,7 @@ public:
                 break;
             case GOSSIP_ACTION_INFO_DEF + 15:
                 player->AreaExploredOrEventHappens(10172);
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 break;
         }
         return true;

@@ -54,7 +54,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         hyjalAI* ai = CAST_AI(hyjalAI, creature->AI());
         switch (action)
         {
@@ -130,7 +130,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         hyjalAI* ai = CAST_AI(hyjalAI, creature->AI());
         ai->DeSpawnVeins();//despawn the alliance veins
         switch (action)
@@ -216,7 +216,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         if (action == GOSSIP_ACTION_INFO_DEF)
         {
                 ItemPosCountVec dest;

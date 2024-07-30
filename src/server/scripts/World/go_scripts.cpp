@@ -504,7 +504,7 @@ public:
 
     bool OnGossipSelect(Player* player, GameObject* go, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF:
@@ -563,7 +563,7 @@ public:
 
     bool OnGossipSelect(Player* player, GameObject* go, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF:
@@ -1022,10 +1022,10 @@ public:
 
     bool OnGossipSelect(Player* player, GameObject* go, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         if (action == GOSSIP_ACTION_INFO_DEF +1)
         {
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             Creature* target = GetClosestCreatureWithEntry(player, NPC_OUTHOUSE_BUNNY, 3.0f);
             if (target)
             {
@@ -1039,7 +1039,7 @@ public:
         }
         else
         {
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             player->GetSession()->SendNotification(GO_ANDERHOLS_SLIDER_CIDER_NOT_FOUND);
             return false;
         }
@@ -1252,7 +1252,7 @@ public:
     bool OnGossipSelect(Player* player, GameObject* /*go*/, uint32 /*sender*/, uint32 /*action*/) override
     {
         player->CastSpell(player, STAMP_OUT_BONFIRE_QUEST_COMPLETE, true);
-        player->CLOSE_GOSSIP_MENU();
+        CloseGossipMenuFor(player);
         return false;
     }
 };
@@ -1494,14 +1494,14 @@ class go_challenge_orb : public GameObjectScript
                 // Check difficulty or if Challenge is already started
                 if (!instance->instance->IsChallengeDungeon() || instance->IsChallengeModeStarted())
                 {
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     return false;
                 }
 
                 go->SetGoState(GO_STATE_ACTIVE);
                 go->SetUInt32Value(GAMEOBJECT_FIELD_FLAGS, GO_FLAG_NODESPAWN);
                 instance->SetChallengeModeStarted();
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
             }
 
             return true;

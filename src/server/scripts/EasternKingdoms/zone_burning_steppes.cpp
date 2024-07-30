@@ -138,13 +138,13 @@ class go_burning_steppes_war_reaver_part : public GameObjectScript
 
         bool OnGossipSelect(Player* player, GameObject* go, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             // Send item to player
             auto itr = golemParts.find(go->GetEntry());
             player->AddItem(action == GOSSIP_ACTION_INFO_DEF + 1 ? itr->second[0] : itr->second[1], 1);
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             go->Delete();
 
             return true;
@@ -159,7 +159,7 @@ class npc_burning_steppes_chiseled_golem : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -167,7 +167,7 @@ class npc_burning_steppes_chiseled_golem : public CreatureScript
                 creature->AI()->DoAction(ACTION_GOLEM_TRAINING);
             }
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             return true;
         }

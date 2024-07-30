@@ -220,7 +220,7 @@ void ProcessCastaction(Player* player, Creature* creature, uint32 spellId, uint3
     }
     else
         player->SendBuyError(BUY_ERR_NOT_ENOUGHT_MONEY, creature, 0, 0);
-    player->CLOSE_GOSSIP_MENU();
+    CloseGossipMenuFor(player);
 }
 
 /*###
@@ -364,7 +364,7 @@ void ProcessUnlearnAction(Player* player, Creature* creature, uint32 spellId, ui
     }
     else
         player->SendEquipError(EQUIP_ERR_CLIENT_LOCKED_OUT, NULL, NULL);
-    player->CLOSE_GOSSIP_MENU();
+    CloseGossipMenuFor(player);
 }
 
 /*###
@@ -509,7 +509,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         switch (sender)
         {
             case GOSSIP_SENDER_MAIN:
@@ -629,7 +629,7 @@ public:
                     player->CastSpell(player, S_LEARN_ARMOR, true);
                     //_Creature->CastSpell(player, S_REP_ARMOR, true);
                 }
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 break;
             case GOSSIP_ACTION_INFO_DEF + 2:
                 if (!player->HasSpell(S_WEAPON))
@@ -637,7 +637,7 @@ public:
                     player->CastSpell(player, S_LEARN_WEAPON, true);
                     //_Creature->CastSpell(player, S_REP_WEAPON, true);
                 }
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 break;
                 //Unlearn Armor/Weapon
             case GOSSIP_ACTION_INFO_DEF + 3:
@@ -655,15 +655,15 @@ public:
                 //Learn Hammer/Axe/Sword
             case GOSSIP_ACTION_INFO_DEF + 5:
                 player->CastSpell(player, S_LEARN_HAMMER, true);
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 break;
             case GOSSIP_ACTION_INFO_DEF + 6:
                 player->CastSpell(player, S_LEARN_AXE, true);
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 break;
             case GOSSIP_ACTION_INFO_DEF + 7:
                 player->CastSpell(player, S_LEARN_SWORD, true);
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 break;
                 //Unlearn Hammer/Axe/Sword
             case GOSSIP_ACTION_INFO_DEF + 8:
@@ -739,7 +739,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         switch (sender)
         {
             case GOSSIP_SENDER_MAIN:
@@ -849,9 +849,9 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         if (action == GOSSIP_ACTION_INFO_DEF + 1)
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
         if (sender != creature->GetEntry())
             return true;
@@ -975,7 +975,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         switch (sender)
         {
             case GOSSIP_SENDER_MAIN:
@@ -1137,7 +1137,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         switch (sender)
         {
             case GOSSIP_SENDER_MAIN:

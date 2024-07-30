@@ -299,7 +299,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         if (action == GOSSIP_ACTION_INFO_DEF + 1)
         {
             player->SEND_GOSSIP_MENU(TEXT_ID_PROGRESS, creature->GetGUID());
@@ -1172,72 +1172,72 @@ public:
             case 2357:                                          // Merideth Carlson
             case 4885:                                          // Gregor MacVince
                 if (player->GetReputationRank(72) != REP_EXALTED && race != RACE_HUMAN)
-                    player->SEND_GOSSIP_MENU(5855, creature->GetGUID());
+                    SendGossipMenuFor(player, 5855, creature->GetGUID());
                 else canBuy = true;
                 break;
             case 1261:                                          // Veron Amberstill
                 if (player->GetReputationRank(47) != REP_EXALTED && race != RACE_DWARF)
-                    player->SEND_GOSSIP_MENU(5856, creature->GetGUID());
+                    SendGossipMenuFor(player, 5856, creature->GetGUID());
                 else canBuy = true;
                 break;
             case 3362:                                          // Ogunaro Wolfrunner
                 if (player->GetReputationRank(76) != REP_EXALTED && race != RACE_ORC)
-                    player->SEND_GOSSIP_MENU(5841, creature->GetGUID());
+                    SendGossipMenuFor(player, 5841, creature->GetGUID());
                 else canBuy = true;
                 break;
             case 3685:                                          // Harb Clawhoof
                 if (player->GetReputationRank(81) != REP_EXALTED && race != RACE_TAUREN)
-                    player->SEND_GOSSIP_MENU(5843, creature->GetGUID());
+                    SendGossipMenuFor(player, 5845, creature->GetGUID());
                 else canBuy = true;
                 break;
             case 4730:                                          // Lelanai
                 if (player->GetReputationRank(69) != REP_EXALTED && race != RACE_NIGHTELF)
-                    player->SEND_GOSSIP_MENU(5844, creature->GetGUID());
+                    SendGossipMenuFor(player, 5843, creature->GetGUID());
                 else canBuy = true;
                 break;
             case 4731:                                          // Zachariah Post
                 if (player->GetReputationRank(68) != REP_EXALTED && race != RACE_UNDEAD_PLAYER)
-                    player->SEND_GOSSIP_MENU(5840, creature->GetGUID());
+                    SendGossipMenuFor(player, 5840, creature->GetGUID());
                 else canBuy = true;
                 break;
             case 7952:                                          // Zjolnir
                 if (player->GetReputationRank(530) != REP_EXALTED && race != RACE_TROLL)
-                    player->SEND_GOSSIP_MENU(5842, creature->GetGUID());
+                    SendGossipMenuFor(player, 5842, creature->GetGUID());
                 else canBuy = true;
                 break;
             case 7955:                                          // Milli Featherwhistle
                 if (player->GetReputationRank(54) != REP_EXALTED && race != RACE_GNOME)
-                    player->SEND_GOSSIP_MENU(5857, creature->GetGUID());
+                    SendGossipMenuFor(player, 5857, creature->GetGUID());
                 else canBuy = true;
                 break;
             case 16264:                                         // Winaestra
                 if (player->GetReputationRank(911) != REP_EXALTED && race != RACE_BLOODELF)
-                    player->SEND_GOSSIP_MENU(10305, creature->GetGUID());
+                    SendGossipMenuFor(player, 10305, creature->GetGUID());
                 else canBuy = true;
                 break;
             case 17584:                                         // Torallius the Pack Handler
                 if (player->GetReputationRank(930) != REP_EXALTED && race != RACE_DRAENEI)
-                    player->SEND_GOSSIP_MENU(10239, creature->GetGUID());
+                    SendGossipMenuFor(player, 10309, creature->GetGUID());
                 else canBuy = true;
                 break;
             case 48510:                                         // Kall Worthaton
                 if (player->GetReputationRank(1133) != REP_EXALTED && race != RACE_GOBLIN)
-                    player->SEND_GOSSIP_MENU(17494, creature->GetGUID());
+                    SendGossipMenuFor(player, 17494, creature->GetGUID());
                 else canBuy = true;
                 break;
             case 55285:                                         // Astrid Langstrump
                 if (player->GetReputationRank(1134) != REP_EXALTED && race != RACE_WORGEN)
-                    player->SEND_GOSSIP_MENU(18429, creature->GetGUID());
+                    SendGossipMenuFor(player, 18429, creature->GetGUID());
                 else canBuy = true;
                 break;
             case 65068:                                         // Old Whitenose
                 if (player->GetReputationRank(1353) != REP_EXALTED && race != RACE_PANDAREN_ALLIANCE)
-                    player->SEND_GOSSIP_MENU(22258, creature->GetGUID());
+                    SendGossipMenuFor(player, 22258, creature->GetGUID());
                 else canBuy = true;
                 break;
             case 66022:                                         // Turtlemaster Odai
                 if (player->GetReputationRank(1352) != REP_EXALTED && race != RACE_PANDAREN_HORDE)
-                    player->SEND_GOSSIP_MENU(22257, creature->GetGUID());
+                    SendGossipMenuFor(player, 22257, creature->GetGUID());
                 else canBuy = true;
                 break;
         }
@@ -1253,7 +1253,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         if (action == GOSSIP_ACTION_TRADE)
             player->GetSession()->SendListInventory(creature->GetGUID());
 
@@ -1270,6 +1270,12 @@ public:
 #define GOSSIP_HELLO_ROGUE3 "Purchase a Dual Talent Specialization."
 #define GOSSIP_HELLO_ROGUE4 "I wish to unlearn my specialization"
 
+enum RogueGossip
+{
+
+};
+
+
 class npc_rogue_trainer : public CreatureScript
 {
 public:
@@ -1281,7 +1287,7 @@ public:
             player->PrepareQuestMenu(creature->GetGUID());
 
         if (creature->IsTrainer())
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_TRAINER, GOSSIP_TEXT_TRAIN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_TRAIN);
+            AddGossipItemFor(player, GOSSIP_ICON_TRAINER, GOSSIP_TEXT_TRAIN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_TRAIN);
 
         if (player->GetClass() == CLASS_ROGUE)
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_TRAINER, GOSSIP_HELLO_ROGUE1, GOSSIP_SENDER_MAIN, GOSSIP_OPTION_UNLEARNTALENTS);
@@ -1295,31 +1301,31 @@ public:
         if (player->GetClass() == CLASS_ROGUE && player->GetLevel() >= 24 && !player->HasItemCount(17126) && !player->GetQuestRewardStatus(6681))
         {
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_HELLO_ROGUE2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-            player->SEND_GOSSIP_MENU(5996, creature->GetGUID());
+            SendGossipMenuFor(player, 5996, creature->GetGUID());
         } else
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
 
         return true;
     }
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF + 1:
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 player->CastSpell(player, 21100, false);
                 break;
             case GOSSIP_ACTION_TRAIN:
                 player->GetSession()->SendTrainerList(creature->GetGUID());
                 break;
             case GOSSIP_OPTION_UNLEARNTALENTS:
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 player->SendTalentWipeConfirm(creature->GetGUID(), false);
                 break;
             case GOSSIP_OPTION_UNLEARN_SPEC:
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 player->SendTalentWipeConfirm(creature->GetGUID(), true);
                 break;
             case GOSSIP_OPTION_LEARNDUALSPEC:
@@ -1356,35 +1362,51 @@ public:
 
 enum Sayge
 {
-    SPELL_DMG      = 23768, // dmg
-    SPELL_RES      = 23769, // res
-    SPELL_ARM      = 23767, // arm
-    SPELL_SPI      = 23738, // spi
-    SPELL_INT      = 23766, // int
-    SPELL_STM      = 23737, // stm
-    SPELL_STR      = 23735, // str
-    SPELL_AGI      = 23736, // agi
-    SPELL_FORTUNE  = 23765  // faire fortune
+    SPELL_STRENGTH = 23735, // +10% Strength
+    SPELL_AGILITY = 23736, // +10% Agility
+    SPELL_STAMINA = 23737, // +10% Stamina
+    SPELL_SPIRIT = 23738, // +10% Spirit
+    SPELL_INTELLECT = 23766, // +10% Intellect
+    SPELL_ARMOR = 23767, // +10% Armor
+    SPELL_DAMAGE = 23768, // +10% Damage
+    SPELL_RESISTANCE = 23769, // +25 Magic Resistance (All)
+    SPELL_FORTUNE = 23765  // Darkmoon Faire Fortune
 };
 
-#define GOSSIP_HELLO_SAYGE          "Yes"
-#define GOSSIP_SENDACTION_SAYGE1    "Slay the Man"
-#define GOSSIP_SENDACTION_SAYGE2    "Turn him over to liege"
-#define GOSSIP_SENDACTION_SAYGE3    "Confiscate the corn"
-#define GOSSIP_SENDACTION_SAYGE4    "Let him go and have the corn"
-#define GOSSIP_SENDACTION_SAYGE5    "Execute your friend painfully"
-#define GOSSIP_SENDACTION_SAYGE6    "Execute your friend painlessly"
-#define GOSSIP_SENDACTION_SAYGE7    "Let your friend go"
-#define GOSSIP_SENDACTION_SAYGE8    "Confront the diplomat"
-#define GOSSIP_SENDACTION_SAYGE9    "Show not so quiet defiance"
-#define GOSSIP_SENDACTION_SAYGE10   "Remain quiet"
-#define GOSSIP_SENDACTION_SAYGE11   "Speak against your brother openly"
-#define GOSSIP_SENDACTION_SAYGE12   "Help your brother in"
-#define GOSSIP_SENDACTION_SAYGE13   "Keep your brother out without letting him know"
-#define GOSSIP_SENDACTION_SAYGE14   "Take credit, keep gold"
-#define GOSSIP_SENDACTION_SAYGE15   "Take credit, share the gold"
-#define GOSSIP_SENDACTION_SAYGE16   "Let the knight take credit"
-#define GOSSIP_SENDACTION_SAYGE17   "Thanks"
+enum SaygeGossip
+{
+    // Start
+    GOSSIP_MENU_SAYGE_HELLO = 6186,
+    NPC_TEXT_SAYGE_HELLO = 7339,
+
+    // Theif - initial gossip after start
+    GOSSIP_MENU_SAYGE_1 = 6185,
+    NPC_TEXT_SAYGE_1 = 7340,
+
+    // Slay
+    GOSSIP_MENU_SAYGE_SLAY = 6187,
+    NPC_TEXT_SAYGE_SLAY = 7341,
+
+    // Turn Over
+    GOSSIP_MENU_SAYGE_TURN_OVER = 6208,
+    NPC_TEXT_SAYGE_TURN_OVER = 7361,
+
+    // Confiscate
+    GOSSIP_MENU_SAYGE_CONFISCATE = 6209,
+    NPC_TEXT_SAYGE_CONFISCATE = 7362,
+
+    // Let him go
+    GOSSIP_MENU_SAYGE_LET_GO = 6210,
+    NPC_TEXT_SAYGE_LET_GO = 7363,
+
+    // End
+    GOSSIP_MENU_SAYGE_END = 6211,
+    NPC_TEXT_SAYGE_END = 7364,
+
+    // End - Take fortune
+    NPC_TEXT_SAYGE_END_FORTUNE = 7365, // menuID 6212
+};
+
 
 class npc_sayge : public CreatureScript
 {
@@ -1396,19 +1418,21 @@ public:
         if (creature->IsQuestGiver())
             player->PrepareQuestMenu(creature->GetGUID());
 
-        if (player->HasSpellCooldown(SPELL_INT) ||
-            player->HasSpellCooldown(SPELL_ARM) ||
-            player->HasSpellCooldown(SPELL_DMG) ||
-            player->HasSpellCooldown(SPELL_RES) ||
-            player->HasSpellCooldown(SPELL_STR) ||
-            player->HasSpellCooldown(SPELL_AGI) ||
-            player->HasSpellCooldown(SPELL_STM) ||
-            player->HasSpellCooldown(SPELL_SPI))
-            player->SEND_GOSSIP_MENU(7393, creature->GetGUID());
+        if (player->HasSpellCooldown(SPELL_STRENGTH) ||
+            player->HasSpellCooldown(SPELL_AGILITY) ||
+            player->HasSpellCooldown(SPELL_STAMINA) ||
+            player->HasSpellCooldown(SPELL_SPIRIT) ||
+            player->HasSpellCooldown(SPELL_INTELLECT) ||
+            player->HasSpellCooldown(SPELL_ARMOR) ||
+            player->HasSpellCooldown(SPELL_DAMAGE) ||
+            player->HasSpellCooldown(SPELL_RESISTANCE))
+        {
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
+        }
         else
         {
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_HELLO_SAYGE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-            player->SEND_GOSSIP_MENU(7339, creature->GetGUID());
+            AddGossipItemFor(player, GOSSIP_MENU_SAYGE_HELLO, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
         }
 
         return true;
@@ -1418,94 +1442,94 @@ public:
     {
         switch (action)
         {
-            case GOSSIP_ACTION_INFO_DEF + 1:
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE1,            GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE2,            GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE3,            GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE4,            GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
-                player->SEND_GOSSIP_MENU(7340, creature->GetGUID());
-                break;
-            case GOSSIP_ACTION_INFO_DEF + 2:
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE5,            GOSSIP_SENDER_MAIN + 1, GOSSIP_ACTION_INFO_DEF);
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE6,            GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF);
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE7,            GOSSIP_SENDER_MAIN + 3, GOSSIP_ACTION_INFO_DEF);
-                player->SEND_GOSSIP_MENU(7341, creature->GetGUID());
-                break;
-            case GOSSIP_ACTION_INFO_DEF + 3:
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE8,            GOSSIP_SENDER_MAIN + 4, GOSSIP_ACTION_INFO_DEF);
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE9,            GOSSIP_SENDER_MAIN + 5, GOSSIP_ACTION_INFO_DEF);
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE10,           GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF);
-                player->SEND_GOSSIP_MENU(7361, creature->GetGUID());
-                break;
-            case GOSSIP_ACTION_INFO_DEF + 4:
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE11,           GOSSIP_SENDER_MAIN + 6, GOSSIP_ACTION_INFO_DEF);
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE12,           GOSSIP_SENDER_MAIN + 7, GOSSIP_ACTION_INFO_DEF);
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE13,           GOSSIP_SENDER_MAIN + 8, GOSSIP_ACTION_INFO_DEF);
-                player->SEND_GOSSIP_MENU(7362, creature->GetGUID());
-                break;
-            case GOSSIP_ACTION_INFO_DEF + 5:
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE14,           GOSSIP_SENDER_MAIN + 5, GOSSIP_ACTION_INFO_DEF);
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE15,           GOSSIP_SENDER_MAIN + 4, GOSSIP_ACTION_INFO_DEF);
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE16,           GOSSIP_SENDER_MAIN + 3, GOSSIP_ACTION_INFO_DEF);
-                player->SEND_GOSSIP_MENU(7363, creature->GetGUID());
-                break;
-            case GOSSIP_ACTION_INFO_DEF:
-                player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SENDACTION_SAYGE17,           GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
-                player->SEND_GOSSIP_MENU(7364, creature->GetGUID());
-                break;
-            case GOSSIP_ACTION_INFO_DEF + 6:
-                creature->CastSpell(player, SPELL_FORTUNE, false);
-                player->SEND_GOSSIP_MENU(7365, creature->GetGUID());
-                break;
+        case GOSSIP_ACTION_INFO_DEF + 1:
+            AddGossipItemFor(player, GOSSIP_MENU_SAYGE_1, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2); // Slay
+            AddGossipItemFor(player, GOSSIP_MENU_SAYGE_1, 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3); // Turn over
+            AddGossipItemFor(player, GOSSIP_MENU_SAYGE_1, 2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4); // Confiscate
+            AddGossipItemFor(player, GOSSIP_MENU_SAYGE_1, 3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5); // Let him go
+            SendGossipMenuFor(player, NPC_TEXT_SAYGE_1, creature->GetGUID());
+            break;
+        case GOSSIP_ACTION_INFO_DEF + 2: // Slay
+            AddGossipItemFor(player, GOSSIP_MENU_SAYGE_SLAY, 0, GOSSIP_SENDER_MAIN + 1, GOSSIP_ACTION_INFO_DEF); // Painfully
+            AddGossipItemFor(player, GOSSIP_MENU_SAYGE_SLAY, 1, GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF); // Painlessly
+            AddGossipItemFor(player, GOSSIP_MENU_SAYGE_SLAY, 2, GOSSIP_SENDER_MAIN + 3, GOSSIP_ACTION_INFO_DEF); // Let go
+            SendGossipMenuFor(player, NPC_TEXT_SAYGE_SLAY, creature->GetGUID());
+            break;
+        case GOSSIP_ACTION_INFO_DEF + 3: // Turn over
+            AddGossipItemFor(player, GOSSIP_MENU_SAYGE_TURN_OVER, 0, GOSSIP_SENDER_MAIN + 4, GOSSIP_ACTION_INFO_DEF); // Confront
+            AddGossipItemFor(player, GOSSIP_MENU_SAYGE_TURN_OVER, 1, GOSSIP_SENDER_MAIN + 5, GOSSIP_ACTION_INFO_DEF); // Inform
+            AddGossipItemFor(player, GOSSIP_MENU_SAYGE_TURN_OVER, 2, GOSSIP_SENDER_MAIN + 2, GOSSIP_ACTION_INFO_DEF); // Ignore
+            SendGossipMenuFor(player, NPC_TEXT_SAYGE_TURN_OVER, creature->GetGUID());
+            break;
+        case GOSSIP_ACTION_INFO_DEF + 4: // Confiscate
+            AddGossipItemFor(player, GOSSIP_MENU_SAYGE_CONFISCATE, 0, GOSSIP_SENDER_MAIN + 6, GOSSIP_ACTION_INFO_DEF); // Speak against
+            AddGossipItemFor(player, GOSSIP_MENU_SAYGE_CONFISCATE, 1, GOSSIP_SENDER_MAIN + 7, GOSSIP_ACTION_INFO_DEF); // Help
+            AddGossipItemFor(player, GOSSIP_MENU_SAYGE_CONFISCATE, 2, GOSSIP_SENDER_MAIN + 8, GOSSIP_ACTION_INFO_DEF); // Without knowing
+            SendGossipMenuFor(player, NPC_TEXT_SAYGE_CONFISCATE, creature->GetGUID());
+            break;
+        case GOSSIP_ACTION_INFO_DEF + 5: // Let him go
+            AddGossipItemFor(player, GOSSIP_MENU_SAYGE_LET_GO, 0, GOSSIP_SENDER_MAIN + 5, GOSSIP_ACTION_INFO_DEF); // Take credit, keep gold
+            AddGossipItemFor(player, GOSSIP_MENU_SAYGE_LET_GO, 1, GOSSIP_SENDER_MAIN + 4, GOSSIP_ACTION_INFO_DEF); // Take credit, share gold
+            AddGossipItemFor(player, GOSSIP_MENU_SAYGE_LET_GO, 2, GOSSIP_SENDER_MAIN + 3, GOSSIP_ACTION_INFO_DEF); // Let the knight keep
+            SendGossipMenuFor(player, NPC_TEXT_SAYGE_LET_GO, creature->GetGUID());
+            break;
+        case GOSSIP_ACTION_INFO_DEF: // End
+            AddGossipItemFor(player, GOSSIP_MENU_SAYGE_END, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
+            SendGossipMenuFor(player, NPC_TEXT_SAYGE_END, creature->GetGUID());
+            break;
+        case GOSSIP_ACTION_INFO_DEF + 6: // End - Take fortune
+            creature->CastSpell(player, SPELL_FORTUNE, false);
+            SendGossipMenuFor(player, NPC_TEXT_SAYGE_END_FORTUNE, creature->GetGUID());
+            break;
         }
     }
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         switch (sender)
         {
             case GOSSIP_SENDER_MAIN:
                 SendAction(player, creature, action);
                 break;
             case GOSSIP_SENDER_MAIN + 1:
-                creature->CastSpell(player, SPELL_DMG, false);
-                player->AddSpellCooldown(SPELL_DMG, Hours(2));
+                creature->CastSpell(player, SPELL_DAMAGE, false);
+                player->AddSpellCooldown(SPELL_DAMAGE, Hours(2));
                 SendAction(player, creature, action);
                 break;
             case GOSSIP_SENDER_MAIN + 2:
-                creature->CastSpell(player, SPELL_RES, false);
-                player->AddSpellCooldown(SPELL_RES, Hours(2));
+                creature->CastSpell(player, SPELL_RESISTANCE, false);
+                player->AddSpellCooldown(SPELL_RESISTANCE, Hours(2));
                 SendAction(player, creature, action);
                 break;
             case GOSSIP_SENDER_MAIN + 3:
-                creature->CastSpell(player, SPELL_ARM, false);
-                player->AddSpellCooldown(SPELL_ARM, Hours(2));
+                creature->CastSpell(player, SPELL_ARMOR, false);
+                player->AddSpellCooldown(SPELL_ARMOR, Hours(2));
                 SendAction(player, creature, action);
                 break;
             case GOSSIP_SENDER_MAIN + 4:
-                creature->CastSpell(player, SPELL_SPI, false);
-                player->AddSpellCooldown(SPELL_SPI, Hours(2));
+                creature->CastSpell(player, SPELL_SPIRIT, false);
+                player->AddSpellCooldown(SPELL_SPIRIT, Hours(2));
                 SendAction(player, creature, action);
                 break;
             case GOSSIP_SENDER_MAIN + 5:
-                creature->CastSpell(player, SPELL_INT, false);
-                player->AddSpellCooldown(SPELL_INT, Hours(2));
+                creature->CastSpell(player, SPELL_INTELLECT, false);
+                player->AddSpellCooldown(SPELL_INTELLECT, Hours(2));
                 SendAction(player, creature, action);
                 break;
             case GOSSIP_SENDER_MAIN + 6:
-                creature->CastSpell(player, SPELL_STM, false);
-                player->AddSpellCooldown(SPELL_STM, Hours(2));
+                creature->CastSpell(player, SPELL_STAMINA, false);
+                player->AddSpellCooldown(SPELL_STAMINA, Hours(2));
                 SendAction(player, creature, action);
                 break;
             case GOSSIP_SENDER_MAIN + 7:
-                creature->CastSpell(player, SPELL_STR, false);
-                player->AddSpellCooldown(SPELL_STR, Hours(2));
+                creature->CastSpell(player, SPELL_STRENGTH, false);
+                player->AddSpellCooldown(SPELL_STRENGTH, Hours(2));
                 SendAction(player, creature, action);
                 break;
             case GOSSIP_SENDER_MAIN + 8:
-                creature->CastSpell(player, SPELL_AGI, false);
-                player->AddSpellCooldown(SPELL_AGI, Hours(2));
+                creature->CastSpell(player, SPELL_AGILITY, false);
+                player->AddSpellCooldown(SPELL_AGILITY, Hours(2));
                 SendAction(player, creature, action);
                 break;
         }
@@ -1750,12 +1774,6 @@ public:
 # npc_wormhole
 ######*/
 
-#define GOSSIP_ENGINEERING1   "Borean Tundra"
-#define GOSSIP_ENGINEERING2   "Howling Fjord"
-#define GOSSIP_ENGINEERING3   "Sholazar Basin"
-#define GOSSIP_ENGINEERING4   "Icecrown"
-#define GOSSIP_ENGINEERING5   "Storm Peaks"
-#define GOSSIP_ENGINEERING6   "Underground..."
 
 enum WormholeSpells
 {
@@ -1769,6 +1787,8 @@ enum WormholeSpells
     TEXT_WORMHOLE               = 907,
 
     DATA_SHOW_UNDERGROUND       = 1,
+    GOSSIP_MENU_WORMHOLE = 10668,
+
 };
 
 class npc_wormhole : public CreatureScript
@@ -1800,16 +1820,16 @@ class npc_wormhole : public CreatureScript
             {
                 if (player == creature->ToTempSummon()->GetSummoner())
                 {
-                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
-                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
-                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
-                    player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING5, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
+                    AddGossipItemFor(player, GOSSIP_MENU_WORMHOLE, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1); // Borean Tundra
+                    AddGossipItemFor(player, GOSSIP_MENU_WORMHOLE, 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2); // Howling Fjord
+                    AddGossipItemFor(player, GOSSIP_MENU_WORMHOLE, 2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3); // Sholazar Basin
+                    AddGossipItemFor(player, GOSSIP_MENU_WORMHOLE, 3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4); // Icecrown
+                    AddGossipItemFor(player, GOSSIP_MENU_WORMHOLE, 4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5); // Storm Peaks
 
                     if (creature->AI()->GetData(DATA_SHOW_UNDERGROUND))
-                        player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ENGINEERING6, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
+                        AddGossipItemFor(player, GOSSIP_MENU_WORMHOLE, 5, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6); // Underground...
 
-                    player->PlayerTalkClass->SendGossipMenu(TEXT_WORMHOLE, creature->GetGUID());
+                    SendGossipMenuFor(player, player->GetGossipTextId(creature), creature);
                 }
             }
 
@@ -1818,32 +1838,32 @@ class npc_wormhole : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             switch (action)
             {
                 case GOSSIP_ACTION_INFO_DEF + 1: // Borean Tundra
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     creature->CastSpell(player, SPELL_BOREAN_TUNDRA, false);
                     break;
                 case GOSSIP_ACTION_INFO_DEF + 2: // Howling Fjord
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     creature->CastSpell(player, SPELL_HOWLING_FJORD, false);
                     break;
                 case GOSSIP_ACTION_INFO_DEF + 3: // Sholazar Basin
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     creature->CastSpell(player, SPELL_SHOLAZAR_BASIN, false);
                     break;
                 case GOSSIP_ACTION_INFO_DEF + 4: // Icecrown
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     creature->CastSpell(player, SPELL_ICECROWN, false);
                     break;
                 case GOSSIP_ACTION_INFO_DEF + 5: // Storm peaks
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     creature->CastSpell(player, SPELL_STORM_PEAKS, false);
                     break;
                 case GOSSIP_ACTION_INFO_DEF + 6: // Underground
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     creature->CastSpell(player, SPELL_UNDERGROUND, false);
                     break;
             }
@@ -1873,6 +1893,7 @@ enum PetTrainer
 #define GOSSIP_PET2             "I wish to untrain my pet."
 #define GOSSIP_PET_CONFIRM      "Yes, please do."
 
+
 class npc_pet_trainer : public CreatureScript
 {
 public:
@@ -1898,7 +1919,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF + 1:
@@ -1913,7 +1934,7 @@ public:
             case GOSSIP_ACTION_INFO_DEF + 3:
                 {
                     player->ResetPetTalents();
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                 }
                 break;
         }
@@ -1927,46 +1948,56 @@ public:
 
 enum LockSmith
 {
+    // Skeleton Key - Scholomance
+    QUEST_THE_KEY_TO_SCHOLOMANCE_A = 5505,
+    QUEST_THE_KEY_TO_SCHOLOMANCE_H = 5511,
+    ITEM_SKELETON_KEY = 13704,
+    SPELL_SKELETON_KEY = 54883,
+
+    // Arcatraz Key
     QUEST_HOW_TO_BRAKE_IN_TO_THE_ARCATRAZ = 10704,
-    QUEST_DARK_IRON_LEGACY                = 3802,
-    QUEST_THE_KEY_TO_SCHOLOMANCE_A        = 5505,
-    QUEST_THE_KEY_TO_SCHOLOMANCE_H        = 5511,
-    QUEST_HOTTER_THAN_HELL_A              = 10758,
-    QUEST_HOTTER_THAN_HELL_H              = 10764,
-    QUEST_RETURN_TO_KHAGDAR               = 9837,
-    QUEST_CONTAINMENT                     = 13159,
-    QUEST_ETERNAL_VIGILANCE               = 11011,
-    QUEST_KEY_TO_THE_FOCUSING_IRIS        = 13372,
-    QUEST_HC_KEY_TO_THE_FOCUSING_IRIS     = 13375,
+    ITEM_ARCATRAZ_KEY = 31084,
+    SPELL_ARCATRAZ_KEY = 54881,
 
-    ITEM_ARCATRAZ_KEY                     = 31084,
-    ITEM_SHADOWFORGE_KEY                  = 11000,
-    ITEM_SKELETON_KEY                     = 13704,
-    ITEM_SHATTERED_HALLS_KEY              = 28395,
-    ITEM_THE_MASTERS_KEY                  = 24490,
-    ITEM_VIOLET_HOLD_KEY                  = 42482,
-    ITEM_ESSENCE_INFUSED_MOONSTONE        = 32449,
-    ITEM_KEY_TO_THE_FOCUSING_IRIS         = 44582,
-    ITEM_HC_KEY_TO_THE_FOCUSING_IRIS      = 44581,
+    // Shatered Halls Key
+    QUEST_HOTTER_THAN_HELL_A = 10758,
+    QUEST_HOTTER_THAN_HELL_H = 10764,
+    ITEM_SHATTERED_HALLS_KEY = 28395,
+    SPELL_SHATTERED_HALLS_KEY = 54884,
 
-    SPELL_ARCATRAZ_KEY                    = 54881,
-    SPELL_SHADOWFORGE_KEY                 = 54882,
-    SPELL_SKELETON_KEY                    = 54883,
-    SPELL_SHATTERED_HALLS_KEY             = 54884,
-    SPELL_THE_MASTERS_KEY                 = 54885,
-    SPELL_VIOLET_HOLD_KEY                 = 67253,
-    SPELL_ESSENCE_INFUSED_MOONSTONE       = 40173,
+    // Searing Gorge Key
+    QUEST_AT_LAST = 3201,
+    ITEM_SEARING_GORGE = 5396,
+    SPELL_SEARING_GORGE_KEY = 54880,
+
+    // Shadowforge Key
+    QUEST_DARK_IRON_LEGACY = 3802,
+    ITEM_SHADOWFORGE_KEY = 11000,
+    SPELL_SHADOWFORGE_KEY = 54882,
+
+    // Eye of Haramad
+    QUEST_THE_EYE_OF_HARAMAD = 10982,
+    ITEM_EYE_OF_HARAMAD = 32092,
+    SPELL_EYE_OF_HARMAD = 54887,
+
+    // Master's Key
+    QUEST_RETURN_TO_KHAGDAR = 9837,
+    ITEM_THE_MASTERS_KEY = 24490,
+    SPELL_THE_MASTERS_KEY = 54885,
+
+    // Violet Hold Key
+    QUEST_CONTAINMENT = 13159,
+    ITEM_VIOLET_HOLD_KEY = 42482,
+    SPELL_VIOLET_HOLD_KEY = 67253,
+
+    // Essence-Infused Moonstone
+    QUEST_ETERNAL_VIGILANCE = 11011,
+    ITEM_ESSENCE_INFUSED_MOONSTONE = 32449,
+    SPELL_ESSENCE_INFUSED_MOONSTONE = 40173,
+
+    // Gossip
+    GOSSIP_MENU_LOCKSMITH = 9823,
 };
-
-#define GOSSIP_LOST_ARCATRAZ_KEY                "I've lost my key to the Arcatraz."
-#define GOSSIP_LOST_SHADOWFORGE_KEY             "I've lost my key to the Blackrock Depths."
-#define GOSSIP_LOST_SKELETON_KEY                "I've lost my key to the Scholomance."
-#define GOSSIP_LOST_SHATTERED_HALLS_KEY         "I've lost my key to the Shattered Halls."
-#define GOSSIP_LOST_THE_MASTERS_KEY             "I've lost my key to the Karazhan."
-#define GOSSIP_LOST_VIOLET_HOLD_KEY             "I've lost my key to the Violet Hold."
-#define GOSSIP_LOST_ESSENCE_INFUSED_MOONSTONE   "I've lost my Essence-Infused Moonstone."
-#define GOSSIP_LOST_KEY_TO_THE_FOCUSING_IRIS    "I've lost my Key to the Focusing Iris."
-#define GOSSIP_LOST_HC_KEY_TO_THE_FOCUSING_IRIS "I've lost my Heroic Key to the Focusing Iris."
 
 class npc_locksmith : public CreatureScript
 {
@@ -1975,89 +2006,89 @@ public:
 
     bool OnGossipHello(Player* player, Creature* creature) override
     {
-        // Arcatraz Key
-        if (player->GetQuestRewardStatus(QUEST_HOW_TO_BRAKE_IN_TO_THE_ARCATRAZ) && !player->HasItemCount(ITEM_ARCATRAZ_KEY, 1, true))
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_LOST_ARCATRAZ_KEY, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-
-        // Shadowforge Key
-        if (player->GetQuestRewardStatus(QUEST_DARK_IRON_LEGACY) && !player->HasItemCount(ITEM_SHADOWFORGE_KEY, 1, true))
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_LOST_SHADOWFORGE_KEY, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
-
-        // Skeleton Key
+        // Skeleton Key - Scholomance
         if ((player->GetQuestRewardStatus(QUEST_THE_KEY_TO_SCHOLOMANCE_A) || player->GetQuestRewardStatus(QUEST_THE_KEY_TO_SCHOLOMANCE_H)) &&
             !player->HasItemCount(ITEM_SKELETON_KEY, 1, true))
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_LOST_SKELETON_KEY, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+            AddGossipItemFor(player, GOSSIP_MENU_LOCKSMITH, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+
+        // Arcatraz Key
+        if (player->GetQuestRewardStatus(QUEST_HOW_TO_BRAKE_IN_TO_THE_ARCATRAZ) && !player->HasItemCount(ITEM_ARCATRAZ_KEY, 1, true))
+            AddGossipItemFor(player, GOSSIP_MENU_LOCKSMITH, 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
 
         // Shatered Halls Key
         if ((player->GetQuestRewardStatus(QUEST_HOTTER_THAN_HELL_A) || player->GetQuestRewardStatus(QUEST_HOTTER_THAN_HELL_H)) &&
             !player->HasItemCount(ITEM_SHATTERED_HALLS_KEY, 1, true))
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_LOST_SHATTERED_HALLS_KEY, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
+            AddGossipItemFor(player, GOSSIP_MENU_LOCKSMITH, 2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
+
+        // Searing Gorge Key
+        if (player->GetQuestRewardStatus(QUEST_AT_LAST) && !player->HasItemCount(ITEM_SEARING_GORGE, 1, true))
+            AddGossipItemFor(player, GOSSIP_MENU_LOCKSMITH, 3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
+
+        // Shadowforge Key
+        if (player->GetQuestRewardStatus(QUEST_DARK_IRON_LEGACY) && !player->HasItemCount(ITEM_SHADOWFORGE_KEY, 1, true))
+            AddGossipItemFor(player, GOSSIP_MENU_LOCKSMITH, 4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
+
+        //  Eye of Haramad
+        if (player->GetQuestRewardStatus(QUEST_THE_EYE_OF_HARAMAD) && !player->HasItemCount(ITEM_EYE_OF_HARAMAD, 1, true))
+            AddGossipItemFor(player, GOSSIP_MENU_LOCKSMITH, 5, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
 
         // Master's Key
         if (player->GetQuestRewardStatus(QUEST_RETURN_TO_KHAGDAR) && !player->HasItemCount(ITEM_THE_MASTERS_KEY, 1, true))
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_LOST_THE_MASTERS_KEY, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
+            AddGossipItemFor(player, GOSSIP_MENU_LOCKSMITH, 6, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 7);
 
         // Violet Hold Key
         if (player->GetQuestRewardStatus(QUEST_CONTAINMENT) && !player->HasItemCount(ITEM_VIOLET_HOLD_KEY, 1, true))
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_LOST_VIOLET_HOLD_KEY, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
+            AddGossipItemFor(player, GOSSIP_MENU_LOCKSMITH, 7, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 8);
 
         // Essence-Infused Moonstone
         if (player->GetQuestRewardStatus(QUEST_ETERNAL_VIGILANCE) && !player->HasItemCount(ITEM_ESSENCE_INFUSED_MOONSTONE, 1, true))
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_LOST_ESSENCE_INFUSED_MOONSTONE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 7);
+            AddGossipItemFor(player, GOSSIP_MENU_LOCKSMITH, 8, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 9);
 
-        // Key to the Focusing Iris
-        if (player->GetQuestRewardStatus(QUEST_KEY_TO_THE_FOCUSING_IRIS) && !player->HasItemCount(ITEM_KEY_TO_THE_FOCUSING_IRIS, 1, true))
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_LOST_KEY_TO_THE_FOCUSING_IRIS, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 8);
-
-        // Heroic Key to the Focusing Iris
-        if (player->GetQuestRewardStatus(QUEST_HC_KEY_TO_THE_FOCUSING_IRIS) && !player->HasItemCount(ITEM_HC_KEY_TO_THE_FOCUSING_IRIS, 1, true))
-            player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_LOST_HC_KEY_TO_THE_FOCUSING_IRIS, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 9);
-
-        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+        SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
 
         return true;
     }
 
     bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF + 1:
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 player->CastSpell(player, SPELL_ARCATRAZ_KEY, false);
                 break;
             case GOSSIP_ACTION_INFO_DEF + 2:
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 player->CastSpell(player, SPELL_SHADOWFORGE_KEY, false);
                 break;
             case GOSSIP_ACTION_INFO_DEF + 3:
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 player->CastSpell(player, SPELL_SKELETON_KEY, false);
                 break;
             case GOSSIP_ACTION_INFO_DEF + 4:
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 player->CastSpell(player, SPELL_SHATTERED_HALLS_KEY, false);
                 break;
             case GOSSIP_ACTION_INFO_DEF + 5:
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 player->CastSpell(player, SPELL_THE_MASTERS_KEY, false);
                 break;
             case GOSSIP_ACTION_INFO_DEF + 6:
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 player->CastSpell(player, SPELL_VIOLET_HOLD_KEY, false);
                 break;
             case GOSSIP_ACTION_INFO_DEF + 7:
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 player->CastSpell(player, SPELL_ESSENCE_INFUSED_MOONSTONE, false);
                 break;
             case GOSSIP_ACTION_INFO_DEF + 8:
-                player->CLOSE_GOSSIP_MENU();
-                player->AddItem(ITEM_KEY_TO_THE_FOCUSING_IRIS, 1);
+                CloseGossipMenuFor(player);
+                player->CastSpell(player, SPELL_VIOLET_HOLD_KEY, false);
                 break;
             case GOSSIP_ACTION_INFO_DEF + 9:
-                player->CLOSE_GOSSIP_MENU();
-                player->AddItem(ITEM_HC_KEY_TO_THE_FOCUSING_IRIS, 1);
+                CloseGossipMenuFor(player);
+                player->CastSpell(player, SPELL_ESSENCE_INFUSED_MOONSTONE, false);
                 break;
         }
         return true;
@@ -2088,7 +2119,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         bool noXPGain = player->HasFlag(PLAYER_FIELD_PLAYER_FLAGS, PLAYER_FLAGS_NO_XP_GAIN); //PLAYER_FIELD_FLAGS_NO_XP_GAIN
         bool doSwitch = false;
 
@@ -2598,7 +2629,7 @@ class npc_pandaria_treasures : public CreatureScript
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 /*action*/) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
 
         auto itr = pandariaTreasuresMap.find(creature->GetEntry());
         if (itr != pandariaTreasuresMap.end())
@@ -2608,7 +2639,7 @@ class npc_pandaria_treasures : public CreatureScript
                 player->AddItem(itr->second.second, 1);
             }
 
-        player->CLOSE_GOSSIP_MENU();
+        CloseGossipMenuFor(player);
         creature->DespawnOrUnsummon();
         return true;
     }

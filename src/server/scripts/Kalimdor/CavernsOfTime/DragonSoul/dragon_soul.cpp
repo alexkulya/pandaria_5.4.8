@@ -1317,13 +1317,13 @@ class npc_dragon_soul_thrall : public CreatureScript
 
             if (sender == GOSSIP_MENU_ULTRAXION_START && action == GOSSIP_ACTION_INFO_DEF + 1)
             {
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 creature->AI()->DoAction(ACTION_AFTER_HAGARA);
                 creature->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
             }
             else if (sender == GOSSIP_MENU_ULTRAXION_START && action == GOSSIP_ACTION_INFO_DEF + 2)
             {
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 creature->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                 creature->AI()->DoAction(ACTION_SPAWN_DRAGONS);
             }

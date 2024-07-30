@@ -96,7 +96,7 @@ class npc_mostrasz_56314 : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 /*action*/) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (player->GetQuestStatus(QUEST_TO_RAVENHOLDT) == QUEST_STATUS_INCOMPLETE)
             {
