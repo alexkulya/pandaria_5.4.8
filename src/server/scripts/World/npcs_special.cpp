@@ -2099,10 +2099,14 @@ public:
 ## npc_experience
 ######*/
 
-#define EXP_COST                100000 //10 00 00 copper (10golds)
-#define GOSSIP_TEXT_EXP         14736
-#define GOSSIP_XP_OFF           "I no longer wish to gain experience."
-#define GOSSIP_XP_ON            "I wish to start gaining experience again."
+
+enum npc_experienceGossip
+{
+    GOSSIP_MENU_XP = 10638,
+    GOSSIP_TEXT_EXP = 14736,
+
+    EXP_COST = 100000 //10 00 00 copper (10golds)
+};
 
 class npc_experience : public CreatureScript
 {
@@ -2111,8 +2115,9 @@ public:
 
     bool OnGossipHello(Player* player, Creature* creature) override
     {
-        player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_XP_OFF, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-        player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_XP_ON, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
+        AddGossipItemFor(player, GOSSIP_MENU_XP, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+        AddGossipItemFor(player, GOSSIP_MENU_XP, 1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
+
         SendGossipMenuFor(player, GOSSIP_TEXT_EXP, creature->GetGUID());
         return true;
     }
