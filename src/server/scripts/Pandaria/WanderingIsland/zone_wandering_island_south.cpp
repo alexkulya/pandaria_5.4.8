@@ -1037,7 +1037,7 @@ class npc_shang_xi_choose_faction : public CreatureScript
             else if (player->GetRace() == RACE_PANDAREN_HORDE)
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_TP_ORGRI, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
 
-            player->PlayerTalkClass->SendGossipMenu(1, creature->GetGUID());
+            SendGossipMenuFor(player, 1, creature->GetGUID());
             return true;
         }
 
@@ -1050,7 +1050,7 @@ class npc_shang_xi_choose_faction : public CreatureScript
             else if (action == GOSSIP_ACTION_INFO_DEF + 3)
                 player->TeleportTo(1, 1577.30f, -4453.64f, 15.68f, 1.84f);
 
-            player->PlayerTalkClass->SendCloseGossip();
+            CloseGossipMenuFor(player);
             return true;
         }
 };

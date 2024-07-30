@@ -340,7 +340,7 @@ public:
             player->ADD_GOSSIP_ITEM_DB(51002, 14, GOSSIP_SENDER_MAIN, ARCHAEOLOGY);
 
         player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, ru ? "|TInterface/PaperDollInfoFrame/UI-GearManager-LeaveItem-Transparent:28|t Закрыть" : "|TInterface/PaperDollInfoFrame/UI-GearManager-LeaveItem-Transparent:28|t Close", GOSSIP_SENDER_MAIN, 1);
-        player->SEND_GOSSIP_MENU(20010, item->GetGUID());
+        SendGossipMenuFor(player, 20010, item->GetGUID());
         return true;
     }
 
@@ -544,7 +544,7 @@ public:
             player->ADD_GOSSIP_ITEM_DB(51002, 14, GOSSIP_SENDER_MAIN, ARCHAEOLOGY);
 
         player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, ru ? "|TInterface/PaperDollInfoFrame/UI-GearManager-LeaveItem-Transparent:28|t Закрыть" : "|TInterface/PaperDollInfoFrame/UI-GearManager-LeaveItem-Transparent:28|t Close", GOSSIP_SENDER_MAIN, 1);
-        player->SEND_GOSSIP_MENU(20011, item->GetGUID());
+        SendGossipMenuFor(player, 20011, item->GetGUID());
         return true;
     }
 

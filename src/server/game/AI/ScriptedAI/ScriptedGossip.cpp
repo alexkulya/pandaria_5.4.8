@@ -43,7 +43,7 @@ void AddGossipItemFor(Player* player, uint32 gossipMenuID, uint32 gossipMenuItem
 
 void SendGossipMenuFor(Player* player, uint32 npcTextID, uint64 const& guid)
 {
-    player->PlayerTalkClass->SendGossipMenu(npcTextID, guid);
+    SendGossipMenuFor(player, npcTextID, guid);
 }
 
 void SendGossipMenuFor(Player* player, uint32 npcTextID, Creature const* creature)
@@ -54,5 +54,5 @@ void SendGossipMenuFor(Player* player, uint32 npcTextID, Creature const* creatur
 
 void CloseGossipMenuFor(Player* player)
 {
-    player->PlayerTalkClass->SendCloseGossip();
+    CloseGossipMenuFor(player);
 }

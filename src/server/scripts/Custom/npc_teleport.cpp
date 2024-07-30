@@ -388,7 +388,7 @@ class npc_teleport : public CreatureScript
         {
             if (!pPlayer->IsInCombat())
             {
-                pPlayer->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(pPlayer);
                 pPlayer->TeleportTo(Tele[uiAction].map, Tele[uiAction].x, Tele[uiAction].y, Tele[uiAction].z, Tele[uiAction].o);
                 return true;
             }

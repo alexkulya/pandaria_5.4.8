@@ -21,6 +21,7 @@
 #include "SpellScript.h"
 #include "ScriptedCreature.h"
 #include "BattlegroundMgr.h"
+#include "ScriptedGossip.h"
 #include "GossipDef.h"
 
 enum
@@ -162,7 +163,7 @@ void BattlegroundSM::PostUpdateImpl(uint32 diff)
                     if (Player* player = ObjectAccessor::FindPlayer(itr.first))
                     {
                         if (player->GetExactDist2d(trackSwitch->GetPositionX(), trackSwitch->GetPositionY()) <= 10.0f)
-                            player->PlayerTalkClass->SendCloseGossip(); // Prevent from using multiple times track switches
+                            CloseGossipMenuFor(player); // Prevent from using multiple times track switches
                     }
                 }
 
@@ -185,7 +186,7 @@ void BattlegroundSM::PostUpdateImpl(uint32 diff)
                     if (Player* player = ObjectAccessor::FindPlayer(itr.first))
                     {
                         if (player->GetExactDist2d(trackSwitch->GetPositionX(), trackSwitch->GetPositionY()) <= 10.0f)
-                            player->PlayerTalkClass->SendCloseGossip(); // Prevent from using multiple times track switches
+                            CloseGossipMenuFor(player); // Prevent from using multiple times track switches
                     }
                 }
 

@@ -1334,7 +1334,7 @@ public:
                     if (!player->HasEnoughMoney(uint64(10000000)))
                     {
                         player->SendBuyError(BUY_ERR_NOT_ENOUGHT_MONEY, 0, 0, 0);
-                        player->PlayerTalkClass->SendCloseGossip();
+                        CloseGossipMenuFor(player);
                         break;
                     }
                     else
@@ -1347,7 +1347,7 @@ public:
                         player->CastSpell(player, 63624, true, NULL, NULL, player->GetGUID());
 
                         // Should show another Gossip text with "Congratulations..."
-                        player->PlayerTalkClass->SendCloseGossip();
+                        CloseGossipMenuFor(player);
                     }
                 }
                 break;
@@ -1910,10 +1910,10 @@ public:
             if (player->GetPet() && player->GetPet()->getPetType() == HUNTER_PET)
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_PET2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
 
-            player->PlayerTalkClass->SendGossipMenu(TEXT_ISHUNTER, creature->GetGUID());
+            SendGossipMenuFor(player, TEXT_ISHUNTER, creature->GetGUID());
             return true;
         }
-        player->PlayerTalkClass->SendGossipMenu(TEXT_NOTHUNTER, creature->GetGUID());
+        SendGossipMenuFor(player, TEXT_NOTHUNTER, creature->GetGUID());
         return true;
     }
 
@@ -1923,12 +1923,12 @@ public:
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF + 1:
-                player->PlayerTalkClass->SendGossipMenu(TEXT_PETINFO, creature->GetGUID());
+                SendGossipMenuFor(player, TEXT_PETINFO, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 2:
                 {
                     player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_PET_CONFIRM, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
-                    player->PlayerTalkClass->SendGossipMenu(TEXT_CONFIRM, creature->GetGUID());
+                    SendGossipMenuFor(player, TEXT_CONFIRM, creature->GetGUID());
                 }
                 break;
             case GOSSIP_ACTION_INFO_DEF + 3:
@@ -2113,7 +2113,7 @@ public:
     {
         player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_XP_OFF, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
         player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_XP_ON, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
-        player->PlayerTalkClass->SendGossipMenu(GOSSIP_TEXT_EXP, creature->GetGUID());
+        SendGossipMenuFor(player, GOSSIP_TEXT_EXP, creature->GetGUID());
         return true;
     }
 
@@ -2153,7 +2153,7 @@ public:
                 player->SetFlag(PLAYER_FIELD_PLAYER_FLAGS, PLAYER_FLAGS_NO_XP_GAIN);
             }
         }
-        player->PlayerTalkClass->SendCloseGossip();
+        CloseGossipMenuFor(player);
         return true;
     }
 };

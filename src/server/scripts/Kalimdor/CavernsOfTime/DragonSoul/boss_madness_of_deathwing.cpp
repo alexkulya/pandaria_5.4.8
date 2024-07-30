@@ -890,7 +890,7 @@ class npc_dragon_soul_thrall_1 : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->SendCloseGossip();
+            CloseGossipMenuFor(player);
 
             if (player->IsInCombat())
                 return true;

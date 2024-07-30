@@ -596,7 +596,7 @@ class go_ahune_ice_stone : public GameObjectScript
                 ahune->AI()->SetGUID(player->GetGUID(), TYPE_STARTER_GUID);
                 ahune->AI()->DoAction(ACTION_START_EVENT);
 
-                player->PlayerTalkClass->SendCloseGossip();
+                CloseGossipMenuFor(player);
                 go->Delete();
             }
 

@@ -1461,7 +1461,6 @@ class go_wind_stone : public GameObjectScript
         bool OnGossipSelect(Player* player, GameObject* go, uint32 /*sender*/, uint32 action) override
         {
             ClearGossipMenuFor(player);
-            player->PlayerTalkClass->SendCloseGossip();
 
             switch (action)
             {
