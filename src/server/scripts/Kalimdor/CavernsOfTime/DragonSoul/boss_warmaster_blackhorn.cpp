@@ -1434,13 +1434,13 @@ class npc_dragon_soul_sky_captain_swayze : public CreatureScript
                     else if (creature->GetPositionZ() < 200.0f && player->GetTeam() == ALLIANCE && instance->GetBossState(DATA_SPINE) != DONE)
                         player->ADD_GOSSIP_ITEM_DB(player->GetDefaultGossipMenuForSource(creature), 4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
 
-                    player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                    SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
 
                     return true;
                 }
             }
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 

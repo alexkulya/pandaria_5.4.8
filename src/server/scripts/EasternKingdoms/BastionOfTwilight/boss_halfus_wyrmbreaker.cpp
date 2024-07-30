@@ -637,7 +637,7 @@ class npc_halfus_dragon : public CreatureScript
             if (creature->HasAura(SPELL_UNRESPONSIVE_DRAKE))
                 return false;
             player->ADD_GOSSIP_ITEM_DB(GOSSIP_MENU_RELEASE_DRAKE, 0,GOSSIP_SENDER_MAIN ,GOSSIP_ACTION_INFO_DEF+1);
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 

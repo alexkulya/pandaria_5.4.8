@@ -590,7 +590,7 @@ class npc_q29982 : public CreatureScript
             else if (creature->GetEntry() == NPC_WEI_BLACKSOIL && creature->AI()->GetData(DATA_AMBUSHED) == 1)
                 player->SEND_GOSSIP_MENU(18833, creature->GetGUID());
             else
-                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 

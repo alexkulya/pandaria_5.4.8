@@ -165,7 +165,7 @@ class npc_apothecary_hummel : public CreatureScript
                 player->PrepareQuestMenu(creature->GetGUID());
 
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_START, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
@@ -1526,7 +1526,7 @@ class npc_haunted_stable_hand_portal : public CreatureScript
                     player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, ru ? "Отправиться во внутренний двор." : "Teleport to The Courtyard.", GOSSIP_SENDER_SHADOWFANG_PORT, 0);
             }
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 

@@ -1035,7 +1035,7 @@ class npc_high_overlord_saurfang_icc : public CreatureScript
 
             if ((player->GetGroup() && !player->GetGroup()->IsLeader(player->GetGUID())) && !player->IsGameMaster())
             {
-                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
                 return true;
             }
 
@@ -1441,7 +1441,7 @@ class npc_muradin_bronzebeard_icc : public CreatureScript
 
             if ((player->GetGroup() && !player->GetGroup()->IsLeader(player->GetGUID())) && !player->IsGameMaster())
             {
-                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
                 return true;
             }
 

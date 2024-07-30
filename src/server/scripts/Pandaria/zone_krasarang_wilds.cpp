@@ -2274,7 +2274,7 @@ class npc_krasarang_wilds_lyalia : public CreatureScript
             if ((player->GetQuestStatus(QUEST_THE_LORD_RECLAIMER) == QUEST_STATUS_INCOMPLETE && creature->GetEntry() == NPC_LYALIA) || (player->GetQuestStatus(QUEST_FOR_FAMILY) == QUEST_STATUS_INCOMPLETE && creature->GetEntry() == NPC_KOR_BLOODTUSK))
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "It`s trap!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 

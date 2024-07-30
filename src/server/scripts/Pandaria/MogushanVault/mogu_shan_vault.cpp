@@ -1578,7 +1578,7 @@ class npc_msv_lorewalker_cho : public CreatureScript
                 if (instance->GetBossState(DATA_GARAJAL) == DONE)
                 {
                     player->ADD_GOSSIP_ITEM_DB(player->GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-                    player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                    SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
                 }
             return true;
         }
@@ -2179,7 +2179,7 @@ class npc_mogushan_vaults_leng_windstaff : public CreatureScript
             if(sConfigMgr->GetIntDefault("FirstOfTheKingdom.MogushanVaults", 1))
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Turn off dampening?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
     
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
     

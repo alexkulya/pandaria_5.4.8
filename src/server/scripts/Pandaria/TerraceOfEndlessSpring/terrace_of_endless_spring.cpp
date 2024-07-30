@@ -62,7 +62,7 @@ class npc_terrace_springtender_ashani : public CreatureScript
             if(sConfigMgr->GetIntDefault("FirstOfTheKingdom.TerraceSpring", 1))
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Turn off dampening?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
     
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
     

@@ -1021,7 +1021,7 @@ class npc_lin_silentstrike : public CreatureScript
                 && !player->GetQuestObjectiveCounter(QUEST_OBJECTIVE_FREE_LIN_SILENTSTRIKE))
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Examine the body.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 

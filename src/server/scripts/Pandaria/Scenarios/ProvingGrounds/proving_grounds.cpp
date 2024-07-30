@@ -1558,7 +1558,7 @@ class npc_proving_grounds_trial_master_rotun : public CreatureScript
                 if (player->HasAchieved(itr.first, false))
                     player->ADD_GOSSIP_ITEM_DB(player->GetDefaultGossipMenuForSource(creature), itr.second, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3 + itr.second);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 };
@@ -3239,7 +3239,7 @@ class npc_proving_grounds_trial_master_rotun_queue : public CreatureScript
             if (!player->GetGroup() && !player->IsUsingLfg())
                 player->ADD_GOSSIP_ITEM_DB(player->GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 };

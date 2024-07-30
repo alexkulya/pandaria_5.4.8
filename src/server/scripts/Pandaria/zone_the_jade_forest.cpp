@@ -2761,7 +2761,7 @@ class npc_nectarbreeze_farmer : public CreatureScript
         {
             if (player->GetQuestStatus(29579) == QUEST_STATUS_INCOMPLETE)
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Get to Hanae's house. It's safe there.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
 
             return true;
         }
@@ -2935,7 +2935,7 @@ class npc_the_pearlfin_situation_q : public CreatureScript
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, gossip, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
             }
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
@@ -3407,7 +3407,7 @@ class npc_instructor_bladewind : public CreatureScript
 
             player->ADD_GOSSIP_ITEM_DB(player->GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
@@ -3930,7 +3930,7 @@ class npc_prince_anduin_decision_questgiver : public CreatureScript
                 return false;
 
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "It is time to go home, Prince Anduin.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1); // miss gossip_menu_id
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 

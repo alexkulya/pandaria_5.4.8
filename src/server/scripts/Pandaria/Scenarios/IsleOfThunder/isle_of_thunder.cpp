@@ -278,7 +278,7 @@ class npc_shaolmara_lady_jaina : public CreatureScript
             if (player->GetQuestStatus(QUEST_FALL_OF_SHANBU_A) == QUEST_STATUS_INCOMPLETE && creature->GetMapId() == 1064)
                 player->ADD_GOSSIP_ITEM_DB(LADY_JAINA_GOSSIP_MENU, 3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
@@ -1234,7 +1234,7 @@ class npc_zebtula_lorthemar_theron : public CreatureScript
             if (player->GetQuestStatus(QUEST_FALL_OF_SHANBU_H) == QUEST_STATUS_INCOMPLETE && creature->GetMapId() == 1064)
                 player->ADD_GOSSIP_ITEM_DB(LADY_JAINA_GOSSIP_MENU, 3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
@@ -1865,7 +1865,7 @@ class npc_teardown_scout_captain_elsia : public CreatureScript
 
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "I`m ready", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
@@ -3048,7 +3048,7 @@ class npc_taoshi_to_skies : public CreatureScript
     
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "I`m ready", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
     
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
     
@@ -3998,7 +3998,7 @@ class npc_stormsea_landing_taoshi_queue : public CreatureScript
             if (player->GetQuestStatus(QUEST_A_BOLT_IDEA_A) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(QUEST_DECISIVE_ACTION_H) == QUEST_STATUS_INCOMPLETE)
                 player->ADD_GOSSIP_ITEM_DB(player->GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
     
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 };
@@ -4721,7 +4721,7 @@ class npc_shanbu_fall_elsia : public CreatureScript
             if (!creature->GetDBTableGUIDLow())
                 player->ADD_GOSSIP_ITEM_DB(player->GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
     
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
     
@@ -5099,7 +5099,7 @@ class npc_wrathion_thunder_forge : public CreatureScript
             else if (player->GetQuestStatus(QUEST_THE_THUNDER_FORGE) == QUEST_STATUS_INCOMPLETE)
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "I`m ready!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
     
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 

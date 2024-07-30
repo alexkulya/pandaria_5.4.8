@@ -55,7 +55,7 @@ class npc_spirit_of_olum : public CreatureScript
             if (instance && (instance->GetData(DATA_SUPREMUS_EVENT) >= DONE) && (instance->GetData(DATA_HIGH_WARLORD_NAJENTUS_EVENT) >= DONE))
                 player->ADD_GOSSIP_ITEM_DB(GOSSIP_OLUM1, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 };

@@ -3548,7 +3548,7 @@ class npc_senior_historian_evelyna : public CreatureScript
                 }
             }
             else
-                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
@@ -3625,7 +3625,7 @@ class npc_fin_longpaw : public CreatureScript
             ClearGossipMenuFor(player);
             if (!creature->FindNearestCreature(RARE_KARKANOS, 50.0f, true))
                 player->ADD_GOSSIP_ITEM_DB(60013, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
@@ -3683,7 +3683,7 @@ class npc_zarhym_1 : public CreatureScript
             if (!player->IsDailyQuestDone(QUEST_ZARHYM_TRACKER))
             player->ADD_GOSSIP_ITEM_DB(60014, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 

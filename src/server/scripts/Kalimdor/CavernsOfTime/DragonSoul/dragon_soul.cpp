@@ -1296,18 +1296,18 @@ class npc_dragon_soul_thrall : public CreatureScript
                 if (instance->GetBossState(DATA_HAGARA) == DONE && instance->GetData(DATA_DRAGON_SOUL_EVENT) != DONE && instance->GetBossState(DATA_ULTRAXION) != DONE)
                 {
                     player->ADD_GOSSIP_ITEM_DB(GOSSIP_MENU_ULTRAXION_START, 0, GOSSIP_MENU_ULTRAXION_START, GOSSIP_ACTION_INFO_DEF + 1);
-                    player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                    SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
                     return true;
                 }
                 else if (instance->GetBossState(DATA_HAGARA) == DONE && instance->GetData(DATA_DRAGON_SOUL_EVENT) == DONE && instance->GetData(DATA_ULTRAXION_TRASH) != DONE && instance->GetBossState(DATA_ULTRAXION) != DONE)
                 {
                     player->ADD_GOSSIP_ITEM_DB(GOSSIP_MENU_ULTRAXION_START, 1, GOSSIP_MENU_ULTRAXION_START, GOSSIP_ACTION_INFO_DEF + 2);
-                    player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                    SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
                     return true;
                 }
             }
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 

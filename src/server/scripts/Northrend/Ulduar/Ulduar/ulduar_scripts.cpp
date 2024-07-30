@@ -264,10 +264,10 @@ class npc_brann_bronzebeard : public CreatureScript
             if (instance->GetBossState(BOSS_LEVIATHAN) != DONE && !instance->GetData(DATA_SHIELD_DISABLED))
             {
                 player->PrepareGossipMenu(creature, player->GetDefaultGossipMenuForSource(creature));
-                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             }
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
@@ -588,10 +588,10 @@ class npc_ulduar_lorekeeper : public CreatureScript
             if (instance->GetBossState(BOSS_LEVIATHAN) != DONE && !instance->GetData(DATA_SHIELD_DISABLED) && !instance->GetData(DATA_LEVI_HARD_MODE) && !creature->AI()->GetData(0))
             {
                 player->PrepareGossipMenu(creature, player->GetDefaultGossipMenuForSource(creature));
-                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             }
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 

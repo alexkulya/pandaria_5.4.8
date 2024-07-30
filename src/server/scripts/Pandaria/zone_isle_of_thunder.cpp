@@ -2598,7 +2598,7 @@ class npc_scout_captain_elsia : public CreatureScript
 
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "I`m ready to go", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
@@ -2754,7 +2754,7 @@ class npc_vereesa_windrunner : public CreatureScript
 
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "I`m ready to go", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
@@ -3487,7 +3487,7 @@ class npc_iot_taran_zhu : public CreatureScript
                     player->CompleteQuest(32641);
             }
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 };

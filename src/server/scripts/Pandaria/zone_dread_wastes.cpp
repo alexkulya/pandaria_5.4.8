@@ -2829,7 +2829,7 @@ class npc_kilruk_wind_reaver : public CreatureScript
             if (player->GetQuestStatus(QUEST_SHADOW_OF_EMPIRE) == QUEST_STATUS_INCOMPLETE)
                 player->ADD_GOSSIP_ITEM_DB(player->GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
 
             return true;
         }
@@ -2990,7 +2990,7 @@ class npc_malik_the_unscathed_quest_empress_gambit : public CreatureScript
             if (player->GetQuestStatus(QUEST_EMPRESS_GAMBIT) == QUEST_STATUS_INCOMPLETE)
                 player->ADD_GOSSIP_ITEM_DB(player->GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
 
             return true;
         }

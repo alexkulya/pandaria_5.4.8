@@ -196,7 +196,7 @@ class npc_bunthen_plainswind : public CreatureScript
             if (player->GetClass() == CLASS_DRUID && (creature->GetEntry() == 11798 && player->GetTeam() == HORDE || creature->GetEntry() == 11800 && player->GetTeam() != HORDE))
                 player->ADD_GOSSIP_ITEM_DB(player->GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 };

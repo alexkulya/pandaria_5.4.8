@@ -1246,7 +1246,7 @@ public:
         {
             if (creature->IsVendor())
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_VENDOR, GOSSIP_TEXT_BROWSE_GOODS, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_TRADE);
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
         }
         return true;
     }
@@ -2623,7 +2623,7 @@ class npc_pandaria_treasures : public CreatureScript
                 if (player->GetQuestStatus(itr->second.first) != QUEST_STATUS_REWARDED)
                     player->ADD_GOSSIP_ITEM_DB(creature->GetGossipMenuId(), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 

@@ -337,7 +337,7 @@ class npc_gunship_boss : public CreatureScript
 
             if ((player->GetGroup() && !player->GetGroup()->IsLeader(player->GetGUID())) && !player->IsGameMaster())
             {
-                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
                 return true;
             }
 

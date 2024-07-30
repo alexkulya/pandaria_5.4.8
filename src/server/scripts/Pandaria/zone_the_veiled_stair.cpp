@@ -524,7 +524,7 @@ class npc_wrathion : public CreatureScript
             if (player->GetQuestStatus(QUEST_MEASURE_OF_THE_LEADER_A) == QUEST_STATUS_INCOMPLETE || player->GetQuestStatus(QUEST_MEASURE_OF_THE_LEADER_H) == QUEST_STATUS_INCOMPLETE)
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, ru ? WRATHION_GOSSIP_RU : WRATHION_GOSSIP_EN, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
@@ -1555,7 +1555,7 @@ class npc_wrathion_yulon_celestial : public CreatureScript
             if (player->GetQuestStatus(QUEST_CELESTIAL_BLESSING) == QUEST_STATUS_INCOMPLETE)
                 player->CastSpell(player, invZoneChallengeType.find(creature->GetZoneId())->second, true);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
@@ -2058,7 +2058,7 @@ class npc_wrathion_pandaren_legend : public CreatureScript
             if (player->GetQuestStatus(QUEST_A_PANDAREN_LEGEND) == QUEST_STATUS_INCOMPLETE)
                 player->CastSpell(player, SPELL_LEGENDARY_FINALE, true);
     
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
     

@@ -961,7 +961,7 @@ class npc_waterspeaker_gorai : public CreatureScript
             if (player->GetQuestStatus(QUEST_THE_RITUAL) == QUEST_STATUS_INCOMPLETE)
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "I'm ready. Begin the ritual.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
@@ -1251,7 +1251,7 @@ class npc_inkgill_dissenter : public CreatureScript
             if (player->GetQuestStatus(QUEST_FREE_THE_DISSENTERS) == QUEST_STATUS_INCOMPLETE)
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "There's still hope - Gorai is still alive, to the south. Go!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
@@ -1285,7 +1285,7 @@ class npc_shado_pan_sentinel : public CreatureScript
             if (player->GetQuestStatus(QUEST_UNBELIEVABLE) == QUEST_STATUS_INCOMPLETE)
                 player->ADD_GOSSIP_ITEM_DB(GOSSIP_MENU_SENTINEL, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
@@ -1367,7 +1367,7 @@ class npc_lorewalker_cho_bashon : public CreatureScript
 
             player->ADD_GOSSIP_ITEM_DB(player->GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 };
