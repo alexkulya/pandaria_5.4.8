@@ -785,7 +785,7 @@ struct GameObjectData
     GOState go_state;
     uint16 spawnMask;
     uint8 artKit;
-    uint32 ScriptId;
+    uint32 ScriptId{};
     bool dbData;
     uint32 gameEventId = 0;
 };
