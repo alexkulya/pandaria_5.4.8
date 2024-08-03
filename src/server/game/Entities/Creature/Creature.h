@@ -281,7 +281,7 @@ struct CreatureData
     uint32 unit_flags;                                      // enum UnitFlags mask values
     uint32 unit_flags2;                                     // enum UnitFlags2 mask values
     uint32 dynamicflags;
-    uint32 ScriptId;
+    uint32 ScriptId{};
     float WalkMode;
     bool dbData;
     uint32 gameEventId = 0;
