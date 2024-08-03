@@ -68,10 +68,6 @@ enum ElwynnForest
     HEAL_EVENT_04_STEP_04                   = 16,
     HEAL_EVENT_RESET                        = 17,
 
-    /// Blackrock Invader
-    // Texts
-    TEXT_BLACKROCK_INVADER_COMBAT           = 0,
-
     /// Hogger + End Event
     // Texts
     SAY_AGGRO                               = 0,
@@ -492,26 +488,6 @@ struct npc_brother_paxton : public ScriptedAI
                 break;
         }
 
-        if (!UpdateVictim())
-            return;
-
-        DoMeleeAttackIfReady();
-    }
-};
-
-struct npc_blackrock_invader : public ScriptedAI
-{
-    npc_blackrock_invader(Creature* creature) : ScriptedAI(creature) { }
-
-    void EnterCombat(Unit* who)
-    {
-        if (who && who->GetTypeId() == TypeID::TYPEID_PLAYER)
-            if (roll_chance_i(50))
-                Talk(ElwynnForest::TEXT_BLACKROCK_INVADER_COMBAT, who);
-    }
-
-    void UpdateAI(uint32 /*diff*/) override
-    {
         if (!UpdateVictim())
             return;
 
@@ -1098,7 +1074,6 @@ void AddSC_elwynn_forest()
     new creature_script<npc_stormwind_infantry>("npc_stormwind_infantry");
     new creature_script<npc_blackrock_battle_worg>("npc_blackrock_battle_worg");
     new creature_script<npc_brother_paxton>("npc_brother_paxton");
-    new creature_script<npc_blackrock_invader>("npc_blackrock_invader");
     new npc_king_varian_wrynn();
     new npc_varian_wrynn_alliance_way_quest();
     new npc_ayisa_jojo_alliance_way_quest();
