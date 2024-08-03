@@ -72,10 +72,6 @@ enum ElwynnForest
     // Texts
     TEXT_BLACKROCK_INVADER_COMBAT           = 0,
 
-    /// Goblin Assassin
-    // Texts
-    ASSASSIN_SAY_COMBAT                     = 0,
-
     /// Hogger + End Event
     // Texts
     SAY_AGGRO                               = 0,
@@ -150,9 +146,6 @@ enum ElwynnForest
     // Spells
     SPELL_SUMMON_VARIAN                     = 120352,
     SPELL_SUMMON_AYSA_AND_JOJO              = 120344,
-    SPELL_SPYING                            = 92857,
-    SPELL_SNEAKING                          = 93046,
-    SPELL_SPYGLASS                          = 80676,
     SPELL_VARIAN_GET_PUNCHED_SCENE          = 120568, // SPELL_EFFECT_186 not implemented in core
     // Actions
     ACTION_AN_OLD_PIT_FIGHTER               = 1
@@ -515,30 +508,6 @@ struct npc_blackrock_invader : public ScriptedAI
         if (who && who->GetTypeId() == TypeID::TYPEID_PLAYER)
             if (roll_chance_i(50))
                 Talk(ElwynnForest::TEXT_BLACKROCK_INVADER_COMBAT, who);
-    }
-
-    void UpdateAI(uint32 /*diff*/) override
-    {
-        if (!UpdateVictim())
-            return;
-
-        DoMeleeAttackIfReady();
-    }
-};
-
-struct npc_goblin_assassin : public ScriptedAI
-{
-    npc_goblin_assassin(Creature* creature) : ScriptedAI(creature)
-    {
-        if (!me->IsInCombat() && !me->HasAura(SPELL_SPYING))
-            DoCast(SPELL_SNEAKING);
-    }
-
-    void EnterCombat(Unit* who)
-    {
-        if (who && who->GetTypeId() == TypeID::TYPEID_PLAYER)
-            if (roll_chance_i(50))
-                Talk(ASSASSIN_SAY_COMBAT, who);
     }
 
     void UpdateAI(uint32 /*diff*/) override
@@ -1129,7 +1098,6 @@ void AddSC_elwynn_forest()
     new creature_script<npc_stormwind_infantry>("npc_stormwind_infantry");
     new creature_script<npc_blackrock_battle_worg>("npc_blackrock_battle_worg");
     new creature_script<npc_brother_paxton>("npc_brother_paxton");
-    new creature_script<npc_goblin_assassin>("npc_goblin_assassin");
     new creature_script<npc_blackrock_invader>("npc_blackrock_invader");
     new npc_king_varian_wrynn();
     new npc_varian_wrynn_alliance_way_quest();
