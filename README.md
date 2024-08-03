@@ -3,11 +3,11 @@
 
 Discord link: https://discord.gg/y3zspxan7k
 
-Client exe files" https://mega.nz/file/xUJDkIDA#I3TMdPymMw8ISNwIUgSaXLl5oHJHYFxAKyPNMXUQjgY
+Client exe files" https://drive.google.com/file/d/1OCrtyvRXSvxnR9EoHWYfc-2Tbm5hX3ca
 
-Compiled exe files: https://mega.nz/file/9F4QmTKZ#01FXoHbDAYmTcc51b7I2xeFq2_2hk_aPqmOxBgYHEsc
+Compiled exe files: https://drive.google.com/file/d/1UxdZ51hR-nqC3HAvE8_0GkP_JnFiexrE
 
-Geodata (RU dbc): https://mega.nz/file/EAZUmZiD#PxdHN7jcEKCA8qaIBTIWLWLGZcT5PdsKfIgkygTZgTs
+Geodata (RU dbc): https://drive.google.com/file/d/103QiAyR5lJsfFPaEAkWqWV2HkqrV8PzN
 
 Pandaria 5.4.8 docker [(Thanks diff3)](https://github.com/diff3): https://github.com/diff3/pandaria_5.4.8_docker
 

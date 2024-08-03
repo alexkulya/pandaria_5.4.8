@@ -1041,6 +1041,7 @@ void Creature::SaveToDB(uint32 mapid, uint16 spawnMask, uint32 phaseMask)
     data.unit_flags2 = unit_flags2;
     data.dynamicflags = dynamicflags;
     data.WalkMode = m_WalkMode;
+    data.ScriptId = !data.ScriptId && cinfo->ScriptID ? cinfo->ScriptID : data.ScriptId; // Don't add to stmt to save in DB 
 
     // update in DB
     SQLTransaction trans = WorldDatabase.BeginTransaction();

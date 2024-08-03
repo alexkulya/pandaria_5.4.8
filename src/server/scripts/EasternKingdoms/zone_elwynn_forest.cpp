@@ -68,18 +68,6 @@ enum ElwynnForest
     HEAL_EVENT_04_STEP_04                   = 16,
     HEAL_EVENT_RESET                        = 17,
 
-    /// Blackrock Spy
-    // Texts
-    TEXT_BLACKROCK_SPY_COMBAT               = 0,
-
-    /// Blackrock Invader
-    // Texts
-    TEXT_BLACKROCK_INVADER_COMBAT           = 0,
-
-    /// Goblin Assassin
-    // Texts
-    ASSASSIN_SAY_COMBAT                     = 0,
-
     /// Hogger + End Event
     // Texts
     SAY_AGGRO                               = 0,
@@ -154,9 +142,6 @@ enum ElwynnForest
     // Spells
     SPELL_SUMMON_VARIAN                     = 120352,
     SPELL_SUMMON_AYSA_AND_JOJO              = 120344,
-    SPELL_SPYING                            = 92857,
-    SPELL_SNEAKING                          = 93046,
-    SPELL_SPYGLASS                          = 80676,
     SPELL_VARIAN_GET_PUNCHED_SCENE          = 120568, // SPELL_EFFECT_186 not implemented in core
     // Actions
     ACTION_AN_OLD_PIT_FIGHTER               = 1
@@ -503,120 +488,6 @@ struct npc_brother_paxton : public ScriptedAI
                 break;
         }
 
-        if (!UpdateVictim())
-            return;
-
-        DoMeleeAttackIfReady();
-    }
-};
-
-struct npc_blackrock_spy : public ScriptedAI
-{
-    npc_blackrock_spy(Creature* creature) : ScriptedAI(creature)
-    {
-        CastSpying();
-    }
-
-    void CastSpying()
-    {
-        GetCreature(-8868.88f, -99.1016f);
-        GetCreature(-8936.5f, -246.743f);
-        GetCreature(-8922.44f, -73.9883f);
-        GetCreature(-8909.68f, -40.0247f);
-        GetCreature(-8834.85f, -119.701f);
-        GetCreature(-9022.08f, -163.965f);
-        GetCreature(-8776.55f, -79.158f);
-        GetCreature(-8960.08f, -63.767f);
-        GetCreature(-8983.12f, -202.827f);
-    }
-
-    void GetCreature(float X, float Y)
-    {
-        if (me->GetHomePosition().GetPositionX() == X && me->GetHomePosition().GetPositionY() == Y)
-            if (!me->IsInCombat() && !me->HasAura(SPELL_SPYING))
-                DoCast(me, SPELL_SPYING);
-
-        CastSpyglass();
-    }
-
-    void CastSpyglass()
-    {
-        Spyglass(-8868.88f, -99.1016f, -8936.5f, -246.743f, -8922.44f, -73.9883f, -8909.68f, -40.0247f, -8834.85f,
-            -119.701f, -9022.08f, -163.965f, -8776.55f, -79.158f, -8960.08f, -63.767f, -8983.12f, -202.827f);
-    }
-
-    void Spyglass(float X1, float Y1, float X2, float Y2, float X3, float Y3, float X4, float Y4, float X5, float Y5,
-        float X6, float Y6, float X7, float Y7, float X8, float Y8, float X9, float Y9)
-    {
-        if ((me->GetHomePosition().GetPositionX() != X1 && me->GetHomePosition().GetPositionY() != Y1) &&
-            (me->GetHomePosition().GetPositionX() != X2 && me->GetHomePosition().GetPositionY() != Y2) &&
-            (me->GetHomePosition().GetPositionX() != X3 && me->GetHomePosition().GetPositionY() != Y3) &&
-            (me->GetHomePosition().GetPositionX() != X4 && me->GetHomePosition().GetPositionY() != Y4) &&
-            (me->GetHomePosition().GetPositionX() != X5 && me->GetHomePosition().GetPositionY() != Y5) &&
-            (me->GetHomePosition().GetPositionX() != X6 && me->GetHomePosition().GetPositionY() != Y6) &&
-            (me->GetHomePosition().GetPositionX() != X7 && me->GetHomePosition().GetPositionY() != Y7) &&
-            (me->GetHomePosition().GetPositionX() != X8 && me->GetHomePosition().GetPositionY() != Y8) &&
-            (me->GetHomePosition().GetPositionX() != X9 && me->GetHomePosition().GetPositionY() != Y9))
-            if (me->GetHomePosition().GetPositionX() == me->GetPositionX() && me->GetHomePosition().GetPositionY() == me->GetPositionY())
-                if (!me->IsInCombat() && !me->HasAura(SPELL_SPYGLASS))
-                    DoCast(me, SPELL_SPYGLASS);
-    }
-
-    void EnterCombat(Unit* who)
-    {
-        if (who && who->GetTypeId() == TypeID::TYPEID_PLAYER)
-            if (roll_chance_i(50))
-                Talk(ElwynnForest::TEXT_BLACKROCK_SPY_COMBAT, who);
-    }
-
-    void UpdateAI(uint32 /*diff*/) override
-    {
-        CastSpyglass();
-
-        if (!UpdateVictim())
-            return;
-
-        DoMeleeAttackIfReady();
-    }
-};
-
-struct npc_blackrock_invader : public ScriptedAI
-{
-    npc_blackrock_invader(Creature* creature) : ScriptedAI(creature) { }
-
-    void EnterCombat(Unit* who)
-    {
-        if (who && who->GetTypeId() == TypeID::TYPEID_PLAYER)
-            if (roll_chance_i(50))
-                Talk(ElwynnForest::TEXT_BLACKROCK_INVADER_COMBAT, who);
-    }
-
-    void UpdateAI(uint32 /*diff*/) override
-    {
-        if (!UpdateVictim())
-            return;
-
-        DoMeleeAttackIfReady();
-    }
-};
-
-struct npc_goblin_assassin : public ScriptedAI
-{
-    npc_goblin_assassin(Creature* creature) : ScriptedAI(creature)
-    {
-        if (!me->IsInCombat() && !me->HasAura(SPELL_SPYING))
-            DoCast(SPELL_SNEAKING);
-    }
-
-    void EnterCombat(Unit* who)
-    {
-        if (who && who->GetTypeId() == TypeID::TYPEID_PLAYER)
-            if (roll_chance_i(50))
-                Talk(ASSASSIN_SAY_COMBAT, who);
-    }
-
-    void UpdateAI(uint32 /*diff*/) override
-    {
         if (!UpdateVictim())
             return;
 
@@ -1203,9 +1074,6 @@ void AddSC_elwynn_forest()
     new creature_script<npc_stormwind_infantry>("npc_stormwind_infantry");
     new creature_script<npc_blackrock_battle_worg>("npc_blackrock_battle_worg");
     new creature_script<npc_brother_paxton>("npc_brother_paxton");
-    new creature_script<npc_blackrock_spy>("npc_blackrock_spy");
-    new creature_script<npc_goblin_assassin>("npc_goblin_assassin");
-    new creature_script<npc_blackrock_invader>("npc_blackrock_invader");
     new npc_king_varian_wrynn();
     new npc_varian_wrynn_alliance_way_quest();
     new npc_ayisa_jojo_alliance_way_quest();
