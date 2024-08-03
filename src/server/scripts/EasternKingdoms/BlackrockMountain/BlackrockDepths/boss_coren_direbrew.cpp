@@ -76,14 +76,14 @@ class npc_coren_direbrew : public CreatureScript
             if (creature->IsQuestGiver())
                 player->PrepareQuestMenu(creature->GetGUID());
 
-            player->ADD_GOSSIP_ITEM_DB(GOSSIP_ID_COREN, GOSSIP_ITEM_START, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            AddGossipItemFor(player, GOSSIP_ID_COREN, GOSSIP_ITEM_START, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -93,7 +93,7 @@ class npc_coren_direbrew : public CreatureScript
 
                 creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC);
 
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
             }
 
             return true;

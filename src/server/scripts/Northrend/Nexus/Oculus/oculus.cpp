@@ -179,7 +179,7 @@ class npc_verdisa_beglaristrasz_eternos : public CreatureScript
                     default:
                         return;
                 }
-                player->PlayerTalkClass->SendCloseGossip();
+                CloseGossipMenuFor(player);
             }
 
             void MovementInform(uint32 /*type*/, uint32 pointId) override

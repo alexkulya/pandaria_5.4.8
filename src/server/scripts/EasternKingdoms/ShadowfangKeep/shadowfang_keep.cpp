@@ -165,7 +165,7 @@ class npc_apothecary_hummel : public CreatureScript
                 player->PrepareQuestMenu(creature->GetGUID());
 
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_START, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
@@ -174,7 +174,7 @@ class npc_apothecary_hummel : public CreatureScript
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
                 creature->AI()->DoAction(START_INTRO);
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             return true;
         }
 
@@ -1526,14 +1526,14 @@ class npc_haunted_stable_hand_portal : public CreatureScript
                     player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, ru ? "Отправиться во внутренний двор." : "Teleport to The Courtyard.", GOSSIP_SENDER_SHADOWFANG_PORT, 0);
             }
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
         bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 sender, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
-            player->CLOSE_GOSSIP_MENU();
+            ClearGossipMenuFor(player);
+            CloseGossipMenuFor(player);
 
             if (action >= 4)
                 return false;

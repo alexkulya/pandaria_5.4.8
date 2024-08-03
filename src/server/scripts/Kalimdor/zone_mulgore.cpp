@@ -46,7 +46,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         if (action == GOSSIP_ACTION_INFO_DEF)
             player->SEND_GOSSIP_MENU(523, creature->GetGUID());
 

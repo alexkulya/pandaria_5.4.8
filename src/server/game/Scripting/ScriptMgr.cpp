@@ -33,7 +33,7 @@
 #include "Chat.h"
 #include "AreaTrigger.h"
 #include "GameEventMgr.h"
-
+#include "ScriptedGossip.h"
 namespace
 {
     typedef std::set<ScriptObject*> ExampleScriptContainer;
@@ -701,7 +701,7 @@ bool ScriptMgr::OnQuestAccept(Player* player, Item* item, Quest const* quest)
     ASSERT(quest);
 
     GET_SCRIPT_RET(ItemScript, item->GetScriptId(), tmpscript, false);
-    player->PlayerTalkClass->ClearMenus();
+    ClearGossipMenuFor(player);
     return tmpscript->OnQuestAccept(player, item, quest);
 }
 
@@ -765,7 +765,7 @@ bool ScriptMgr::OnGossipHello(Player* player, Creature* creature)
     ASSERT(creature);
 
     GET_SCRIPT_RET(CreatureScript, creature->GetScriptId(), tmpscript, false);
-    player->PlayerTalkClass->ClearMenus();
+    ClearGossipMenuFor(player);
     return tmpscript->OnGossipHello(player, creature);
 }
 
@@ -795,7 +795,7 @@ bool ScriptMgr::OnQuestAccept(Player* player, Creature* creature, Quest const* q
     ASSERT(quest);
 
     GET_SCRIPT_RET(CreatureScript, creature->GetScriptId(), tmpscript, false);
-    player->PlayerTalkClass->ClearMenus();
+    ClearGossipMenuFor(player);
     return tmpscript->OnQuestAccept(player, creature, quest);
 }
 
@@ -806,7 +806,7 @@ bool ScriptMgr::OnQuestSelect(Player* player, Creature* creature, Quest const* q
     ASSERT(quest);
 
     GET_SCRIPT_RET(CreatureScript, creature->GetScriptId(), tmpscript, false);
-    player->PlayerTalkClass->ClearMenus();
+    ClearGossipMenuFor(player);
     return tmpscript->OnQuestSelect(player, creature, quest);
 }
 
@@ -817,7 +817,7 @@ bool ScriptMgr::OnQuestComplete(Player* player, Creature* creature, Quest const*
     ASSERT(quest);
 
     GET_SCRIPT_RET(CreatureScript, creature->GetScriptId(), tmpscript, false);
-    player->PlayerTalkClass->ClearMenus();
+    ClearGossipMenuFor(player);
     return tmpscript->OnQuestComplete(player, creature, quest);
 }
 
@@ -828,7 +828,7 @@ bool ScriptMgr::OnQuestReward(Player* player, Creature* creature, Quest const* q
     ASSERT(quest);
 
     GET_SCRIPT_RET(CreatureScript, creature->GetScriptId(), tmpscript, false);
-    player->PlayerTalkClass->ClearMenus();
+    ClearGossipMenuFor(player);
     return tmpscript->OnQuestReward(player, creature, quest, opt);
 }
 
@@ -839,7 +839,7 @@ uint32 ScriptMgr::GetDialogStatus(Player* player, Creature* creature)
 
     /// @todo 100 is a funny magic number to have hanging around here...
     GET_SCRIPT_RET(CreatureScript, creature->GetScriptId(), tmpscript, 100);
-    player->PlayerTalkClass->ClearMenus();
+    ClearGossipMenuFor(player);
     return tmpscript->GetDialogStatus(player, creature);
 }
 
@@ -873,7 +873,7 @@ bool ScriptMgr::OnGossipHello(Player* player, GameObject* go)
     ASSERT(go);
 
     GET_SCRIPT_RET(GameObjectScript, go->GetScriptId(), tmpscript, false);
-    player->PlayerTalkClass->ClearMenus();
+    ClearGossipMenuFor(player);
     return tmpscript->OnGossipHello(player, go);
 }
 
@@ -883,7 +883,7 @@ bool ScriptMgr::OnReportUse(Player* player, GameObject* go)
     ASSERT(go);
 
     GET_SCRIPT_RET(GameObjectScript, go->GetScriptId(), tmpscript, false);
-    player->PlayerTalkClass->ClearMenus();
+    ClearGossipMenuFor(player);
     return tmpscript->OnReportUse(player, go);
 }
 
@@ -913,7 +913,7 @@ bool ScriptMgr::OnQuestAccept(Player* player, GameObject* go, Quest const* quest
     ASSERT(quest);
 
     GET_SCRIPT_RET(GameObjectScript, go->GetScriptId(), tmpscript, false);
-    player->PlayerTalkClass->ClearMenus();
+    ClearGossipMenuFor(player);
     return tmpscript->OnQuestAccept(player, go, quest);
 }
 
@@ -924,7 +924,7 @@ bool ScriptMgr::OnQuestReward(Player* player, GameObject* go, Quest const* quest
     ASSERT(quest);
 
     GET_SCRIPT_RET(GameObjectScript, go->GetScriptId(), tmpscript, false);
-    player->PlayerTalkClass->ClearMenus();
+    ClearGossipMenuFor(player);
     return tmpscript->OnQuestReward(player, go, quest, opt);
 }
 
@@ -935,7 +935,7 @@ uint32 ScriptMgr::GetDialogStatus(Player* player, GameObject* go)
 
     /// @todo 100 is a funny magic number to have hanging around here...
     GET_SCRIPT_RET(GameObjectScript, go->GetScriptId(), tmpscript, 100);
-    player->PlayerTalkClass->ClearMenus();
+    ClearGossipMenuFor(player);
     return tmpscript->GetDialogStatus(player, go);
 }
 

@@ -27,7 +27,7 @@ class npc_old_ironbark : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -52,7 +52,7 @@ class npc_old_ironbark : public CreatureScript
                 });
             }
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             return true;
         }
@@ -64,7 +64,7 @@ class npc_old_ironbark : public CreatureScript
 
             player->ADD_GOSSIP_ITEM_DB(player->GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 

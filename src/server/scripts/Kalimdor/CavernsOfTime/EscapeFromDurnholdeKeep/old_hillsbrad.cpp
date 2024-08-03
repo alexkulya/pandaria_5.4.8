@@ -57,7 +57,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         if (action == GOSSIP_ACTION_INFO_DEF+1)
         {
             ItemPosCountVec dest;
@@ -70,7 +70,7 @@ public:
         }
         if (action == GOSSIP_ACTION_INFO_DEF+2)
         {
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
         }
         return true;
     }
@@ -192,12 +192,12 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         InstanceScript* instance = creature->GetInstanceScript();
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF+1:
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 if (instance)
                 {
                     instance->SetData(TYPE_THRALL_EVENT, IN_PROGRESS);
@@ -231,7 +231,7 @@ public:
                 break;
 
             case GOSSIP_ACTION_INFO_DEF+3:
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 if (instance)
                     instance->SetData(TYPE_THRALL_PART3, IN_PROGRESS);
                 CAST_AI(npc_thrall_old_hillsbrad::npc_thrall_old_hillsbradAI, creature->AI())->StartWP();
@@ -577,7 +577,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         InstanceScript* instance = creature->GetInstanceScript();
         if (action == GOSSIP_ACTION_INFO_DEF+1)
         {
@@ -586,7 +586,7 @@ public:
         }
         if (action == GOSSIP_ACTION_INFO_DEF+2)
         {
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             if (instance && instance->GetData(TYPE_THRALL_EVENT) == IN_PROGRESS)
             {

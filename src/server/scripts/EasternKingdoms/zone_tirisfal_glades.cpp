@@ -1036,7 +1036,7 @@ public:
 
         if (player->GetQuestStatus(TirisfalGlades::QUEST_THE_WAKENING) == QUEST_STATUS_INCOMPLETE && id == TirisfalGlades::GOSSIP_MENU_MARSHAL_REDPATH)
         {
-            player->PlayerTalkClass->SendCloseGossip();
+            CloseGossipMenuFor(player);
             CAST_AI(npc_marshal_redpathAI, creature->AI())->StartAnimation(player);
             return false;
         }
@@ -1129,7 +1129,7 @@ public:
 
         if (player->GetQuestStatus(TirisfalGlades::QUEST_THE_WAKENING) == QUEST_STATUS_INCOMPLETE && id == TirisfalGlades::GOSSIP_MENU_LILIAN_VOSS)
         {
-            player->PlayerTalkClass->SendCloseGossip();
+            CloseGossipMenuFor(player);
             CAST_AI(npc_lilian_vossAI, creature->AI())->StartAnimation(player);
             return false;
         }
@@ -1227,7 +1227,7 @@ public:
 
         if (player->GetQuestStatus(TirisfalGlades::QUEST_THE_WAKENING) == QUEST_STATUS_INCOMPLETE && id == TirisfalGlades::GOSSIP_MENU_VALDRED_MORAY)
         {
-            player->PlayerTalkClass->SendCloseGossip();
+            CloseGossipMenuFor(player);
             CAST_AI(npc_valdred_morayAI, creature->AI())->StartAnimation(player);
             return false;
         }

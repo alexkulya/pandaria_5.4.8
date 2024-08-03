@@ -1001,7 +1001,7 @@ class npc_high_overlord_saurfang_icc : public CreatureScript
 
             void sGossipSelect(Player* player, uint32 sender, uint32 action) override
             {
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 if (sender == 10953 && action == 0 && me->HasFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP))
                     DoAction(ACTION_START_EVENT);
             }
@@ -1035,7 +1035,7 @@ class npc_high_overlord_saurfang_icc : public CreatureScript
 
             if ((player->GetGroup() && !player->GetGroup()->IsLeader(player->GetGUID())) && !player->IsGameMaster())
             {
-                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
                 return true;
             }
 
@@ -1397,7 +1397,7 @@ class npc_muradin_bronzebeard_icc : public CreatureScript
 
             void sGossipSelect(Player* player, uint32 sender, uint32 action) override
             {
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 if (sender == 10934 && action == 0 && me->HasFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP))
                     DoAction(ACTION_START_EVENT);
             }
@@ -1441,7 +1441,7 @@ class npc_muradin_bronzebeard_icc : public CreatureScript
 
             if ((player->GetGroup() && !player->GetGroup()->IsLeader(player->GetGUID())) && !player->IsGameMaster())
             {
-                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
                 return true;
             }
 
@@ -1644,7 +1644,7 @@ class npc_saurfang_event_post_npc : public CreatureScript
             void sGossipSelect(Player* player, uint32 sender, uint32 action) override
             {
                 if (sender == 10949 && action == 1)
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
             }
 
         private:

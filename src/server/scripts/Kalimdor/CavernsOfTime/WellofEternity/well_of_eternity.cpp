@@ -863,8 +863,8 @@ class npc_well_of_eternity_illidan_1 : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
-            player->CLOSE_GOSSIP_MENU();
+            ClearGossipMenuFor(player);
+            CloseGossipMenuFor(player);
             
             if (InstanceScript* instance = creature->GetInstanceScript())
             {

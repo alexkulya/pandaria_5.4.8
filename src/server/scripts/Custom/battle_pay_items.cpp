@@ -20,6 +20,7 @@
 #include "DatabaseEnv.h"
 #include "Chat.h"
 #include "ServiceMgr.h"
+#include "ScriptedGossip.h"
 
 #define GetText(a, b, c) a->GetSession()->GetSessionDbLocaleIndex() == LOCALE_ruRU ? b : c
 
@@ -304,7 +305,7 @@ public:
     {
         bool ru = player->GetSession()->GetSessionDbLocaleIndex() == LOCALE_ruRU;
 
-        player->PlayerTalkClass->ClearMenus();        
+        ClearGossipMenuFor(player);
         player->SaveToDB();
 
         if (player->HasSkill(FIRST_AID))
@@ -339,7 +340,7 @@ public:
             player->ADD_GOSSIP_ITEM_DB(51002, 14, GOSSIP_SENDER_MAIN, ARCHAEOLOGY);
 
         player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, ru ? "|TInterface/PaperDollInfoFrame/UI-GearManager-LeaveItem-Transparent:28|t Закрыть" : "|TInterface/PaperDollInfoFrame/UI-GearManager-LeaveItem-Transparent:28|t Close", GOSSIP_SENDER_MAIN, 1);
-        player->SEND_GOSSIP_MENU(20010, item->GetGUID());
+        SendGossipMenuFor(player, 20010, item->GetGUID());
         return true;
     }
 
@@ -347,13 +348,13 @@ public:
     {
         bool ru = player->GetSession()->GetSessionDbLocaleIndex() == LOCALE_ruRU;
 
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         uint32 confirm = 0;
 
         switch (action)
         {
             case 1:
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 break;
             case FIRST_AID:
                 if (!player->HasSpell(SPELL_600_FIRST_AID))
@@ -475,7 +476,7 @@ public:
             std::ostringstream infoSkill;
             infoSkill << "Skill: " << uint32(action) << " Value: " << uint32(max_value_prof);
             sServiceMgr->ExecutedServices(player->GetGUID(), SERVICE_TYPE_BOOST_PROFESSION, std::string("Boosted name: ") + player->GetName(), infoSkill.str());
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
         }
         else if (confirm == 2)
         {
@@ -487,7 +488,7 @@ public:
             std::ostringstream infoSkill;
             infoSkill << "Skill: " << uint32(action) << " Value: 600";
             sServiceMgr->ExecutedServices(player->GetGUID(), SERVICE_TYPE_BOOST_PROFESSION, std::string("Boosted name: ") + player->GetName(), infoSkill.str());
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
         }
         else
         {
@@ -508,7 +509,7 @@ public:
     {
         bool ru = player->GetSession()->GetSessionDbLocaleIndex() == LOCALE_ruRU;
 
-        player->PlayerTalkClass->ClearMenus();        
+        ClearGossipMenuFor(player);
         player->SaveToDB();
 
         if (player->HasSkill(FIRST_AID))
@@ -543,7 +544,7 @@ public:
             player->ADD_GOSSIP_ITEM_DB(51002, 14, GOSSIP_SENDER_MAIN, ARCHAEOLOGY);
 
         player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, ru ? "|TInterface/PaperDollInfoFrame/UI-GearManager-LeaveItem-Transparent:28|t Закрыть" : "|TInterface/PaperDollInfoFrame/UI-GearManager-LeaveItem-Transparent:28|t Close", GOSSIP_SENDER_MAIN, 1);
-        player->SEND_GOSSIP_MENU(20011, item->GetGUID());
+        SendGossipMenuFor(player, 20011, item->GetGUID());
         return true;
     }
 
@@ -551,7 +552,7 @@ public:
     {
         bool ru = player->GetSession()->GetSessionDbLocaleIndex() == LOCALE_ruRU;
 
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
 
         if (player->HasSkill(action))
         {
@@ -574,7 +575,7 @@ public:
             player->CastSpell(player, 27880, true);
         }
 
-        player->CLOSE_GOSSIP_MENU();
+        CloseGossipMenuFor(player);
     }
 };
 

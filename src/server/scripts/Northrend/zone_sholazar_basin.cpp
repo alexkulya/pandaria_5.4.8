@@ -136,14 +136,14 @@ public:
         if (player->GetQuestStatus(QUEST_FORTUNATE_MISUNDERSTANDINGS) == QUEST_STATUS_INCOMPLETE)
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
 
-        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+        SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
 
         return true;
     }
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         if (action == GOSSIP_ACTION_INFO_DEF+1)
         {
             CAST_AI(npc_escortAI, (creature->AI()))->Start(true, false, player->GetGUID());
@@ -210,13 +210,13 @@ public:
             return true;
         }
 
-        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+        SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
         return true;
     }
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF+1:
@@ -224,7 +224,7 @@ public:
                 player->SEND_GOSSIP_MENU(GOSSIP_TEXTID_VEKJIK2, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF+2:
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 creature->AI()->Talk(SAY_TEXTID_VEKJIK1, player);
                 player->AreaExploredOrEventHappens(QUEST_MAKING_PEACE);
                 creature->CastSpell(player, SPELL_FREANZYHEARTS_FURY, false);
@@ -267,26 +267,26 @@ public:
         if (player->GetQuestStatus(QUEST_FREYA_PACT) == QUEST_STATUS_INCOMPLETE)
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_AOF1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
 
-        player->PlayerTalkClass->SendGossipMenu(GOSSIP_TEXTID_AVATAR1, creature->GetGUID());
+        SendGossipMenuFor(player, GOSSIP_TEXTID_AVATAR1, creature->GetGUID());
         return true;
     }
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         switch (action)
         {
         case GOSSIP_ACTION_INFO_DEF+1:
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_AOF2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+2);
-            player->PlayerTalkClass->SendGossipMenu(GOSSIP_TEXTID_AVATAR2, creature->GetGUID());
+            SendGossipMenuFor(player, GOSSIP_TEXTID_AVATAR2, creature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+2:
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_AOF3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+3);
-            player->PlayerTalkClass->SendGossipMenu(GOSSIP_TEXTID_AVATAR3, creature->GetGUID());
+            SendGossipMenuFor(player, GOSSIP_TEXTID_AVATAR3, creature->GetGUID());
             break;
         case GOSSIP_ACTION_INFO_DEF+3:
             player->CastSpell(player, SPELL_FREYA_CONVERSATION, true);
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             break;
         }
         return true;
@@ -698,13 +698,13 @@ public:
         if (player->GetItemCount(ITEM_PAPAYA) < 1)
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_OPTION_PAPAYA, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
 
-        player->PlayerTalkClass->SendGossipMenu(GOSSIP_MENU_DWARF, creature->GetGUID());
+        SendGossipMenuFor(player, GOSSIP_MENU_DWARF, creature->GetGUID());
         return true;
     }
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         uint32 spellId = 0;
 
         switch (action)

@@ -570,7 +570,7 @@ class npc_secret_ing_sungshin_ironpaw_queue : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             switch (action)
             {
@@ -589,7 +589,7 @@ class npc_secret_ing_sungshin_ironpaw_queue : public CreatureScript
                     break;
             }
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             return true;
         }
@@ -605,7 +605,7 @@ class npc_secret_ing_sungshin_ironpaw_queue : public CreatureScript
             if (player->GetQuestStatus(QUEST_SECRET_INGRIDIENT_IS) == QUEST_STATUS_INCOMPLETE && !player->GetGroup() && !player->IsUsingLfg())
                 player->ADD_GOSSIP_ITEM_DB(player->GetDefaultGossipMenuForSource(creature), 2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 };

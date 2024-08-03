@@ -380,7 +380,7 @@ class npc_teleport : public CreatureScript
 
     bool OnGossipSelect(Player* pPlayer, Creature* pCreature, uint32 /*uiSender*/, uint32 uiAction)
     {
-        pPlayer->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(pPlayer);
         pPlayer->ModifyMoney(-1 * Tele[uiAction].cost);
         uint32 Key = Tele[uiAction].next_menu_id;
 
@@ -388,7 +388,7 @@ class npc_teleport : public CreatureScript
         {
             if (!pPlayer->IsInCombat())
             {
-                pPlayer->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(pPlayer);
                 pPlayer->TeleportTo(Tele[uiAction].map, Tele[uiAction].x, Tele[uiAction].y, Tele[uiAction].z, Tele[uiAction].o);
                 return true;
             }

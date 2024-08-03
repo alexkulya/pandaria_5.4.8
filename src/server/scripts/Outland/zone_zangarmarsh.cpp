@@ -78,14 +78,14 @@ public:
             if (creature->GetEntry() == NPC_KELETH)
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_BLESS_KEL, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
         }
-        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+        SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
 
         return true;
     }
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         if (action == GOSSIP_ACTION_INFO_DEF+1)
         {
             creature->SetPowerType(POWER_MANA);
@@ -147,7 +147,7 @@ public:
                     creature->AI()->Talk(GOSSIP_REWARD_BLESS);
                 }
             }
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             player->TalkedToCreature(creature->GetEntry(), creature->GetGUID());
         }
         return true;
@@ -222,10 +222,10 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         if (action == GOSSIP_ACTION_INFO_DEF)
         {
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             creature->SetFaction(FACTION_HOSTILE_CO);
             creature->AI()->AttackStart(player);
         }
@@ -258,7 +258,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF:
@@ -304,14 +304,14 @@ public:
         if (creature->IsVendor() && player->GetReputationRank(942) == REP_EXALTED)
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_VENDOR, GOSSIP_TEXT_BROWSE_GOODS, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_TRADE);
 
-        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+        SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
 
         return true;
     }
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         if (action == GOSSIP_ACTION_TRADE)
             player->GetSession()->SendListInventory(creature->GetGUID());
         return true;
@@ -422,13 +422,13 @@ public:
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_VENDOR, GOSSIP_TEXT_BROWSE_POISONS, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_TRADE);
 
         player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_TIMOTHY_DANIELS_ITEM1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+        SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
         return true;
     }
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF+1:

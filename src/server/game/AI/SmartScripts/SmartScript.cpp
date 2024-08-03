@@ -37,6 +37,7 @@
 #include "MoveSplineInit.h"
 #include "GameEventMgr.h"
 #include "Chat.h"
+#include "ScriptedGossip.h"
 
 class TrinityStringTextBuilder
 {
@@ -2037,9 +2038,8 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
                     if (e.action.sendGossipMenu.gossipMenuId)
                         player->PrepareGossipMenu(GetBaseObject(), e.action.sendGossipMenu.gossipMenuId, true);
                     else
-                        player->PlayerTalkClass->ClearMenus();
-
-                    player->SEND_GOSSIP_MENU(e.action.sendGossipMenu.gossipNpcTextId, GetBaseObject()->GetGUID());
+                        ClearGossipMenuFor(player);
+                    SendGossipMenuFor(player, e.action.sendGossipMenu.gossipNpcTextId, GetBaseObject()->GetGUID());
                 }
             }
 

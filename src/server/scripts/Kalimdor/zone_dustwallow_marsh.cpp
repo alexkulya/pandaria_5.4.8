@@ -157,18 +157,18 @@ public:
         if (player->GetQuestStatus(QUEST_DISCREDITING_THE_DESERTERS) == QUEST_STATUS_INCOMPLETE)
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_THERAMORE_GUARD, GOSSIP_SENDER_MAIN, GOSSIP_SENDER_INFO);
 
-        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+        SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
 
         return true;
     }
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
 
         if (action == GOSSIP_SENDER_INFO)
         {
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             player->KilledMonsterCredit(NPC_THERAMORE_GUARD, 0);
             creature->AI()->Talk(SAY_QUEST1);
             creature->CastSpell(creature, SPELL_DOCTORED_LEAFLET, false);
@@ -246,7 +246,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         if (action == GOSSIP_SENDER_INFO)
         {
             player->SEND_GOSSIP_MENU(7012, creature->GetGUID());
@@ -263,7 +263,7 @@ public:
         if (player->GetQuestStatus(QUEST_JAINAS_AUTOGRAPH) == QUEST_STATUS_INCOMPLETE)
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_JAINA, GOSSIP_SENDER_MAIN, GOSSIP_SENDER_INFO);
 
-        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+        SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
 
         return true;
     }
@@ -286,7 +286,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         if (action == GOSSIP_ACTION_TRADE)
             player->GetSession()->SendListInventory(creature->GetGUID());
 

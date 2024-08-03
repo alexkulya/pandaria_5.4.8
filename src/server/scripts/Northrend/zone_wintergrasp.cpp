@@ -135,13 +135,13 @@ class npc_wg_demolisher_engineer : public CreatureScript
             else
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_HELLO_DEMO4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 9);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             if (CanBuild(creature))
             {
@@ -201,13 +201,13 @@ class npc_wg_spirit_guide : public CreatureScript
                 if (graveyard[i]->GetControlTeamId() == player->GetTeamId())
                     player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, sObjectMgr->GetTrinityStringForDBCLocale(((BfGraveyardWG*)graveyard[i])->GetTextId()), GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + i);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
         bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 action) override
         {
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             Battlefield* wintergrasp = sBattlefieldMgr->GetBattlefieldByBattleId(BATTLEFIELD_BATTLEID_WG);
             if (wintergrasp)
@@ -274,7 +274,7 @@ class npc_wg_queue : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 /*action*/) override
         {
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             Battlefield* wintergrasp = sBattlefieldMgr->GetBattlefieldByBattleId(BATTLEFIELD_BATTLEID_WG);
             if (!wintergrasp)
@@ -431,7 +431,7 @@ class npc_wg_quest_giver : public CreatureScript
                 }
             }
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 };

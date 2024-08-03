@@ -439,7 +439,7 @@ class go_pumpkin_shrine : public GameObjectScript
 
         bool OnGossipSelect(Player* player, GameObject* go, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF)
             {
@@ -467,7 +467,7 @@ class go_pumpkin_shrine : public GameObjectScript
                 }
             }
             go->SetFlag(GAMEOBJECT_FIELD_FLAGS, GO_FLAG_NOT_SELECTABLE);
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             return true;
         }
 };

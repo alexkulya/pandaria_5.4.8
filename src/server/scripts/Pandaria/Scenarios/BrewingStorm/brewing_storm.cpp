@@ -96,7 +96,7 @@ class npc_brewmaster_blanche : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             switch (action)
             {
@@ -114,7 +114,7 @@ class npc_brewmaster_blanche : public CreatureScript
                     break;
             }
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             return true;
         }
@@ -133,7 +133,7 @@ class npc_brewmaster_blanche : public CreatureScript
                     player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, TEXT_CHAPTER_SAVE_THUNDERPAW_REFUGE, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
             }
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 

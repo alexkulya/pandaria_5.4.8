@@ -26,6 +26,7 @@
 #include "Pet.h"
 #include "ScriptedCreature.h"
 #include "ScriptMgr.h"
+#include "ScriptedGossip.h"
 #include "Transport.h"
 #include "WaypointManager.h"
 #include "World.h"
@@ -919,7 +920,7 @@ void Map::ScriptsProcess()
             case SCRIPT_COMMAND_CLOSE_GOSSIP:
                 // Source must be Player.
                 if (Player* player = _GetScriptPlayer(source, true, step.script))
-                    player->PlayerTalkClass->SendCloseGossip();
+                    CloseGossipMenuFor(player);
                 break;
 
             case SCRIPT_COMMAND_PLAYMOVIE:

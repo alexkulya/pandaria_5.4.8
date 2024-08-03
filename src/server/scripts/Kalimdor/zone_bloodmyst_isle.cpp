@@ -101,7 +101,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF+1:
@@ -125,7 +125,7 @@ public:
                 player->SEND_GOSSIP_MENU(9141, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF+6:
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 player->TalkedToCreature(C_SUNHAWK_TRIGGER, creature->GetGUID());
                 break;
         }

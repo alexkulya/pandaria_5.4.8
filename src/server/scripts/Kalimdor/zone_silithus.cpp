@@ -56,7 +56,7 @@ class npc_highlord_demitrian : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             switch (action)
             {
@@ -71,7 +71,7 @@ class npc_highlord_demitrian : public CreatureScript
                     if (msg == EQUIP_ERR_OK)
                         player->StoreNewItem(dest, ITEM_VESSEL_OF_REBITH, true);
 
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     break;
                 }
                 case GOSSIP_ACTION_INFO_DEF + 3:
@@ -95,7 +95,7 @@ class npc_highlord_demitrian : public CreatureScript
                     player->SEND_GOSSIP_MENU(6869, creature->GetGUID());
                     break;
                 case GOSSIP_ACTION_INFO_DEF + 8:
-                    player->CLOSE_GOSSIP_MENU(); // not exist any - just close
+                    CloseGossipMenuFor(player); // not exist any - just close
                     break;
             }
 
@@ -159,7 +159,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF:
@@ -1460,8 +1460,7 @@ class go_wind_stone : public GameObjectScript
 
         bool OnGossipSelect(Player* player, GameObject* go, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
-            player->PlayerTalkClass->SendCloseGossip();
+            ClearGossipMenuFor(player);
 
             switch (action)
             {

@@ -184,7 +184,7 @@ class npc_echo_of_medivh : public CreatureScript
                 if (instance->GetData(TYPE_CHESS) == SPECIAL)
                     player->ADD_GOSSIP_ITEM_DB(player->GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
                 return true;
             }
 
@@ -200,7 +200,7 @@ class npc_echo_of_medivh : public CreatureScript
                     if (instance->GetData(TYPE_CHESS) == SPECIAL)
                         instance->SetData(TYPE_CHESS, DONE);
 
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
             }
 
             return true;
@@ -315,7 +315,7 @@ class npc_chess_piece : public CreatureScript
                     if (instance->GetData(TYPE_CHESS) != DONE && instance->GetData(TYPE_CHESS) != FAIL && player->GetTeam() == creature->AI()->GetData(1) || dynamic_cast<karazhan_accessor*>(instance)->IsFriendlyGameReady())
                         player->ADD_GOSSIP_ITEM_DB(player->GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
@@ -336,7 +336,7 @@ class npc_chess_piece : public CreatureScript
                     player->CastSpell(creature, SPELL_CONTROL_PIECE, true);
                 }
 
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
             }
 
             return true;

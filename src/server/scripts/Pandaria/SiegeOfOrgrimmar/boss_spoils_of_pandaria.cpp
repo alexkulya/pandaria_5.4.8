@@ -2516,7 +2516,7 @@ class go_spoils_secured_stockpile_of_spoils : public GameObjectScript
 
         bool OnGossipSelect(Player* player, GameObject* go, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             // Launch
             if (action > GOSSIP_ACTION_INFO_DEF + 5)
@@ -2529,7 +2529,7 @@ class go_spoils_secured_stockpile_of_spoils : public GameObjectScript
                         spoils->AI()->DoAction(ACTION_START_INTRO);
                 }
 
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
             }
             else
             {

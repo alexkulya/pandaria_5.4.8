@@ -197,12 +197,12 @@ class npc_quest_mullan_gryphon : public CreatureScript
     
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
     
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
                 creature->AI()->DoAction(ACTION_START_INTRO);
     
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
     
             return true;
         }
@@ -215,7 +215,7 @@ class npc_quest_mullan_gryphon : public CreatureScript
             if (player->GetQuestStatus(QUEST_SCENT_OF_BATTLE) == QUEST_STATUS_INCOMPLETE)
                 player->ADD_GOSSIP_ITEM_DB(player->GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
@@ -313,7 +313,7 @@ class npc_gurgthock_twilands : public CreatureScript
             if (creature->IsQuestGiver() && !creature->AI()->GetData(TYPE_TRIAL)) // not allow to accept new quest while anybody on arena
                 player->PrepareQuestMenu(creature->GetGUID());
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 

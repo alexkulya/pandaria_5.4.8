@@ -521,17 +521,17 @@ class npc_water_spirit_dailo : public CreatureScript
             if (player->GetQuestStatus(29774) == QUEST_STATUS_INCOMPLETE)
                  player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "Can you please help us to wake up Wugou ?", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
 
             return true;
         }
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             if (action == GOSSIP_ACTION_INFO_DEF+1)
             {
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 player->KilledMonsterCredit(55548);
                 player->RemoveAurasDueToSpell(59073); // Remove Phase 2, first water spirit disapear
 

@@ -561,12 +561,12 @@ class npc_thrall_intro : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
                 creature->AI()->DoAction(ACTION_ACTIVATE);
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             return true;
         }
@@ -741,12 +741,12 @@ class npc_thrall_arcurion : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
                 creature->AI()->DoAction(ACTION_ACTIVATE);
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             return true;
         }
@@ -959,12 +959,12 @@ class npc_thrall_asira : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
                 creature->AI()->DoAction(ACTION_ACTIVATE);
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             return true;
         }
@@ -1203,12 +1203,12 @@ class npc_thrall_trash_benedictus : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
                 creature->AI()->DoAction(ACTION_ACTIVATE);
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             return true;
         }

@@ -269,7 +269,7 @@ public:
         pPlayer->PlayerTalkClass->ClearMenus();
         if (action == GOSSIP_ACTION_INFO_DEF + 1)
         {
-            pPlayer->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(pPlayer);
             creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC);
             creature->SetWalk(false);
             if (creature->GetHomePosition().GetPositionX() > 8500.0f)
@@ -369,10 +369,10 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action)
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         if (action == GOSSIP_ACTION_INFO_DEF + 1)
         {
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             creature->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC);
             creature->SetWalk(false);
             if (creature->GetHomePosition().GetPositionY() < 950.35f)

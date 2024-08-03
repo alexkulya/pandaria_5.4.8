@@ -79,7 +79,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action)
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         WorldSession* session = player->GetSession();
 
         switch (sender)
@@ -301,7 +301,7 @@ public:
 #ifdef PRESETS
     bool OnGossipSelectCode(Player* player, Creature* creature, uint32 sender, uint32 action, const char* code)
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
 
         if (sender || action)
             return true;

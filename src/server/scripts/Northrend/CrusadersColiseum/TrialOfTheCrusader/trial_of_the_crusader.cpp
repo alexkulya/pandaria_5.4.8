@@ -157,8 +157,8 @@ class npc_announcer_toc10 : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 /*action*/) override
         {
-            player->PlayerTalkClass->ClearMenus();
-            player->CLOSE_GOSSIP_MENU();
+            ClearGossipMenuFor(player);
+            CloseGossipMenuFor(player);
             InstanceScript* instance = creature->GetInstanceScript();
             if (!instance)
                 return true;

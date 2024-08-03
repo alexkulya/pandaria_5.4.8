@@ -56,14 +56,14 @@ class npc_anachronos_15192 : public CreatureScript
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_A_WRINKIE_IN_TIME, GOSSIP_SENDER_MAIN, ACTION_A_WRINKIE_IN_TIME);
             else if (player->GetQuestStatus(29193) == QUEST_STATUS_INCOMPLETE)
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ON_A_WING_AND_A_PRAYER, GOSSIP_SENDER_MAIN, ACTION_ON_A_WING_AND_A_PRAYER);
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
 
             return true;
         }
 
         bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             if (action == ACTION_A_WRINKIE_IN_TIME)
             {
                 player->KilledMonsterCredit(52605, 0);
@@ -99,14 +99,14 @@ class npc_tarecgosa_52835 : public CreatureScript
             if (creature->IsQuestGiver())
                 player->PrepareQuestMenu(creature->GetGUID());
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
 
             return true;
         }
 
         bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 /*action*/) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             return false;
         }
 
@@ -378,8 +378,8 @@ class npc_hallegosa : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 /*action*/) override
         {
-            player->PlayerTalkClass->ClearMenus();
-            player->CLOSE_GOSSIP_MENU();
+            ClearGossipMenuFor(player);
+            CloseGossipMenuFor(player);
 
             creature->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP | UNIT_NPC_FLAG_QUESTGIVER);
             

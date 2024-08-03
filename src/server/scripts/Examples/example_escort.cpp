@@ -206,25 +206,25 @@ class example_escort : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             npc_escortAI* pEscortAI = CAST_AI(example_escort::example_escortAI, creature->AI());
 
             switch (action)
             {
                 case GOSSIP_ACTION_INFO_DEF+1:
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
 
                     if (pEscortAI)
                         pEscortAI->Start(true, true, player->GetGUID());
                     break;
                 case GOSSIP_ACTION_INFO_DEF+2:
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
 
                     if (pEscortAI)
                         pEscortAI->Start(false, false, player->GetGUID());
                     break;
                 case GOSSIP_ACTION_INFO_DEF+3:
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
 
                     if (pEscortAI)
                         pEscortAI->Start(false, true, player->GetGUID());

@@ -72,7 +72,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         if (action == GOSSIP_ACTION_TRADE)
             player->GetSession()->SendListInventory(creature->GetGUID());
         return true;
@@ -86,7 +86,7 @@ public:
         if (creature->IsVendor() && player->GetQuestRewardStatus(6164))
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_VENDOR, GOSSIP_TEXT_BROWSE_GOODS, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_TRADE);
 
-        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+        SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
         return true;
     }
 };
@@ -148,7 +148,7 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF+1:
@@ -164,7 +164,7 @@ public:
                 player->SEND_GOSSIP_MENU(4495, creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF+4:
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 player->AreaExploredOrEventHappens(5742);
                 break;
         }
@@ -179,7 +179,7 @@ public:
         if (player->GetQuestStatus(5742) == QUEST_STATUS_INCOMPLETE && player->getStandState() == UNIT_STAND_STATE_SIT)
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_HELLO, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
 
-        player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+        SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
 
         return true;
     }

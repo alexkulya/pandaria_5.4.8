@@ -397,7 +397,7 @@ class npc_thunder_king_treasure_taoshi : public CreatureScript
     
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
     
             if (action == GOSSIP_ACTION_INFO_DEF + 1 && player->GetInstanceScript())
             {
@@ -409,7 +409,7 @@ class npc_thunder_king_treasure_taoshi : public CreatureScript
                 creature->CastSpell(player, SPELL_LIMITED_TIME, true);
             }
     
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
     
             return true;
         }
@@ -421,7 +421,7 @@ class npc_thunder_king_treasure_taoshi : public CreatureScript
 
             player->ADD_GOSSIP_ITEM_DB(player->GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
     
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 };
@@ -434,7 +434,7 @@ class npc_thunder_king_treasure_taoshi_queue : public CreatureScript
     
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
     
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -443,7 +443,7 @@ class npc_thunder_king_treasure_taoshi_queue : public CreatureScript
                 player->DestroyItemCount(94222, 1, true);
             }
     
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
     
             return true;
         }
@@ -456,7 +456,7 @@ class npc_thunder_king_treasure_taoshi_queue : public CreatureScript
             if (player->HasItemCount(94222) && !player->GetGroup() && !player->IsUsingLfg())
                 player->ADD_GOSSIP_ITEM_DB(player->GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
     
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 };
@@ -509,12 +509,12 @@ class npc_thunder_king_treasure_tenwu_of_the_red_smoke : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
                 player->CastSpell(player, SPELL_TENWU_EXIT_TRIGGERED_CREDIT, true);
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             return true;
         }
@@ -522,7 +522,7 @@ class npc_thunder_king_treasure_tenwu_of_the_red_smoke : public CreatureScript
         bool OnGossipHello(Player* player, Creature* creature) override
         {
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "I`m ready to leave. Let`s get our of here.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1); // hasn`t gossip info in sniffs
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 };

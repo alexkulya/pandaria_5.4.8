@@ -244,7 +244,7 @@ class npc_jaina_and_sylvanas_hor_part1 : public CreatureScript
                 if (!player || menuId != (instance->GetData(DATA_TEAM_IN_INSTANCE) == ALLIANCE ? 11031 : 10950) || action > 1)
                     return;
 
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 playerGUID = player->GetGUID();
                 events.ScheduleEvent(action ? EVENT_SKIP_INTRO : EVENT_START_INTRO, 0);
                 me->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
@@ -1547,7 +1547,7 @@ class npc_jaina_and_sylvanas_hor_part2 : public CreatureScript
                 if (instance->GetData(DATA_LICHKING_EVENT) == DONE)
                     return;
 
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 Start(false, true);
                 me->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER | UNIT_NPC_FLAG_GOSSIP);
                 me->SetTarget(0);

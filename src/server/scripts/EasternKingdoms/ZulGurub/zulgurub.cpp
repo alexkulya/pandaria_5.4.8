@@ -121,7 +121,7 @@ class npc_cache_of_madness_artifact : public CreatureScript
         
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
                 player->SEND_GOSSIP_MENU(GOSSIP_TEXT_ARTIFACT_ACTIVATED, creature->GetGUID());

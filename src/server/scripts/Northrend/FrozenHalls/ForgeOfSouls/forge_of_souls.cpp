@@ -146,7 +146,7 @@ class npc_sylvanas_fos : public CreatureScript
 
             void sGossipSelect(Player* player, uint32 sender, uint32 action) override
             {
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 if (sender == 10942 && action == 0)
                     StartScene(player);
             }
@@ -196,7 +196,7 @@ class npc_jaina_fos : public CreatureScript
 
             void sGossipSelect(Player* player, uint32 sender, uint32 action) override
             {
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 if (sender == 10943 && action == 0)
                     StartScene(player);
             }

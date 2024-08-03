@@ -1486,7 +1486,7 @@ class npc_proving_grounds_trial_master_rotun : public CreatureScript
     
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             creature->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
 
             switch (action)
@@ -1541,7 +1541,7 @@ class npc_proving_grounds_trial_master_rotun : public CreatureScript
                     break;
             }
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             return true;
         }
@@ -1558,7 +1558,7 @@ class npc_proving_grounds_trial_master_rotun : public CreatureScript
                 if (player->HasAchieved(itr.first, false))
                     player->ADD_GOSSIP_ITEM_DB(player->GetDefaultGossipMenuForSource(creature), itr.second, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3 + itr.second);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 };
@@ -3218,7 +3218,7 @@ class npc_proving_grounds_trial_master_rotun_queue : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -3226,7 +3226,7 @@ class npc_proving_grounds_trial_master_rotun_queue : public CreatureScript
                 sLFGMgr->JoinLfg(player, lfg::PLAYER_ROLE_DAMAGE, scenario, "");
             }
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             return true;
         }
@@ -3239,7 +3239,7 @@ class npc_proving_grounds_trial_master_rotun_queue : public CreatureScript
             if (!player->GetGroup() && !player->IsUsingLfg())
                 player->ADD_GOSSIP_ITEM_DB(player->GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 };

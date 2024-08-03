@@ -115,7 +115,7 @@ class go_end_time_teleport : public GameObjectScript
 
         bool OnGossipSelect(Player* player, GameObject* /*go*/, uint32 /*sender*/, uint32 action) override
         {
-            //player->PlayerTalkClass->ClearMenus();
+            //ClearGossipMenuFor(player);
             if (player->IsInCombat())
                 return true;
 
@@ -127,36 +127,36 @@ class go_end_time_teleport : public GameObjectScript
             {
                 case START_TELEPORT:
                     player->CastSpell(player, SPELL_TELEPORT_TO_START, true);
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     break;
                 case JAINA_TELEPORT:
                     instance->SetData(DATA_JAINA_EVENT, IN_PROGRESS);
                     if (instance->GetData(DATA_NOZDORMU_3) != DONE)
                         instance->SetData(DATA_NOZDORMU_3, IN_PROGRESS);
                     player->CastSpell(player, SPELL_TELEPORT_TO_BLUE_DRAGONSHIRE, true);
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     break;
                 case SYLVANAS_TELEPORT:
                     if (instance->GetData(DATA_NOZDORMU_4) != DONE)
                         instance->SetData(DATA_NOZDORMU_4, IN_PROGRESS);
                     player->CastSpell(player, SPELL_TELEPORT_TO_RUBY_DRAGONSHIRE, true);
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     break;
                 case TYRANDE_TELEPORT:
                     if (instance->GetData(DATA_NOZDORMU_1) != DONE)
                         instance->SetData(DATA_NOZDORMU_1, IN_PROGRESS);
                     player->CastSpell(player, SPELL_TELEPORT_TO_EMERALD_DRAGONSHIRE, true);
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     break;
                 case BAINE_TELEPORT:
                     if (instance->GetData(DATA_NOZDORMU_2) != DONE)
                         instance->SetData(DATA_NOZDORMU_2, IN_PROGRESS);
                     player->CastSpell(player, SPELL_TELEPORT_TO_OBSIDIAN_DRAGONSHIRE, true);
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     break;
                 case MUROZOND_TELEPORT:
                     player->CastSpell(player, SPELL_TELEPORT_TO_BRONZE_DRAGONSHIRE, true);
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     break;
             }
 

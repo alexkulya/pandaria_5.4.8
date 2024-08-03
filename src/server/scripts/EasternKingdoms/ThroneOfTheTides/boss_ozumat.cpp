@@ -149,8 +149,8 @@ class npc_neptulon : public CreatureScript
                     || instance->GetBossState(DATA_OZUMAT) == DONE)
                     return false;
 
-                player->PlayerTalkClass->ClearMenus();
-                player->CLOSE_GOSSIP_MENU();
+                ClearGossipMenuFor(player);
+                CloseGossipMenuFor(player);
                 creature->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
                 instance->SetBossState(DATA_OZUMAT, IN_PROGRESS);
                 creature->AI()->DoAction(ACTION_NEPTULON_START);

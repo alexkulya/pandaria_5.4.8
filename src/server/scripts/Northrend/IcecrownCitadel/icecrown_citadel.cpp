@@ -932,7 +932,7 @@ class npc_alchemist_adrianna : public CreatureScript
             {
                 if (sender == 11034 && action == 0)
                 {
-                    player->CLOSE_GOSSIP_MENU();
+                    CloseGossipMenuFor(player);
                     if (!me->FindCurrentSpellBySpellId(SPELL_HARVEST_BLIGHT_SPECIMEN) && !me->FindCurrentSpellBySpellId(SPELL_HARVEST_BLIGHT_SPECIMEN25))
                     {
                         if (player->HasAura(SPELL_ORANGE_BLIGHT_RESIDUE) && player->HasAura(SPELL_GREEN_BLIGHT_RESIDUE))
@@ -3937,7 +3937,7 @@ class npc_icc_ormus_the_penitent : public CreatureScript
                 if (!CheckAshenVerdictRingRetrieveAvailability(player))
                     return;
 
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
 
                 // Find class of owned ring
                 int8 ownedClass = -1;

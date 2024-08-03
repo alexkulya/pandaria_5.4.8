@@ -225,7 +225,7 @@ class npc_arthas : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             npc_arthasAI* pAI = CAST_AI(npc_arthas::npc_arthasAI, creature->AI());
 
             if (!pAI)
@@ -289,7 +289,7 @@ class npc_arthas : public CreatureScript
                     pAI->SetNextWaypoint(3);
                     break;
             }
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             pAI->SetDespawnAtFar(false);
             creature->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
             return true;
@@ -1337,7 +1337,7 @@ class npc_chromie : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* /*creature*/, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             switch (action)
             {
@@ -1348,7 +1348,7 @@ class npc_chromie : public CreatureScript
                     player->TeleportTo(player->GetMapId(), ChromieEntranceSummonPos.GetPositionX() - 3.0f, ChromieEntranceSummonPos.GetPositionY() - 3.0f, ChromieEntranceSummonPos.GetPositionZ(), 0.0f);
                     break;
             }
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
             return true;
         }
 
@@ -1365,12 +1365,12 @@ class npc_chromie : public CreatureScript
                 {
                     if(!player->HasItemCount(ITEM_ARCANE_DISRUPTOR, 1))
                         player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_CHROMIE_0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF);
-                    player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                    SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
                 }
                 else
                 {
                     player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_ITEM_CHROMIE_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF+1);
-                    player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                    SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
                 }
             }
             return true;

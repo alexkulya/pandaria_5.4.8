@@ -100,8 +100,8 @@ class go_gleaming_crane_statue_ti : public GameObjectScript
 
         bool OnGossipSelect(Player* player, GameObject* /*go*/, uint32 /*sender*/, uint32 /*action*/) override
         {
-            player->PlayerTalkClass->ClearMenus();
-            player->CLOSE_GOSSIP_MENU();
+            ClearGossipMenuFor(player);
+            CloseGossipMenuFor(player);
 
             player->CastSpell(player, 144387, true); // knockback in the air
             player->m_Events.Schedule(6000, 1, [player]()
@@ -3286,7 +3286,7 @@ class npc_senior_historian_evelyna : public CreatureScript
 
         bool OnGossipHello(Player* player, Creature* creature) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             player->PrepareQuestMenu(creature->GetGUID());
 
             if (player->GetQuestStatus(33211) == QUEST_STATUS_INCOMPLETE)
@@ -3548,13 +3548,13 @@ class npc_senior_historian_evelyna : public CreatureScript
                 }
             }
             else
-                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1) // false
                 player->SEND_GOSSIP_MENU(GOSSIP_INCORRECT, creature->GetGUID());
@@ -3622,17 +3622,17 @@ class npc_fin_longpaw : public CreatureScript
 
         bool OnGossipHello(Player* player, Creature* creature) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             if (!creature->FindNearestCreature(RARE_KARKANOS, 50.0f, true))
                 player->ADD_GOSSIP_ITEM_DB(60013, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
-            player->CLOSE_GOSSIP_MENU();
+            ClearGossipMenuFor(player);
+            CloseGossipMenuFor(player);
             creature->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
@@ -3678,19 +3678,19 @@ class npc_zarhym_1 : public CreatureScript
 
         bool OnGossipHello(Player* player, Creature* creature) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (!player->IsDailyQuestDone(QUEST_ZARHYM_TRACKER))
             player->ADD_GOSSIP_ITEM_DB(60014, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
-            player->CLOSE_GOSSIP_MENU();
+            ClearGossipMenuFor(player);
+            CloseGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {

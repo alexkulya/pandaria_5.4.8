@@ -61,60 +61,60 @@ public:
 
     bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
     {
-        player->PlayerTalkClass->ClearMenus();
+        ClearGossipMenuFor(player);
         switch (action)
         {
             case GOSSIP_ACTION_INFO_DEF + 1:
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SGG1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 2);
-                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 2:
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SGG2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 3);
-                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 3:
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SGG3, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 4);
-                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 4:
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SGG4, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 5);
-                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 5:
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SGG5, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 6);
-                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 6:
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SGG6, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 7);
-                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 7:
                 player->AreaExploredOrEventHappens(10044);
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 break;
             case GOSSIP_ACTION_INFO_DEF + 10:
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SGG7, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 11);
-                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 11:
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SGG8, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 12);
-                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 12:
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SGG9, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 13);
-                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 13:
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SGG10, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 14);
-                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 14:
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_SGG11, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 15);
-                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
                 break;
             case GOSSIP_ACTION_INFO_DEF + 15:
                 player->AreaExploredOrEventHappens(10172);
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 break;
         }
         return true;
@@ -128,15 +128,15 @@ public:
         if (player->GetQuestStatus(10044) == QUEST_STATUS_INCOMPLETE)
         {
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_HGG1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
         }
         else if (player->GetQuestStatus(10172) == QUEST_STATUS_INCOMPLETE)
         {
             player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_HGG2, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 10);
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
         }
         else
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
 
         return true;
     }

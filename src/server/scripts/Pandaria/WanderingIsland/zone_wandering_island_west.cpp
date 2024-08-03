@@ -51,7 +51,7 @@ class npc_master_shang_xi_temple : public CreatureScript
             if (player->GetQuestStatus(29776) != QUEST_STATUS_NONE)
                     player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_WIND, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->PlayerTalkClass->SendGossipMenu(1, creature->GetGUID());
+            SendGossipMenuFor(player, 1, creature->GetGUID());
             return true;
         }
 
@@ -69,7 +69,7 @@ class npc_master_shang_xi_temple : public CreatureScript
                 player->NearTeleportTo(926.58f, 3605.33f, 251.63f, 3.114f);
             }
 
-            player->PlayerTalkClass->SendCloseGossip();
+            CloseGossipMenuFor(player);
             return true;
         }
 };

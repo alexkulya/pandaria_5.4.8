@@ -590,13 +590,13 @@ class npc_q29982 : public CreatureScript
             else if (creature->GetEntry() == NPC_WEI_BLACKSOIL && creature->AI()->GetData(DATA_AMBUSHED) == 1)
                 player->SEND_GOSSIP_MENU(18833, creature->GetGUID());
             else
-                player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+                SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -1137,7 +1137,7 @@ struct npc_just_a_folk_story_quest : public ScriptedAI
 
     void sGossipSelect(Player* player, uint32 /*sender*/, uint32 /*action*/) override
     {
-        player->CLOSE_GOSSIP_MENU();
+        CloseGossipMenuFor(player);
         player->KilledMonsterCredit(me->GetEntry());
         Talk(0, player);
     }

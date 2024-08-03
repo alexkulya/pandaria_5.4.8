@@ -90,7 +90,7 @@ class npc_blastmaster_emi_shortfuse : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
             if (action == GOSSIP_ACTION_INFO_DEF+1)
             {
                 if (npc_escortAI* pEscortAI = CAST_AI(npc_blastmaster_emi_shortfuse::npc_blastmaster_emi_shortfuseAI, creature->AI()))
@@ -99,7 +99,7 @@ class npc_blastmaster_emi_shortfuse : public CreatureScript
                 creature->SetFaction(player->GetFaction());
                 creature->AI()->SetData(1, 0);
 
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
             }
             return true;
         }

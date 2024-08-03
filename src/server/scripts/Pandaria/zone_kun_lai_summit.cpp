@@ -961,20 +961,20 @@ class npc_waterspeaker_gorai : public CreatureScript
             if (player->GetQuestStatus(QUEST_THE_RITUAL) == QUEST_STATUS_INCOMPLETE)
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "I'm ready. Begin the ritual.", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
                 player->KilledMonsterCredit(creature->GetEntry());
                 creature->AI()->SetGUID(player->GetGUID(), 0);
                 creature->RemoveFlag(UNIT_FIELD_NPC_FLAGS, UNIT_NPC_FLAG_QUESTGIVER | UNIT_NPC_FLAG_GOSSIP);
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
             }
             else if (action == GOSSIP_ACTION_TRADE)
                 player->GetSession()->SendListInventory(creature->GetGUID());
@@ -1251,13 +1251,13 @@ class npc_inkgill_dissenter : public CreatureScript
             if (player->GetQuestStatus(QUEST_FREE_THE_DISSENTERS) == QUEST_STATUS_INCOMPLETE)
                 player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, "There's still hope - Gorai is still alive, to the south. Go!", GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -1268,7 +1268,7 @@ class npc_inkgill_dissenter : public CreatureScript
                 float x, y, z;
                 creature->GetClosePoint(x, y, z, creature->GetObjectSize() / 3, 10.f);
                 creature->GetMotionMaster()->MovePoint(1, x, y, z);
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
             }
 
             return false;
@@ -1285,17 +1285,17 @@ class npc_shado_pan_sentinel : public CreatureScript
             if (player->GetQuestStatus(QUEST_UNBELIEVABLE) == QUEST_STATUS_INCOMPLETE)
                 player->ADD_GOSSIP_ITEM_DB(GOSSIP_MENU_SENTINEL, 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
-                player->CLOSE_GOSSIP_MENU();
+                CloseGossipMenuFor(player);
                 creature->AI()->Talk(SAY_SENTINEL_1);
                 creature->HandleEmoteCommand(EMOTE_ONESHOT_POINT);
 
@@ -1344,7 +1344,7 @@ class npc_lorewalker_cho_bashon : public CreatureScript
 
         bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
         {
-            player->PlayerTalkClass->ClearMenus();
+            ClearGossipMenuFor(player);
 
             if (action == GOSSIP_ACTION_INFO_DEF + 1)
             {
@@ -1352,7 +1352,7 @@ class npc_lorewalker_cho_bashon : public CreatureScript
                 player->AddAura(SPELL_SUMMON_CHO, player);
             }
 
-            player->CLOSE_GOSSIP_MENU();
+            CloseGossipMenuFor(player);
 
             return true;
         }
@@ -1367,7 +1367,7 @@ class npc_lorewalker_cho_bashon : public CreatureScript
 
             player->ADD_GOSSIP_ITEM_DB(player->GetDefaultGossipMenuForSource(creature), 0, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
 
-            player->SEND_GOSSIP_MENU(player->GetGossipTextId(creature), creature->GetGUID());
+            SendGossipMenuFor(player, player->GetGossipTextId(creature), creature->GetGUID());
             return true;
         }
 };
@@ -1696,7 +1696,7 @@ class npc_xuen_celestial_experience : public CreatureScript
             player->KilledMonsterCredit(NPC_XUEN);
             player->SummonCreature(NPC_XUEN, *creature, TEMPSUMMON_TIMED_DESPAWN, 300 * IN_MILLISECONDS);
             player->SetPhaseMask(3, true);
-            player->CLOSE_GOSSIP_MENU();;
+            CloseGossipMenuFor(player);;
             return true;
         }
 
@@ -2144,7 +2144,7 @@ struct npc_kota_kon : public VehicleAI
     void sGossipSelect(Player* player, uint32 /*sender*/, uint32 /*action*/) override
     {
         guid = player->GetGUID();
-        player->CLOSE_GOSSIP_MENU();
+        CloseGossipMenuFor(player);
         me->CastSpell(player, SPELL_THE_BURLAP_GRIND_BEGIN_RIDE);
     }
 
