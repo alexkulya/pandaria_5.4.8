@@ -370,6 +370,160 @@ INSERT INTO `battle_pay_entry_locale` (`ID`, `Locale`, `Title`, `Description`) V
 INSERT INTO `battle_pay_entry_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('171', 'esMX', '|cffffe4b5Capa gastada de la gárgola de piedra', 'Espalda');
 
 
+-- Battle Pay Product Locale
+DROP TABLE IF EXISTS `battle_pay_product_locale`;
+CREATE TABLE IF NOT EXISTS `battle_pay_product_locale` (
+  `ID` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `Locale` VARCHAR(4) NOT NULL,
+  `Title` TEXT,
+  `Description` TEXT,
+  PRIMARY KEY (`ID`, `Locale`)
+) ENGINE=MYISAM DEFAULT CHARSET=utf8;
+
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`)
+SELECT `id`, 'koKR', `title_loc1`, `description_loc1` 
+FROM `locales_battle_pay_product` 
+WHERE LENGTH(`title_loc1`) > 0 OR LENGTH(`description_loc1`) > 0
+ON DUPLICATE KEY UPDATE 
+    `Title` = VALUES(`Title`), 
+    `Description` = VALUES(`Description`);
+
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`)
+SELECT `id`, 'frFR', `title_loc2`, `description_loc2` 
+FROM `locales_battle_pay_product` 
+WHERE LENGTH(`title_loc2`) > 0 OR LENGTH(`description_loc2`) > 0
+ON DUPLICATE KEY UPDATE 
+    `Title` = VALUES(`Title`), 
+    `Description` = VALUES(`Description`);
+
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`)
+SELECT `id`, 'deDE', `title_loc3`, `description_loc3` 
+FROM `locales_battle_pay_product` 
+WHERE LENGTH(`title_loc3`) > 0 OR LENGTH(`description_loc3`) > 0
+ON DUPLICATE KEY UPDATE 
+    `Title` = VALUES(`Title`), 
+    `Description` = VALUES(`Description`);
+
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`)
+SELECT `id`, 'zhCN', `title_loc4`, `description_loc4` 
+FROM `locales_battle_pay_product` 
+WHERE LENGTH(`title_loc4`) > 0 OR LENGTH(`description_loc4`) > 0
+ON DUPLICATE KEY UPDATE 
+    `Title` = VALUES(`Title`), 
+    `Description` = VALUES(`Description`);
+
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`)
+SELECT `id`, 'zhTW', `title_loc5`, `description_loc5` 
+FROM `locales_battle_pay_product` 
+WHERE LENGTH(`title_loc5`) > 0 OR LENGTH(`description_loc5`) > 0
+ON DUPLICATE KEY UPDATE 
+    `Title` = VALUES(`Title`), 
+    `Description` = VALUES(`Description`);
+
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`)
+SELECT `id`, 'esES', `title_loc6`, `description_loc6` 
+FROM `locales_battle_pay_product` 
+WHERE LENGTH(`title_loc6`) > 0 OR LENGTH(`description_loc6`) > 0
+ON DUPLICATE KEY UPDATE 
+    `Title` = VALUES(`Title`), 
+    `Description` = VALUES(`Description`);
+
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`)
+SELECT `id`, 'esMX', `title_loc7`, `description_loc7` 
+FROM `locales_battle_pay_product` 
+WHERE LENGTH(`title_loc7`) > 0 OR LENGTH(`description_loc7`) > 0
+ON DUPLICATE KEY UPDATE 
+    `Title` = VALUES(`Title`), 
+    `Description` = VALUES(`Description`);
+
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`)
+SELECT `id`, 'ruRU', `title_loc8`, `description_loc8` 
+FROM `locales_battle_pay_product` 
+WHERE LENGTH(`title_loc8`) > 0 OR LENGTH(`description_loc8`) > 0
+ON DUPLICATE KEY UPDATE 
+    `Title` = VALUES(`Title`), 
+    `Description` = VALUES(`Description`);
+
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`)
+SELECT `id`, 'itIT', `title_loc9`, `description_loc9` 
+FROM `locales_battle_pay_product` 
+WHERE LENGTH(`title_loc9`) > 0 OR LENGTH(`description_loc9`) > 0
+ON DUPLICATE KEY UPDATE 
+    `Title` = VALUES(`Title`), 
+    `Description` = VALUES(`Description`);
+
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`)
+SELECT `id`, 'ptBR', `title_loc10`, `description_loc10` 
+FROM `locales_battle_pay_product` 
+WHERE LENGTH(`title_loc10`) > 0 OR LENGTH(`description_loc10`) > 0
+ON DUPLICATE KEY UPDATE 
+    `Title` = VALUES(`Title`), 
+    `Description` = VALUES(`Description`);
+
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`)
+SELECT `id`, 'ptPT', `title_loc11`, `description_loc11` 
+FROM `locales_battle_pay_product` 
+WHERE LENGTH(`title_loc11`) > 0 OR LENGTH(`description_loc11`) > 0
+ON DUPLICATE KEY UPDATE 
+    `Title` = VALUES(`Title`), 
+    `Description` = VALUES(`Description`);
+    
+
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('1', 'esES', 'Tienda:\nFicha de Pandaria (Denominación: 01)', 'Agrega 1 punto virtual para la tienda de Pandaria 5.4.8');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('2', 'esES', 'Tienda:\nFicha de Pandaria (Denominación: 02)', 'Agrega 2 puntos virtuales para la tienda de Pandaria 5.4.8');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('3', 'esES', 'Tienda:\nFicha de Pandaria (Denominación: 05)', 'Agrega 5 puntos virtuales para la tienda de Pandaria 5.4.8');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('4', 'esES', 'Tienda:\nFicha de Pandaria (Denominación: 10)', 'Agrega 10 puntos virtuales para la tienda de Pandaria 5.4.8');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('13', 'esES', 'Tienda:\nCaja con suministros infinitos de Foror', 'Bolsa (slots: 36)\nEl fondo del cofre está roto. De ahí salen lágrimas...');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('14', 'esES', 'Tienda:\nBolsa real', 'Bolsa (slots: 28)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('15', 'esES', 'Tienda:\nCaja de aparejos del maestro de cebo', 'Bolsa de pesca (slots: 36)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('16', 'esES', 'Tienda:\nBolsa trascendental', 'Bolsa de encantador (slots: 36)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('17', 'esES', 'Tienda:\nBolsa de seda lujosa para gemas', 'Bolsa de joyero (slots: 36)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('18', 'esES', 'Tienda:\nBolsa de expedición de Hyjal', 'Bolsa de herborista (slots: 36)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('19', 'esES', 'Tienda:\nCaja de herramientas de elementium', 'Bolsa de ingeniero (slots: 36)\nLa mejor caja de herramientas que este mundo haya visto. Incrustada en oro.');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('20', 'esES', 'Tienda:\nBolsa de escriba real', 'Bolsa de escriba (slots: 36)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('21', 'esES', 'Tienda:\nBolsa minera reforzada tres veces', 'Bolsa de minero (slots: 36)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('22', 'esES', 'Tienda:\nBolsa de cuero magnífica', 'Bolsa de peletero (slots: 36)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('23', 'esES', 'Tienda:\nBolsa ilusoria', 'Bolsa (slots: 26)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('24', 'esES', 'Tienda:\nBolsa raída de tela maldita', 'Bolsa (slots: 24)\nDe trozos de tela recogidos en Zul\'Aman.');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('25', 'esES', 'Tienda:\nBolsa de hielo', 'Bolsa (slots: 22)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('26', 'esES', 'Tienda:\nBolsa de destello solar', 'Bolsa (slots: 20)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('27', 'esES', 'Tienda:\nBolsa sin fondo', 'Bolsa (slots: 18)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('28', 'esES', 'Tienda:\nMochila de viajero', 'Bolsa (slots: 16)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('29', 'esES', 'Tienda:\nMochila de aprendiz', 'Bolsa (slots: 14)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('30', 'esES', 'Tienda:\nMochila grande', 'Bolsa (slots: 12)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('168', 'esES', 'Tienda:\nCapa antigua de la Luna Sangrienta', 'Espalda');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('169', 'esES', 'Tienda:\nCapa heredada del barón negro', 'Espalda');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('170', 'esES', 'Tienda:\nCapa desgarrada de la tormenta de arena', 'Espalda');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('171', 'esES', 'Tienda:\nCapa gastada de la gárgola de piedra', 'Espalda');
+
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('1', 'esMX', 'Tienda:\nFicha de Pandaria (Denominación: 01)', 'Agrega 1 punto virtual para la tienda de Pandaria 5.4.8');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('2', 'esMX', 'Tienda:\nFicha de Pandaria (Denominación: 02)', 'Agrega 2 puntos virtuales para la tienda de Pandaria 5.4.8');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('3', 'esMX', 'Tienda:\nFicha de Pandaria (Denominación: 05)', 'Agrega 5 puntos virtuales para la tienda de Pandaria 5.4.8');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('4', 'esMX', 'Tienda:\nFicha de Pandaria (Denominación: 10)', 'Agrega 10 puntos virtuales para la tienda de Pandaria 5.4.8');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('13', 'esMX', 'Tienda:\nCaja con suministros infinitos de Foror', 'Bolsa (slots: 36)\nEl fondo del cofre está roto. De ahí salen lágrimas...');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('14', 'esMX', 'Tienda:\nBolsa real', 'Bolsa (slots: 28)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('15', 'esMX', 'Tienda:\nCaja de aparejos del maestro de cebo', 'Bolsa de pesca (slots: 36)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('16', 'esMX', 'Tienda:\nBolsa trascendental', 'Bolsa de encantador (slots: 36)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('17', 'esMX', 'Tienda:\nBolsa de seda lujosa para gemas', 'Bolsa de joyero (slots: 36)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('18', 'esMX', 'Tienda:\nBolsa de expedición de Hyjal', 'Bolsa de herborista (slots: 36)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('19', 'esMX', 'Tienda:\nCaja de herramientas de elementium', 'Bolsa de ingeniero (slots: 36)\nLa mejor caja de herramientas que este mundo haya visto. Incrustada en oro.');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('20', 'esMX', 'Tienda:\nBolsa de escriba real', 'Bolsa de escriba (slots: 36)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('21', 'esMX', 'Tienda:\nBolsa minera reforzada tres veces', 'Bolsa de minero (slots: 36)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('22', 'esMX', 'Tienda:\nBolsa de cuero magnífica', 'Bolsa de peletero (slots: 36)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('23', 'esMX', 'Tienda:\nBolsa ilusoria', 'Bolsa (slots: 26)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('24', 'esMX', 'Tienda:\nBolsa raída de tela maldita', 'Bolsa (slots: 24)\nDe trozos de tela recogidos en Zul\'Aman.');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('25', 'esMX', 'Tienda:\nBolsa de hielo', 'Bolsa (slots: 22)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('26', 'esMX', 'Tienda:\nBolsa de destello solar', 'Bolsa (slots: 20)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('27', 'esMX', 'Tienda:\nBolsa sin fondo', 'Bolsa (slots: 18)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('28', 'esMX', 'Tienda:\nMochila de viajero', 'Bolsa (slots: 16)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('29', 'esMX', 'Tienda:\nMochila de aprendiz', 'Bolsa (slots: 14)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('30', 'esMX', 'Tienda:\nMochila grande', 'Bolsa (slots: 12)');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('168', 'esMX', 'Tienda:\nCapa antigua de la Luna Sangrienta', 'Espalda');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('169', 'esMX', 'Tienda:\nCapa heredada del barón negro', 'Espalda');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('170', 'esMX', 'Tienda:\nCapa desgarrada de la tormenta de arena', 'Espalda');
+INSERT INTO `battle_pay_product_locale` (`ID`, `Locale`, `Title`, `Description`) VALUES ('171', 'esMX', 'Tienda:\nCapa gastada de la gárgola de piedra', 'Espalda');
+
+
 DROP TABLE IF EXISTS `locales_battle_pay_group`;
 DROP TABLE IF EXISTS `locales_battle_pay_entry`;
 
