@@ -276,12 +276,12 @@ void BattlePayMgr::LoadGroupLocalesFromDb()
 
     m_groupLocalesMap.clear();
 
-    QueryResult result = WorldDatabase.Query("SELECT id, name_loc1, name_loc2, name_loc3, name_loc4, name_loc5, name_loc6, name_loc7, name_loc8, name_loc9, name_loc10, name_loc11"
-        " FROM locales_battle_pay_group");
+    QueryResult result = WorldDatabase.Query("SELECT ID, Locale, Name"
+        " FROM battle_pay_group_locale");
 
     if (!result)
     {
-        TC_LOG_INFO("server.loading", ">> Loaded 0 Battle Pay store groups locale strings. DB table `locales_battle_pay_group` is empty!");
+        TC_LOG_INFO("server.loading", ">> Loaded 0 Battle Pay store groups locale strings. DB table `battle_pay_group_locale` is empty!");
         return;
     }
 
@@ -289,18 +289,22 @@ void BattlePayMgr::LoadGroupLocalesFromDb()
     {
         Field* fields = result->Fetch();
 
-        uint32 id = fields[0].GetUInt32();
+        uint32 ID = fields[0].GetUInt32();
+        std::string LocaleName = fields[1].GetString();
+        std::string Name = fields[2].GetString();
 
-        if (!HasGroupId(id))
+        if (!HasGroupId(ID))
         {
-            TC_LOG_ERROR("sql.sql", "Table `locales_battle_pay_group` (Entry: %u) has locale strings for non-existing Battle Pay group.", id);
+            TC_LOG_ERROR("sql.sql", "Table `battle_pay_group_locale` (Entry: %u) has locale strings for non-existing Battle Pay group.", ID);
             continue;
         }
 
-        BattlePayGroupLocale& data = m_groupLocalesMap[id];
+        BattlePayGroupLocale& data = m_groupLocalesMap[ID];
+        LocaleConstant locale = GetLocaleByName(LocaleName);
+        if (locale == LOCALE_enUS)
+            continue;
 
-        for (int i = 1; i < TOTAL_LOCALES; ++i)
-            ObjectMgr::AddLocaleString(fields[i].GetString(), LocaleConstant(i), data.Name);
+        ObjectMgr::AddLocaleString(Name, locale, data.Name);
 
     } while (result->NextRow());
 

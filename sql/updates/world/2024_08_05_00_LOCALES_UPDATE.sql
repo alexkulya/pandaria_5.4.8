@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS `achievement_reward_locale` (
   PRIMARY KEY (`ID`, `Locale`)
 ) ENGINE=MYISAM DEFAULT CHARSET=utf8;
 
+RENAME TABLE `locales_creature` TO `creature_template_locale`;
 
 -- locales_achievement_reward
 INSERT INTO `achievement_reward_locale` (`ID`, `Locale`, `Subject`, `Text`)
@@ -92,3 +93,85 @@ INSERT INTO `gossip_menu_option_locale` (`MenuID`, `OptionID`, `Locale`, `Option
 
 INSERT INTO `gossip_menu_option_locale` (`MenuID`, `OptionID`, `Locale`, `OptionText`, `BoxText`)
   (SELECT `menu_id`, `id`, "ruRU", `option_text_loc8`, `box_text_loc8` FROM `locales_gossip_menu_option` WHERE LENGTH(option_text_loc8) > 0 || LENGTH(box_text_loc8) > 0);
+  
+  
+  DROP TABLE IF EXISTS `battle_pay_group_locale`;
+CREATE TABLE IF NOT EXISTS `battle_pay_group_locale` (
+  `ID` MEDIUMINT(8) UNSIGNED NOT NULL DEFAULT '0',
+  `Locale` VARCHAR(4) NOT NULL,
+  `Name` TEXT,
+  PRIMARY KEY (`ID`, `Locale`)
+) ENGINE=MYISAM DEFAULT CHARSET=utf8;
+
+
+INSERT INTO `battle_pay_group_locale` (`ID`, `Locale`, `Name`)
+SELECT `id`, 'koKR', `name_loc1`
+FROM `locales_battle_pay_group`
+WHERE LENGTH(`name_loc1`) > 0;
+
+INSERT INTO `battle_pay_group_locale` (`ID`, `Locale`, `Name`)
+SELECT `id`, 'frFR', `name_loc2`
+FROM `locales_battle_pay_group`
+WHERE LENGTH(`name_loc2`) > 0;
+
+INSERT INTO `battle_pay_group_locale` (`ID`, `Locale`, `Name`)
+SELECT `id`, 'deDE', `name_loc3`
+FROM `locales_battle_pay_group`
+WHERE LENGTH(`name_loc3`) > 0;
+
+INSERT INTO `battle_pay_group_locale` (`ID`, `Locale`, `Name`)
+SELECT `id`, 'zhCN', `name_loc4`
+FROM `locales_battle_pay_group`
+WHERE LENGTH(`name_loc4`) > 0;
+
+INSERT INTO `battle_pay_group_locale` (`ID`, `Locale`, `Name`)
+SELECT `id`, 'zhTW', `name_loc5`
+FROM `locales_battle_pay_group`
+WHERE LENGTH(`name_loc5`) > 0;
+
+INSERT INTO `battle_pay_group_locale` (`ID`, `Locale`, `Name`)
+SELECT `id`, 'esES', `name_loc6`
+FROM `locales_battle_pay_group`
+WHERE LENGTH(`name_loc6`) > 0;
+
+INSERT INTO `battle_pay_group_locale` (`ID`, `Locale`, `Name`)
+SELECT `id`, 'esMX', `name_loc7`
+FROM `locales_battle_pay_group`
+WHERE LENGTH(`name_loc7`) > 0;
+
+INSERT INTO `battle_pay_group_locale` (`ID`, `Locale`, `Name`)
+SELECT `id`, 'ruRU', `name_loc8`
+FROM `locales_battle_pay_group`
+WHERE LENGTH(`name_loc8`) > 0;
+
+
+INSERT INTO `battle_pay_group_locale` (`ID`, `Locale`, `Name`) VALUES
+(1, 'esES', 'Recomendado'),
+(2, 'esES', 'Monturas'),
+(3, 'esES', 'Bolsas'),
+(4, 'esES', 'Mascotas'),
+(5, 'esES', 'Armas'),
+(6, 'esES', 'Armadura'),
+(7, 'esES', 'Mejoras'),
+(8, 'esES', 'Juguetes'),
+(9, 'esES', 'Monedas de Oro'),
+(10, 'esES', 'Monedas y Divisas'),
+(11, 'esES', 'Servicios de Juego'),
+(12, 'esES', 'Reliquias Familiares');
+
+INSERT INTO `battle_pay_group_locale` (`ID`, `Locale`, `Name`) VALUES
+(1, 'esMX', 'Recomendado'),
+(2, 'esMX', 'Monturas'),
+(3, 'esMX', 'Bolsas'),
+(4, 'esMX', 'Mascotas'),
+(5, 'esMX', 'Armas'),
+(6, 'esMX', 'Armadura'),
+(7, 'esMX', 'Mejoras'),
+(8, 'esMX', 'Juguetes'),
+(9, 'esMX', 'Monedas de Oro'),
+(10, 'esMX', 'Monedas y Divisas'),
+(11, 'esMX', 'Servicios de Juego'),
+(12, 'esMX', 'Reliquias Familiares');
+
+
+DROP TABLE IF EXISTS `locales_battle_pay_group`;
