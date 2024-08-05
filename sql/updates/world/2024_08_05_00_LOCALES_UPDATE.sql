@@ -53,3 +53,42 @@ INSERT INTO `achievement_reward_locale` (`ID`, `Locale`, `Subject`, `Text`) VALU
 (4603, 'deDE', 'Ruhm des Schlachtzüglers von Eiskrone', '$N,$B$BAls der Einfluss des Lichkönigs schwand, haben sich einige seiner mächtigeren Schergen aus seinem Griff befreit.$B$BDieser von meinen Männern gefangen genommene Frostwyrmdrache ist ein Paradebeispiel dafür. Sie hat einen eigenen Willen und noch mehr.$B$BEiner meiner Männer verlor einen Arm als er sie einritt, aber sie kann jetzt recht gut mit Reitern umgehen - vorausgesetzt Ihr seid geschickt und habt einen starken Willen.$B$BBitte nehmt diese prächtige Bestie als Geschenk der Ritter der Schwarzen Klinge an. Es war mir eine Ehre, an Eurer Seite in der größten aller Schlachten zu kämpfen.$B$BHochachtungsvoll,$BDarion Mograine.'),
 (4784, 'deDE', 'Emblemrüstmeister in Dalaran\'s Silbernen Enklave', 'Eure Erfolge in Nordend sind nicht unbemerkt geblieben, Freund.$B$BDie verdienten Embleme können benutzt werden, um Gegenstände bei den verschiedenen Emblemrüstmeistern zu kaufen.$B$BIhr findet uns in der Silbernen Enklave, wo jede Emblemart einen eigenen Rüstmeister hat.$B$BWir freuen uns auf Eure Ankunft!'),
 (4785, 'deDE', 'Emblemrüstmeister in Dalaran\'s Sonnenhäschers Zuflucht', 'Eure Erfolge in Nordend sind nicht unbemerkt geblieben, Freund.$B$BDie verdienten Embleme können benutzt werden, um Gegenstände bei den verschiedenen Emblemrüstmeistern zu kaufen.$B$BIhr findet uns in Sonnenhäschers Zuflucht, wo jede Emblemart einen eigenen Rüstmeister hat.$B$BWir freuen uns auf Eure Ankunft!');
+
+
+-- Gossip_menu_option_locale
+
+DROP TABLE IF EXISTS `gossip_menu_option_locale`;
+CREATE TABLE IF NOT EXISTS `gossip_menu_option_locale` (
+  `MenuID` SMALLINT(6) UNSIGNED NOT NULL DEFAULT '0',
+  `OptionID` SMALLINT(6) UNSIGNED NOT NULL DEFAULT '0',
+  `Locale` VARCHAR(4) NOT NULL,
+  `OptionText` TEXT,
+  `BoxText` TEXT,
+  PRIMARY KEY (`MenuID`, `OptionID`, `Locale`)
+) ENGINE=MYISAM DEFAULT CHARSET=utf8;
+
+
+-- Gossip_menu_option_locale
+INSERT INTO `gossip_menu_option_locale` (`MenuID`, `OptionID`, `Locale`, `OptionText`, `BoxText`)
+  (SELECT `menu_id`, `id`, "koKR", `option_text_loc1`, `box_text_loc1` FROM `locales_gossip_menu_option` WHERE LENGTH(option_text_loc1) > 0 || LENGTH(box_text_loc1) > 0);
+
+INSERT INTO `gossip_menu_option_locale` (`MenuID`, `OptionID`, `Locale`, `OptionText`, `BoxText`)
+  (SELECT `menu_id`, `id`, "frFR", `option_text_loc2`, `box_text_loc2` FROM `locales_gossip_menu_option` WHERE LENGTH(option_text_loc2) > 0 || LENGTH(box_text_loc2) > 0);
+
+INSERT INTO `gossip_menu_option_locale` (`MenuID`, `OptionID`, `Locale`, `OptionText`, `BoxText`)
+  (SELECT `menu_id`, `id`, "deDE", `option_text_loc3`, `box_text_loc3` FROM `locales_gossip_menu_option` WHERE LENGTH(option_text_loc3) > 0 || LENGTH(box_text_loc3) > 0);
+
+INSERT INTO `gossip_menu_option_locale` (`MenuID`, `OptionID`, `Locale`, `OptionText`, `BoxText`)
+  (SELECT `menu_id`, `id`, "zhCN", `option_text_loc4`, `box_text_loc4` FROM `locales_gossip_menu_option` WHERE LENGTH(option_text_loc4) > 0 || LENGTH(box_text_loc4) > 0);
+
+INSERT INTO `gossip_menu_option_locale` (`MenuID`, `OptionID`, `Locale`, `OptionText`, `BoxText`)
+  (SELECT `menu_id`, `id`, "zhTW", `option_text_loc5`, `box_text_loc5` FROM `locales_gossip_menu_option` WHERE LENGTH(option_text_loc5) > 0 || LENGTH(box_text_loc5) > 0);
+
+INSERT INTO `gossip_menu_option_locale` (`MenuID`, `OptionID`, `Locale`, `OptionText`, `BoxText`)
+  (SELECT `menu_id`, `id`, "esES", `option_text_loc6`, `box_text_loc6` FROM `locales_gossip_menu_option` WHERE LENGTH(option_text_loc6) > 0 || LENGTH(box_text_loc6) > 0);
+
+INSERT INTO `gossip_menu_option_locale` (`MenuID`, `OptionID`, `Locale`, `OptionText`, `BoxText`)
+  (SELECT `menu_id`, `id`, "esMX", `option_text_loc7`, `box_text_loc7` FROM `locales_gossip_menu_option` WHERE LENGTH(option_text_loc7) > 0 || LENGTH(box_text_loc7) > 0);
+
+INSERT INTO `gossip_menu_option_locale` (`MenuID`, `OptionID`, `Locale`, `OptionText`, `BoxText`)
+  (SELECT `menu_id`, `id`, "ruRU", `option_text_loc8`, `box_text_loc8` FROM `locales_gossip_menu_option` WHERE LENGTH(option_text_loc8) > 0 || LENGTH(box_text_loc8) > 0);

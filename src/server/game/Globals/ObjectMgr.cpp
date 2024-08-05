@@ -317,7 +317,7 @@ void ObjectMgr::LoadCreatureLocales()
     _creatureLocaleStore.clear();                              // need for reload case
 
     //                                                  0      1      2       3          4
-    QueryResult result = WorldDatabase.Query("SELECT entry, locale, Name, FemaleName, SubName FROM locales_creature");
+    QueryResult result = WorldDatabase.Query("SELECT entry, locale, Name, FemaleName, SubName FROM creature_template_locale");
 
     if (!result)
         return;
@@ -345,7 +345,7 @@ void ObjectMgr::LoadCreatureLocales()
         
     } while (result->NextRow());
 
-    TC_LOG_INFO("server.loading", ">> Loaded %lu creature locale strings in %u ms", (unsigned long)_creatureLocaleStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_INFO("server.loading", ">> Loaded %lu Creature Locale Strings in %u ms", (unsigned long)_creatureLocaleStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
 void ObjectMgr::LoadGossipMenuItemsLocales()
@@ -354,14 +354,7 @@ void ObjectMgr::LoadGossipMenuItemsLocales()
 
     _gossipMenuItemsLocaleStore.clear();                              // need for reload case
 
-    QueryResult result = WorldDatabase.Query("SELECT menu_id, id, "
-        "option_text_loc1, box_text_loc1, option_text_loc2, box_text_loc2, "
-        "option_text_loc3, box_text_loc3, option_text_loc4, box_text_loc4, "
-        "option_text_loc5, box_text_loc5, option_text_loc6, box_text_loc6, "
-        "option_text_loc7, box_text_loc7, option_text_loc8, box_text_loc8, "
-        "option_text_loc9, box_text_loc9, option_text_loc10, box_text_loc10, "
-        "option_text_loc11, box_text_loc11 "
-        "FROM locales_gossip_menu_option");
+    QueryResult result = WorldDatabase.Query("SELECT MenuID, OptionID, Locale, OptionText, BoxText FROM gossip_menu_option_locale");
 
     if (!result)
         return;
@@ -370,20 +363,23 @@ void ObjectMgr::LoadGossipMenuItemsLocales()
     {
         Field* fields = result->Fetch();
 
-        uint16 menuId   = fields[0].GetUInt16();
-        uint16 id       = fields[1].GetUInt16();
+        uint16 MenuID = fields[0].GetUInt16();
+        uint16 OptionID = fields[1].GetUInt16();
+        std::string LocaleName = fields[2].GetString();
+        std::string OptionText = fields[3].GetString();
+        std::string BoxText = fields[4].GetString();
 
-        GossipMenuItemsLocale& data = _gossipMenuItemsLocaleStore[MAKE_PAIR32(menuId, id)];
+        GossipMenuItemsLocale& data = _gossipMenuItemsLocaleStore[MAKE_PAIR32(MenuID, OptionID)];
+        LocaleConstant locale = GetLocaleByName(LocaleName);
+        if (locale == LOCALE_enUS)
+            continue;
 
-        for (uint8 i = 1; i < TOTAL_LOCALES; ++i)
-        {
-            LocaleConstant locale = (LocaleConstant)i;
-            AddLocaleString(fields[2 + 2 * (i - 1)].GetString(), locale, data.OptionText);
-            AddLocaleString(fields[2 + 2 * (i - 1) + 1].GetString(), locale, data.BoxText);
-        }
+        AddLocaleString(OptionText, locale, data.OptionText);
+        AddLocaleString(BoxText, locale, data.BoxText);
+
     } while (result->NextRow());
 
-    TC_LOG_INFO("server.loading", ">> Loaded %lu gossip_menu_option locale strings in %u ms", (unsigned long)_gossipMenuItemsLocaleStore.size(), GetMSTimeDiffToNow(oldMSTime));
+    TC_LOG_INFO("server.loading", ">> Loaded %lu Gossip Menu Option Locale Strings in %u ms", (unsigned long)_gossipMenuItemsLocaleStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
 void ObjectMgr::LoadPointOfInterestLocales()
