@@ -20,6 +20,7 @@
 
 #include "Define.h"
 #include <openssl/evp.h>
+#include <array>
 
 class ARC4
 {
@@ -30,7 +31,10 @@ class ARC4
         void Init(uint8 const* seed);
         void UpdateData(int len, uint8 *data);
     private:
-        EVP_CIPHER_CTX * m_ctx = EVP_CIPHER_CTX_new();
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+        EVP_CIPHER* _cipher;
+#endif
+        EVP_CIPHER_CTX* _ctx;
 };
 
 #endif

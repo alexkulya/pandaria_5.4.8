@@ -15,9 +15,9 @@
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef OPENSSL_CRYPTO_H
-#define OPENSSL_CRYPTO_H
-
+#ifndef PD_OPENSSL_CRYPTO_H
+#define PD_OPENSSL_CRYPTO_H
+#include <boost/filesystem/path.hpp>
 /**
 * A group of functions which setup openssl crypto module to work properly in multithreaded enviroment
 * If not setup properly - it will crash
@@ -25,7 +25,7 @@
 namespace OpenSSLCrypto
 {
     /// Needs to be called before threads using openssl are spawned
-    void threadsSetup();
+    void threadsSetup(boost::filesystem::path const& providerModulePath);
     /// Needs to be called after threads using openssl are despawned
     void threadsCleanup();
 }
