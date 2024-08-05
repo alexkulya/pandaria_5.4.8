@@ -379,13 +379,12 @@ void BattlePayMgr::LoadEntryLocalesFromDb()
 
     m_shopEntryLocalesMap.clear();
 
-    QueryResult result = WorldDatabase.Query("SELECT id, title_loc1, description_loc1, title_loc2, description_loc2, title_loc3, description_loc3, title_loc4, description_loc4, title_loc5, description_loc5,"
-        " title_loc6, description_loc6, title_loc7, description_loc7, title_loc8, description_loc8, title_loc9, description_loc9, title_loc10, description_loc10, title_loc11, description_loc11"
-        " FROM locales_battle_pay_entry");
+    QueryResult result = WorldDatabase.Query("SELECT ID, Locale, Title, Description"
+        " FROM battle_pay_entry_locale");
 
     if (!result)
     {
-        TC_LOG_INFO("server.loading", ">> Loaded 0 Battle Pay store entries locale strings. DB table `locales_battle_pay_entry` is empty!");
+        TC_LOG_INFO("server.loading", ">> Loaded 0 Battle Pay store entries locale strings. DB table `battle_pay_entry_locale` is empty!");
         return;
     }
 
@@ -393,22 +392,23 @@ void BattlePayMgr::LoadEntryLocalesFromDb()
     {
         Field* fields = result->Fetch();
 
-        uint32 id = fields[0].GetUInt32();
+        uint32 ID = fields[0].GetUInt32();
+        std::string LocaleName = fields[1].GetString();
+        std::string Title = fields[2].GetString();
 
-        if (!HasEntryId(id))
+        if (!HasEntryId(ID))
         {
-            TC_LOG_ERROR("sql.sql", "Table `locales_battle_pay_entry` (Entry: %u) has locale strings for non-existing Battle Pay entry.", id);
+            TC_LOG_ERROR("sql.sql", "Table `battle_pay_entry_locale` (Entry: %u) has locale strings for non-existing Battle Pay entry.", ID);
             continue;
         }
 
-        BattlePayShopEntryLocale& data = m_shopEntryLocalesMap[id];
+        BattlePayShopEntryLocale& data = m_shopEntryLocalesMap[ID];
+        LocaleConstant locale = GetLocaleByName(LocaleName);
+        if (locale == LOCALE_enUS)
+			continue;
+        ObjectMgr::AddLocaleString(Title, locale, data.Title);
+        ObjectMgr::AddLocaleString(fields[3].GetString(), locale, data.Description);
 
-        for (int i = 1; i < TOTAL_LOCALES; ++i)
-        {
-            LocaleConstant locale = (LocaleConstant)i;
-            ObjectMgr::AddLocaleString(fields[1 + 2 * (i - 1)].GetString(), locale, data.Title);
-            ObjectMgr::AddLocaleString(fields[1 + 2 * (i - 1) + 1].GetString(), locale, data.Description);
-        }
     } while (result->NextRow());
 
     TC_LOG_INFO("server.loading", ">> Loaded %lu Battle Pay store entries locale strings in %u ms", (unsigned long)m_shopEntryLocalesMap.size(), GetMSTimeDiffToNow(oldMSTime));
