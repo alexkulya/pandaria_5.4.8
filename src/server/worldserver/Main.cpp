@@ -21,11 +21,17 @@
 
 #include <openssl/opensslv.h>
 #include <openssl/crypto.h>
+#if defined(OPENSSL_VERSION_MAJOR) && (OPENSSL_VERSION_MAJOR >= 3)
+#include <openssl/provider.h>
+#endif
+
+#include <boost/dll/runtime_symbol_info.hpp>
 #include <ace/Version.h>
 
 #include "Common.h"
 #include "Database/DatabaseEnv.h"
 #include "Configuration/Config.h"
+
 
 #include "Log.h"
 #include "Master.h"
@@ -139,7 +145,7 @@ extern int main(int argc, char** argv)
 
     TC_LOG_INFO("server.worldserver", "Using configuration file %s.", cfg_file);
 
-    TC_LOG_INFO("server.worldserver", "Using SSL version: %s (library: %s)", OPENSSL_VERSION_TEXT, SSLeay_version(SSLEAY_VERSION));
+    TC_LOG_INFO("server.worldserver", "Using SSL version: %s (library: %s)", OPENSSL_VERSION_TEXT, OpenSSL_version(OPENSSL_VERSION));
     TC_LOG_INFO("server.worldserver", "Using ACE version: %s", ACE_VERSION);
 
     ///- and run the 'Master'
@@ -150,9 +156,6 @@ extern int main(int argc, char** argv)
     // 0 - normal shutdown
     // 1 - shutdown at error
     // 2 - restart command used, this code can be used by restarter for restart Trinityd
-
-
-    std::this_thread::sleep_for(std::chrono::seconds(20));
 
     return ret;
 }
