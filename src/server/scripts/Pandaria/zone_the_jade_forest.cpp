@@ -3193,7 +3193,7 @@ class spell_q29637 : public SpellScriptLoader
                 {
                     if (removeMode == AURA_REMOVE_BY_EXPIRE)
                     {
-                        spawn->SetFaction(spawn->GetCreatureTemplate()->faction_A); // hack, see above
+                        spawn->SetFaction(spawn->GetCreatureTemplate()->faction); // hack, see above
                         spawn->AttackStop();
                         spawn->SetReactState(REACT_PASSIVE);
                         spawn->HandleEmoteCommand(EMOTE_ONESHOT_BOW);
@@ -3239,7 +3239,7 @@ class npc_rumpus_spawn : public CreatureScript
                 {
                     damage = 0;
 
-                    me->SetFaction(me->GetCreatureTemplate()->faction_A); // hack, see above
+                    me->SetFaction(me->GetCreatureTemplate()->faction); // hack, see above
                     me->AttackStop();
                     me->SetReactState(REACT_PASSIVE);
                     me->HandleEmoteCommand(EMOTE_ONESHOT_BOW);

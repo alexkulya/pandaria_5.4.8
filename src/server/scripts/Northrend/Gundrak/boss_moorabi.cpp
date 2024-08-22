@@ -512,7 +512,7 @@ class npc_drakkari_earthshaker : public CreatureScript
 
             void StopSparring()
             {
-                me->SetFaction(me->GetCreatureTemplate()->faction_A);
+                me->SetFaction(me->GetCreatureTemplate()->faction);
 
                 if (me->GetVictim() && me->GetVictim()->GetTypeId() == TYPEID_UNIT && me->GetVictim()->GetEntry() == NPC_DRAKKARI_EARTHSHAKER)
                 {

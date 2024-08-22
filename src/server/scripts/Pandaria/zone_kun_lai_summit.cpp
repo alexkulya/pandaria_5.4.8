@@ -1327,7 +1327,7 @@ class npc_shado_pan_sentinel : public CreatureScript
 
             void Reset() override
             {
-                me->SetFaction(me->GetCreatureTemplate()->faction_A);
+                me->SetFaction(me->GetCreatureTemplate()->faction);
             }
         };
 

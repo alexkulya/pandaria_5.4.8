@@ -375,10 +375,8 @@ bool Creature::UpdateEntry(uint32 Entry, uint32 team, const CreatureData* data)
         SetSheath(SHEATH_STATE_MELEE);
 
     SelectLevel(GetCreatureTemplate());
-    if (team == HORDE)
-        SetFaction(cInfo->faction_H);
-    else
-        SetFaction(cInfo->faction_A);
+
+    SetFaction(cInfo->faction);
 
     uint32 npcflag, unit_flags, dynamicflags;
     ObjectMgr::ChooseCreatureFlags(cInfo, npcflag, unit_flags, dynamicflags, data);
@@ -419,7 +417,7 @@ bool Creature::UpdateEntry(uint32 Entry, uint32 team, const CreatureData* data)
     UpdateAllStats();
 
     // checked and error show at loading templates
-    if (FactionTemplateEntry const* factionTemplate = sFactionTemplateStore.LookupEntry(cInfo->faction_A))
+    if (FactionTemplateEntry const* factionTemplate = sFactionTemplateStore.LookupEntry(cInfo->faction))
     {
         if (factionTemplate->factionFlags & FACTION_TEMPLATE_FLAG_PVP)
             SetPvP(true);
@@ -2851,10 +2849,10 @@ void Creature::ApplyInstanceAuraIfNeeded()
     {
         // hack for crossfaction
         // Stormpike Clan to Alliance Generic
-        if (GetCreatureTemplate()->faction_A == 1216 || GetCreatureTemplate()->faction_A == 1217 || GetCreatureTemplate()->faction_A == 1334 || GetCreatureTemplate()->faction_A == 1534 || GetCreatureTemplate()->faction_A == 1596)
+        if (GetCreatureTemplate()->faction == 1216 || GetCreatureTemplate()->faction == 1217 || GetCreatureTemplate()->faction == 1334 || GetCreatureTemplate()->faction == 1534 || GetCreatureTemplate()->faction == 1596)
             aura = 81748;
         // Frostwolf Clan to Horde Generic
-        if (GetCreatureTemplate()->faction_A == 1214 || GetCreatureTemplate()->faction_A == 1215 || GetCreatureTemplate()->faction_A == 1335 || GetCreatureTemplate()->faction_A == 1554 || GetCreatureTemplate()->faction_A == 1597)
+        if (GetCreatureTemplate()->faction == 1214 || GetCreatureTemplate()->faction == 1215 || GetCreatureTemplate()->faction == 1335 || GetCreatureTemplate()->faction == 1554 || GetCreatureTemplate()->faction == 1597)
             aura = 81744;
     }
 

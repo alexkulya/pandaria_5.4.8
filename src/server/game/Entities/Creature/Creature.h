@@ -75,79 +75,78 @@ enum CreatureFlagsExtra
 // from `creature_template` table
 struct CreatureTemplate
 {
-    uint32  Entry;
-    uint32  DifficultyEntry[MAX_TEMPLATE_DIFFICULTY - 1];
-    uint32  KillCredit[MAX_KILL_CREDIT];
-    uint32  Modelid1;
-    uint32  Modelid2;
-    uint32  Modelid3;
-    uint32  Modelid4;
-    std::string  Name;
-    std::string  FemaleName;
-    std::string  SubName;
-    std::string  IconName;
-    uint32  GossipMenuId;
-    int16   minlevel;
-    int16   maxlevel;
-    int32  expansion;
-    uint32  expansionUnknown;                               // either 0 or 3, sent to the client / wdb
-    uint32  faction_A;
-    uint32  faction_H;
-    uint32  npcflag;
-    uint32  npcflag2;
-    float   speed_walk;
-    float   speed_run;
-    float   scale;
-    uint32  rank;
-    float   mindmg;
-    float   maxdmg;
-    uint32  dmgschool;
-    uint32  attackpower;
-    float   dmg_multiplier;
-    uint32  baseattacktime;
-    uint32  rangeattacktime;
-    uint32  unit_class;                                     // enum Classes. Note only 4 classes are known for creatures.
-    uint32  unit_flags;                                     // enum UnitFlags mask values
-    uint32  unit_flags2;                                    // enum UnitFlags2 mask values
-    uint32  dynamicflags;
-    uint32  family;                                         // enum CreatureFamily values (optional)
-    uint32  trainer_type;
-    uint32  trainer_class;
-    uint32  trainer_race;
-    float   minrangedmg;
-    float   maxrangedmg;
-    uint32  rangedattackpower;
-    uint32  type;                                           // enum CreatureType values
-    uint32  type_flags;                                     // enum CreatureTypeFlags mask values
-    uint32  type_flags2;                                    // unknown enum, only set for 4 creatures (with value 1)
-    uint32  lootid;
-    uint32  pickpocketLootId;
-    uint32  SkinLootId;
-    int32   resistance[MAX_SPELL_SCHOOL];
-    uint32  spells[CREATURE_MAX_SPELLS];
-    uint32  PetSpellDataId;
-    uint32  VehicleId;
-    uint32  mingold;
-    uint32  maxgold;
+    uint32 Entry;
+    uint32 DifficultyEntry[MAX_TEMPLATE_DIFFICULTY - 1];
+    uint32 KillCredit[MAX_KILL_CREDIT];
+    uint32 Modelid1;
+    uint32 Modelid2;
+    uint32 Modelid3;
+    uint32 Modelid4;
+    std::string Name;
+    std::string FemaleName;
+    std::string SubName;
+    std::string IconName;
+    uint32 GossipMenuId;
+    int16 minlevel;
+    int16 maxlevel;
+    int32 expansion;
+    uint32 expansionUnknown;                               // either 0 or 3, sent to the client / wdb
+    uint32 faction;
+    uint32 npcflag;
+    uint32 npcflag2;
+    float speed_walk;
+    float speed_run;
+    float scale;
+    uint32 rank;
+    float mindmg;
+    float maxdmg;
+    uint32 dmgschool;
+    uint32 attackpower;
+    float dmg_multiplier;
+    uint32 baseattacktime;
+    uint32 rangeattacktime;
+    uint32 unit_class;                                     // enum Classes. Note only 4 classes are known for creatures.
+    uint32 unit_flags;                                     // enum UnitFlags mask values
+    uint32 unit_flags2;                                    // enum UnitFlags2 mask values
+    uint32 dynamicflags;
+    uint32 family;                                         // enum CreatureFamily values (optional)
+    uint32 trainer_type;
+    uint32 trainer_class;
+    uint32 trainer_race;
+    float minrangedmg;
+    float maxrangedmg;
+    uint32 rangedattackpower;
+    uint32 type;                                           // enum CreatureType values
+    uint32 type_flags;                                     // enum CreatureTypeFlags mask values
+    uint32 type_flags2;                                    // unknown enum, only set for 4 creatures (with value 1)
+    uint32 lootid;
+    uint32 pickpocketLootId;
+    uint32 SkinLootId;
+    int32 resistance[MAX_SPELL_SCHOOL];
+    uint32 spells[CREATURE_MAX_SPELLS];
+    uint32 PetSpellDataId;
+    uint32 VehicleId;
+    uint32 mingold;
+    uint32 maxgold;
     std::string AIName;
-    uint32  MovementType;
-    uint32  InhabitType;
-    float   HoverHeight;
-    float   ModHealth;
-    float   ModMana;
-    float   ModManaExtra;                                   // Added in 4.x, this value is usually 2 for a small group of creatures with double mana
-    float   ModArmor;
-    bool    RacialLeader;
-    uint32  questItems[MAX_CREATURE_QUEST_ITEMS];
-    uint32  movementId;
-    bool    RegenHealth;
-    uint32  VignetteID;
-    uint32  TrackingQuestID;
-    uint32  MechanicImmuneMask;
-    uint32  flags_extra;
-    uint32  ScriptID;
-    uint32  GetRandomValidModelId() const;
-    uint32  GetFirstValidModelId() const;
+    uint32 MovementType;
+    uint32 InhabitType;
+    float HoverHeight;
+    float ModHealth;
+    float ModMana;
+    float ModManaExtra;                                   // Added in 4.x, this value is usually 2 for a small group of creatures with double mana
+    float ModArmor;
+    bool RacialLeader;
+    uint32 questItems[MAX_CREATURE_QUEST_ITEMS];
+    uint32 movementId;
+    bool RegenHealth;
+    uint32 VignetteID;
+    uint32 TrackingQuestID;
+    uint32 MechanicImmuneMask;
+    uint32 flags_extra;
+    uint32 ScriptID;
+    uint32 GetRandomValidModelId() const;
+    uint32 GetFirstValidModelId() const;
 
     // helpers
     SkillType GetRequiredLootSkill() const
