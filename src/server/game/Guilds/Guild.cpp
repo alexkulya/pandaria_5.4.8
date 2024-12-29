@@ -766,24 +766,24 @@ void Guild::Member::SaveToDB(SQLTransaction& trans) const
 void Guild::Member::SaveProfessionsToDB(SQLTransaction trans)
 {
     PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_GUILD_MEMBER_PROFESSIONS);
-    stmt->setUInt16(0, m_professions[0].SkillId);
-    stmt->setUInt16(1, m_professions[0].Value);
-    stmt->setUInt16(2, m_professions[0].Rank);
+    
+    for (uint8 i = 0; i < 2; ++i)
+    {
+        stmt->setUInt16(i * 4, m_professions[i].SkillId);
+        stmt->setUInt16(i * 4 + 1, m_professions[i].Value);
+        stmt->setUInt16(i * 4 + 2, m_professions[i].Rank);
 
-    std::ostringstream ss;
-    for (auto&& it : m_professions[0].Recipes)
-        ss << it << ' ';
-
-    stmt->setString(3, ss.str());
-    stmt->setUInt16(4, m_professions[1].SkillId);
-    stmt->setUInt16(5, m_professions[1].Value);
-    stmt->setUInt16(6, m_professions[1].Rank);
-
-    ss.str("");
-    for (auto&& it : m_professions[1].Recipes)
-        ss << it << ' ';
-
-    stmt->setString(7, ss.str());
+        std::ostringstream ss;
+        bool first = true;
+        for (auto&& recipe : m_professions[i].Recipes)
+        {
+            if (!first)
+                ss << ' ';
+            ss << static_cast<uint32>(recipe);
+            first = false;
+        }
+        stmt->setString(i * 4 + 3, ss.str());
+    }
 
     stmt->setUInt32(8, m_guildId);
     stmt->setUInt32(9, GUID_LOPART(m_guid));
@@ -838,9 +838,10 @@ bool Guild::Member::LoadFromDB(Field* fields)
 
         if (skillId)
         {
+            recipes.resize(300, 0);
+            
             if (dbRecipes.empty())
             {
-                recipes.resize(300, 0);
                 SkillLineEntry const* skill = sSkillLineStore.LookupEntry(skillId);
                 if (skill && skill->canLink)
                 {
@@ -850,13 +851,27 @@ bool Guild::Member::LoadFromDB(Field* fields)
             }
             else
             {
-                std::istringstream ss(dbRecipes);
-                recipes.resize(300, 0);
-                for (uint32 j = 0; j < 300; ++j)
+                try
                 {
-                    uint32 byte;
-                    ss >> byte;
-                    recipes[j] = byte;
+                    std::istringstream ss(dbRecipes);
+                    std::string token;
+                    size_t idx = 0;
+                    
+                    while (std::getline(ss, token, ' ') && idx < 300)
+                    {
+                        if (!token.empty())
+                        {
+                            recipes[idx] = static_cast<uint8>(std::stoul(token));
+                            ++idx;
+                        }
+                    }
+                }
+                catch (std::exception const& e)
+                {
+                    TC_LOG_ERROR("guild", "Failed to parse profession recipes for member %u, skill %u: %s", 
+                        GUID_LOPART(m_guid), skillId, e.what());
+                    recipes.assign(300, 0);
+                    needsProfessionSave = true;
                 }
             }
         }
