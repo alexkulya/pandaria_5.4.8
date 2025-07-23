@@ -26,17 +26,17 @@
 
 class ThreadPool
 {
-    typedef std::unique_ptr<boost::asio::io_service::work> worker;
-    typedef boost::asio::io_service service;
-    typedef boost::thread_group pool;
+    using service = boost::asio::io_context;
+    using pool = boost::thread_group;
+
 public:
     ThreadPool(size_t threads)
-        : _worker(new worker::element_type{ _service })
+        : _service(),
+        _worker(boost::asio::executor_work_guard<service::executor_type>(_service.get_executor()))
     {
         while (threads--)
         {
-            auto worker = boost::bind(&service::run, &(this->_service));
-            _pool.add_thread(new boost::thread(worker));
+            _pool.create_thread([this] { _service.run(); });
         }
     }
 
@@ -50,13 +50,13 @@ public:
     template<class F>
     void Enqueue(F f)
     {
-        _service.post(f);
+        _service.post(std::move(f));
     }
 
 private:
     service _service;
-    worker  _worker;
-    pool    _pool;
+    boost::asio::executor_work_guard<service::executor_type> _worker;
+    pool _pool;
 };
 
 class TaskBase;

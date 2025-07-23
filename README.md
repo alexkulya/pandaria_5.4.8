@@ -18,7 +18,7 @@ Pandaria 5.4.8 docker [(Thanks diff3)](https://github.com/diff3): https://github
 + MySQL = 8.x.x
 + CMake ≥ 3.14 (latest stable recommended) 
 + OpenSSL = 3.x.x
-+ Boost ≥ 1.70 (latest stable recommended)
++ Boost ≥ 1.78 (latest stable recommended)
 + Windows SDK version 10
 + MS Visual Studio (Community) ≥ 16.4 (2019) (Desktop) (Not previews) 
 + ### Linux
