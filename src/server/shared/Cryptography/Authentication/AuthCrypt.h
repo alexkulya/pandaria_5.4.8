@@ -18,24 +18,16 @@
 #ifndef _AUTHCRYPT_H
 #define _AUTHCRYPT_H
 
-#include "Cryptography/ARC4.h"
+#include "PacketCrypt.h"
 
 class BigNumber;
 
-class AuthCrypt
+class AuthCrypt : public PacketCrypt
 {
     public:
         AuthCrypt();
 
-        void Init(BigNumber* K);
-        void DecryptRecv(uint8 *, size_t);
-        void EncryptSend(uint8 *, size_t);
-
-        bool IsInitialized() const { return _initialized; }
-
-    private:
-        ARC4 _clientDecrypt;
-        ARC4 _serverEncrypt;
-        bool _initialized;
+        void Init(BigNumber* K) override;
+        void Init(BigNumber* k, uint8 const* serverKey, uint8 const* clientKey);
 };
 #endif

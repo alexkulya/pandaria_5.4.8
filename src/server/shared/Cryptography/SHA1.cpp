@@ -17,27 +17,29 @@
 
 #include "SHA1.h"
 #include "BigNumber.h"
-#include <stdarg.h>
+#include "Util.h"
 #include <cstring>
+#include <stdarg.h>
+#include <openssl/evp.h>
 
-SHA1Hash::SHA1Hash()
+SHA1Hash::SHA1Hash() noexcept
 {
     m_ctx = EVP_MD_CTX_new();
     EVP_DigestInit_ex(m_ctx, EVP_sha1(), nullptr);
 }
 
-SHA1Hash::SHA1Hash(const SHA1Hash& other) : SHA1Hash() // copy
+SHA1Hash::SHA1Hash(const SHA1Hash &other) : SHA1Hash() // copy
 {
     EVP_MD_CTX_copy_ex(m_ctx, other.m_ctx);
     std::memcpy(m_digest, other.m_digest, SHA_DIGEST_LENGTH);
 }
 
-SHA1Hash::SHA1Hash(SHA1Hash&& other) : SHA1Hash() // move
+SHA1Hash::SHA1Hash(SHA1Hash &&other) noexcept : SHA1Hash() // move
 {
     Swap(other);
 }
 
-SHA1Hash& SHA1Hash::operator=(SHA1Hash other) // assign
+SHA1Hash &SHA1Hash::operator=(SHA1Hash other) // assign
 {
     Swap(other);
     return *this;
@@ -48,7 +50,7 @@ SHA1Hash::~SHA1Hash()
     EVP_MD_CTX_free(m_ctx);
 }
 
-void SHA1Hash::Swap(SHA1Hash& other) throw()
+void SHA1Hash::Swap(SHA1Hash &other) throw()
 {
     std::swap(m_ctx, other.m_ctx);
     std::swap(m_digest, other.m_digest);
@@ -90,3 +92,15 @@ void SHA1Hash::Finalize(void)
     EVP_DigestFinal_ex(m_ctx, m_digest, &length);
 }
 
+std::string CalculateSHA1Hash(std::string const& content)
+{
+    EVP_MD_CTX* mdctx = EVP_MD_CTX_new();
+    EVP_DigestInit_ex(mdctx, EVP_sha1(), nullptr);
+    EVP_DigestUpdate(mdctx, content.c_str(), content.size());
+    uint8 digest[SHA_DIGEST_LENGTH];
+    uint32 shaDigestLength = SHA_DIGEST_LENGTH;
+    EVP_DigestFinal_ex(mdctx, digest, &shaDigestLength);
+    EVP_MD_CTX_free(mdctx);
+
+    return ByteArrayToHexStr(digest, SHA_DIGEST_LENGTH);
+}

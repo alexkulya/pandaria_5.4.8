@@ -32,7 +32,6 @@
 #include "Database/DatabaseEnv.h"
 #include "Database/DatabaseWorkerPool.h"
 
-#include <openssl/crypto.h>
 #include <openssl/opensslv.h>
 #if defined(OPENSSL_VERSION_MAJOR) && (OPENSSL_VERSION_MAJOR >= 3)
 #include <openssl/provider.h>

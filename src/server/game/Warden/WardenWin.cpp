@@ -309,7 +309,7 @@ void WardenWin::RequestData(WardenRequestContext* context)
                 buff << uint8(type ^ xorByte);
                 uint32 seed = rand32();
                 buff << uint32(seed);
-                HmacHash hmac(4, (uint8*)&seed);
+                HmacSha1 hmac(4, (uint8*)&seed);
                 hmac.UpdateData(wd->Str);
                 hmac.Finalize();
                 buff.append(hmac.GetDigest(), hmac.GetLength());
