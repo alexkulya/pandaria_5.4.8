@@ -181,7 +181,7 @@ uint8* BigNumber::AsByteArray(int32 minSize, bool littleEndian)
 
     int paddingOffset = length - GetNumBytes();
 
-    BN_bn2bin(_bn, (unsigned char *)array + paddingOffset);
+    BN_bn2bin(_bn, array + paddingOffset);
 
     // openssl's BN stores data internally in big endian format, reverse if little endian desired
     if (littleEndian)

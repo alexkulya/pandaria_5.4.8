@@ -15,22 +15,29 @@
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PD_OPENSSL_CRYPTO_H
-#define PD_OPENSSL_CRYPTO_H
+#ifndef _PACKETCRYPT_H
+#define _PACKETCRYPT_H
 
-#include "Define.h"
-#include <boost/filesystem/path.hpp>
+#include "Cryptography/ARC4.h"
 
-/**
-* A group of functions which setup openssl crypto module to work properly in multithreaded enviroment
-* If not setup properly - it will crash
-*/
-namespace OpenSSLCrypto
+class BigNumber;
+
+class PacketCrypt
 {
-    /// Needs to be called before threads using openssl are spawned
-    void threadsSetup(boost::filesystem::path const& providerModulePath);
-    /// Needs to be called after threads using openssl are despawned
-    void threadsCleanup();
-}
+    public:
+        PacketCrypt(uint32 rc4InitSize);
+        virtual ~PacketCrypt() { }
 
-#endif
+        virtual void Init(BigNumber* K) = 0;
+        void DecryptRecv(uint8* data, size_t length);
+        void EncryptSend(uint8* data, size_t length);
+
+        bool IsInitialized() const { return _initialized; }
+
+    protected:
+        ARC4 _clientDecrypt;
+        ARC4 _serverEncrypt;
+        bool _initialized;
+};
+
+#endif // _PACKETCRYPT_H

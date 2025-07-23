@@ -15,22 +15,25 @@
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef PD_OPENSSL_CRYPTO_H
-#define PD_OPENSSL_CRYPTO_H
+#include "PacketCrypt.h"
 
-#include "Define.h"
-#include <boost/filesystem/path.hpp>
-
-/**
-* A group of functions which setup openssl crypto module to work properly in multithreaded enviroment
-* If not setup properly - it will crash
-*/
-namespace OpenSSLCrypto
+PacketCrypt::PacketCrypt(uint32 rc4InitSize)
+    : _clientDecrypt(rc4InitSize), _serverEncrypt(rc4InitSize), _initialized(false)
 {
-    /// Needs to be called before threads using openssl are spawned
-    void threadsSetup(boost::filesystem::path const& providerModulePath);
-    /// Needs to be called after threads using openssl are despawned
-    void threadsCleanup();
 }
 
-#endif
+void PacketCrypt::DecryptRecv(uint8* data, size_t len)
+{
+    if (!_initialized)
+        return;
+
+    _clientDecrypt.UpdateData(len, data);
+}
+
+void PacketCrypt::EncryptSend(uint8* data, size_t len)
+{
+    if (!_initialized)
+        return;
+
+    _serverEncrypt.UpdateData(len, data);
+}
