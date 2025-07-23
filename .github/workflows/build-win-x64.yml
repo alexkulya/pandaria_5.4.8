@@ -75,7 +75,7 @@ jobs:
       env:
         BOOST_ROOT: ${{ steps.install-boost.outputs.BOOST_ROOT }}
       run: >
-        cmake -GNinja -S ${{ github.workspace }} -B ${{ steps.strings.outputs.build-output-dir }}
+        cmake -S ${{ github.workspace }} -B ${{ steps.strings.outputs.build-output-dir }}
         -DTOOLS=ON
 
     - name: Build
