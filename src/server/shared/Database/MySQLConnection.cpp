@@ -20,7 +20,7 @@
 #ifdef _WIN32
   #include <winsock2.h>
 #endif
-#include <mysql.h>
+#include "MySQLCompat.h"
 #include <mysqld_error.h>
 #include <errmsg.h>
 

@@ -3,7 +3,7 @@
 #include "DatabaseEnv.h"
 #include <signal.h>
 #include <utf8.h>
-#include <mysql.h>
+#include "MySQLCompat.h"
 #include <errmsg.h>
 #include <fstream>
 #include <memory>
