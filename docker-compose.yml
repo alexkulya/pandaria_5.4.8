@@ -1,0 +1,64 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: pandaria-db
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --sql-mode=NO_ENGINE_SUBSTITUTION
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --max-connections=1000
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./sql:/sql:ro
+      - ./docker/initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 15s
+      timeout: 5s
+      retries: 40
+      start_period: 30s
+
+  authserver:
+    build:
+      context: .
+    image: pandaria-server:latest
+    container_name: pandaria-authserver
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["./bin/authserver"]
+    volumes:
+      - conf:/app/etc
+    ports:
+      - "3724:3724"
+    restart: unless-stopped
+
+  worldserver:
+    build:
+      context: .
+    image: pandaria-server:latest
+    container_name: pandaria-worldserver
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["./bin/worldserver"]
+    stdin_open: true
+    cap_add:
+      - SYS_PTRACE
+    volumes:
+      - conf:/app/etc
+      - D:/pandaria_data/extracted:/app/Data
+    ports:
+      - "8085:8085"
+      - "7878:7878"
+      - "3443:3443"
+    restart: unless-stopped
+
+volumes:
+  db_data:
+  conf:

@@ -515,7 +515,7 @@ void RatedPvpMgr::LoadPvpInfoStore(uint32 season)
     uint32 count = 0;
     uint32 start = getMSTime();
     //                                                       0       1       2        3           4                    5            6             7              8              9              10            11              12
-    QueryResult result = CharacterDatabase.PQuery("SELECT r.guid, r.slot, r.rank, r.rating, r.matchmaker_rating, r.week_best, r.week_games, r.week_wins, r.season_best, r.season_games, r.season_wins, r.last_week_best, r.win_streak FROM rated_pvp_info r JOIN characters c ON r.guid = c.guid WHERE r.season = %u AND c.`deleteDate` IS NULL ORDER BY r.slot", season);
+    QueryResult result = CharacterDatabase.PQuery("SELECT r.guid, r.slot, r.`rank`, r.rating, r.matchmaker_rating, r.week_best, r.week_games, r.week_wins, r.season_best, r.season_games, r.season_wins, r.last_week_best, r.win_streak FROM rated_pvp_info r JOIN characters c ON r.guid = c.guid WHERE r.season = %u AND c.`deleteDate` IS NULL ORDER BY r.slot", season);
     if (result)
     {
         do

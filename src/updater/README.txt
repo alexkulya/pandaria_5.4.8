@@ -13,7 +13,7 @@ Windows:
 cmake ... -DUPDATER=1 или выставляем в GUI
 Solution explorer -> updater -> ПКМ -> Build
 
-Копируем updater.exe updater.conf.dist ace.dll libmysql.dll куда надо
+Копируем updater.exe updater.conf.dist libmysql.dll куда надо
 
 cmake ... -DUPDATER=0 или выставляем в GUI
 

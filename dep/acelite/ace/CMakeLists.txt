@@ -443,12 +443,15 @@ include_directories(
 # Needed for PCH support
 set_source_files_properties(Atomic_Op_Sparc.c Rtems_init.c PROPERTIES LANGUAGE CXX)
 
-add_definitions(-DACE_BUILD_DLL)
-
-add_library(ace SHARED
+add_library(ace STATIC
   ${ace_STAT_SRCS}
   ${ace_PCH_SRC}
 )
+
+# Build and consume ACE as a static library: makes ACE_Export an empty macro
+# (ACE_export.h only uses __declspec(import/export) when ACE_HAS_DLL == 1).
+# PUBLIC propagates the define to every target linking against "ace".
+target_compile_definitions(ace PUBLIC ACE_AS_STATIC_LIBS)
 
 if (MINGW) # GCC ignores "#prama comment"
   target_link_libraries(ace ws2_32 iphlpapi netapi32 mswsock)
@@ -459,4 +462,4 @@ if( USE_COREPCH )
   add_cxx_pch(ace ${ace_PCH_HDR} ${ace_PCH_SRC})
 endif()
 
-install(TARGETS ace RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}")
+install(TARGETS ace ARCHIVE DESTINATION "${CMAKE_INSTALL_PREFIX}")

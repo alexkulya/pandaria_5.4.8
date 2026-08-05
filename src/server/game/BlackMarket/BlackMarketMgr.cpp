@@ -173,17 +173,19 @@ void BlackMarketMgr::Update()
     SQLTransaction trans = CharacterDatabase.BeginTransaction();
 
     // Delete expired auctions
-    for (auto&& itr : _auctions)
+    for (auto itr = _auctions.begin(); itr != _auctions.end();)
     {
-        BlackMarketAuction* auction = itr.second;
+        BlackMarketAuction* auction = itr->second;
         if (auction->IsExpired())
         {
             if (auction->GetCurrentBidder())
                 SendAuctionWon(auction, trans);
 
             auction->DeleteFromDB(trans);
-            _auctions.erase(itr.first);
+            _auctions.erase(itr++);
         }
+        else
+            ++itr;
     }
 
     // Add New Auctions
