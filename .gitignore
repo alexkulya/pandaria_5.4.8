@@ -3,3 +3,9 @@
 /out/build
 /.vs
 build
+
+# Extracted DB dumps (kept compressed in sql/base)
+sql/base/*.sql
+docker/db/data/*
+build.bat
+build.log

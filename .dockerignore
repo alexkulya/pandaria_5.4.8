@@ -1,0 +1,14 @@
+.git
+.github
+.gitignore
+.hgeol
+.hgignore
+.travis.yml
+*.md
+build
+out
+.vs
+.vscode
+doc
+sql
+docker/db/data
