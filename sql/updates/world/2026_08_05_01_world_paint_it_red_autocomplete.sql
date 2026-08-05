@@ -1,0 +1,21 @@
+-- =====================================================================
+-- Quest 31765 "Paint It Red!" (Horde) - stop the quest auto-completing on
+-- accept.
+--
+-- General Nazgrim (55135) had a SmartAI chain that, on SMART_EVENT_ACCEPTEDQUEST
+-- for quest 31765, immediately granted BOTH kill credits via KILLEDMONSTER:
+--     id 0: event 19 (ACCEPTEDQUEST 31765) -> action 33 KILLEDMONSTER 66200
+--     id 1: linked                         -> action 33 KILLEDMONSTER 66203
+--
+-- The quest's two objectives are exactly those credits (each amount 1):
+--     obj 0: 66200 "Thunder Hold Soldier"  (slay troops)
+--     obj 1: 66203 "Thunder Hold Cannon"   (destroy cannons)
+-- so handing out both credits on accept completed the quest instantly.
+--
+-- Both objective creatures are spawned in the world (66200 x12, 66203 x13) and
+-- grant their credit normally when killed, so this placeholder script is pure
+-- breakage. Remove it; the player now earns the credits by actually killing the
+-- Thunder Hold Soldiers and destroying the Thunder Hold Cannons.
+-- =====================================================================
+
+DELETE FROM `smart_scripts` WHERE `entryorguid` = 55135 AND `source_type` = 0;
