@@ -4958,6 +4958,20 @@ class npc_jade_forest_rappelling_rope : public ScriptedAI
 public:
     npc_jade_forest_rappelling_rope(Creature* creature) : ScriptedAI(creature) { }
 
+    void InitializeAI() override
+    {
+        // The deck the rope hangs from belongs to terrain swap 1076, which is
+        // a client-side swap: the server has no vmap geometry up there. A
+        // .gps taken while standing on it reports GroundZ 230 against a
+        // player Z of 268. So a creature summoned at deck height with gravity
+        // on simply drops the ~70 yards to the real terrain, dragging its
+        // passenger down and killing him with fall damage on dismount.
+        // Hover instead, and allow flight so MovePoint can carry the rope
+        // down through the air rather than snapping it to the ground.
+        me->SetDisableGravity(true);
+        me->SetCanFly(true);
+    }
+
     void PassengerBoarded(Unit* passenger, int8 /*seatId*/, bool apply) override
     {
         if (apply)
@@ -4978,11 +4992,48 @@ public:
                     }
                 }
 
-                me->GetMotionMaster()->MovePoint(POINT_RAPPELLING_DESTINATION, RappellingRopeDestinations[closest]);
+                Position destination = RappellingRopeDestinations[closest];
+
+                // The hardcoded destinations sit around z 240 while the real
+                // terrain under the wreck is near z 227. Dropping the player
+                // twelve yards short is what was still killing him, so snap
+                // the target to the actual ground height.
+                float ground = me->GetMap()->GetHeight(me->GetPhaseMask(),
+                    destination.GetPositionX(), destination.GetPositionY(),
+                    destination.GetPositionZ(), true, 100.0f);
+                if (ground > INVALID_HEIGHT)
+                    destination.m_positionZ = ground;
+
+                // Deliberately slow: this is a rappel, not a drop. Every
+                // movement type is set because MoveSplineInit picks the speed
+                // from the movement flags (SelectSpeedType, MoveSplineInit.cpp:29)
+                // and it only reads MOVE_FLIGHT when MOVEMENTFLAG_FLYING is up.
+                // SetDisableGravity and SetCanFly raise DISABLE_GRAVITY and
+                // CAN_FLY, not FLYING, so the descent was actually running at
+                // MOVE_RUN and any flight-only rate was ignored.
+                float const rappelRate = 0.7f;   // ~4.9 yd/s, roughly 15s down
+                me->SetSpeed(MOVE_RUN, rappelRate, true);
+                me->SetSpeed(MOVE_WALK, rappelRate, true);
+                me->SetSpeed(MOVE_FLIGHT, rappelRate, true);
+
+                // generatePath = false on purpose. There is no mmap geometry
+                // in mid-air above the wreck, so asking for a path makes the
+                // move collapse into a straight drop instead of a spline.
+
+                me->GetMotionMaster()->MovePoint(POINT_RAPPELLING_DESTINATION,
+                    destination.GetPositionX(), destination.GetPositionY(),
+                    destination.GetPositionZ(), false);
             });
         }
         else
+        {
             passenger->SetDisableGravity(false);
+            // Without this the client reports the whole descent as a fall the
+            // moment gravity comes back and Player::HandleFall bills it as a
+            // ~70 yard drop, which is lethal at this level.
+            if (Player* player = passenger->ToPlayer())
+                player->SetFallInformation(0, player->GetPositionZ());
+        }
     }
 
     void MovementInform(uint32 type, uint32 pointId) override
@@ -4990,8 +5041,16 @@ public:
         if (type != POINT_MOTION_TYPE || pointId != POINT_RAPPELLING_DESTINATION)
             return;
 
+        // Put the passenger down exactly on the ground before handing gravity
+        // back, so there is nothing left to fall.
         if (Vehicle* vehicle = me->GetVehicleKit())
+        {
+            if (Unit* passenger = vehicle->GetPassenger(0))
+                if (Player* player = passenger->ToPlayer())
+                    player->SetFallInformation(0, me->GetPositionZ());
+
             vehicle->RemoveAllPassengers();
+        }
 
         me->DespawnOrUnsummon(1000);
     }
@@ -5051,13 +5110,20 @@ class spell_jade_forest_rappelling_rope : public SpellScript
         SummonRope(effIndex);
     }
 
-    void HandleTeleport(SpellEffIndex effIndex)
+    void SuppressDuplicateSummon(SpellEffIndex effIndex)
     {
-        // In this 5.4.8 DBC build 130960 is exposed as a teleport effect.
-        // The intended behavior is the temporary rope vehicle, so suppress
-        // the instant teleport and run the same summon path instead.
+        // PreventHitDefaultEffect only masks the phase it is called in, so the
+        // call made from the launch hook above does not carry over to the hit
+        // phase and the core ran EFFECT_0 a second time. That mattered because
+        // SummonProperties 821 uses summon slot 6: the second, default summon
+        // replaced the first one, despawning the very rope the player had just
+        // been seated on, so he was unseated the instant he boarded.
+        // Confirmed in the spells log:
+        //     Spell: 130960 Effect : 28        <- launch, scripted summon
+        //     ...236, apply: 1                 <- player seated
+        //     Spell: 130960 Effect : 28        <- hit, default summon
+        //     Aura 52391 now is remove mode 1  <- player unseated
         PreventHitDefaultEffect(effIndex);
-        SummonRope(effIndex);
     }
 
     void HandleInstantLanding(SpellEffIndex effIndex)
@@ -5070,7 +5136,10 @@ class spell_jade_forest_rappelling_rope : public SpellScript
     void Register() override
     {
         OnEffectLaunch += SpellEffectFn(spell_jade_forest_rappelling_rope::HandleSummon, EFFECT_0, SPELL_EFFECT_SUMMON);
-        OnEffectHitTarget += SpellEffectFn(spell_jade_forest_rappelling_rope::HandleTeleport, EFFECT_0, SPELL_EFFECT_TELEPORT_UNITS);
+        // EFFECT_0 is a SUMMON in this DBC, not a teleport: the old binding to
+        // SPELL_EFFECT_TELEPORT_UNITS never matched and only produced a
+        // "did not match dbc effect data" warning on every startup.
+        OnEffectHit += SpellEffectFn(spell_jade_forest_rappelling_rope::SuppressDuplicateSummon, EFFECT_0, SPELL_EFFECT_SUMMON);
         OnEffectHitTarget += SpellEffectFn(spell_jade_forest_rappelling_rope::HandleInstantLanding, EFFECT_2, SPELL_EFFECT_TRIGGER_SPELL);
     }
 };
@@ -5146,26 +5215,26 @@ class spell_summon_gunship_turret : public AuraScript
     }
 };
 
-// 130994 - "Crusher Barrage", el proyectil que dispara 130973 desde la
-// torreta clicable de la mision 31765 "Paint it Red!".
+// 130994 - "Crusher Barrage", the projectile 130973 fires from the clickable
+// turret of quest 31765 "Paint it Red!".
 //
-// SpellEffect.dbc le da seis efectos:
+// SpellEffect.dbc gives it six effects:
 //     [0] SCHOOL_DAMAGE                tgtA 87 DEST_DEST + tgtB 8 DEST_AREA_ENTRY
 //     [1] DUMMY                        tgtA 1  CASTER
 //     [2][3][4] KILL_CREDIT2 -> 66200  tgtA 105
 //     [5]       KILL_CREDIT2 -> 66203  tgtA 105
 //
-// El dano resuelve bien, pero los cuatro creditos cuelgan del target implicito
-// 105 (TARGET_UNIT_UNK_105), que SpellInfo.cpp:316 marca como
-// TARGET_SELECT_CATEGORY_NYI: Spell::SelectImplicitTargets escribe una linea de
-// debug y hace break (Spell.cpp:971), asi que esos efectos no seleccionan a
-// nadie y nunca se ejecutan. Sin ellos el contador solo avanzaba con bajas
-// reales - 12 soldados con 60 s de respawn para llegar a 80.
+// The damage resolves fine, but the four credits hang off implicit target 105
+// (TARGET_UNIT_UNK_105), which SpellInfo.cpp:316 flags as
+// TARGET_SELECT_CATEGORY_NYI: Spell::SelectImplicitTargets writes a debug line
+// and breaks (Spell.cpp:971), so those effects never select anybody and never
+// run. Without them the counter only moved on real kills - 12 soldiers on a
+// 60 second respawn to reach 80.
 //
-// En vez de repartir los 3+1 creditos fijos que dice el DBC, se acredita por
-// unidad realmente alcanzada: asi no se puede completar la mision disparando
-// al aire, y el ritmo sale parecido porque el radio de 15 yardas suele barrer
-// varios objetivos por rafaga.
+// Rather than handing out the flat 3+1 credits the DBC describes, credit is
+// given per unit actually hit: that way the quest cannot be finished shooting
+// at thin air, and the pace works out similar because the 15 yard radius
+// usually sweeps several targets per burst.
 enum GunshipTurretBarrageData
 {
     NPC_THUNDER_HOLD_SOLDIER = 66200,
@@ -5186,7 +5255,7 @@ class spell_gunship_turret_barrage : public SpellScript
         if (entry != NPC_THUNDER_HOLD_SOLDIER && entry != NPC_THUNDER_HOLD_CANNON)
             return;
 
-        // El lanzador es la torreta; el jugador es su charmer.
+        // The caster is the turret; the player is its charmer.
         Unit* caster = GetCaster();
         if (!caster)
             return;

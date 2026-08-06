@@ -43,27 +43,27 @@
 -- seat a player.
 -- =====================================================================
 
--- CORRECCION: la version anterior de esta migracion ponia spell2 = 130994 en
--- los turrets clicables partiendo de que su boton era 130163. Comparado contra
--- la DB de referencia (world en el puerto 3307) eso era erroneo:
+-- CORRECTION: an earlier version of this migration set spell2 = 130994 on the
+-- clickable turrets, on the assumption that their button was 130163. Compared
+-- against the reference database (world on port 3307) that was wrong:
 --
---            campo   |  referencia  |  lo que habia aqui
---   -----------------+--------------+--------------------
+--          column     |  reference   |  what was here
+--   -----------------+--------------+-----------------
 --     VehicleId      |     2455     |   277
 --     spell1         |   130973     |   130163
 --     spell2         |        0     |   130994
 --     faction        |       35     |   1735
 --     unit_flags     |     2048     |   0
 --
--- 130973 es el hechizo correcto: SpellEffect dice efecto 32 TRIGGER_MISSILE
--- con tgtA 89 TARGET_DEST_TRAJ, y su trigger es 130994. Lo lanza el JUGADOR,
--- asi que el cliente adjunta la trayectoria al cast y
--- Spell::SelectImplicitTrajTargets funciona sola. 130994 no es un segundo
--- boton: es lo que 130973 dispara, y es quien lleva el dano y los cuatro
--- KILL_CREDIT2 de la mision.
+-- 130973 is the right spell: SpellEffect gives it effect 32 TRIGGER_MISSILE
+-- with tgtA 89 TARGET_DEST_TRAJ, triggering 130994. The PLAYER casts it, so
+-- the client attaches the trajectory to the cast request and
+-- Spell::SelectImplicitTrajTargets works on its own. 130994 is not a second
+-- button: it is what 130973 fires, and it carries the damage and the four
+-- KILL_CREDIT2 of the quest.
 --
--- npc_spellclick_spells, smart_scripts y conditions ya coincidian con la
--- referencia y no se tocan.
+-- npc_spellclick_spells, smart_scripts and conditions already matched the
+-- reference and are left alone.
 UPDATE `creature_template`
    SET `VehicleId`  = 2455,
        `spell1`     = 130973,
@@ -72,8 +72,8 @@ UPDATE `creature_template`
        `unit_flags` = 2048
  WHERE `entry` IN (66674, 66676, 66677);
 
--- 66183 es el turret invocado, no clicable. La referencia lo deja con su
--- spell1 130163 y sin spell2; aqui se le habia anadido 130994 por error.
+-- 66183 is the summoned turret, not clickable. The reference leaves it with
+-- spell1 130163 and no spell2; 130994 had been added here by mistake.
 UPDATE `creature_template`
    SET `spell2` = 0, `unit_flags` = 2048
  WHERE `entry` = 66183;
@@ -262,14 +262,14 @@ INSERT INTO `object_visibility` (`type`,`entry`,`distance`,`active`,`importance`
 ('GameObject', 215588, 350, 0, 'GroundClutter', 'Pandaria - Jade Forest - Thunder Hold - Damaged Thunder Hold Cannon');
 
 
--- 3) Los creditos de mision de la rafaga.
---    130973 (spell1 del turret clicable) es TRIGGER_MISSILE con trayectoria y
---    dispara 130994. El dano de 130994 resuelve bien, pero sus cuatro
---    SPELL_EFFECT_KILL_CREDIT2 (3x 66200 + 1x 66203) cuelgan del target
---    implicito 105, que este core marca como TARGET_SELECT_CATEGORY_NYI y
---    nunca selecciona a nadie (Spell.cpp:971). Sin ellos el contador solo
---    avanza con bajas reales: 12 soldados con 60 s de respawn para 80 bajas.
---    spell_gunship_turret_barrage acredita por unidad realmente alcanzada.
+-- 3) The quest credits of the barrage.
+--    130973 (spell1 of the clickable turret) is a TRIGGER_MISSILE with a
+--    trajectory and fires 130994. The damage of 130994 resolves fine, but its
+--    four SPELL_EFFECT_KILL_CREDIT2 (3x 66200 + 1x 66203) hang off implicit
+--    target 105, which this core flags as TARGET_SELECT_CATEGORY_NYI and which
+--    never selects anybody (Spell.cpp:971). Without them the counter only
+--    advances on real kills: 12 soldiers on a 60 second respawn to reach 80.
+--    spell_gunship_turret_barrage credits per unit actually hit.
 DELETE FROM `spell_script_names` WHERE `spell_id` IN (130163, 130994);
 INSERT INTO `spell_script_names` (`spell_id`, `ScriptName`) VALUES
 (130994, 'spell_gunship_turret_barrage');
