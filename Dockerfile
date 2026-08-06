@@ -25,8 +25,14 @@ ARG BUILD_JOBS=8
 # that iterating on a source fix only recompiles the affected targets instead of
 # the whole tree (~70 min). Drop stale MySQL cache entries left over from previous
 # configure runs so find_package(MySQL) resolves the real library path.
+#
+# CMAKE_*_COMPILER_LAUNCHER is stripped for the same reason: cmake persists it in
+# CMakeCache.txt, so a configure run that once set a launcher (ccache) keeps
+# prefixing every compile with it forever. If that tool is not installed in the
+# image the build dies on the first file with "ccache: not found" and make
+# Error 127, which reads like a compiler failure but is not one.
 RUN --mount=type=cache,target=/build \
-    sed -i '/^MYSQL_LIBRARY/d;/^MYSQL_INCLUDE_DIR/d;/^$/d' /build/CMakeCache.txt 2>/dev/null || true; \
+    sed -i '/^MYSQL_LIBRARY/d;/^MYSQL_INCLUDE_DIR/d;/^CMAKE_C_COMPILER_LAUNCHER/d;/^CMAKE_CXX_COMPILER_LAUNCHER/d;/^$/d' /build/CMakeCache.txt 2>/dev/null || true; \
     cmake -S /src -B /build \
         -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_INSTALL_PREFIX=/app \
