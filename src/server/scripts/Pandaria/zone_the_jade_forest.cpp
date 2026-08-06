@@ -5010,10 +5010,8 @@ class spell_jade_forest_rappelling_rope : public SpellScript
 {
     PrepareSpellScript(spell_jade_forest_rappelling_rope);
 
-    void HandleSummon(SpellEffIndex effIndex)
+    void SummonRope(SpellEffIndex effIndex)
     {
-        PreventHitDefaultEffect(effIndex);
-
         Unit* caster = GetCaster();
         if (!caster || !caster->GetMap())
             return;
@@ -5047,9 +5045,25 @@ class spell_jade_forest_rappelling_rope : public SpellScript
         }
     }
 
+    void HandleSummon(SpellEffIndex effIndex)
+    {
+        PreventHitDefaultEffect(effIndex);
+        SummonRope(effIndex);
+    }
+
+    void HandleTeleport(SpellEffIndex effIndex)
+    {
+        // In this 5.4.8 DBC build 130960 is exposed as a teleport effect.
+        // The intended behavior is the temporary rope vehicle, so suppress
+        // the instant teleport and run the same summon path instead.
+        PreventHitDefaultEffect(effIndex);
+        SummonRope(effIndex);
+    }
+
     void Register() override
     {
         OnEffectLaunch += SpellEffectFn(spell_jade_forest_rappelling_rope::HandleSummon, EFFECT_0, SPELL_EFFECT_SUMMON);
+        OnEffectHitTarget += SpellEffectFn(spell_jade_forest_rappelling_rope::HandleTeleport, EFFECT_0, SPELL_EFFECT_TELEPORT_UNITS);
     }
 };
 
