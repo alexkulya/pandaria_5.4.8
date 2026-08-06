@@ -16937,6 +16937,10 @@ void Player::AddQuest(Quest const* quest, Object* questGiver)
 
     m_QuestStatusSave[questId] = true;
 
+    PhaseUpdateData phaseUpdateData;
+    phaseUpdateData.AddQuestUpdate(questId);
+    phaseMgr.NotifyConditionChanged(phaseUpdateData);
+
     StartCriteria(CRITERIA_START_TYPE_QUEST, questId);
 
     if (questGiver) // script managment for every quest

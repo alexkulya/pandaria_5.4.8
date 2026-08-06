@@ -1,5 +1,5 @@
 -- =====================================================================
--- Quest 31765 "Paint It Red!" - phase the player into the Jade Forest
+-- Quest 29694 "Regroup!" - phase the player into the Jade Forest
 -- Battlefield when the quest is accepted.
 --
 -- Jade Forest (zone 5785) phase_definitions:
@@ -9,7 +9,7 @@
 -- condition-less definition as ALWAYS active. So the Battlefield phase (entry 2)
 -- was permanently applied to everyone, and accepting the quest changed nothing.
 --
--- Gate the Battlefield phase behind CONDITION_QUESTTAKEN (9) for quest 31765, so
+-- Gate the Battlefield phase behind CONDITION_QUESTTAKEN (9) for quest 29694, so
 -- the terrain swap to the battlefield only happens while the quest is active -
 -- i.e. it switches on the moment the player accepts it. The starting-area phase
 -- (entry 1) is left untouched because it also carries the phasemask (67108865)
@@ -24,4 +24,4 @@ INSERT INTO `conditions`
   `ConditionTypeOrReference`,`ConditionTarget`,`ConditionValue1`,`ConditionValue2`,`ConditionValue3`,
   `NegativeCondition`,`ErrorType`,`ErrorTextId`,`ScriptName`,`Comment`)
 VALUES
- (25, 5785, 2, 0, 0, 9, 0, 31765, 0, 0, 0, 0, 0, '', 'Jade Forest Battlefield Phase active only while quest 31765 (Paint It Red) is taken');
+(25, 5785, 2, 0, 0, 9, 0, 29694, 0, 0, 0, 0, 0, '', 'Jade Forest Battlefield Phase active only while quest 29694 (Regroup) is taken');

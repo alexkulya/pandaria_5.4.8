@@ -37,8 +37,41 @@ inline void Trinity::VisibleNotifier::Visit(GridRefManager<T> &m)
     }
 }
 
+// Objects registered in Map::m_customVisibilityObjects[ByZone] are the ones
+// whose `object_visibility` row gives them an area of interest bigger than
+// Visibility.Distance.Continents. They live outside the cell range scanned by
+// Visit(), so Player::UpdateVisibilityForPlayer feeds them in through here.
+// This body used to be empty, which silently disabled the whole
+// `object_visibility` table: the rows loaded, the objects registered, and then
+// nothing ever looked at them. CanSeeOrDetect does the range check against
+// WorldObject::GetVisibilityRange, which already honours the custom distance.
 inline void Trinity::VisibleNotifier::VisitSet(std::unordered_set<WorldObject*> const& objects)
 {
+    for (std::unordered_set<WorldObject*>::const_iterator itr = objects.begin(); itr != objects.end(); ++itr)
+    {
+        WorldObject* object = *itr;
+
+        // Visit() would have handled it already, and doing it twice would build
+        // a second create block for the same object.
+        if (!vis_guids.erase(object->GetGUID()))
+            if (i_player.HaveAtClient(object))
+                continue;
+
+        switch (object->GetTypeId())
+        {
+            case TYPEID_UNIT:
+                i_player.UpdateVisibilityOf(object->ToCreature(), i_data, i_visibleNow);
+                break;
+            case TYPEID_GAMEOBJECT:
+                i_player.UpdateVisibilityOf(object->ToGameObject(), i_data, i_visibleNow);
+                break;
+            case TYPEID_DYNAMICOBJECT:
+                i_player.UpdateVisibilityOf(object->ToDynObject(), i_data, i_visibleNow);
+                break;
+            default:
+                break;
+        }
+    }
 }
 
 // SEARCHERS & LIST SEARCHERS & WORKERS
