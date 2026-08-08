@@ -450,6 +450,8 @@ typedef std::unordered_map<uint32, CreatureLocale> CreatureLocaleContainer;
 typedef std::unordered_map<uint32, GameObjectLocale> GameObjectLocaleContainer;
 typedef std::unordered_map<uint32, ItemLocale> ItemLocaleContainer;
 typedef std::unordered_map<uint32, QuestLocale> QuestLocaleContainer;
+typedef std::unordered_map<uint32, QuestOfferRewardLocale> QuestOfferRewardLocaleContainer;
+typedef std::unordered_map<uint32, QuestRequestItemsLocale> QuestRequestItemsLocaleContainer;
 typedef std::unordered_map<uint32, NpcTextLocale> NpcTextLocaleContainer;
 typedef std::unordered_map<uint32, PageTextLocale> PageTextLocaleContainer;
 typedef std::unordered_map<int32, TrinityStringLocale> TrinityStringLocaleContainer;
@@ -1124,6 +1126,8 @@ class ObjectMgr
         void LoadItemScriptNames();
         void LoadItemLocales();
         void LoadQuestLocales();
+        void LoadQuestOfferRewardLocales();
+        void LoadQuestRequestItemsLocales();
         void LoadNpcTextLocales();
         void LoadPageTextLocales();
         void LoadGossipMenuItemsLocales();
@@ -1342,6 +1346,18 @@ class ObjectMgr
         {
             QuestLocaleContainer::const_iterator itr = _questLocaleStore.find(entry);
             if (itr == _questLocaleStore.end()) return NULL;
+            return &itr->second;
+        }
+        QuestOfferRewardLocale const* GetQuestOfferRewardLocale(uint32 entry) const
+        {
+            QuestOfferRewardLocaleContainer::const_iterator itr = _questOfferRewardLocaleStore.find(entry);
+            if (itr == _questOfferRewardLocaleStore.end()) return NULL;
+            return &itr->second;
+        }
+        QuestRequestItemsLocale const* GetQuestRequestItemsLocale(uint32 entry) const
+        {
+            QuestRequestItemsLocaleContainer::const_iterator itr = _questRequestItemsLocaleStore.find(entry);
+            if (itr == _questRequestItemsLocaleStore.end()) return NULL;
             return &itr->second;
         }
         NpcTextLocale const* GetNpcTextLocale(uint32 entry) const
@@ -1816,6 +1832,8 @@ class ObjectMgr
         ItemTemplateContainer _itemTemplateStore;
         ItemLocaleContainer _itemLocaleStore;
         QuestLocaleContainer _questLocaleStore;
+        QuestOfferRewardLocaleContainer _questOfferRewardLocaleStore;
+        QuestRequestItemsLocaleContainer _questRequestItemsLocaleStore;
         NpcTextLocaleContainer _npcTextLocaleStore;
         PageTextLocaleContainer _pageTextLocaleStore;
         TrinityStringLocaleContainer _trinityStringLocaleStore;
