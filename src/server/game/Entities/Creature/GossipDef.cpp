@@ -852,10 +852,12 @@ void PlayerMenu::SendQuestGiverOfferReward(Quest const* quest, uint64 npcGuid, b
     int32 locale = _session->GetSessionDbLocaleIndex();
     if (locale >= 0)
     {
+        if (QuestOfferRewardLocale const* offerRewardLocale = sObjectMgr->GetQuestOfferRewardLocale(quest->GetQuestId()))
+            ObjectMgr::GetLocaleString(offerRewardLocale->RewardText, locale, questOfferRewardText);
+
         if (QuestLocale const* localeData = sObjectMgr->GetQuestLocale(quest->GetQuestId()))
         {
             ObjectMgr::GetLocaleString(localeData->Title, locale, questTitle);
-            ObjectMgr::GetLocaleString(localeData->OfferRewardText, locale, questOfferRewardText);
             ObjectMgr::GetLocaleString(localeData->QuestGiverTextWindow, locale, questGiverTextWindow);
             ObjectMgr::GetLocaleString(localeData->QuestGiverTargetName, locale, questGiverTargetName);
             ObjectMgr::GetLocaleString(localeData->QuestTurnTextWindow, locale, questTurnTextWindow);
@@ -1037,10 +1039,10 @@ void PlayerMenu::SendQuestGiverRequestItems(Quest const* quest, uint64 npcGuid, 
     if (locale >= 0)
     {
         if (QuestLocale const* localeData = sObjectMgr->GetQuestLocale(quest->GetQuestId()))
-        {
             ObjectMgr::GetLocaleString(localeData->Title, locale, questTitle);
-            ObjectMgr::GetLocaleString(localeData->RequestItemsText, locale, requestItemsText);
-        }
+
+        if (QuestRequestItemsLocale const* requestItemsLocale = sObjectMgr->GetQuestRequestItemsLocale(quest->GetQuestId()))
+            ObjectMgr::GetLocaleString(requestItemsLocale->CompletionText, locale, requestItemsText);
     }
 
     uint32 requiredMoney = 0;
