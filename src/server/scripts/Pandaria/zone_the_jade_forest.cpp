@@ -20,6 +20,11 @@
 #include "ScriptedGossip.h"
 #include "ScriptedEscortAI.h"
 #include "CreatureTextMgr.h"
+#include "DBCStores.h"
+#include "Map.h"
+#include "MotionMaster.h"
+#include "TemporarySummon.h"
+#include "Vehicle.h"
 
 const Position MySerpentPath[2]
 {
@@ -4845,6 +4850,394 @@ class spell_reverse_cast_ride_seat_1 : public SpellScript
     }
 };
 
+// Horde arrival sequence for quest 29690 "Into the Mists".
+// The client spell contains a SCRIPT_EFFECT in effect 2. Without this
+// handler the phase aura can be applied, but the blackout/arrival chain is
+// never completed, leaving the player in the normal Jade Forest view.
+enum IntoTheMistsData
+{
+    SPELL_INTO_THE_MISTS_CANCEL_BLACKOUT       = 130812,
+    SPELL_INTO_THE_MISTS_CUT_TO_BLACK          = 122343,
+    SPELL_INTO_THE_MISTS_TELEPORT_PREP_HORDE   = 130810,
+    SPELL_INTO_THE_MISTS_TELEPORT_CRASH_SITE  = 102930,
+    SPELL_INTO_THE_MISTS_WAKE_UP_DEAD         = 122344,
+};
+
+// 121545 - Into the Mists Scene - Jade Forest
+class spell_into_the_mists_scene_jade_forest : public SpellScript
+{
+    PrepareSpellScript(spell_into_the_mists_scene_jade_forest);
+
+    void HandleEffectHit(SpellEffIndex /*effIndex*/)
+    {
+        if (Unit* target = GetHitUnit())
+        {
+            // The wrecked Hellscream's Fist is not a transport: its hull comes
+            // from terrain swap 1076 and its crew, fires and deck props are the
+            // phasemask 67108864 spawns, both carried by phase_definitions
+            // 5785/1. Nothing has to be spawned here.
+            target->RemoveAurasByType(SPELL_AURA_MOUNTED);
+            target->CastSpell(target, SPELL_INTO_THE_MISTS_CANCEL_BLACKOUT, true);
+        }
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_into_the_mists_scene_jade_forest::HandleEffectHit, EFFECT_2, SPELL_EFFECT_SCRIPT_EFFECT);
+    }
+};
+
+// 130723 - Into the Mists Scene End
+class spell_into_the_mists_scene_end_jade_forest : public SpellScript
+{
+    PrepareSpellScript(spell_into_the_mists_scene_end_jade_forest);
+
+    void HandleEffectHit(SpellEffIndex /*effIndex*/)
+    {
+        if (Unit* target = GetHitUnit())
+        {
+            target->CastSpell(target, SPELL_INTO_THE_MISTS_TELEPORT_CRASH_SITE, true);
+            target->CastSpell(target, SPELL_INTO_THE_MISTS_CUT_TO_BLACK, true);
+            target->CastSpell(target, SPELL_INTO_THE_MISTS_WAKE_UP_DEAD, true);
+        }
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_into_the_mists_scene_end_jade_forest::HandleEffectHit, EFFECT_1, SPELL_EFFECT_SCRIPT_EFFECT);
+    }
+};
+
+// 130812 - Cancel Blackout. Removing this aura also removes the temporary
+// teleport-preparation aura used by the arrival scene.
+class spell_into_the_mists_cancel_blackout : public AuraScript
+{
+    PrepareAuraScript(spell_into_the_mists_cancel_blackout);
+
+    void HandleAfterEffectRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        if (Unit* target = GetTarget())
+            target->RemoveAurasDueToSpell(SPELL_INTO_THE_MISTS_TELEPORT_PREP_HORDE);
+    }
+
+    void Register() override
+    {
+        AfterEffectRemove += AuraEffectRemoveFn(spell_into_the_mists_cancel_blackout::HandleAfterEffectRemove, EFFECT_0, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+
+// 66640 - Rappelling Rope
+// The rope is summoned by spell 130960 after the player clicks the GO 215689.
+// It becomes the vehicle, boards the player through spell 85299, then moves
+// down to the matching landing point instead of teleporting the player.
+enum RappellingRopeData
+{
+    NPC_RAPPELLING_ROPE             = 66640,
+    SPELL_RAPPELLING_ROPE           = 130960,
+    SPELL_REVERSE_CAST_RIDE_SEAT_1  = 85299,
+    SPELL_RAPPELLING_ROPE_AURA      = 130970,
+    POINT_RAPPELLING_DESTINATION    = 1,
+};
+
+const Position RappellingRopeSpawns[3]
+{
+    { 3133.9192f, -750.8542f, 298.9847f, 0.0f },
+    { 3156.4932f, -742.7101f, 297.54916f, 0.0f },
+    { 3169.0479f, -737.92017f, 298.42493f, 0.0f },
+};
+
+const Position RappellingRopeDestinations[3]
+{
+    { 3133.9475f, -749.46844f, 240.00467f, 0.0f },
+    { 3156.2786f, -742.8666f, 239.32095f, 0.0f },
+    { 3168.5525f, -738.01764f, 240.19081f, 0.0f },
+};
+
+class npc_jade_forest_rappelling_rope : public ScriptedAI
+{
+public:
+    npc_jade_forest_rappelling_rope(Creature* creature) : ScriptedAI(creature) { }
+
+    void PassengerBoarded(Unit* passenger, int8 /*seatId*/, bool apply) override
+    {
+        if (apply)
+        {
+            passenger->SetDisableGravity(true);
+
+            _scheduler.Schedule(Milliseconds(1500), [this](TaskContext /*context*/)
+            {
+                uint8 closest = 0;
+                float distance = me->GetDistance(RappellingRopeDestinations[0]);
+                for (uint8 i = 1; i < 3; ++i)
+                {
+                    float candidate = me->GetDistance(RappellingRopeDestinations[i]);
+                    if (candidate < distance)
+                    {
+                        closest = i;
+                        distance = candidate;
+                    }
+                }
+
+                me->GetMotionMaster()->MovePoint(POINT_RAPPELLING_DESTINATION, RappellingRopeDestinations[closest]);
+            });
+        }
+        else
+            passenger->SetDisableGravity(false);
+    }
+
+    void MovementInform(uint32 type, uint32 pointId) override
+    {
+        if (type != POINT_MOTION_TYPE || pointId != POINT_RAPPELLING_DESTINATION)
+            return;
+
+        if (Vehicle* vehicle = me->GetVehicleKit())
+            vehicle->RemoveAllPassengers();
+
+        me->DespawnOrUnsummon(1000);
+    }
+
+    void UpdateAI(uint32 diff) override
+    {
+        _scheduler.Update(diff);
+    }
+
+private:
+    TaskScheduler _scheduler;
+};
+
+// 130960 - Rappelling Rope
+class spell_jade_forest_rappelling_rope : public SpellScript
+{
+    PrepareSpellScript(spell_jade_forest_rappelling_rope);
+
+    void SummonRope(SpellEffIndex effIndex)
+    {
+        Unit* caster = GetCaster();
+        if (!caster || !caster->GetMap())
+            return;
+
+        uint8 closest = 0;
+        float distance = caster->GetDistance(RappellingRopeSpawns[0]);
+        for (uint8 i = 1; i < 3; ++i)
+        {
+            float candidate = caster->GetDistance(RappellingRopeSpawns[i]);
+            if (candidate < distance)
+            {
+                closest = i;
+                distance = candidate;
+            }
+        }
+
+        uint32 duration = GetSpellInfo()->GetDuration();
+        if (duration <= 0)
+            duration = 30000;
+
+        SpellEffectInfo const& effectInfo = GetSpellInfo()->Effects[effIndex];
+        SummonPropertiesEntry const* properties = sSummonPropertiesStore.LookupEntry(effectInfo.MiscValueB);
+        if (!properties)
+            return;
+
+        if (TempSummon* rope = caster->GetMap()->SummonCreature(
+                effectInfo.MiscValue, RappellingRopeSpawns[closest], properties,
+                duration, caster, SPELL_RAPPELLING_ROPE))
+        {
+            rope->CastSpell(caster, SPELL_REVERSE_CAST_RIDE_SEAT_1, true);
+        }
+    }
+
+    void HandleSummon(SpellEffIndex effIndex)
+    {
+        PreventHitDefaultEffect(effIndex);
+        SummonRope(effIndex);
+    }
+
+    void HandleTeleport(SpellEffIndex effIndex)
+    {
+        // In this 5.4.8 DBC build 130960 is exposed as a teleport effect.
+        // The intended behavior is the temporary rope vehicle, so suppress
+        // the instant teleport and run the same summon path instead.
+        PreventHitDefaultEffect(effIndex);
+        SummonRope(effIndex);
+    }
+
+    void HandleInstantLanding(SpellEffIndex effIndex)
+    {
+        // Effect 2 triggers 130999 in this DBC. That trigger is the instant
+        // landing/teleport path; the summoned rope AI is the intended path.
+        PreventHitDefaultEffect(effIndex);
+    }
+
+    void Register() override
+    {
+        OnEffectLaunch += SpellEffectFn(spell_jade_forest_rappelling_rope::HandleSummon, EFFECT_0, SPELL_EFFECT_SUMMON);
+        OnEffectHitTarget += SpellEffectFn(spell_jade_forest_rappelling_rope::HandleTeleport, EFFECT_0, SPELL_EFFECT_TELEPORT_UNITS);
+        OnEffectHitTarget += SpellEffectFn(spell_jade_forest_rappelling_rope::HandleInstantLanding, EFFECT_2, SPELL_EFFECT_TRIGGER_SPELL);
+    }
+};
+
+// 130970 - Rappelling Rope Aura
+class spell_jade_forest_rappelling_rope_aura : public AuraScript
+{
+    PrepareAuraScript(spell_jade_forest_rappelling_rope_aura);
+
+    void HandleRemove(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        if (Unit* target = GetTarget())
+            target->RemoveAurasDueToSpell(SPELL_RAPPELLING_ROPE);
+    }
+
+    void Register() override
+    {
+        AfterEffectRemove += AuraEffectRemoveFn(spell_jade_forest_rappelling_rope_aura::HandleRemove, EFFECT_1, SPELL_AURA_DUMMY, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+
+// Quest 31765 "Paint it Red!" - ported from TrinityCore's own
+// zone_the_jade_forest.cpp. The upstream versions use the modern script API
+// (RegisterSpellScript, PhasingHandler, CastSpellExtraArgsInit), none of which
+// exists here, so they are rewritten against this core's API.
+enum PaintItRedData
+{
+    QUEST_PAINT_IT_RED                  = 31765,
+
+    SPELL_CANNON_EXPLOSION_TRIGGER      = 130234,
+    SPELL_BARREL_EXPLOSION_TRIGGER      = 130247,
+};
+
+// Summon Gunship Turret 130996 / 130997 / 130998
+class spell_summon_gunship_turret : public AuraScript
+{
+    PrepareAuraScript(spell_summon_gunship_turret);
+
+    void HandlePeriodic(AuraEffect const* /*aurEff*/)
+    {
+        Player* player = GetTarget() ? GetTarget()->ToPlayer() : NULL;
+        if (!player)
+            return;
+
+        if (player->GetQuestStatus(QUEST_PAINT_IT_RED) != QUEST_STATUS_COMPLETE)
+            return;
+
+        // Upstream casts Abandon Vehicle (92678) here. That spell is a bare
+        // SPELL_EFFECT_SCRIPT_EFFECT and this core has no handler for it, so
+        // casting it would do nothing. Leave the turret directly instead.
+        if (player->GetVehicle())
+            player->ExitVehicle();
+    }
+
+    void HandleAfterApply(AuraEffect const* /*aurEff*/, AuraEffectHandleModes /*mode*/)
+    {
+        Player* player = GetTarget() ? GetTarget()->ToPlayer() : NULL;
+        if (!player)
+            return;
+
+        // Equivalent of upstream's PhasingHandler::OnConditionChange: boarding
+        // the turret has to re-evaluate the zone phase definitions, which are
+        // gated on this quest (phase_definitions zoneId 5785, entry 2).
+        PhaseUpdateData phaseUpdateData;
+        phaseUpdateData.AddQuestUpdate(QUEST_PAINT_IT_RED);
+        player->GetPhaseMgr().NotifyConditionChanged(phaseUpdateData);
+    }
+
+    void Register() override
+    {
+        OnEffectPeriodic += AuraEffectPeriodicFn(spell_summon_gunship_turret::HandlePeriodic, EFFECT_1, SPELL_AURA_PERIODIC_DUMMY);
+        AfterEffectApply += AuraEffectApplyFn(spell_summon_gunship_turret::HandleAfterApply, EFFECT_1, SPELL_AURA_PERIODIC_DUMMY, AURA_EFFECT_HANDLE_REAL);
+    }
+};
+
+// 130994 - "Crusher Barrage", el proyectil que dispara 130973 desde la
+// torreta clicable de la mision 31765 "Paint it Red!".
+//
+// SpellEffect.dbc le da seis efectos:
+//     [0] SCHOOL_DAMAGE                tgtA 87 DEST_DEST + tgtB 8 DEST_AREA_ENTRY
+//     [1] DUMMY                        tgtA 1  CASTER
+//     [2][3][4] KILL_CREDIT2 -> 66200  tgtA 105
+//     [5]       KILL_CREDIT2 -> 66203  tgtA 105
+//
+// El dano resuelve bien, pero los cuatro creditos cuelgan del target implicito
+// 105 (TARGET_UNIT_UNK_105), que SpellInfo.cpp:316 marca como
+// TARGET_SELECT_CATEGORY_NYI: Spell::SelectImplicitTargets escribe una linea de
+// debug y hace break (Spell.cpp:971), asi que esos efectos no seleccionan a
+// nadie y nunca se ejecutan. Sin ellos el contador solo avanzaba con bajas
+// reales - 12 soldados con 60 s de respawn para llegar a 80.
+//
+// En vez de repartir los 3+1 creditos fijos que dice el DBC, se acredita por
+// unidad realmente alcanzada: asi no se puede completar la mision disparando
+// al aire, y el ritmo sale parecido porque el radio de 15 yardas suele barrer
+// varios objetivos por rafaga.
+enum GunshipTurretBarrageData
+{
+    NPC_THUNDER_HOLD_SOLDIER = 66200,
+    NPC_THUNDER_HOLD_CANNON  = 66203,
+};
+
+class spell_gunship_turret_barrage : public SpellScript
+{
+    PrepareSpellScript(spell_gunship_turret_barrage);
+
+    void HandleDamage(SpellEffIndex /*effIndex*/)
+    {
+        Unit* victim = GetHitUnit();
+        if (!victim)
+            return;
+
+        uint32 const entry = victim->GetEntry();
+        if (entry != NPC_THUNDER_HOLD_SOLDIER && entry != NPC_THUNDER_HOLD_CANNON)
+            return;
+
+        // El lanzador es la torreta; el jugador es su charmer.
+        Unit* caster = GetCaster();
+        if (!caster)
+            return;
+
+        if (Player* gunner = caster->GetCharmerOrOwnerPlayerOrPlayerItself())
+            gunner->KilledMonsterCredit(entry, victim->GetGUID());
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_gunship_turret_barrage::HandleDamage, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+    }
+};
+
+// Cannon Explosion Reversecast 130233
+class spell_cannon_explosion_reversecast : public SpellScript
+{
+    PrepareSpellScript(spell_cannon_explosion_reversecast);
+
+    void HandleEffectHit(SpellEffIndex /*effIndex*/)
+    {
+        // The generic spell_reverse_cast_ride_seat_1 above cannot be reused:
+        // it takes the triggered spell from Effects[].BasePoints, which is 0
+        // for both explosion spells, so the id has to be hardcoded.
+        if (Unit* target = GetHitUnit())
+            target->CastSpell(GetCaster(), SPELL_CANNON_EXPLOSION_TRIGGER, true);
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_cannon_explosion_reversecast::HandleEffectHit, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
+    }
+};
+
+// Barrel Explosion Reversecast 130246
+class spell_barrel_explosion_reversecast : public SpellScript
+{
+    PrepareSpellScript(spell_barrel_explosion_reversecast);
+
+    void HandleEffectHit(SpellEffIndex /*effIndex*/)
+    {
+        if (Unit* target = GetHitUnit())
+            target->CastSpell(GetCaster(), SPELL_BARREL_EXPLOSION_TRIGGER, true);
+    }
+
+    void Register() override
+    {
+        OnEffectHitTarget += SpellEffectFn(spell_barrel_explosion_reversecast::HandleEffectHit, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
+    }
+};
+
 void AddSC_jade_forest()
 {
     // Rare mobs
@@ -4932,9 +5325,23 @@ void AddSC_jade_forest()
     new creature_script<npc_jade_forest_alliance_barricade>("npc_jade_forest_alliance_barricade");
     new spell_script<spell_jade_forest_mouthwatering_brew_launcher>("spell_jade_forest_mouthwatering_brew_launcher");
     new spell_script<spell_jade_forest_nazgrims_flare_gun>("spell_jade_forest_nazgrims_flare_gun");
+    new spell_script<spell_into_the_mists_scene_jade_forest>("spell_into_the_mists_scene_jade_forest");
+    new spell_script<spell_into_the_mists_scene_end_jade_forest>("spell_into_the_mists_scene_end_jade_forest");
+    new aura_script<spell_into_the_mists_cancel_blackout>("spell_into_the_mists_cancel_blackout");
     new creature_script<npc_jade_forest_playful_colored_serpent>("npc_jade_forest_playful_colored_serpent");
     new scene_jade_forest_jade_serpent();
     new creature_script<npc_jade_forest_instant_message_camera_bunny>("npc_jade_forest_instant_message_camera_bunny");
     new aura_script<spell_jade_forest_signal_flare_initialize>("spell_jade_forest_signal_flare_initialize");
     new spell_script<spell_reverse_cast_ride_seat_1>("spell_reverse_cast_ride_seat_1");
+
+    // Quest 31766 "Touching Ground"
+    new creature_script<npc_jade_forest_rappelling_rope>("npc_jade_forest_rappelling_rope");
+    new spell_script<spell_jade_forest_rappelling_rope>("spell_jade_forest_rappelling_rope");
+    new aura_script<spell_jade_forest_rappelling_rope_aura>("spell_jade_forest_rappelling_rope_aura");
+
+    // Quest 31765 "Paint it Red!"
+    new aura_script<spell_summon_gunship_turret>("spell_summon_gunship_turret");
+    new spell_script<spell_gunship_turret_barrage>("spell_gunship_turret_barrage");
+    new spell_script<spell_cannon_explosion_reversecast>("spell_cannon_explosion_reversecast");
+    new spell_script<spell_barrel_explosion_reversecast>("spell_barrel_explosion_reversecast");
 }

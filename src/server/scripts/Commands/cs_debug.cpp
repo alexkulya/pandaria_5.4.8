@@ -36,6 +36,11 @@ EndScriptData */
 
 #include <fstream>
 
+// Implemented in cs_debug_phase.cpp. It stays registered from this table because
+// ScriptMgr::GetChatCommands() only concatenates the per-script tables, so a
+// second CommandScript declaring its own "debug" entry would be unreachable.
+bool HandleDebugPhaseCommand(ChatHandler* handler, char const* args);
+
 class debug_commandscript : public CommandScript
 {
 public:
@@ -1460,17 +1465,6 @@ public:
         }
 
         handler->PSendSysMessage("Transport %s %s", transport->GetName().c_str(), start ? "started" : "stopped");
-        return true;
-    }
-
-    static bool HandleDebugPhaseCommand(ChatHandler* handler, char const* /*args*/)
-    {
-        Unit* unit = handler->getSelectedUnit();
-        Player* player = handler->GetSession()->GetPlayer();
-        if (unit && unit->GetTypeId() == TYPEID_PLAYER)
-            player = unit->ToPlayer();
-
-        player->GetPhaseMgr().SendDebugReportToPlayer(handler->GetSession()->GetPlayer());
         return true;
     }
 

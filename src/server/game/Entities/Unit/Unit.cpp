@@ -8403,6 +8403,16 @@ void Unit::SetPowerType(Powers new_powertype)
             break;
         case POWER_ENERGY:
             SetMaxPower(POWER_ENERGY, GetCreatePowers(POWER_ENERGY));
+            // Unlike POWER_FOCUS right above, the current value was never
+            // seeded, so a creature switched to energy sat at 0/100 and had
+            // to wait for Creature::Regenerate to trickle it back at 20 per
+            // 2 seconds - the Jade Forest gunship turrets were boarded with
+            // an empty bar.
+            // Players are deliberately excluded: Player::InitDataForForm
+            // calls this on every shapeshift into cat form, and seeding it
+            // there would hand a druid free energy on each shift.
+            if (GetTypeId() != TYPEID_PLAYER)
+                SetPower(POWER_ENERGY, GetCreatePowers(POWER_ENERGY));
             break;
     }
 }

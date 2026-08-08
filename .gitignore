@@ -8,4 +8,4 @@ build
 sql/base/*.sql
 docker/db/data/*
 build.bat
-build.log
+*.log

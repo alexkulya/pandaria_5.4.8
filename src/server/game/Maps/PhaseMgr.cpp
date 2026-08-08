@@ -145,28 +145,31 @@ void PhaseMgr::RegisterPhasingAuraEffect(AuraEffect const* auraEffect)
 {
     PhaseInfo phaseInfo;
 
-    if (auraEffect->GetMiscValue())
+    // spell_phase is an explicit server-side override for client phase
+    // auras. Some MoP scene spells (notably 121545) carry a non-zero DBC
+    // misc value that is a client phase id, not a server phase mask. The
+    // old code skipped spell_phase whenever that value was present, causing
+    // the arrival ship phase to be lost after teleporting.
+    SpellPhaseStore::const_iterator itr = _SpellPhaseStore->find(auraEffect->GetId());
+    if (itr != _SpellPhaseStore->end())
+    {
+        if (itr->second.phasemask)
+        {
+            _UpdateFlags |= PHASE_UPDATE_FLAG_SERVERSIDE_CHANGED;
+            phaseInfo.phasemask = itr->second.phasemask;
+        }
+
+        if (itr->second.terrainswapmap)
+            phaseInfo.terrainswapmap = itr->second.terrainswapmap;
+
+        if (itr->second.worldMapArea)
+            phaseInfo.worldMapArea = itr->second.worldMapArea;
+    }
+
+    if (!phaseInfo.phasemask && auraEffect->GetMiscValue())
     {
         _UpdateFlags |= PHASE_UPDATE_FLAG_SERVERSIDE_CHANGED;
         phaseInfo.phasemask = auraEffect->GetMiscValue();
-    }
-    else
-    {
-        SpellPhaseStore::const_iterator itr = _SpellPhaseStore->find(auraEffect->GetId());
-        if (itr != _SpellPhaseStore->end())
-        {
-            if (itr->second.phasemask)
-            {
-                _UpdateFlags |= PHASE_UPDATE_FLAG_SERVERSIDE_CHANGED;
-                phaseInfo.phasemask = itr->second.phasemask;
-            }
-
-            if (itr->second.terrainswapmap)
-                phaseInfo.terrainswapmap = itr->second.terrainswapmap;
-
-            if (itr->second.worldMapArea)
-                phaseInfo.worldMapArea = itr->second.worldMapArea;
-        }
     }
 
     phaseInfo.phaseId = auraEffect->GetMiscValueB();
