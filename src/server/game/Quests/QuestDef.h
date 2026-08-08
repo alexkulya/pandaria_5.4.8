@@ -219,8 +219,6 @@ struct QuestLocale
     StringVector Title;
     StringVector Details;
     StringVector Objectives;
-    StringVector OfferRewardText;
-    StringVector RequestItemsText;
     StringVector EndText;
     StringVector CompletedText;
     // new on 4.x
@@ -228,6 +226,20 @@ struct QuestLocale
     StringVector QuestGiverTargetName;
     StringVector QuestTurnTextWindow;
     StringVector QuestTurnTargetName;
+};
+
+// Split out of QuestLocale: neither of these belongs to the quest log. They are
+// the quest giver's spoken text on hand-in and on the "you are still missing
+// items" window, read only by PlayerMenu::SendQuestGiverOfferReward and
+// PlayerMenu::SendQuestGiverRequestItems.
+struct QuestOfferRewardLocale
+{
+    StringVector RewardText;
+};
+
+struct QuestRequestItemsLocale
+{
+    StringVector CompletionText;
 };
 
 struct QuestObjectiveLocale
