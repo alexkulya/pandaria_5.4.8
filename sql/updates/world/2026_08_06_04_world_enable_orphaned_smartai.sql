@@ -19,12 +19,3 @@ UPDATE `creature_template`
    )
    AND `AIName` = ''
    AND `ScriptName` = '';
-
--- Drop the locales tables
-DROP TABLE IF EXISTS `locales_creature_text`;
-DROP TABLE IF EXISTS `locales_gameobject`;
-DROP TABLE IF EXISTS `locales_npc_text`;
-DROP TABLE IF EXISTS `locales_page_text`;
-DROP TABLE IF EXISTS `locales_points_of_interest`;
-DROP TABLE IF EXISTS `locales_quest`;
-DROP TABLE IF EXISTS `locales_quest_objective`;
