@@ -22,6 +22,7 @@
 #include <time.h>
 
 #include <string>
+#include <unordered_map>
 
 // Values assigned have their equivalent in enum ACE_Log_Priority
 enum LogLevel
