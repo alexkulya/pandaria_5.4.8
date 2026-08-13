@@ -17,6 +17,14 @@ if( UNIX )
 endif()
 message("")
 
+# output the versions of the libraries the build resolved against
+message("* Found OpenSSL          : ${OPENSSL_VERSION} (${OPENSSL_CRYPTO_LIBRARY})")
+if( NOT OPENSSL_VERSION VERSION_LESS 3.0.0 )
+  message("                           RC4 comes from the legacy provider on 3.x -")
+  message("                           legacy.so (legacy.dll on Windows) must be installed.")
+endif()
+message("")
+
 # output information about installation-directories and locations
 
 message("* Install core to        : ${CMAKE_INSTALL_PREFIX}")

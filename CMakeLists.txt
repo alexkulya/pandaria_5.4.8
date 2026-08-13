@@ -72,7 +72,10 @@ set(ACE_EXPECTED_VERSION 5.8.3)
 
 find_package(PCHSupport)
 find_package(ACE REQUIRED)
-find_package(OpenSSL REQUIRED)
+# 1.0.x, 1.1.x and 3.x are all supported: HMACSHA1 carries the shim for the
+# pre-1.1.0 HMAC_CTX API, and OpenSSLCrypto loads the legacy provider that
+# 3.0 moved RC4 into.
+find_package(OpenSSL ${OPENSSL_EXPECTED_VERSION} REQUIRED)
 find_package(Threads REQUIRED)
 
 if( NOT USE_MYSQL_SOURCES )
