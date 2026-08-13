@@ -9,6 +9,11 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+# Must precede project(). 3.5 is the oldest value CMake 4.x still accepts; the
+# upper bound of the range keeps the policy defaults of the toolchain this was
+# written against, so newer CMake does not silently change behaviour.
+cmake_minimum_required(VERSION 3.5...3.31)
+
 # Before project or language initialization
 if (UNIX)
   if (EXISTS "/usr/bin/gcc-4.9")
@@ -27,12 +32,11 @@ endif()
 # Set projectname (must be done AFTER setting configurationtypes)
 project(Pandaria_5.4.8)
 
-# CMake policies (can not be handled elsewhere)
-cmake_minimum_required(VERSION 2.8.9)
-cmake_policy(SET CMP0005 OLD)
-if(POLICY CMP0043)
-  cmake_policy(SET CMP0043 OLD) # Disable 'Ignore COMPILE_DEFINITIONS_<Config> properties'
-endif(POLICY CMP0043)
+# CMP0005 (escaping of add_definitions values) and CMP0043 (per-config
+# COMPILE_DEFINITIONS) were both removed in CMake 4.x, so they can no longer be
+# set to OLD. Their NEW behaviour is the default under the minimum required
+# above; _BUILD_DIRECTIVE is the only definition that depended on the old
+# escaping, and it fails loudly at compile time in SystemConfig.h if it breaks.
 
 # add this options before PROJECT keyword
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)
