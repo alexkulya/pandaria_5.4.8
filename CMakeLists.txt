@@ -82,9 +82,7 @@ find_package(ACE REQUIRED)
 find_package(OpenSSL ${OPENSSL_EXPECTED_VERSION} REQUIRED)
 find_package(Threads REQUIRED)
 
-if( NOT USE_MYSQL_SOURCES )
-  find_package(MySQL REQUIRED)
-endif()
+find_package(MySQL REQUIRED)
 
 if( UNIX )
   find_package(Readline)

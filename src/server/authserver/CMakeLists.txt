@@ -88,7 +88,7 @@ endif()
 
 target_link_libraries(authserver
   shared
-  ${MYSQL_LIBRARY}
+  mysql
   ${OPENSSL_LIBRARIES}
   ${CMAKE_THREAD_LIBS_INIT}
   ${ACE_LIBRARY}

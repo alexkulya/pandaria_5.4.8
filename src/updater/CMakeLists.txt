@@ -29,7 +29,7 @@ add_executable(updater
 
 target_link_libraries(updater
     shared
-    ${MYSQL_LIBRARY}
+    mysql
     ${Boost_LIBRARIES}
 )
 

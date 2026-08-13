@@ -194,7 +194,7 @@ target_link_libraries(worldserver
   ${TERMCAP_LIBRARY}
   ${ACE_LIBRARY}
   ${Boost_LIBRARIES}
-  ${MYSQL_LIBRARY}
+  mysql
   ${OPENSSL_LIBRARIES}
   ${ZLIB_LIBRARIES}
   ${CMAKE_THREAD_LIBS_INIT}

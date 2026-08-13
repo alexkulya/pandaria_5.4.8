@@ -9,26 +9,16 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-# Platform-specfic options
-option(USE_MYSQL_SOURCES "Use included MySQL-sources to build libraries" 0)
-
 # Package overloads
 set(ACE_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/dep/acelite)
 set(ACE_LIBRARY "ace")
 set(BZIP2_LIBRARIES "bzip2")
 set(ZLIB_LIBRARIES "zlib")
 
-if(MSVC_VERSION EQUAL 1900)
-  set( USE_MYSQL_SOURCES 0 )
-  message(STATUS "MySQL: Disabled supplied MySQL sources")
-endif(MSVC_VERSION EQUAL 1900)
-
-if( USE_MYSQL_SOURCES )
-  set(MYSQL_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/dep/mysqllite/include)
-  set(MYSQL_LIBRARY "libmysql")
-  set( MYSQL_FOUND 1 )
-  message(STATUS "Using supplied MySQL sources")
-endif()
+# The MySQL client comes from the system here as it does everywhere else, so
+# nothing overrides what find_package(MySQL) resolved. Point the build at a
+# client with -DMYSQL_LIBRARY and -DMYSQL_INCLUDE_DIR when it lives outside the
+# paths FindMySQL searches.
 
 # check the CMake preload parameters (commented out by default)
 
