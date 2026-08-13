@@ -95,6 +95,18 @@ find_package(Boost COMPONENTS system locale filesystem thread regex serializatio
     REQUIRED
 )
 
+# Boost's MSVC headers auto-link further libraries through #pragma comment(lib),
+# date_time among them, emitting a bare file name the linker has to resolve on
+# its own. Those libraries are never in the component list above, so without the
+# directory on the search path the link dies with LNK1104.
+if(MSVC)
+  if(Boost_LIBRARY_DIRS)
+    link_directories(${Boost_LIBRARY_DIRS})
+  elseif(BOOST_LIBRARYDIR)
+    link_directories(${BOOST_LIBRARYDIR})
+  endif()
+endif()
+
 # Find revision ID and hash of the sourcetree
 include(cmake/genrev.cmake)
 
