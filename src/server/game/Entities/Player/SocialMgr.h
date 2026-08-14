@@ -18,7 +18,6 @@
 #ifndef SF_SOCIALMGR_H
 #define SF_SOCIALMGR_H
 
-#include <ace/Singleton.h>
 #include "DatabaseEnv.h"
 #include "Common.h"
 

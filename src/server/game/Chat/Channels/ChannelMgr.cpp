@@ -16,6 +16,9 @@
 */
 
 #include "ChannelMgr.h"
+
+// ACE_Singleton is used below; it used to arrive through ChannelMgr.h
+#include <ace/Singleton.h>
 #include "Player.h"
 #include "World.h"
 #include "WorldSession.h"

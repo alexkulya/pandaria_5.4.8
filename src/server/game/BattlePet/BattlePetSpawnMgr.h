@@ -18,7 +18,6 @@
 #ifndef BATTLE_PET_SPAWN_MGR
 #define BATTLE_PET_SPAWN_MGR
 
-#include <ace/Singleton.h>
 #include "BattlePet.h"
 #include "Common.h"
 

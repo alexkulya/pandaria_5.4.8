@@ -18,7 +18,6 @@
 #ifndef SF_LFGMGR_H
 #define SF_LFGMGR_H
 
-#include <ace/Singleton.h>
 #include "DBCStructure.h"
 #include "Field.h"
 #include "LFG.h"

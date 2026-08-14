@@ -19,7 +19,6 @@
 #define TRINITY_OBJECTREGISTRY_H
 
 #include "Define.h"
-#include <ace/Singleton.h>
 
 #include <string>
 #include <vector>

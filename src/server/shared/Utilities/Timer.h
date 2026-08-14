@@ -18,7 +18,6 @@
 #ifndef TRINITY_TIMER_H
 #define TRINITY_TIMER_H
 
-#include "ace/OS_NS_sys_time.h"
 #include "Common.h"
 #include "TimeValue.h"
 

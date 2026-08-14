@@ -15,7 +15,6 @@
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <ace/Guard_T.h>
 
 #include "Cryptography/BigNumber.h"
 #include <openssl/bn.h>
