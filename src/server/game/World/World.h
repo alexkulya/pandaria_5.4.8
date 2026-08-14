@@ -25,7 +25,7 @@
 #include "Common.h"
 #include "Timer.h"
 #include <ace/Singleton.h>
-#include <ace/Atomic_Op.h>
+#include <atomic>
 #include "SharedDefines.h"
 #include "QueryResult.h"
 #include "Callback.h"
@@ -1168,7 +1168,7 @@ class World
         World();
         ~World();
     public:
-        static ACE_Atomic_Op<ACE_Thread_Mutex, uint32> m_worldLoopCounter;
+        static std::atomic<uint32> m_worldLoopCounter;
 
         static World* instance()
         {
@@ -1293,7 +1293,7 @@ class World
         void ShutdownMsg(bool show = false, Player* player = NULL);
         static uint8 GetExitCode() { return m_ExitCode; }
         static void StopNow(uint8 exitcode) { m_stopEvent = true; m_ExitCode = exitcode; }
-        static bool IsStopped() { return m_stopEvent.value(); }
+        static bool IsStopped() { return m_stopEvent.load(); }
 
         void Update(uint32 diff);
 
@@ -1475,7 +1475,7 @@ class World
         void DBCleanup();
 
     private:
-        static ACE_Atomic_Op<ACE_Thread_Mutex, bool> m_stopEvent;
+        static std::atomic<bool> m_stopEvent;
         static uint8 m_ExitCode;
         uint32 m_ShutdownTimer;
         uint32 m_ShutdownMask;
