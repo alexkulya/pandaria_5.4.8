@@ -24,7 +24,7 @@
 
 #include "Common.h"
 #include "Timer.h"
-#include <ace/Singleton.h>
+#include "Singleton.h"
 #include <atomic>
 #include "SharedDefines.h"
 #include "QueryResult.h"

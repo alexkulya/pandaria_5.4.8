@@ -18,7 +18,7 @@
 #ifndef SF_AUCTION_HOUSE_MGR_H
 #define SF_AUCTION_HOUSE_MGR_H
 
-#include <ace/Singleton.h>
+#include "Singleton.h"
 
 #include "Common.h"
 #include "DatabaseEnv.h"
@@ -179,7 +179,7 @@ class AuctionHouseObject
 
 class AuctionHouseMgr
 {
-    friend class ACE_Singleton<AuctionHouseMgr, ACE_Null_Mutex>;
+    friend class Trinity::Singleton<AuctionHouseMgr>;
 
     private:
         AuctionHouseMgr();

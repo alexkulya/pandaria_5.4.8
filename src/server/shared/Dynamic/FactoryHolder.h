@@ -18,6 +18,7 @@
 #ifndef TRINITY_FACTORY_HOLDER
 #define TRINITY_FACTORY_HOLDER
 
+#include "Singleton.h"
 #include "Define.h"
 #include "Dynamic/TypeList.h"
 #include "ObjectRegistry.h"
@@ -29,8 +30,8 @@ class FactoryHolder
 {
     public:
         typedef ObjectRegistry<FactoryHolder<T, Key >, Key > FactoryHolderRegistry;
-        friend class ACE_Singleton<FactoryHolderRegistry, ACE_Null_Mutex>;
-        typedef ACE_Singleton<FactoryHolderRegistry, ACE_Null_Mutex> FactoryHolderRepository;
+        friend class Trinity::Singleton<FactoryHolderRegistry>;
+        typedef Trinity::Singleton<FactoryHolderRegistry> FactoryHolderRepository;
 
         FactoryHolder(Key k) : i_key(k) { }
         virtual ~FactoryHolder() { }

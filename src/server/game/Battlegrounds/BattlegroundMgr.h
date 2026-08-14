@@ -22,7 +22,7 @@
 #include "DBCEnums.h"
 #include "Battleground.h"
 #include "BattlegroundQueue.h"
-#include <ace/Singleton.h>
+#include "Singleton.h"
 
 typedef std::map<uint32, Battleground*> BattlegroundContainer;
 typedef std::set<uint32> BattlegroundClientIdsContainer;
@@ -68,7 +68,7 @@ struct ArenaGameStatistic
 
 class BattlegroundMgr
 {
-    friend class ACE_Singleton<BattlegroundMgr, ACE_Null_Mutex>;
+    friend class Trinity::Singleton<BattlegroundMgr>;
 
     private:
         BattlegroundMgr();
@@ -179,5 +179,5 @@ class BattlegroundMgr
         bool m_gameStatQueueInProcess = false;
 };
 
-#define sBattlegroundMgr ACE_Singleton<BattlegroundMgr, ACE_Null_Mutex>::instance()
+#define sBattlegroundMgr Trinity::Singleton<BattlegroundMgr>::instance()
 #endif

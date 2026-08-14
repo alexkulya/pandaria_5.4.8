@@ -19,7 +19,7 @@
 #define SC_SCRIPTMGR_H
 
 #include "Common.h"
-#include <ace/Singleton.h>
+#include "Singleton.h"
 #include <atomic>
 
 #include "DBCStores.h"
@@ -950,7 +950,7 @@ public:
 };
 
 // Placed here due to ScriptRegistry::AddScript dependency.
-#define sScriptMgr ACE_Singleton<ScriptMgr, ACE_Null_Mutex>::instance()
+#define sScriptMgr Trinity::Singleton<ScriptMgr>::instance()
 
 typedef std::vector<ScriptObject*> UnusedScriptContainer;
 typedef std::list<std::string> UnusedScriptNamesContainer;
@@ -961,7 +961,7 @@ extern UnusedScriptNamesContainer UnusedScriptNames;
 // Manages registration, loading, and execution of scripts.
 class ScriptMgr
 {
-    friend class ACE_Singleton<ScriptMgr, ACE_Null_Mutex>;
+    friend class Trinity::Singleton<ScriptMgr>;
     friend class ScriptObject;
 
     private:

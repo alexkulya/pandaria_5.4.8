@@ -18,6 +18,7 @@
 #ifndef SF_FORMATIONS_H
 #define SF_FORMATIONS_H
 
+#include "Singleton.h"
 #include "Define.h"
 #include <map>
 
@@ -38,7 +39,7 @@ typedef std::unordered_map<uint32/*memberDBGUID*/, FormationInfo*>   CreatureGro
 
 class FormationMgr
 {
-    friend class ACE_Singleton<FormationMgr, ACE_Null_Mutex>;
+    friend class Trinity::Singleton<FormationMgr>;
     public:
         FormationMgr() { }
         ~FormationMgr();
@@ -76,6 +77,6 @@ class CreatureGroup
         void MemberAttackStart(Creature* member, Unit* target);
 };
 
-#define sFormationMgr ACE_Singleton<FormationMgr, ACE_Null_Mutex>::instance()
+#define sFormationMgr Trinity::Singleton<FormationMgr>::instance()
 
 #endif

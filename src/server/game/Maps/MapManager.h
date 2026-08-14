@@ -23,7 +23,7 @@
 #include "GridStates.h"
 #include "MapUpdater.h"
 
-#include <ace/Singleton.h>
+#include "Singleton.h"
 #include <ace/Thread_Mutex.h>
 
 
@@ -32,7 +32,7 @@ struct TransportCreatureProto;
 
 class MapManager
 {
-    friend class ACE_Singleton<MapManager, ACE_Thread_Mutex>;
+    friend class Trinity::Singleton<MapManager>;
 
     public:
         Map* CreateBaseMap(uint32 mapId);
@@ -154,5 +154,5 @@ class MapManager
         uint32 _nextInstanceId;
         MapUpdater m_updater;
 };
-#define sMapMgr ACE_Singleton<MapManager, ACE_Thread_Mutex>::instance()
+#define sMapMgr Trinity::Singleton<MapManager>::instance()
 #endif

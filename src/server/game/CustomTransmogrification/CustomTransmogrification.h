@@ -18,6 +18,7 @@
 #ifndef DEF_TRANSMOGRIFICATION_H
 #define DEF_TRANSMOGRIFICATION_H
 
+#include "Singleton.h"
 #include <vector>
 #include "Player.h"
 #include "Config.h"
@@ -181,6 +182,6 @@ public:
     uint32 GetSetNpcText() const;
 };
 
-#define sTransmogrification ACE_Singleton<Transmogrification, ACE_Null_Mutex>::instance()
+#define sTransmogrification Trinity::Singleton<Transmogrification>::instance()
 
 #endif

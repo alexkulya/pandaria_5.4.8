@@ -20,7 +20,7 @@
 
 // For static or at-server-startup loaded spell data
 
-#include <ace/Singleton.h>
+#include "Singleton.h"
 
 #include "DBCStructure.h"
 #include "SharedDefines.h"
@@ -621,7 +621,7 @@ bool IsDiminishingReturnsGroupDurationLimited(DiminishingGroup group);
 
 class SpellMgr
 {
-    friend class ACE_Singleton<SpellMgr, ACE_Null_Mutex>;
+    friend class Trinity::Singleton<SpellMgr>;
     friend class ConditionMgr;
 
     // Constructors

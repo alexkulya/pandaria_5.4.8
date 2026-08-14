@@ -17,8 +17,8 @@
 
 #include "ChannelMgr.h"
 
-// ACE_Singleton is used below; it used to arrive through ChannelMgr.h
-#include <ace/Singleton.h>
+// Trinity::Singleton is used below; it used to arrive through ChannelMgr.h
+#include "Singleton.h"
 #include "Player.h"
 #include "World.h"
 #include "WorldSession.h"
@@ -32,13 +32,13 @@ ChannelMgr::~ChannelMgr()
 ChannelMgr* ChannelMgr::forTeam(uint32 team)
 {
     if (sWorld->getBoolConfig(CONFIG_ALLOW_TWO_SIDE_INTERACTION_CHANNEL))
-        return ACE_Singleton<AllianceChannelMgr, ACE_Null_Mutex>::instance();        // cross-faction
+        return Trinity::Singleton<AllianceChannelMgr>::instance();        // cross-faction
 
     if (team == ALLIANCE)
-        return ACE_Singleton<AllianceChannelMgr, ACE_Null_Mutex>::instance();
+        return Trinity::Singleton<AllianceChannelMgr>::instance();
 
     if (team == HORDE)
-        return ACE_Singleton<HordeChannelMgr, ACE_Null_Mutex>::instance();
+        return Trinity::Singleton<HordeChannelMgr>::instance();
 
     return NULL;
 }

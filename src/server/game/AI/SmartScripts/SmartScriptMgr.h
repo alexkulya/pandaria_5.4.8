@@ -18,6 +18,7 @@
 #ifndef TRINITY_SMARTSCRIPTMGR_H
 #define TRINITY_SMARTSCRIPTMGR_H
 
+#include "Singleton.h"
 #include "Common.h"
 #include "Creature.h"
 #include "CreatureAI.h"
@@ -1453,7 +1454,7 @@ typedef std::unordered_map<uint32, GuidList> GuidListMap;
 
 class SmartWaypointMgr
 {
-    friend class ACE_Singleton<SmartWaypointMgr, ACE_Null_Mutex>;
+    friend class Trinity::Singleton<SmartWaypointMgr>;
     SmartWaypointMgr() { }
     public:
         ~SmartWaypointMgr();
@@ -1479,7 +1480,7 @@ typedef std::unordered_map<int32, SmartAIEventList> SmartAIEventMap;
 
 class SmartAIMgr
 {
-    friend class ACE_Singleton<SmartAIMgr, ACE_Null_Mutex>;
+    friend class Trinity::Singleton<SmartAIMgr>;
     SmartAIMgr(){ }
     public:
         ~SmartAIMgr(){ }
@@ -1659,6 +1660,6 @@ class SmartAIMgr
         std::unordered_map<uint32, SpellEffectPair> _killCreditsSpellCache;
 };
 
-#define sSmartScriptMgr ACE_Singleton<SmartAIMgr, ACE_Null_Mutex>::instance()
-#define sSmartWaypointMgr ACE_Singleton<SmartWaypointMgr, ACE_Null_Mutex>::instance()
+#define sSmartScriptMgr Trinity::Singleton<SmartAIMgr>::instance()
+#define sSmartWaypointMgr Trinity::Singleton<SmartWaypointMgr>::instance()
 #endif

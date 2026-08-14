@@ -25,13 +25,13 @@
 
 #include <string>
 #include <unordered_map>
-#include <ace/Singleton.h>
+#include "Singleton.h"
 
 #define LOGGER_ROOT "root"
 
 class Log
 {
-    friend class ACE_Singleton<Log, ACE_Thread_Mutex>;
+    friend class Trinity::Singleton<Log>;
 
     typedef std::unordered_map<std::string, Logger> LoggerMap;
 
@@ -111,7 +111,7 @@ inline bool Log::ShouldLog(std::string const& type, LogLevel level) const
     return logLevel != LOG_LEVEL_DISABLED && logLevel <= level;
 }
 
-#define sLog ACE_Singleton<Log, ACE_Thread_Mutex>::instance()
+#define sLog Trinity::Singleton<Log>::instance()
 
 #if COMPILER != COMPILER_MICROSOFT
 #define TC_LOG_MESSAGE_BODY(level__, call__, filterType__, ...)     \

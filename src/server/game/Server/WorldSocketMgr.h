@@ -25,7 +25,7 @@
 #define SF_WORLDSOCKETMGR_H
 
 #include <ace/Basic_Types.h>
-#include <ace/Singleton.h>
+#include "Singleton.h"
 #include <ace/Thread_Mutex.h>
 
 class WorldSocket;
@@ -37,7 +37,7 @@ class WorldSocketMgr
 {
 public:
     friend class WorldSocket;
-    friend class ACE_Singleton<WorldSocketMgr, ACE_Thread_Mutex>;
+    friend class Trinity::Singleton<WorldSocketMgr>;
 
     /// Start network, listen at address:port .
     int StartNetwork(ACE_UINT16 port, const char* address);
@@ -67,7 +67,7 @@ private:
     class WorldSocketAcceptor* m_Acceptor;
 };
 
-#define sWorldSocketMgr ACE_Singleton<WorldSocketMgr, ACE_Thread_Mutex>::instance()
+#define sWorldSocketMgr Trinity::Singleton<WorldSocketMgr>::instance()
 
 #endif
 /// @}

@@ -34,7 +34,7 @@
 #include "Map.h"
 #include "ObjectAccessor.h"
 #include "ObjectDefines.h"
-#include <ace/Singleton.h>
+#include "Singleton.h"
 #include "VehicleDefines.h"
 #include <string>
 #include <map>
@@ -828,7 +828,7 @@ namespace ObjectVisibilityState
 class ObjectMgr
 {
     friend class PlayerDumpReader;
-    friend class ACE_Singleton<ObjectMgr, ACE_Null_Mutex>;
+    friend class Trinity::Singleton<ObjectMgr>;
 
     private:
         ObjectMgr();
@@ -1892,7 +1892,7 @@ class ObjectMgr
         PromotionAurasMap _promotionAuras;
 };
 
-#define sObjectMgr ACE_Singleton<ObjectMgr, ACE_Null_Mutex>::instance()
+#define sObjectMgr Trinity::Singleton<ObjectMgr>::instance()
 
 // scripting access functions
 bool LoadTrinityStrings(char const* table, int32 start_value = MAX_CREATURE_AI_TEXT_STRING_ID, int32 end_value = std::numeric_limits<int32>::min());

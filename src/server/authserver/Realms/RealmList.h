@@ -18,7 +18,7 @@
 #ifndef SF_REALMLIST_H
 #define SF_REALMLIST_H
 
-#include <ace/Singleton.h>
+#include "Singleton.h"
 #include <ace/Null_Mutex.h>
 #include <ace/INET_Addr.h>
 #include "Common.h"
@@ -78,5 +78,5 @@ private:
     time_t   m_NextUpdateTime;
 };
 
-#define sRealmList ACE_Singleton<RealmList, ACE_Null_Mutex>::instance()
+#define sRealmList Trinity::Singleton<RealmList>::instance()
 #endif

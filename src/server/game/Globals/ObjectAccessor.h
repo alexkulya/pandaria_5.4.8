@@ -19,7 +19,7 @@
 #define TRINITY_OBJECTACCESSOR_H
 
 #include "Define.h"
-#include <ace/Singleton.h>
+#include "Singleton.h"
 #include <ace/Thread_Mutex.h>
 
 #include "UpdateData.h"
@@ -81,7 +81,7 @@ class HashMapHolder
 
 class ObjectAccessor
 {
-    friend class ACE_Singleton<ObjectAccessor, ACE_Null_Mutex>;
+    friend class Trinity::Singleton<ObjectAccessor>;
     private:
         ObjectAccessor();
         ~ObjectAccessor();
@@ -215,5 +215,5 @@ class ObjectAccessor
         ACE_RW_Thread_Mutex i_corpseLock;
 };
 
-#define sObjectAccessor ACE_Singleton<ObjectAccessor, ACE_Null_Mutex>::instance()
+#define sObjectAccessor Trinity::Singleton<ObjectAccessor>::instance()
 #endif

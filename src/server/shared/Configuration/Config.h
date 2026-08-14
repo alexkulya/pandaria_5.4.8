@@ -21,7 +21,7 @@
 #include <string>
 #include <memory>
 #include <list>
-#include <ace/Singleton.h>
+#include "Singleton.h"
 #include <ace/Configuration_Import_Export.h>
 #include <ace/Thread_Mutex.h>
 
@@ -29,7 +29,7 @@ typedef std::shared_ptr<ACE_Configuration_Heap> Config;
 
 class ConfigMgr
 {
-    friend class ACE_Singleton<ConfigMgr, ACE_Null_Mutex>;
+    friend class Trinity::Singleton<ConfigMgr>;
     friend class ConfigLoader;
 
     ConfigMgr() { }
@@ -74,6 +74,6 @@ private:
     ConfigMgr& operator=(ConfigMgr const&);
 };
 
-#define sConfigMgr ACE_Singleton<ConfigMgr, ACE_Null_Mutex>::instance()
+#define sConfigMgr Trinity::Singleton<ConfigMgr>::instance()
 
 #endif
