@@ -90,6 +90,9 @@
 #include "Threading/LockedQueue.h"
 #include "Threading/Threading.h"
 
+#include <mutex>
+#include <shared_mutex>
+
 #include <ace/Basic_Types.h>
 #include <ace/Guard_T.h>
 #include <ace/RW_Thread_Mutex.h>
@@ -224,20 +227,22 @@ struct DbcStr
 
 #define MAX_QUERY_LEN 32*1024
 
+//! The ACE versions of these macros checked locked() and asserted when a guard
+//! failed to acquire, because an ACE guard reported failure by staying
+//! unlocked. The standard lock types cannot be constructed unlocked: they throw
+//! on failure, so the check has no equivalent and is gone rather than being
+//! faked.
 #define TRINITY_GUARD(MUTEX, LOCK) \
-  ACE_Guard< MUTEX > TRINITY_GUARD_OBJECT (LOCK); \
-    if (TRINITY_GUARD_OBJECT.locked() == 0) ASSERT(false);
+  std::lock_guard< MUTEX > TRINITY_GUARD_OBJECT (LOCK)
 
 //! For proper implementation of multiple-read, single-write pattern, use
-//! ACE_RW_Mutex as underlying @MUTEX
+//! std::shared_timed_mutex as underlying @MUTEX
 # define TRINITY_WRITE_GUARD(MUTEX, LOCK) \
-  ACE_Write_Guard< MUTEX > TRINITY_GUARD_OBJECT (LOCK); \
-    if (TRINITY_GUARD_OBJECT.locked() == 0) ASSERT(false);
+  std::unique_lock< MUTEX > TRINITY_GUARD_OBJECT (LOCK)
 
 //! For proper implementation of multiple-read, single-write pattern, use
-//! ACE_RW_Mutex as underlying @MUTEX
+//! std::shared_timed_mutex as underlying @MUTEX
 # define TRINITY_READ_GUARD(MUTEX, LOCK) \
-  ACE_Read_Guard< MUTEX > TRINITY_GUARD_OBJECT (LOCK); \
-    if (TRINITY_GUARD_OBJECT.locked() == 0) ASSERT(false);
+  std::shared_lock< MUTEX > TRINITY_GUARD_OBJECT (LOCK)
 
 #endif

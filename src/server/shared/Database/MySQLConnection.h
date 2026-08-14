@@ -15,6 +15,7 @@
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <mutex>
 #include <ace/Activation_Queue.h>
 
 #include "DatabaseWorkerPool.h"
@@ -99,13 +100,17 @@ class MySQLConnection
         {
             /// Tries to acquire lock. If lock is acquired by another thread
             /// the calling parent will just try another connection
-            return m_Mutex.tryacquire() != -1;
+            ///
+            /// The sense of the return value is the opposite of the ACE call
+            /// this replaced: tryacquire() returned 0 on success and -1 on
+            /// failure, whereas try_lock() returns true on success.
+            return m_Mutex.try_lock();
         }
 
         void Unlock()
         {
             /// Called by parent databasepool. Will let other threads access this connection
-            m_Mutex.release();
+            m_Mutex.unlock();
         }
 
         MYSQL* GetHandle()  { return m_Mysql; }
@@ -130,7 +135,7 @@ class MySQLConnection
         MYSQL *               m_Mysql;                      //! MySQL Handle.
         MySQLConnectionInfo&  m_connectionInfo;             //! Connection info (used for logging)
         ConnectionFlags       m_connectionFlags;            //! Connection flags (for preparing relevant statements)
-        ACE_Thread_Mutex      m_Mutex;
+        std::mutex      m_Mutex;
 };
 
 #endif

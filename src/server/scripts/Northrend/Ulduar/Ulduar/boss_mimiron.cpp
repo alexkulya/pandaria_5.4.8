@@ -15,6 +15,7 @@
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <mutex>
 #include "ScriptMgr.h"
 #include "SpellScript.h"
 #include "ulduar.h"
@@ -381,11 +382,11 @@ class boss_mimiron : public CreatureScript
                 if (_phase != PHASE_COMBAT)
                     return;
 
-                _mapMutex.acquire();
+                _mapMutex.lock();
                 bool res = true;
                 // Check if there is still a false value.
                 std::for_each(_isSelfRepairing.begin(), _isSelfRepairing.end(), EqualHelper(res));
-                _mapMutex.release();
+                _mapMutex.unlock();
                 if (res)
                 {
                     // We're down, baby.
@@ -866,37 +867,37 @@ class boss_mimiron : public CreatureScript
                         break;
                     // Repair stuff
                     case DO_LEVIATHAN_SELF_REPAIR_START:
-                        _mapMutex.acquire();
+                        _mapMutex.lock();
                         _isSelfRepairing[DATA_LEVIATHAN_MK_II] = true;
-                        _mapMutex.release();
+                        _mapMutex.unlock();
                         BotAliveCheck();
                         break;
                     case DO_LEVIATHAN_SELF_REPAIR_END:
-                        _mapMutex.acquire();
+                        _mapMutex.lock();
                         _isSelfRepairing[DATA_LEVIATHAN_MK_II] = false;
-                        _mapMutex.release();
+                        _mapMutex.unlock();
                         break;
                     case DO_VX001_SELF_REPAIR_START:
-                        _mapMutex.acquire();
+                        _mapMutex.lock();
                         _isSelfRepairing[DATA_VX_001] = true;
-                        _mapMutex.release();
+                        _mapMutex.unlock();
                         BotAliveCheck();
                         break;
                     case DO_VX001_SELF_REPAIR_END:
-                        _mapMutex.acquire();
+                        _mapMutex.lock();
                         _isSelfRepairing[DATA_VX_001] = false;
-                        _mapMutex.release();
+                        _mapMutex.unlock();
                         break;
                     case DO_AERIAL_SELF_REPAIR_START:
-                        _mapMutex.acquire();
+                        _mapMutex.lock();
                         _isSelfRepairing[DATA_AERIAL_UNIT] = true;
-                        _mapMutex.release();
+                        _mapMutex.unlock();
                         BotAliveCheck();
                         break;
                     case DO_AERIAL_SELF_REPAIR_END:
-                        _mapMutex.acquire();
+                        _mapMutex.lock();
                         _isSelfRepairing[DATA_AERIAL_UNIT] = false;
-                        _mapMutex.release();
+                        _mapMutex.unlock();
                         break;
                     // Achiev
                     case DATA_AVOIDED_ROCKET_STRIKES:
@@ -917,7 +918,7 @@ class boss_mimiron : public CreatureScript
             }
 
             private:
-                ACE_Mutex _mapMutex;
+                std::mutex _mapMutex;
                 std::map<uint32, bool> _isSelfRepairing;
                 std::map<BombIndices, bool> _setUpUsTheBomb;
                 Phases _phase;

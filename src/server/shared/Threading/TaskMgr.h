@@ -18,6 +18,7 @@
 #ifndef  TASK_SCHEDULER_H
 #define  TASK_SCHEDULER_H
 
+#include <mutex>
 #include "Common.h"
 #include "Timer.h"
 #include <memory>
@@ -109,7 +110,7 @@ public:
 
 private:
     typedef std::shared_ptr<TaskBase> TaskObject;
-    ACE_Based::LockedQueue<TaskObject, ACE_Thread_Mutex> _queue;
+    ACE_Based::LockedQueue<TaskObject, std::mutex> _queue;
     std::list<TaskObject> _tasks;
     std::chrono::milliseconds _max = std::chrono::milliseconds(25);
     static ThreadPool _pool;

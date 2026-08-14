@@ -22,6 +22,7 @@
 #ifndef __WORLDSESSION_H
 #define __WORLDSESSION_H
 
+#include <mutex>
 #include "Common.h"
 #include "SharedDefines.h"
 #include "AddonMgr.h"
@@ -1253,7 +1254,7 @@ class WorldSession : public Schedulable
         uint32 recruiterId;
         bool isRecruiter;
         bool m_hasBoost;
-        ACE_Based::LockedQueue<WorldPacket*, ACE_Thread_Mutex> _recvQueue;
+        ACE_Based::LockedQueue<WorldPacket*, std::mutex> _recvQueue;
         time_t timeLastWhoCommand;
         z_stream_s* _compressionStream;
 

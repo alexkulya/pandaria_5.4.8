@@ -18,6 +18,7 @@
 #ifndef SF_PLAYER_H
 #define SF_PLAYER_H
 
+#include <shared_mutex>
 #include "DBCStores.h"
 #include "GroupReference.h"
 #include "MapReference.h"
@@ -3561,7 +3562,7 @@ public:
     uint32 m_lastFallAbsoluteTime = 0;
 
     std::unordered_set<AuctionQueryContext*> m_activeAuctionQueries;
-    ACE_RW_Thread_Mutex m_activeAuctionQueriesLock;
+    std::shared_timed_mutex m_activeAuctionQueriesLock;
 
     void LeaveFromSoloQueueIfNeed();
     void UpdateKnockbackTime() { m_lastKnockbackTime = TimeValue::Now(); }

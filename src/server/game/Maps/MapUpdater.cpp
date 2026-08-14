@@ -15,6 +15,7 @@
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <mutex>
 #include "MapUpdater.h"
 #include "DelayExecutor.h"
 #include "Map.h"
@@ -80,7 +81,7 @@ class MapUpdateRequest : public ACE_Method_Request
 };
 
 MapUpdater::MapUpdater():
-m_executor(), m_mutex(), m_condition(m_mutex), pending_requests(0) { }
+m_executor(), m_mutex(), m_condition(), pending_requests(0) { }
 
 MapUpdater::~MapUpdater()
 {
@@ -101,10 +102,12 @@ int MapUpdater::deactivate()
 
 int MapUpdater::wait()
 {
-    TRINITY_GUARD(ACE_Thread_Mutex, m_mutex);
+    // Explicit unique_lock rather than TRINITY_GUARD: condition_variable::wait
+    // has to release and reacquire the mutex, which lock_guard cannot do.
+    std::unique_lock<std::mutex> guard(m_mutex);
 
     while (pending_requests > 0)
-        m_condition.wait();
+        m_condition.wait(guard);
 
     return 0;
 }
@@ -114,7 +117,7 @@ int MapUpdater::schedule_update(Map& map, ACE_UINT32 diff)
     MapUpdateRequest* rq = new MapUpdateRequest(map, *this, diff);
     rq->priority(calculate_priority(map));
 
-    TRINITY_GUARD(ACE_Thread_Mutex, m_mutex);
+    TRINITY_GUARD(std::mutex, m_mutex);
 
     ++pending_requests;
 
@@ -136,7 +139,7 @@ bool MapUpdater::activated()
 
 void MapUpdater::update_finished()
 {
-    TRINITY_GUARD(ACE_Thread_Mutex, m_mutex);
+    TRINITY_GUARD(std::mutex, m_mutex);
 
     if (pending_requests == 0)
     {
@@ -146,7 +149,7 @@ void MapUpdater::update_finished()
 
     --pending_requests;
 
-    m_condition.broadcast();
+    m_condition.notify_all();
 }
 
 uint32 MapUpdater::calculate_priority(Map& map)

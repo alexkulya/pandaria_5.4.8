@@ -18,6 +18,7 @@
 #ifndef SF_WARDENCHECKMGR_H
 #define SF_WARDENCHECKMGR_H
 
+#include <shared_mutex>
 #include "Singleton.h"
 #include <map>
 #include "Cryptography/BigNumber.h"
@@ -73,7 +74,7 @@ class WardenCheckMgr
 
         void LoadWardenChecks(bool reload = false);
 
-        ACE_RW_Mutex _checkStoreLock;
+        std::shared_timed_mutex _checkStoreLock;
 
     private:
         CheckContainer CheckStore;

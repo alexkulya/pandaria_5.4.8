@@ -15,6 +15,7 @@
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <mutex>
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -251,7 +252,7 @@ namespace VMAP
     WorldModel* VMapManager2::acquireModelInstance(const std::string& basepath, const std::string& filename)
     {
         //! Critical section, thread safe access to iLoadedModelFiles
-        TRINITY_GUARD(ACE_Thread_Mutex, LoadedModelFilesLock);
+        TRINITY_GUARD(std::mutex, LoadedModelFilesLock);
 
         ModelFileMap::iterator model = iLoadedModelFiles.find(filename);
         if (model == iLoadedModelFiles.end())
@@ -274,7 +275,7 @@ namespace VMAP
     void VMapManager2::releaseModelInstance(const std::string &filename)
     {
         //! Critical section, thread safe access to iLoadedModelFiles
-        TRINITY_GUARD(ACE_Thread_Mutex, LoadedModelFilesLock);
+        TRINITY_GUARD(std::mutex, LoadedModelFilesLock);
 
         ModelFileMap::iterator model = iLoadedModelFiles.find(filename);
         if (model == iLoadedModelFiles.end())

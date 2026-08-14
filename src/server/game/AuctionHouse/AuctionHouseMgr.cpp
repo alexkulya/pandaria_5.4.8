@@ -15,6 +15,7 @@
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <shared_mutex>
 #include "Common.h"
 #include "ObjectMgr.h"
 #include "Player.h"
@@ -42,7 +43,7 @@ AuctionQueryContext::~AuctionQueryContext()
 {
     if (Player* player = ObjectAccessor::FindPlayerInOrOutOfWorld(playerGuid))
     {
-        TRINITY_WRITE_GUARD(ACE_RW_Thread_Mutex, player->m_activeAuctionQueriesLock);
+        TRINITY_WRITE_GUARD(std::shared_timed_mutex, player->m_activeAuctionQueriesLock);
         player->m_activeAuctionQueries.erase(this);
     }
 }
@@ -446,7 +447,7 @@ void AuctionHouseMgr::LoadAuctions()
 
 void AuctionHouseMgr::AddAItem(Item* it)
 {
-    TRINITY_WRITE_GUARD(ACE_RW_Thread_Mutex, mAitemsLock);
+    TRINITY_WRITE_GUARD(std::shared_timed_mutex, mAitemsLock);
 
     ASSERT(it);
     ASSERT(mAitems.find(it->GetGUIDLow()) == mAitems.end());
@@ -455,7 +456,7 @@ void AuctionHouseMgr::AddAItem(Item* it)
 
 bool AuctionHouseMgr::RemoveAItem(uint32 id)
 {
-    TRINITY_WRITE_GUARD(ACE_RW_Thread_Mutex, mAitemsLock);
+    TRINITY_WRITE_GUARD(std::shared_timed_mutex, mAitemsLock);
 
     ItemMap::iterator i = mAitems.find(id);
     if (i == mAitems.end())
@@ -554,7 +555,7 @@ void AuctionHouseMgr::QueryAuctionItems(uint32 auctioneerFaction, Player* player
         context->sortOrder = sortOrder;
 
         {
-            TRINITY_WRITE_GUARD(ACE_RW_Thread_Mutex, player->m_activeAuctionQueriesLock);
+            TRINITY_WRITE_GUARD(std::shared_timed_mutex, player->m_activeAuctionQueriesLock);
             player->m_activeAuctionQueries.insert(context);
         }
         searchQueries.enqueue(context);
@@ -604,7 +605,7 @@ AuctionHouseEntry const* AuctionHouseMgr::GetAuctionHouseEntry(uint32 factionTem
 void AuctionHouseObject::AddAuction(AuctionEntry* auction, bool skipLock)
 {
     if (!skipLock)
-        AuctionsMapLock.acquire_write();
+        AuctionsMapLock.lock();
 
     ASSERT(auction);
 
@@ -612,13 +613,13 @@ void AuctionHouseObject::AddAuction(AuctionEntry* auction, bool skipLock)
     sScriptMgr->OnAuctionAdd(this, auction);
 
     if (!skipLock)
-        AuctionsMapLock.release();
+        AuctionsMapLock.unlock();
 }
 
 bool AuctionHouseObject::RemoveAuction(AuctionEntry* auction, bool skipLock)
 {
     if (!skipLock)
-        AuctionsMapLock.acquire_write();
+        AuctionsMapLock.lock();
 
     bool wasInMap = AuctionsMap.erase(auction->Id) ? true : false;
 
@@ -629,14 +630,14 @@ bool AuctionHouseObject::RemoveAuction(AuctionEntry* auction, bool skipLock)
     auction = NULL;
 
     if (!skipLock)
-        AuctionsMapLock.release();
+        AuctionsMapLock.unlock();
 
     return wasInMap;
 }
 
 void AuctionHouseObject::Update()
 {
-    TRINITY_WRITE_GUARD(ACE_RW_Thread_Mutex, AuctionsMapLock);
+    TRINITY_WRITE_GUARD(std::shared_timed_mutex, AuctionsMapLock);
 
     time_t curTime = sWorld->GetGameTime();
     ///- Handle expired auctions
@@ -693,7 +694,7 @@ void AuctionHouseObject::Update()
 
 void AuctionHouseObject::BuildListBidderItems(WorldPacket& data, Player* player, uint32& count, uint32& totalcount)
 {
-    TRINITY_READ_GUARD(ACE_RW_Thread_Mutex, AuctionsMapLock);
+    TRINITY_READ_GUARD(std::shared_timed_mutex, AuctionsMapLock);
 
     for (AuctionEntryMap::const_iterator itr = AuctionsMap.begin(); itr != AuctionsMap.end(); ++itr)
     {
@@ -710,7 +711,7 @@ void AuctionHouseObject::BuildListBidderItems(WorldPacket& data, Player* player,
 
 void AuctionHouseObject::BuildListOwnerItems(WorldPacket& data, Player* player, uint32& count, uint32& totalcount)
 {
-    TRINITY_READ_GUARD(ACE_RW_Thread_Mutex, AuctionsMapLock);
+    TRINITY_READ_GUARD(std::shared_timed_mutex, AuctionsMapLock);
 
     for (AuctionEntryMap::const_iterator itr = AuctionsMap.begin(); itr != AuctionsMap.end(); ++itr)
     {
@@ -731,7 +732,7 @@ bool AuctionHouseObject::BuildListAuctionItems(WorldPacket& data, Player* player
     bool getAll, std::vector<int8> const& sortOrder,
     uint32& count, uint32& totalcount, uint32& throttle)
 {
-    TRINITY_READ_GUARD(ACE_RW_Thread_Mutex, AuctionsMapLock);
+    TRINITY_READ_GUARD(std::shared_timed_mutex, AuctionsMapLock);
 
     uint32 now = getMSTime();
     bool isExecutedInMainThread = usable || sWorld->getBoolConfig(CONFIG_AUCTIONHOUSE_FORCE_MAIN_THREAD);
@@ -759,9 +760,28 @@ bool AuctionHouseObject::BuildListAuctionItems(WorldPacket& data, Player* player
     AuctionHouseMgr* aucMgr = sAuctionMgr;
     ObjectMgr* objMgr = sObjectMgr;
 
-    int cacheLock = -1;
+    // The ACE version tracked only whether a lock was held, because release()
+    // was the same call for a read and a write lock. std::shared_timed_mutex
+    // needs unlock_shared() or unlock() depending on how it was taken, so the
+    // mode has to be tracked rather than just the fact of holding it.
+    enum CacheLockMode { CACHE_UNLOCKED, CACHE_SHARED, CACHE_EXCLUSIVE };
+    CacheLockMode cacheLock = CACHE_UNLOCKED;
+
+    auto releaseCacheLock = [&]()
+    {
+        if (cacheLock == CACHE_SHARED)
+            ItemNameCacheLock.unlock_shared();
+        else if (cacheLock == CACHE_EXCLUSIVE)
+            ItemNameCacheLock.unlock();
+
+        cacheLock = CACHE_UNLOCKED;
+    };
+
     if (hasNameSortOrder || !wsearchedname.empty())
-        cacheLock = ItemNameCacheLock.acquire_read();
+    {
+        ItemNameCacheLock.lock_shared();
+        cacheLock = CACHE_SHARED;
+    }
 
     for (auto&& entry : AuctionsMap)
     {
@@ -838,17 +858,21 @@ bool AuctionHouseObject::BuildListAuctionItems(WorldPacket& data, Player* player
                     }
                 }
 
-                // Switch to write lock
-                if (cacheLock != -1)
-                    ItemNameCacheLock.release();
-                cacheLock = ItemNameCacheLock.acquire_write();
+                // Switch to write lock. There is no atomic upgrade from a
+                // shared to an exclusive lock, exactly as there was none in
+                // ACE: the shared lock is dropped first, so another thread can
+                // insert the same entry in between. The lookup below tolerates
+                // that because it takes the map entry by reference afterwards.
+                releaseCacheLock();
+                ItemNameCacheLock.lock();
+                cacheLock = CACHE_EXCLUSIVE;
 
                 wname = &ItemNameCache[loc_idx][cacheEntry];
 
                 // Switch back to read lock
-                if (cacheLock != -1)
-                    ItemNameCacheLock.release();
-                cacheLock = ItemNameCacheLock.acquire_read();
+                releaseCacheLock();
+                ItemNameCacheLock.lock_shared();
+                cacheLock = CACHE_SHARED;
 
                 if (!Utf8toWStr(name, *wname))
                     ASSERT(false);
@@ -871,8 +895,7 @@ bool AuctionHouseObject::BuildListAuctionItems(WorldPacket& data, Player* player
         matched.push_back(new AuctionEntryForSorting(entry.second, proto, wname, owner));
     }
 
-    if (cacheLock != -1)
-        ItemNameCacheLock.release();
+    releaseCacheLock();
 
     totalcount = matched.size();
 

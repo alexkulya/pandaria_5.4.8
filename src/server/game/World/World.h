@@ -22,6 +22,8 @@
 #ifndef SF_WORLD_H
 #define SF_WORLD_H
 
+#include <shared_mutex>
+#include <mutex>
 #include "Common.h"
 #include "Timer.h"
 #include "Singleton.h"
@@ -1501,7 +1503,7 @@ class World
         uint32 m_MaxPlayerCount;
 
         std::map<uint32, projectMemberInfo> m_projectMemberInfos;
-        ACE_RW_Thread_Mutex m_projectMemberInfosLock;
+        std::shared_timed_mutex m_projectMemberInfosLock;
         void UpdateprojectMemberInfos();
 
         std::string m_newCharString;
@@ -1540,7 +1542,7 @@ class World
         time_t m_NextServerRestart;
 
         // CLI command holder to be thread safe
-        ACE_Based::LockedQueue<CliCommandHolder*, ACE_Thread_Mutex> cliCmdQueue;
+        ACE_Based::LockedQueue<CliCommandHolder*, std::mutex> cliCmdQueue;
 
         // scheduled reset times
         time_t m_NextDailyQuestReset;
@@ -1555,7 +1557,7 @@ class World
 
         // sessions that are added async
         void AddSession_(WorldSession* s);
-        ACE_Based::LockedQueue<WorldSession*, ACE_Thread_Mutex> addSessQueue;
+        ACE_Based::LockedQueue<WorldSession*, std::mutex> addSessQueue;
 
         // used versions
         std::string m_DBVersion;
@@ -1571,7 +1573,7 @@ class World
         void LoadAccountCacheData();
 
         std::map<uint32, AccountCacheData> _accountCacheData;
-        ACE_RW_Thread_Mutex _accountCacheDataLock;
+        std::shared_timed_mutex _accountCacheDataLock;
 
         void ProcessQueryCallbacks();
         ACE_Future_Set<PreparedQueryResult> m_realmCharCallbacks;

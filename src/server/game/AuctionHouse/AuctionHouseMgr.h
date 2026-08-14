@@ -18,6 +18,7 @@
 #ifndef SF_AUCTION_HOUSE_MGR_H
 #define SF_AUCTION_HOUSE_MGR_H
 
+#include <shared_mutex>
 #include "Singleton.h"
 
 #include "Common.h"
@@ -130,7 +131,7 @@ class AuctionHouseObject
   public:
     ~AuctionHouseObject()
     {
-        TRINITY_WRITE_GUARD(ACE_RW_Thread_Mutex, AuctionsMapLock);
+        TRINITY_WRITE_GUARD(std::shared_timed_mutex, AuctionsMapLock);
         for (AuctionEntryMap::iterator itr = AuctionsMap.begin(); itr != AuctionsMap.end(); ++itr)
             delete itr->second;
     }
@@ -145,13 +146,13 @@ class AuctionHouseObject
     AuctionEntry* GetAuction(uint32 id, bool skipLock = false)
     {
         if (!skipLock)
-            AuctionsMapLock.acquire_read();
+            AuctionsMapLock.lock_shared();
 
         AuctionEntryMap::const_iterator itr = AuctionsMap.find(id);
         AuctionEntry* result = itr != AuctionsMap.end() ? itr->second : NULL;
 
         if (!skipLock)
-            AuctionsMapLock.release();
+            AuctionsMapLock.unlock_shared();
 
         return result;
     }
@@ -172,9 +173,9 @@ class AuctionHouseObject
 
   private:
     AuctionEntryMap AuctionsMap;
-    ACE_RW_Thread_Mutex AuctionsMapLock;
+    std::shared_timed_mutex AuctionsMapLock;
     std::map<uint64, std::wstring> ItemNameCache[TOTAL_LOCALES];
-    ACE_RW_Thread_Mutex ItemNameCacheLock;
+    std::shared_timed_mutex ItemNameCacheLock;
 };
 
 class AuctionHouseMgr
@@ -201,7 +202,7 @@ class AuctionHouseMgr
 
         Item* GetAItem(uint32 id)
         {
-            TRINITY_READ_GUARD(ACE_RW_Thread_Mutex, mAitemsLock);
+            TRINITY_READ_GUARD(std::shared_timed_mutex, mAitemsLock);
 
             ItemMap::const_iterator itr = mAitems.find(id);
             if (itr != mAitems.end())
@@ -249,7 +250,7 @@ class AuctionHouseMgr
         AuctionHouseObject mNeutralAuctions;
 
         ItemMap mAitems;
-        ACE_RW_Thread_Mutex mAitemsLock;
+        std::shared_timed_mutex mAitemsLock;
         std::thread searchThread;
         ACE_Activation_Queue searchQueries;
         std::unique_ptr<LogFile> logger;

@@ -18,6 +18,7 @@
 #ifndef SF_AUTHSOCKET_H
 #define SF_AUTHSOCKET_H
 
+#include <mutex>
 #include "Common.h"
 #include "BigNumber.h"
 #include "RealmSocket.h"
@@ -54,7 +55,7 @@ public:
     void _SetVSFields(const std::string& rI);
 
     FILE* pPatch;
-    ACE_Thread_Mutex patcherLock;
+    std::mutex patcherLock;
 
 private:
     RealmSocket& socket_;

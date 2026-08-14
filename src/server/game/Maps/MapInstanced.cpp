@@ -15,6 +15,7 @@
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <mutex>
 #include "MapInstanced.h"
 #include "ObjectMgr.h"
 #include "MapManager.h"
@@ -189,7 +190,7 @@ Map* MapInstanced::CreateInstanceForPlayer(const uint32 mapId, Player* player)
 InstanceMap* MapInstanced::CreateInstance(uint32 InstanceId, InstanceSave* save, Difficulty difficulty, bool isLfgMap)
 {
     // load/create a map
-    TRINITY_GUARD(ACE_Thread_Mutex, Lock);
+    TRINITY_GUARD(std::mutex, Lock);
 
     // make sure we have a valid map id
     const MapEntry* entry = sMapStore.LookupEntry(GetId());
@@ -228,7 +229,7 @@ InstanceMap* MapInstanced::CreateInstance(uint32 InstanceId, InstanceSave* save,
 BattlegroundMap* MapInstanced::CreateBattleground(uint32 InstanceId, Battleground* bg)
 {
     // load/create a map
-    TRINITY_GUARD(ACE_Thread_Mutex, Lock);
+    TRINITY_GUARD(std::mutex, Lock);
 
     TC_LOG_DEBUG("maps", "MapInstanced::CreateBattleground: map bg %d for %d created.", InstanceId, GetId());
 

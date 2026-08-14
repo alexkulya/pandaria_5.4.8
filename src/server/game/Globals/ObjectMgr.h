@@ -18,6 +18,7 @@
 #ifndef SF_OBJECTMGR_H
 #define SF_OBJECTMGR_H
 
+#include <mutex>
 #include "Log.h"
 #include "Object.h"
 #include "Bag.h"
