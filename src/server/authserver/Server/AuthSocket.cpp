@@ -901,8 +901,10 @@ bool AuthSocket::_HandleRealmList()
     // Update realm list if need
     sRealmList->UpdateIfNeed();
 
-    ACE_INET_Addr clientAddr;
-    socket().peer().get_remote_addr(clientAddr);
+    // Built from the address the socket recorded on accept rather than from the
+    // ACE peer stream, which no longer exists. Realm still stores addresses as
+    // ACE_INET_Addr, so the type here is unchanged.
+    ACE_INET_Addr clientAddr(socket().getRemotePort(), socket().getRemoteAddress().c_str());
 
     // Circle through realms in the RealmList and construct the return packet (including # of user characters in each realm)
     ByteBuffer pkt;

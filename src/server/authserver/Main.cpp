@@ -23,10 +23,10 @@
 * authentication server
 */
 
-#include <ace/Dev_Poll_Reactor.h>
-#include <ace/TP_Reactor.h>
 #include <ace/ACE.h>
 #include <ace/Sig_Handler.h>
+#include <boost/asio/io_context.hpp>
+#include <chrono>
 #include <openssl/opensslv.h>
 #include <openssl/crypto.h>
 #include "OpenSSLCrypto.h"
@@ -39,7 +39,7 @@
 #include "Util.h"
 #include "SignalHandler.h"
 #include "RealmList.h"
-#include "RealmAcceptor.h"
+#include "RealmSocketMgr.h"
 #include "AppenderDB.h"
 #if defined(OPENSSL_VERSION_MAJOR) && (OPENSSL_VERSION_MAJOR >= 3)
 #include <openssl/provider.h>
@@ -156,11 +156,10 @@ extern int main(int argc, char** argv)
 
     TC_LOG_WARN("server.authserver", "%s (Library: %s)", OPENSSL_VERSION_TEXT, OpenSSL_version(OPENSSL_VERSION));
 
-#if defined (ACE_HAS_EVENT_POLL) || defined (ACE_HAS_DEV_POLL)
-    ACE_Reactor::instance(new ACE_Reactor(new ACE_Dev_Poll_Reactor(ACE::max_handles(), 1), 1), true);
-#else
-    ACE_Reactor::instance(new ACE_Reactor(new ACE_TP_Reactor(), true), true);
-#endif
+    // The io_context the acceptor runs on. Accepted sockets are moved onto the
+    // RealmSocketMgr's own network threads, so this one only ever handles the
+    // listener and the shutdown poll.
+    boost::asio::io_context ioContext;
 
     TC_LOG_DEBUG("server.authserver", "Max allowed open files is %d", ACE::max_handles());
 
@@ -190,8 +189,6 @@ extern int main(int argc, char** argv)
     }
 
     // Launch the listening network socket
-    RealmAcceptor acceptor;
-
     int32 rmport = sConfigMgr->GetIntDefault("RealmServerPort", 3724);
     if (rmport < 0 || rmport > 0xFFFF)
     {
@@ -201,9 +198,16 @@ extern int main(int argc, char** argv)
 
     std::string bind_ip = sConfigMgr->GetStringDefault("BindIP", "0.0.0.0");
 
-    ACE_INET_Addr bind_addr(uint16(rmport), bind_ip.c_str());
+    // One network thread matches the single-reactor behaviour the ACE build
+    // had; the pool exists so this can be raised without touching code.
+    int32 networkThreads = sConfigMgr->GetIntDefault("Network.Threads", 1);
+    if (networkThreads <= 0)
+    {
+        TC_LOG_ERROR("server.authserver", "Network.Threads must be greater than 0");
+        return 1;
+    }
 
-    if (acceptor.open(bind_addr, ACE_Reactor::instance(), ACE_NONBLOCK) == -1)
+    if (!sRealmSocketMgr.StartNetwork(ioContext, bind_ip, uint16(rmport), networkThreads))
     {
         TC_LOG_ERROR("server.authserver", "Auth server can not bind to %s:%d", bind_ip.c_str(), rmport);
         return 1;
@@ -289,11 +293,11 @@ extern int main(int argc, char** argv)
     // Wait for termination signal
     while (!stopEvent)
     {
-        // dont move this outside the loop, the reactor will modify it
-        ACE_Time_Value interval(0, 100000);
-
-        if (ACE_Reactor::instance()->run_reactor_event_loop(interval) == -1)
-            break;
+        // Same 100ms slice the reactor loop used, so the MySQL keepalive
+        // cadence below and the shutdown latency are both unchanged.
+        // run_for stops the context at the deadline, hence the restart().
+        ioContext.run_for(std::chrono::milliseconds(100));
+        ioContext.restart();
 
         if ((++loopCounter) == numLoops)
         {
@@ -302,6 +306,11 @@ extern int main(int argc, char** argv)
             LoginDatabase.KeepAlive();
         }
     }
+
+    // Stop the network before the database: sockets in flight may still be
+    // issuing login queries, and tearing the pool down underneath them would
+    // fault instead of failing cleanly.
+    sRealmSocketMgr.StopNetwork();
 
     // Close the Database Pool and library
     StopDB();

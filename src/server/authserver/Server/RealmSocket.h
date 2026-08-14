@@ -18,17 +18,22 @@
 #ifndef SF_REALMSOCKET_H
 #define SF_REALMSOCKET_H
 
-#include <ace/Synch_Traits.h>
-#include <ace/Svc_Handler.h>
-#include <ace/SOCK_Stream.h>
-#include <ace/Message_Block.h>
-#include <ace/Basic_Types.h>
 #include "Common.h"
+#include "Socket.h"
 
-class RealmSocket : public ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH>
+#include <boost/asio/ip/tcp.hpp>
+
+#include <string>
+
+// Transport for the auth protocol, now backed by Boost.Asio instead of
+// ACE_Svc_Handler.
+//
+// The public API is deliberately unchanged from the ACE version: AuthSocket
+// contains the SRP6 handshake and reads through recv/recv_soft/recv_skip, so
+// keeping these signatures keeps that file out of this migration entirely.
+class RealmSocket : public Socket<RealmSocket>
 {
-private:
-    typedef ACE_Svc_Handler<ACE_SOCK_STREAM, ACE_NULL_SYNCH> Base;
+    typedef Socket<RealmSocket> Base;
 
 public:
     class Session
@@ -42,38 +47,43 @@ public:
         virtual void OnClose(void) = 0;
     };
 
-    RealmSocket(void);
+    explicit RealmSocket(boost::asio::ip::tcp::socket&& socket);
     virtual ~RealmSocket(void);
 
+    void Start() override;
+
+    // Bytes received and not yet consumed.
     size_t recv_len(void) const;
+
+    // Copies len bytes out without consuming them; false when fewer are
+    // buffered. This peek-then-commit pattern is how AuthSocket waits for a
+    // complete packet before parsing it.
     bool recv_soft(char *buf, size_t len);
+
     bool recv(char *buf, size_t len);
     void recv_skip(size_t len);
 
     bool send(const char *buf, size_t len);
 
+    // Kept for AuthSocket, which calls it to drop abusive clients. Mapped to a
+    // delayed close so a rejection packet queued just before it still reaches
+    // the client: with async writes an immediate close would discard it, which
+    // the ACE version did not do because send() tried a direct write first.
+    void shutdown(void);
+
     const std::string& getRemoteAddress(void) const;
-
     uint16 getRemotePort(void) const;
-
-    virtual int open(void *);
-
-    virtual int close(u_long);
-
-    virtual int handle_input(ACE_HANDLE = ACE_INVALID_HANDLE);
-    virtual int handle_output(ACE_HANDLE = ACE_INVALID_HANDLE);
-
-    virtual int handle_close(ACE_HANDLE = ACE_INVALID_HANDLE, ACE_Reactor_Mask = ACE_Event_Handler::ALL_EVENTS_MASK);
 
     void set_session(Session* session);
 
-private:
-    ssize_t noblk_send(ACE_Message_Block &message_block);
+protected:
+    bool ReadHandler() override;
+    void OnClose() override;
 
-    ACE_Message_Block input_buffer_;
+private:
     Session* session_;
     std::string _remoteAddress;
     uint16 _remotePort;
 };
 
-#endif /* __REALMSOCKET_H__ */
+#endif /* SF_REALMSOCKET_H */
