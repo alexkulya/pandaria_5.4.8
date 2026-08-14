@@ -24,18 +24,28 @@
 
 #include "Common.h"
 
-#include <ace/Reactor.h>
+#include <boost/asio/io_context.hpp>
 
+#include <memory>
+
+class AsyncAcceptor;
+
+// Owns the RA listener. Still an ACE_Based::Runnable so Master.cpp keeps
+// starting it the same way -- the thread abstraction is a separate migration
+// from the socket one, and mixing the two would widen this change for nothing.
 class RARunnable : public ACE_Based::Runnable
 {
 public:
     RARunnable();
     virtual ~RARunnable();
+
     void run() override;
 
 private:
-    ACE_Reactor* m_Reactor;
+    void OnAccept(boost::asio::ip::tcp::socket&& socket);
 
+    boost::asio::io_context _ioContext;
+    std::unique_ptr<AsyncAcceptor> _acceptor;
 };
 
 #endif /* _TRINITY_RARUNNABLE_H_ */
