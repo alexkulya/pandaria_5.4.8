@@ -323,7 +323,8 @@ enum SpellState
     SPELL_STATE_CASTING   = 2,
     SPELL_STATE_FINISHED  = 3,
     SPELL_STATE_IDLE      = 4,
-    SPELL_STATE_DELAYED   = 5
+    SPELL_STATE_DELAYED   = 5,
+    SPELL_STATE_QUEUED    = 6
 };
 
 enum SpellEffectHandleMode
@@ -537,7 +538,7 @@ class Spell
 
         GameObject* SearchSpellFocus();
 
-        void prepare(SpellCastTargets const* targets, AuraEffect const* triggeredByAura = NULL);
+        void prepare(SpellCastTargets const* targets, AuraEffect const* triggeredByAura = NULL, uint32 gcd = 0, bool isQueuedSpell = false);
         void cancel();
         void update(uint32 difftime);
         void cast(bool skipCheck = false);
@@ -659,7 +660,7 @@ class Spell
         int32 GetPowerEntryIndex() const { return m_powerEntryIndex; }
         Powers GetPowerType() const { return m_powerType; }
 
-        void UpdatePointers();                              // must be used at call Spell code after time delay (non triggered spell cast/update spell call/etc)
+        bool UpdatePointers();                              // must be used at call Spell code after time delay (non triggered spell cast/update spell call/etc)
 
         void CleanupTargetList();
 
@@ -1003,15 +1004,17 @@ typedef void(Spell::*pEffect)(SpellEffIndex effIndex);
 class SpellEvent : public BasicEvent
 {
     public:
-        SpellEvent(Spell* spell);
+        SpellEvent(Spell* spell, bool queued = false);
         virtual ~SpellEvent();
 
         virtual bool Execute(uint64 e_time, uint32 p_time);
         virtual void Abort(uint64 e_time);
         virtual bool IsDeletable() const;
         Spell* GetSpell() const { return m_Spell; }
+        bool IsQueuedSpellEvent() const { return _queued; }
     protected:
         Spell* m_Spell;
+        bool _queued = false;
 };
 
 class MissileData

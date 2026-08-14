@@ -474,7 +474,7 @@ PlayerAI::TargetedSpell PlayerAI::VerifySpellCast(uint32 spellId, Unit* target)
     if (!spellInfo)
         return {};
 
-    if (me->GetGlobalCooldownMgr().HasGlobalCooldown(spellInfo))
+    if (me->GetGlobalCooldownMgr().HasGlobalCooldown(me, spellInfo))
         return {};
 
     Spell* spell = new Spell(me, spellInfo, TRIGGERED_NONE);

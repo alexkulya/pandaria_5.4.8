@@ -760,6 +760,7 @@ Player::Player(WorldSession* session) : Unit(true), phaseMgr(this), hasForcedMov
 
     m_regenTimer = 0;
     m_regenTimerCount = 0;
+    m_foodEmoteTimerCount = 0;
     m_weaponChangeTimer = 0;
     _readyCheckTimer = 0;
 
@@ -829,7 +830,7 @@ Player::Player(WorldSession* session) : Unit(true), phaseMgr(this), hasForcedMov
     }
 
     // Played Time Reward
-    ptr_Interval = sWorld->getIntConfig(CONFIG_TIME_REWARD_INTERVAL) * 1000;
+    ptr_Interval = sWorld->getIntConfig(CONFIG_PLAYED_TIME_REWARD_INTERVAL) * 1000;
 
     m_logintime = time(NULL);
     m_Last_tick = m_logintime;
@@ -952,6 +953,7 @@ Player::Player(WorldSession* session) : Unit(true), phaseMgr(this), hasForcedMov
     transcendence_spirit = NULL;
 
     m_dynamicValuesCount = PLAYER_DYNAMIC_END;
+    ResetSpellQueue();
 }
 
 Player::~Player()
@@ -2827,6 +2829,7 @@ void Player::RegenerateAll()
     }
 
     m_regenTimerCount += m_regenTimer;
+    m_foodEmoteTimerCount += m_regenTimer;
 
     Regenerate(POWER_ENERGY);
     Regenerate(POWER_MANA);
@@ -2901,6 +2904,32 @@ void Player::RegenerateAll()
     }
 
     m_regenTimer = 0;
+
+    if (m_foodEmoteTimerCount >= 5000)
+    {
+        std::vector<AuraEffect*> auraList;
+        AuraEffectList const& ModRegenAuras = GetAuraEffectsByType(SPELL_AURA_MOD_REGEN);
+        AuraEffectList const& ModPowerRegenAuras = GetAuraEffectsByType(SPELL_AURA_MOD_POWER_REGEN);
+
+        auraList.reserve(ModRegenAuras.size() + ModPowerRegenAuras.size());
+        auraList.insert(auraList.end(), ModRegenAuras.begin(), ModRegenAuras.end());
+        auraList.insert(auraList.end(), ModPowerRegenAuras.begin(), ModPowerRegenAuras.end());
+
+        for (auto itr = auraList.begin(); itr != auraList.end(); ++itr)
+        {
+            if ((*itr)->GetBase()->HasEffectType(SPELL_AURA_MOD_REGEN) && (*itr)->GetSpellInfo()->HasAuraInterruptFlag(SpellAuraInterruptFlags::AURA_INTERRUPT_FLAG_NOT_SEATED))
+            {
+                SendPlaySpellVisualKit(SPELL_VISUAL_KIT_FOOD, 0, 0);
+                break;
+            }
+            else if ((*itr)->GetBase()->HasEffectType(SPELL_AURA_MOD_POWER_REGEN) && (*itr)->GetSpellInfo()->HasAuraInterruptFlag(SpellAuraInterruptFlags::AURA_INTERRUPT_FLAG_NOT_SEATED))
+            {
+                SendPlaySpellVisualKit(SPELL_VISUAL_KIT_DRINK, 0, 0);
+                break;
+            }
+        }
+        m_foodEmoteTimerCount -= 5000;
+    }
 }
 
 void Player::Regenerate(Powers power)
@@ -19875,6 +19904,38 @@ bool Player::IsAllowedToLoot(Creature const* creature)
     }
 
     return false;
+}
+
+void Player::QueueSpell(Spell* p_Spell)
+{
+    m_QueuedSpell = p_Spell;
+}
+
+void Player::ResetSpellQueue()
+{
+    m_QueuedSpell = nullptr;
+    m_Events.KillCustomEvents([=](BasicEvent* event)
+        {
+            if (auto spellEvent = dynamic_cast<SpellEvent*>(event))
+            {
+                return spellEvent->GetSpell() != GetCurrentSpell(CURRENT_GENERIC_SPELL)
+                    && spellEvent->GetSpell() != GetCurrentSpell(CURRENT_MELEE_SPELL)
+                    && spellEvent->GetSpell() != GetCurrentSpell(CURRENT_CHANNELED_SPELL)
+                    && spellEvent->IsQueuedSpellEvent();
+            }
+            else
+                return false;
+        });
+}
+
+bool Player::QueueSystemEnabled()
+{
+    return sWorld->getBoolConfig(WorldBoolConfigs::CONFIG_SPELL_QUEUE_SYSTEM_ENABLED);
+}
+
+uint32 Player::GetQueueSpellTime()
+{
+    return sWorld->getIntConfig(WorldIntConfigs::CONFIG_SPELL_QUEUE_SYSTEM_GCD_TIME);
 }
 
 void Player::_LoadActions(PreparedQueryResult result)

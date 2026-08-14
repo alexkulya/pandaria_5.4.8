@@ -335,10 +335,14 @@ class boss_wase_mari : public CreatureScript
                         case EVENT_CALL_WATER:
                         {
                             Talk(TALK_CALL_WATER);
+
                             if (Creature* trigger = Unit::GetCreature(*me, foutainTrigger[foutainCount]))
                             {
-                                me->CastSpell(trigger, SPELL_CALL_WATER, false);
-                                trigger->AddAura(SPELL_CORRUPTED_FOUTAIN, trigger);
+                                me->m_Events.AddLambdaEventAtOffset([this, trigger]()
+                                {
+                                    me->CastSpell(trigger, SPELL_CALL_WATER, false);
+                                    trigger->AddAura(SPELL_CORRUPTED_FOUTAIN, trigger);
+                                }, 4500);
                             }
                             break;
                         }

@@ -3304,6 +3304,16 @@ public:
 
     bool IsAllowedToLoot(Creature const* creature);
 
+    ///////////////////////////////////////////////////////
+    /// SPELL QUEUE SYSTEM
+    ///////////////////////////////////////////////////////
+
+    void QueueSpell(Spell* p_Spell);
+    void ResetSpellQueue();
+    static bool QueueSystemEnabled();
+    Spell* GetQueuedSpell() const { return m_QueuedSpell; }
+    static uint32 GetQueueSpellTime();
+
     // For internal use only
     bool CanRollForLootIn(WorldObject const* obj) const;
 
@@ -3582,6 +3592,7 @@ protected:
     // Gamemaster whisper whitelist
     WhisperListContainer WhisperList;
     uint32 m_regenTimerCount;
+    uint32 m_foodEmoteTimerCount;
     int32 m_alternateRegenTimerCount = 0;
     float m_powerFraction [MAX_POWERS_PER_CLASS];
     uint32 m_contestedPvPTimer;
@@ -3934,6 +3945,7 @@ protected:
 
     bool m_forcedTeleportFar;
     bool m_forcedTeleportFarSemaphore = false;
+    Spell* m_QueuedSpell;
 
     // Temporary removed pet cache
     uint32 m_temporaryUnsummonedPetNumber;

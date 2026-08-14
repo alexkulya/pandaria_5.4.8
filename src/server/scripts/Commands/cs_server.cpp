@@ -124,7 +124,7 @@ public:
         if (maxActiveClientsNum > sWorld->getIntConfig(CONFIG_MAX_ICORE))
             maxActiveClientsNum = (maxActiveClientsNum * sWorld->getRate(RATE_MAX_MODW));
 
-        handler->PSendSysMessage("-=Project=- " REV_DATE " |cffff0000 Update Pack 3 (11.06.2019)");
+        handler->PSendSysMessage("Pandaria 5.4.8 Rev: " _REVISION " (Release Hash: " _HASH ")");
         handler->PSendSysMessage(LANG_CONNECTED_USERS, playersNum, maxActiveClientsNum, queuedClientsNum, maxQueuedClientsNum);
         handler->PSendSysMessage(LANG_UPTIME, uptime.c_str());
 

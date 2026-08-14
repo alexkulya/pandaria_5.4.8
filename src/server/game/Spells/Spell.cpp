@@ -3361,7 +3361,7 @@ bool Spell::UpdateChanneledTargetList()
     return channelTargetEffectMask == 0;
 }
 
-void Spell::prepare(SpellCastTargets const* targets, AuraEffect const* triggeredByAura)
+void Spell::prepare(SpellCastTargets const* targets, AuraEffect const* triggeredByAura, uint32 gcd, bool isQueuedSpell)
 {
     if (m_CastItem)
         m_castItemGUID = m_CastItem->GetGUID();
@@ -3397,8 +3397,36 @@ void Spell::prepare(SpellCastTargets const* targets, AuraEffect const* triggered
         m_triggeredByAuraSpell  = triggeredByAura->GetSpellInfo();
 
     // create and add update event for this spell
-    SpellEvent* Event = new SpellEvent(this);
-    m_caster->m_Events.AddEvent(Event, m_caster->m_Events.CalculateTime(1));
+    if (Player::QueueSystemEnabled() && gcd && gcd <= Player::GetQueueSpellTime())
+    {
+        if (Spell* queued = m_caster->ToPlayer()->GetQueuedSpell())
+        {
+            queued->SendCastResult(SPELL_FAILED_SPELL_IN_PROGRESS);
+            queued->finish(false);
+        }
+
+        if (!m_caster->GetSpellHistory()->IsReady(m_spellInfo, 0, false))
+        {
+            SendCastResult(SPELL_FAILED_NOT_READY);
+            finish(false);
+        }
+
+        int32 l_AdditionalTime = 0;
+
+        if (Spell* currentSpell = m_caster->GetCurrentSpell(CURRENT_GENERIC_SPELL))
+            l_AdditionalTime = std::min(std::max(currentSpell->GetCurrentCastTimer() - int32(gcd), 0), 150);
+
+        SpellEvent* Event = new SpellEvent(this, true);
+        m_caster->m_Events.AddEvent(Event, m_caster->m_Events.CalculateTime(gcd + l_AdditionalTime));
+        m_spellState = SPELL_STATE_QUEUED;
+        m_caster->ToPlayer()->QueueSpell(this);
+        return;
+    }
+    else
+    {
+        SpellEvent* Event = new SpellEvent(this);
+        m_caster->m_Events.AddEvent(Event, m_caster->m_Events.CalculateTime(1));
+    }
 
     //Prevent casting at cast another spell (ServerSide check)
     if (!(_triggeredCastFlags & TRIGGERED_IGNORE_CAST_IN_PROGRESS) && m_caster->IsNonMeleeSpellCasted(false, true, true) && m_cast_count&& m_spellInfo->Id != 75) // Allow Auto Shot to be turned on while casting
@@ -3628,7 +3656,12 @@ void Spell::cancel()
 void Spell::cast(bool skipCheck)
 {
     // update pointers base at GUIDs to prevent access to non-existed already object
-    UpdatePointers();
+    if (!UpdatePointers())
+    {
+        // cancel the spell if UpdatePointers() returned false, something wrong happened there
+        cancel();
+        return;
+    }
 
     // cancel at lost explicit target during cast
     if (m_targets.GetObjectTargetGUID() && !m_targets.GetObjectTarget())
@@ -3958,7 +3991,12 @@ void Spell::handle_immediate()
 
 uint64 Spell::handle_delayed(uint64 t_offset)
 {
-    UpdatePointers();
+    if (!UpdatePointers())
+    {
+        // finish the spell if UpdatePointers() returned false, something wrong happened there
+        finish(false);
+        return 0;
+    }
 
     if (m_caster->GetTypeId() == TYPEID_PLAYER)
         m_caster->ToPlayer()->SetSpellModTakingSpell(this, true);
@@ -4133,36 +4171,90 @@ void Spell::SendSpellCooldown()
 
 void Spell::update(uint32 difftime)
 {
-    // update pointers based at it's GUIDs
-    UpdatePointers();
-
-    if (m_targets.GetUnitTargetGUID() && !m_targets.GetUnitTarget())
+    if (m_spellState != SPELL_STATE_QUEUED)
     {
-        TC_LOG_DEBUG("spells", "Spell %u is cancelled due to removal of target.", m_spellInfo->Id);
-        cancel();
-        return;
-    }
-
-    // check if the player caster has moved before the spell finished
-    // with the exception of spells affected with SPELL_AURA_CAST_WHILE_WALKING effect
-    if ((m_caster->GetTypeId() == TYPEID_PLAYER && m_timer != 0) &&
-        m_caster->isMoving() && (m_spellInfo->InterruptFlags & SPELL_INTERRUPT_FLAG_MOVEMENT) &&
-        (m_spellInfo->Effects[0].Effect != SPELL_EFFECT_STUCK || !m_caster->HasUnitMovementFlag(MOVEMENTFLAG_FALLING_FAR)) &&
-        !m_caster->HasAuraTypeWithAffectMask(SPELL_AURA_CAST_WHILE_WALKING, m_spellInfo))
-    {
-        // don't cancel for melee, autorepeat, triggered and instant spells
-        if (!IsNextMeleeSwingSpell() && !IsAutoRepeat() && !IsTriggered())
+        if (!UpdatePointers())
         {
-            // if charmed by creature, trust the AI not to cheat and allow the cast to proceed
-            // @todo this is a hack, "creature" movesplines don't differentiate turning/moving right now
-            // however, checking what type of movement the spline is for every single spline would be really expensive
-            if (!IS_CRE_OR_VEH_GUID(m_caster->GetCharmerGUID()))
-                cancel();
+            TC_LOG_DEBUG("spells", "Spell %u is cancelled due to removal of target.", m_spellInfo->Id);
+            cancel();
+            return;
+        }
+
+        if (m_targets.GetUnitTargetGUID() && !m_targets.GetUnitTarget())
+        {
+            TC_LOG_DEBUG("spells", "Spell %u is cancelled due to removal of target.", m_spellInfo->Id);
+            cancel();
+            return;
+        }
+
+        // Something went wrong and this spell is locked, cancel it.
+        auto& cooldowns = m_caster->GetSpellHistory()->GetCooldowns();
+        if (!cooldowns.empty())
+            for (auto&& itr : cooldowns)
+            {
+                SpellInfo const* cooldownSpellInfo = sSpellMgr->GetSpellInfo(itr.first);
+
+                if (!cooldownSpellInfo)
+                    continue;
+
+                if (itr.second.ProhibitionEnd > TimeValue::Now())
+                {
+                    if (m_spellInfo->SchoolMask == cooldownSpellInfo->SchoolMask)
+                    {
+                        cancel();
+                        return;
+                    }
+                }
+            }
+        // check if the player caster has moved before the spell finished
+        // with the exception of spells affected with SPELL_AURA_CAST_WHILE_WALKING effect
+        if ((m_caster->GetTypeId() == TYPEID_PLAYER && m_timer != 0) &&
+            m_caster->isMoving() && (m_spellInfo->InterruptFlags & SPELL_INTERRUPT_FLAG_MOVEMENT) &&
+            (m_spellInfo->Effects[0].Effect != SPELL_EFFECT_STUCK || !m_caster->HasUnitMovementFlag(MOVEMENTFLAG_FALLING_FAR)) &&
+            !m_caster->HasAuraTypeWithAffectMask(SPELL_AURA_CAST_WHILE_WALKING, m_spellInfo))
+        {
+            // don't cancel for melee, autorepeat, triggered and instant spells
+            if (!IsNextMeleeSwingSpell() && !IsAutoRepeat() && !IsTriggered())
+            {
+                // if charmed by creature, trust the AI not to cheat and allow the cast to proceed
+                // @todo this is a hack, "creature" movesplines don't differentiate turning/moving right now
+                // however, checking what type of movement the spline is for every single spline would be really expensive
+                if (!IS_CRE_OR_VEH_GUID(m_caster->GetCharmerGUID()))
+                    cancel();
+            }
         }
     }
 
     switch (m_spellState)
     {
+        case SPELL_STATE_QUEUED:
+        {
+            if (m_caster->ToPlayer()->GetQueuedSpell() == this)
+            {
+                m_caster->ToPlayer()->GetGlobalCooldownMgr().CancelGlobalCooldown(m_spellInfo);
+                m_caster->ToPlayer()->ResetSpellQueue();
+                SpellCastTargets targets = m_targets;
+                Spell* spell = new Spell(m_caster, m_spellInfo, TRIGGERED_NONE);
+                spell->m_cast_count = m_cast_count;
+                spell->m_glyphIndex = m_glyphIndex;
+                cancel();
+                uint64 guid = targets.GetUnitTargetGUID();
+                bool cooldownReady = m_caster->ToPlayer()->GetSpellHistory()->IsReady(m_spellInfo, 0, false);
+
+                if ((!guid || ObjectAccessor::GetUnit(*m_caster, guid)) && cooldownReady)
+                    spell->prepare(&targets, nullptr, 0, true);
+                else
+                {
+                    spell = nullptr;
+                    delete spell;
+                    m_caster->ToPlayer()->ResetSpellQueue();
+                    SendCastResult(SpellCastResult::SPELL_FAILED_INTERRUPTED);
+                }
+            }
+            else ///< Canceled by /cancelqueuedspell
+                SendCastResult(SpellCastResult::SPELL_FAILED_DONT_REPORT);
+            break;
+        }
         case SPELL_STATE_PREPARING:
         {
             if (m_timer > 0)
@@ -5713,6 +5805,7 @@ void Spell::TakeCastItem()
             m_targets.SetItemTarget(NULL);
 
         m_CastItem = NULL;
+        m_castItemGUID = 0;
     }
 }
 
@@ -5981,6 +6074,7 @@ void Spell::TakeReagents()
             }
 
             m_CastItem = NULL;
+            m_castItemGUID = 0;
         }
 
         // if GetItemTarget is also spell reagent
@@ -6994,7 +7088,7 @@ SpellCastResult Spell::CheckPetCast(Unit* target)
 
     // Check if spell is affected by GCD
     if (m_spellInfo->StartRecoveryCategory > 0)
-        if (m_caster->GetCharmInfo() && m_caster->GetCharmInfo()->GetGlobalCooldownMgr().HasGlobalCooldown(m_spellInfo))
+        if (m_caster->GetCharmInfo() && m_caster->GetCharmInfo()->GetGlobalCooldownMgr().HasGlobalCooldown(m_caster, m_spellInfo))
             return SPELL_FAILED_NOT_READY;
 
     // Basically this is wrong, but I won't change all this shit in the near future.
@@ -7966,7 +8060,7 @@ void Spell::DelayedChannel()
     SendChannelUpdate(m_timer);
 }
 
-void Spell::UpdatePointers()
+bool Spell::UpdatePointers()
 {
     if (m_originalCasterGUID == m_caster->GetGUID())
         m_originalCaster = m_caster;
@@ -7978,13 +8072,18 @@ void Spell::UpdatePointers()
     }
 
     if (m_castItemGUID && m_caster->GetTypeId() == TYPEID_PLAYER)
+    {
         m_CastItem = m_caster->ToPlayer()->GetItemByGuid(m_castItemGUID);
+        // cast item not found, somehow the item is no longer where we expected
+        if (!m_CastItem)
+            return false;
+    }
 
     m_targets.Update(m_caster);
 
     // further actions done only for dest targets
     if (!m_targets.HasDst())
-        return;
+        return true;
 
     // cache last transport
     WorldObject* transport = NULL;
@@ -8005,6 +8104,8 @@ void Spell::UpdatePointers()
             dest._position.RelocateOffset(dest._transportOffset);
         }
     }
+
+    return true;
 }
 
 CurrentSpellTypes Spell::GetCurrentContainer() const
@@ -8159,9 +8260,10 @@ bool Spell::HaveTargetsForEffect(uint8 effect) const
     return false;
 }
 
-SpellEvent::SpellEvent(Spell* spell) : BasicEvent()
+SpellEvent::SpellEvent(Spell* spell, bool queued /* = false*/) : BasicEvent()
 {
     m_Spell = spell;
+    _queued = queued;
 }
 
 SpellEvent::~SpellEvent()
@@ -9034,14 +9136,14 @@ bool Spell::HasGlobalCooldown() const
 {
     // Only player or controlled units have global cooldown
     if (m_caster->GetCharmInfo())
-        return m_caster->GetCharmInfo()->GetGlobalCooldownMgr().HasGlobalCooldown(m_spellInfo);
+        return m_caster->GetCharmInfo()->GetGlobalCooldownMgr().HasGlobalCooldown(m_caster, m_spellInfo);
     else if (m_caster->GetTypeId() == TYPEID_PLAYER)
     {
         for (auto&& eff : m_caster->GetAuraEffectsByType(SPELL_AURA_ADD_PCT_MODIFIER))
             if (eff->GetMiscValue() == SPELLMOD_GLOBAL_COOLDOWN && eff->IsAffectingSpell(GetSpellInfo()))
                 if (eff->GetAmount() == -100)
                     return false;
-        return m_caster->ToPlayer()->GetGlobalCooldownMgr().HasGlobalCooldown(m_spellInfo);
+        return m_caster->ToPlayer()->GetGlobalCooldownMgr().HasGlobalCooldown(m_caster, m_spellInfo);
     }
     else
         return false;

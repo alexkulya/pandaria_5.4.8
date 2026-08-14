@@ -1376,6 +1376,7 @@ void World::LoadConfigSettings(bool reload)
     m_int_configs[CONFIG_LFG_SHORTAGE_CHECK_INTERVAL] = sConfigMgr->GetIntDefault("DungeonFinder.ShortageCheckInterval", 5);
     m_int_configs[CONFIG_LFG_SHORTAGE_PERCENT] = sConfigMgr->GetIntDefault("DungeonFinder.ShortagePercent", 50);
     m_int_configs[CONFIG_LFG_MAX_LFR_QUEUES] = sConfigMgr->GetIntDefault("DungeonFinder.MaxLfrQueues", 3);
+    m_bool_configs[CONFIG_LFG_SOLO_ENABLED] = sConfigMgr->GetBoolDefault("DungeonFinder.Solo.Enabled", false);
 
     // DBC_ItemAttributes
     m_bool_configs[CONFIG_DBC_ENFORCE_ITEM_ATTRIBUTES] = sConfigMgr->GetBoolDefault("DBC.EnforceItemAttributes", true);
@@ -1404,6 +1405,24 @@ void World::LoadConfigSettings(bool reload)
         m_timers[WUPDATE_AUTOBROADCAST].SetInterval(getIntConfig(WorldIntConfigs::CONFIG_AUTOBROADCAST_INTERVAL));
         m_timers[WUPDATE_AUTOBROADCAST].Reset();
     }
+
+    // Auto restart server
+    m_bool_configs[CONFIG_ENABLE_AUTO_RESTART_SERVER] = sConfigMgr->GetBoolDefault("Enable.Auto.Restart.Server", true);
+    m_int_configs[CONFIG_AUTO_RESTART_SERVER_HOUR] = sConfigMgr->GetIntDefault("Auto.Restart.Server.Hour", 4);
+
+    if (m_int_configs[CONFIG_AUTO_RESTART_SERVER_HOUR] > 23)
+    {
+        m_int_configs[CONFIG_AUTO_RESTART_SERVER_HOUR] = 4;
+    }
+
+    m_int_configs[CONFIG_AUTO_RESTART_SERVER_MINUTE] = sConfigMgr->GetIntDefault("Auto.Restart.Server.Minute", 0);
+
+    if (m_int_configs[CONFIG_AUTO_RESTART_SERVER_MINUTE] > 59)
+    {
+        m_int_configs[CONFIG_AUTO_RESTART_SERVER_MINUTE] = 0;
+    }
+
+    m_int_configs[CONFIG_AUTO_RESTART_SERVER_TIMER] = sConfigMgr->GetIntDefault("Auto.Restart.Server.Timer", 300);
 
     // MySQL ping time interval
     m_int_configs[CONFIG_DB_PING_INTERVAL] = sConfigMgr->GetIntDefault("MaxPingTime", 30);
@@ -1438,21 +1457,13 @@ void World::LoadConfigSettings(bool reload)
     m_float_configs[CONFIG_STATS_LIMITS_BLOCK] = sConfigMgr->GetFloatDefault("Stats.Limits.Block", 95.0f);
     m_float_configs[CONFIG_STATS_LIMITS_CRIT] = sConfigMgr->GetFloatDefault("Stats.Limits.Crit", 95.0f);
 
-    // Bonus played time reward
-    m_bool_configs[CONFIG_TIME_REWARD_ENABLED] = sConfigMgr->GetBoolDefault("Played.Time.Reward.Enabled", true);
-    m_bool_configs[CONFIG_TIME_REWARD_ITEM_ENABLED] = sConfigMgr->GetBoolDefault("Played.Time.Reward.Item.Enabled", false);
-    m_int_configs[CONFIG_TIME_REWARD_INTERVAL] = sConfigMgr->GetIntDefault("Played.Time.Reward.Interval", 1200);
+    // Played time reward
+    m_bool_configs[CONFIG_PLAYED_TIME_REWARD_ENABLED] = sConfigMgr->GetBoolDefault("Played.Time.Reward.Enabled", false);
+    m_int_configs[CONFIG_PLAYED_TIME_REWARD_INTERVAL] = sConfigMgr->GetIntDefault("Played.Time.Reward.Interval", 3600);
+    m_int_configs[CONFIG_PLAYED_TIME_REWARD_BONUSES_COUNT] = sConfigMgr->GetIntDefault("Played.Time.Reward.Bonuses.Count", 1);
 
-    m_int_configs[CONFIG_TIME_REWARD_ITEM_ID] = sConfigMgr->GetIntDefault("Played.Time.Reward.Item.ID", 49426);
-    m_int_configs[CONFIG_TIME_REWARD_ITEM_COUNT] = sConfigMgr->GetIntDefault("Played.Time.Reward.Item.Count", 1);
-
-    if (m_int_configs[CONFIG_TIME_REWARD_ITEM_COUNT] < 1)
-        m_int_configs[CONFIG_TIME_REWARD_ITEM_COUNT] = 1;
-
-    m_int_configs[CONFIG_TIME_REWARD_VP_COUNT] = sConfigMgr->GetIntDefault("Played.Time.Reward.VP.Count", 1);
-
-    if (m_int_configs[CONFIG_TIME_REWARD_VP_COUNT] < 1)
-        m_int_configs[CONFIG_TIME_REWARD_VP_COUNT] = 1;
+    if (m_int_configs[CONFIG_PLAYED_TIME_REWARD_BONUSES_COUNT] < 0.1)
+        m_int_configs[CONFIG_PLAYED_TIME_REWARD_BONUSES_COUNT] = 0.1;
 
     // Packet spoof punishment
     m_int_configs[CONFIG_PACKET_SPOOF_POLICY] = sConfigMgr->GetIntDefault("PacketSpoof.Policy", (uint32)WorldSession::DosProtection::POLICY_KICK);
@@ -1562,6 +1573,10 @@ void World::LoadConfigSettings(bool reload)
     m_float_configs[CONFIG_VENGEANCE_MULTIPLIER] = sConfigMgr->GetFloatDefault("VengeanceMultipier", 1.0f);
 
     m_bool_configs[CONFIG_BOOST_PROMOTION] = sConfigMgr->GetBoolDefault("BoostPromotion.Enabled", false);
+
+    // Spell queue system
+    m_bool_configs[CONFIG_SPELL_QUEUE_SYSTEM_ENABLED] = sConfigMgr->GetBoolDefault("Spell.Queue.System.Enabled", true);
+    m_int_configs[CONFIG_SPELL_QUEUE_SYSTEM_GCD_TIME] = sConfigMgr->GetIntDefault("Spell.Queue.System.GCD.Time", 400);
 
     // call ScriptMgr if we're reloading the configuration
     if (reload)
@@ -2430,6 +2445,8 @@ void World::SetInitialWorldSettings()
 
     sServiceMgr->LoadFromDB();
 
+    InitAutoRestartServerTime();
+
     uint32 startupDuration = GetMSTimeDiffToNow(startupBegin);
 
     TC_LOG_INFO("server.worldserver", "World initialized in %u minutes %u seconds", (startupDuration / 60000), ((startupDuration % 60000) / 1000));
@@ -2563,6 +2580,9 @@ void World::Update(uint32 diff)
         ResetLootLockouts();
         sGuildMgr->ResetGuildChallenges();
     }
+
+    if (m_gameTime > m_NextServerRestart && m_bool_configs[CONFIG_ENABLE_AUTO_RESTART_SERVER])
+        AutoRestartServer();
 
     /// <ul><li> Handle auctions when the timer has passed
     if (m_timers[WUPDATE_BLACK_MARKET].Passed())
@@ -5221,4 +5241,43 @@ void World::SendRaidQueueInfo(Player* player)
             if (Player* plr = itr.second->GetPlayer())
                 sendInfo(plr);
     }
+}
+
+void World::InitAutoRestartServerTime()
+{
+    time_t serverRestartTime = uint64(sWorld->getWorldState(WS_AUTO_RESTART_SERVER_TIME));
+
+    if (!serverRestartTime)
+        m_NextServerRestart = time_t(time(NULL));
+
+    time_t curTime = time(NULL);
+    tm localTm = *localtime(&curTime);
+    localTm.tm_hour = getIntConfig(CONFIG_AUTO_RESTART_SERVER_HOUR);
+    localTm.tm_min = getIntConfig(CONFIG_AUTO_RESTART_SERVER_MINUTE);
+    localTm.tm_sec = 0;
+
+    time_t nextDayRestartTime = mktime(&localTm);
+
+    if (curTime >= nextDayRestartTime)
+        nextDayRestartTime += DAY;
+
+    m_NextServerRestart = serverRestartTime < curTime ? nextDayRestartTime - DAY : nextDayRestartTime;
+
+    if (!serverRestartTime)
+        sWorld->setWorldState(WS_AUTO_RESTART_SERVER_TIME, uint64(m_NextServerRestart));
+
+    if (!m_bool_configs[CONFIG_ENABLE_AUTO_RESTART_SERVER])
+        m_NextServerRestart += DAY * 1;
+}
+
+void World::AutoRestartServer()
+{
+    if (!sWorld->getBoolConfig(CONFIG_ENABLE_AUTO_RESTART_SERVER))
+        return;
+
+    sWorld->SendWorldText(LANG_SYSTEMMESSAGE, "Ежедневная плановая перезагрузка игрового мира.");
+    sWorld->ShutdownServ(getIntConfig(CONFIG_AUTO_RESTART_SERVER_TIMER), SHUTDOWN_MASK_RESTART, RESTART_EXIT_CODE);
+
+    m_NextServerRestart = time_t(m_NextServerRestart + DAY);
+    sWorld->setWorldState(WS_AUTO_RESTART_SERVER_TIME, uint64(m_NextServerRestart));
 }

@@ -16,14 +16,16 @@
 */
 
 #include "Chat.h"
+#include "Player.h"
 
 #define GetText(a, b, c) a->GetSession()->GetSessionDbLocaleIndex() == LOCALE_ruRU ? b : c
 
-#define TR_Enabled sWorld->getBoolConfig(CONFIG_TIME_REWARD_ENABLED)
-#define TR_Item_Enabled sWorld->getBoolConfig(CONFIG_TIME_REWARD_ITEM_ENABLED)
-#define TR_Item_ID sWorld->getIntConfig(CONFIG_TIME_REWARD_ITEM_ID)
-#define TR_Item_Count sWorld->getIntConfig(CONFIG_TIME_REWARD_ITEM_COUNT)
-#define TR_VP_Count sWorld->getIntConfig(CONFIG_TIME_REWARD_VP_COUNT)
+#define ptr_Announce_Msg_RU "|cff00FF00[Сообщение системы]:|r\n  Вам начислены бонусы за проведенное на сервере игровое время: |cffFF009E%s|r"
+#define ptr_Announce_Msg_EN "|cff00FF00[System message]:|r\n  You have been awarded bonuses for the playing time spent on the server: |cffFF009E%s|r"
+
+#define ptr_Enabled sWorld->getBoolConfig(CONFIG_PLAYED_TIME_REWARD_ENABLED)
+#define ptr_Update_Interval sWorld->getIntConfig(CONFIG_PLAYED_TIME_REWARD_INTERVAL)
+#define ptr_Bonuses_Count sWorld->getIntConfig(CONFIG_PLAYED_TIME_REWARD_BONUSES_COUNT)
 
 class played_time_reward : public PlayerScript
 {
@@ -40,21 +42,13 @@ public:
         {
             timeInterval -= player->ptr_Interval;
 
-            if (player->IsInWorld() && TR_Enabled)
+            if (player->IsInWorld() && ptr_Enabled)
             {
-                ChatHandler(player->GetSession()).PSendSysMessage(GetText(player, "Бонус за проведенное в игре время.", "Bonus for played time."));
-
-                if (TR_Item_Enabled)
-                {
-                    player->AddItem(TR_Item_ID, TR_Item_Count);
-                }
-                else
-                {
-                    PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_BATTLEPAY_INCREMENT_VIRTUAL_POINTS);
-                    stmt->setUInt32(0, TR_VP_Count);
-                    stmt->setUInt32(1, player->GetSession()->GetAccountId());
-                    LoginDatabase.Query(stmt);
-                }
+                PreparedStatement* stmt = LoginDatabase.GetPreparedStatement(LOGIN_UPD_BATTLEPAY_INCREMENT_DONATE_POINTS);
+                stmt->setUInt32(0, ptr_Bonuses_Count * 1000);
+                stmt->setUInt32(1, player->GetSession()->GetAccountId());
+                LoginDatabase.Query(stmt);
+                ChatHandler(player->GetSession()).PSendSysMessage(GetText(player, ptr_Announce_Msg_RU, ptr_Announce_Msg_EN), secsToTimeString(uint64(ptr_Update_Interval)).c_str());
             }
         }
     }

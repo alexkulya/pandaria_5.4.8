@@ -171,6 +171,7 @@ enum WorldBoolConfigs
     CONFIG_LFG_OVERRIDE_ROLES_REQUIRED,
     CONFIG_LFG_MULTIQUEUE_ENABLED,
     CONFIG_LFG_KEEP_QUEUES_IN_DUNGEON,
+    CONFIG_LFG_SOLO_ENABLED,
     CONFIG_DBC_ENFORCE_ITEM_ATTRIBUTES,
     CONFIG_PRESERVE_CUSTOM_CHANNELS,
     CONFIG_PDUMP_NO_PATHS,
@@ -245,8 +246,9 @@ enum WorldBoolConfigs
     CONFIG_ICORE_ROYALE_EVENT_ENABLED,
     CONFIG_BOOST_PROMOTION,
     CONFIG_WORD_FILTER_ENABLE,
-    CONFIG_TIME_REWARD_ENABLED,
-    CONFIG_TIME_REWARD_ITEM_ENABLED,
+    CONFIG_PLAYED_TIME_REWARD_ENABLED, // Played time reward
+    CONFIG_ENABLE_AUTO_RESTART_SERVER, // Auto restart server
+    CONFIG_SPELL_QUEUE_SYSTEM_ENABLED, // Spell queue system
     BOOL_CONFIG_VALUE_COUNT
 };
 
@@ -610,10 +612,12 @@ enum WorldIntConfigs
     CONFIG_ICORE_RICH_PVP_REWARD_GAMES,
     CONFIG_ARENA_WIN_STREAK_MOD_LIMIT,
     CONFIG_WORD_FILTER_MUTE_DURATION,
-    CONFIG_TIME_REWARD_INTERVAL,
-    CONFIG_TIME_REWARD_ITEM_ID,
-    CONFIG_TIME_REWARD_ITEM_COUNT,
-    CONFIG_TIME_REWARD_VP_COUNT,
+    CONFIG_PLAYED_TIME_REWARD_BONUSES_COUNT, // Played time reward
+    CONFIG_PLAYED_TIME_REWARD_INTERVAL, // Played time reward
+    CONFIG_AUTO_RESTART_SERVER_HOUR, // Auto restart server
+    CONFIG_AUTO_RESTART_SERVER_MINUTE, // Auto restart server
+    CONFIG_AUTO_RESTART_SERVER_TIMER, // Auto restart server
+    CONFIG_SPELL_QUEUE_SYSTEM_GCD_TIME, // Spell queue system
     INT_CONFIG_VALUE_COUNT
 };
 
@@ -765,6 +769,7 @@ enum WorldStates
     WS_WEEKLY_QUEST_RESET_TIME  = 20002,                     // Next weekly reset time
     WS_BG_DAILY_RESET_TIME      = 20003,                     // Next daily BG reset time
     WS_CLEANING_FLAGS           = 20004,                     // Cleaning Flags
+    WS_AUTO_RESTART_SERVER_TIME = 20005,                     // Next server restart time
     WS_GUILD_DAILY_RESET_TIME   = 20006,                     // Next guild cap reset time
     WS_MONTHLY_QUEST_RESET_TIME = 20007,                     // Next monthly reset time
     WS_ARENA_SEASON_WEEK        = 20008,                     // Current week of the arena season
@@ -1449,6 +1454,10 @@ class World
         // callback for UpdateRealmCharacters
         void _UpdateRealmCharCount(PreparedQueryResult resultCharCount);
 
+        // Auto restart server
+        void AutoRestartServer();
+        void InitAutoRestartServerTime();
+
         void InitDailyQuestResetTime();
         void InitWeeklyQuestResetTime();
         void InitMonthlyQuestResetTime();
@@ -1526,6 +1535,9 @@ class World
         static int32 m_visibility_notify_periodOnContinents;
         static int32 m_visibility_notify_periodInInstances;
         static int32 m_visibility_notify_periodInBGArenas;
+
+        // Auto restart server
+        time_t m_NextServerRestart;
 
         // CLI command holder to be thread safe
         ACE_Based::LockedQueue<CliCommandHolder*, ACE_Thread_Mutex> cliCmdQueue;

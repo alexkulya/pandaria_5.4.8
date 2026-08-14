@@ -378,6 +378,7 @@ private:
         void SetZoneId(uint32 id) { m_zoneId = id; }
         void SetAchievementPoints(uint32 val) { m_achievementPoints = val; }
         void SetLevel(uint8 var) { m_level = var; }
+        void AddActivity(uint64 activity);
         void SetProfessions(Player* player, bool recipes);
         void SetGender(uint8 var) { m_gender = var; }
         void AddFlag(uint8 var) { m_flags |= var; }
@@ -424,6 +425,7 @@ private:
         void UpdateBankWithdrawValue(SQLTransaction& trans, uint8 tabId, uint32 amount);
         int32 GetBankWithdrawValue(uint8 tabId) const;
         void ResetValues(bool weekly = false);
+        void ResetWeekActivity();
 
         inline Player* FindPlayer() const { return ObjectAccessor::FindPlayer(m_guid); }
 

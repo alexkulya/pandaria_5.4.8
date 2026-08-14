@@ -25,7 +25,6 @@ class npc_master_shang_xi : public CreatureScript
 {
     enum master_shang
     {
-
         SPELL_MASTERS_FLAME         = 114610,
         SPELL_CREATE_MASTERS_FLAME  = 114611,
         SPELL_SNATCH_MASTERS_FLAME  = 114746,

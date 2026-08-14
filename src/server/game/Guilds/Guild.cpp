@@ -751,6 +751,18 @@ void Guild::Member::ChangeRank(uint8 newRank)
     CharacterDatabase.Execute(stmt, DBConnection::Guild);
 }
 
+void Guild::Member::AddActivity(uint64 activity)
+{
+    m_totalActivity += activity;
+    m_weekActivity += activity;
+
+    PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_GUILD_MEMBER_ACTIVITY);
+    stmt->setUInt64(0, m_totalActivity);
+    stmt->setUInt64(1, m_weekActivity);
+    stmt->setUInt32(2, GUID_LOPART(m_guid));
+    CharacterDatabase.Execute(stmt);
+}
+
 void Guild::Member::SaveToDB(SQLTransaction& trans) const
 {
     PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_INS_GUILD_MEMBER);
@@ -760,6 +772,8 @@ void Guild::Member::SaveToDB(SQLTransaction& trans) const
     stmt->setString(3, m_publicNote);
     stmt->setString(4, m_officerNote);
     stmt->setUInt16(5, m_achievementPoints);
+    stmt->setUInt64(6, m_totalActivity);
+    stmt->setUInt64(7, m_weekActivity);
     CharacterDatabase.ExecuteOrAppend(trans, stmt, DBConnection::Guild);
 }
 
@@ -819,21 +833,20 @@ bool Guild::Member::LoadFromDB(Field* fields)
              fields[29].GetUInt8());                        // characters.gender
     m_logoutTime = fields[19].GetUInt32();                  // characters.logout_time
 
-    m_totalActivity = 0;
-    m_weekActivity = 0;
-    
     if (!CheckStats())
         return false;
 
     m_achievementPoints = fields[20].GetUInt16();
+    m_totalActivity = fields[21].GetUInt64();
+    m_weekActivity = fields[22].GetUInt64();
 
     bool needsProfessionSave = false;
     for (uint32 i = 0; i < 2; ++i)
     {
-        uint32 value = fields[21 + 3 * i].GetUInt16();
-        uint32 skillId = fields[22 + 3 * i].GetUInt16();
-        uint32 rank = fields[23 + 3 * i].GetUInt16();
-        std::string dbRecipes = fields[24 + i].GetString();
+        uint32 value = fields[23 + 3 * i].GetUInt16();
+        uint32 skillId = fields[24 + 3 * i].GetUInt16();
+        uint32 rank = fields[25 + 3 * i].GetUInt16();
+        std::string dbRecipes = fields[26 + i].GetString();
         std::vector<uint8> recipes;
 
         if (skillId)
@@ -933,7 +946,7 @@ void Guild::Member::ResetValues(bool weekly /* = false*/)
 
     if (weekly)
     {
-        m_weekActivity = 0;
+        ResetWeekActivity();
     }
 }
 
@@ -946,6 +959,19 @@ void Guild::Member::SetReputation(int32 val)
     stmt->setUInt32(1, m_guildId);
     stmt->setUInt32(2, m_reputation);
     CharacterDatabase.Execute(stmt, DBConnection::Guild);
+}
+
+void Guild::Member::ResetWeekActivity()
+{
+    m_weekActivity = 0;
+
+    SQLTransaction trans = CharacterDatabase.BeginTransaction();
+
+    PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_RESET_GUILD_MEMBER_WEEK_ACTIVITY);
+    stmt->setUInt32(0, GUID_LOPART(m_guid));
+    trans->Append(stmt);
+
+    CharacterDatabase.CommitTransaction(trans);
 }
 
 // Get amount of money/slots left for today.
@@ -4100,6 +4126,9 @@ void Guild::GiveXP(uint32 xp, Player* source)
     if (source)
         source->GetSession()->SendPacket(&data);
 
+    if (Member *member = GetMember(source->GetGUID()))
+        member->AddActivity(xp);
+
     _experience += xp;
 
     if (!xp)
@@ -4151,8 +4180,8 @@ void Guild::SendGuildXP(WorldSession* session /* = NULL */) const
 
     WorldPacket data(SMSG_GUILD_XP, 32);
     data << uint64(GetExperience());
-    data << uint64(member ? member->GetWeekActivity() : 0);
     data << uint64(member ? member->GetTotalActivity() : 0);
+    data << uint64(member ? member->GetWeekActivity() : 0);
     data << uint64(sGuildMgr->GetXPForGuildLevel(GetLevel()) - GetExperience());    // XP missing for next level
     session->SendPacket(&data);
 }

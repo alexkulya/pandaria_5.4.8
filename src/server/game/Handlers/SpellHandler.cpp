@@ -1138,6 +1138,18 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
             spellInfo = actualSpellInfo;
     }
 
+    uint32 gcd = _player->GetGlobalCooldownMgr().GetGlobalCooldown(caster, spellInfo);
+
+    if (!gcd)
+    {
+        int32 additionalTime = 0;
+
+        if (Spell* current = caster->GetCurrentSpell(CURRENT_GENERIC_SPELL))
+            additionalTime = std::min(current->GetCurrentCastTimer(), 400);
+
+        gcd = additionalTime;
+    }
+
     Spell* spell = new Spell(caster, spellInfo, TRIGGERED_NONE, 0, false);
     spell->m_cast_count = castCount;                       // set count of casts
     spell->m_glyphIndex = glyphIndex;
@@ -1164,7 +1176,7 @@ void WorldSession::HandleCastSpellOpcode(WorldPacket& recvPacket)
         spell->m_researchData = researchData;
     }
 
-    spell->prepare(&targets);
+    spell->prepare(&targets, nullptr, gcd);
 }
 
 void WorldSession::HandleCancelCastOpcode(WorldPacket& recvPacket)
@@ -1183,6 +1195,11 @@ void WorldSession::HandleCancelCastOpcode(WorldPacket& recvPacket)
 
     if (_player->IsNonMeleeSpellCasted(false))
         _player->InterruptNonMeleeSpells(false, spellId, false);
+}
+
+void WorldSession::HandleCancelQueuedSpellOpcode(WorldPacket& /*recvPacket*/)
+{
+    _player->ResetSpellQueue();
 }
 
 void WorldSession::HandleCancelAuraOpcode(WorldPacket& recvPacket)

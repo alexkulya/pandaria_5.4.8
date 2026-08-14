@@ -72,9 +72,6 @@ static const Position middleBrewPos[] =
     { -706.43f, 1157.70f, 166.22f, 0.25f },
 };
 
-static const Position yanzhuPos[] = { -703.44f, 1162.43f, 166.22f, 0.24f };
-static const Position gaoPotPos[] = { -676.96f, 1193.96f, 166.79f, 1.82f };
-
 static const Position sudsPos[2] = 
 { 
     { -696.25f, 1138.78f, 166.75f, 1.82f },
@@ -306,8 +303,12 @@ class npc_uncle_gao : public CreatureScript
                         me->SetFacingTo(gaoWaypoints[pointId].m_orientation);
                         break;
                     case 101:
-                        me->SetFacingTo(gaoPotPos->m_orientation);
-                        me->HandleEmoteCommand(EMOTE_STATE_USE_STANDING);
+                        me->SetFacingTo(1.82f);
+
+                        me->m_Events.AddLambdaEventAtOffset([this]()
+                        {
+                            me->HandleEmoteCommand(EMOTE_STATE_USE_STANDING);
+                        }, 2000);
                         break;
                 }
             }
@@ -509,7 +510,7 @@ class npc_uncle_gao : public CreatureScript
                                     events.CancelEvent(EVENT_UPDATE_ENCOUNTER);
 
                                     DoTalk(TALK_SUMMON_BOSS);
-                                    if (Creature* creature = me->SummonCreature(NPC_YAN_ZHU, *yanzhuPos, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 5 * MINUTE*IN_MILLISECONDS))
+                                    if (Creature* creature = me->SummonCreature(NPC_YAN_ZHU, -703.44f, 1162.43f, 166.22f, 0.24f, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 5 * MINUTE*IN_MILLISECONDS))
                                     {
                                         currentStageGuidList.push_back(creature->GetGUID());
                                         creature->CastSpell(creature, SPELL_LARGE_SPAWN);
@@ -528,7 +529,7 @@ class npc_uncle_gao : public CreatureScript
                             UpdateCurrentEncounterState(encounterStage > STAGE_BOSS);
                             break;
                         case EVENT_NEXT_POT:
-                            me->GetMotionMaster()->MovePoint(101, *gaoPotPos);
+                            me->GetMotionMaster()->MovePoint(101, -676.96f, 1193.96f, 166.79f);
                             break;
                         case EVENT_HANDLE_CRAFT_ANIMATION:
                             me->HandleEmoteCommand(EMOTE_STATE_USE_STANDING);

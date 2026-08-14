@@ -106,15 +106,24 @@ class npc_mandori_escort : public CreatureScript
                 if (!Is(NPC_AYSA))
                     return;
 
+                Player* player = ObjectAccessor::FindPlayer(playerGuid);
+
+                if (!player)
+                    return;
+
                 if (GameObject* mandoriDoor = me->SummonGameObject(211294, 695.26f, 3600.99f, 142.38f, 3.04f, { }, 0))
                 {
                     mandoriDoor->SetExplicitSeerGuid(playerGuid);
+                    mandoriDoor->SetGoState(GO_STATE_READY);
+                    mandoriDoor->SetRespawnTime(0);
                     mandoriDoorGuid = mandoriDoor->GetGUID();
                 }
 
                 if (GameObject* peiwuDoor = me->SummonGameObject(211298, 566.52f, 3583.46f, 92.16f, 3.14f, { }, 0))
                 {
                     peiwuDoor->SetExplicitSeerGuid(playerGuid);
+                    peiwuDoor->SetGoState(GO_STATE_READY);
+                    peiwuDoor->SetRespawnTime(0);
                     peiwuDoorGuid = peiwuDoor->GetGUID();
                 }
             }
@@ -167,19 +176,37 @@ class npc_mandori_escort : public CreatureScript
                         {
                             case 1:
                                 if (Is(NPC_AYSA))
-                                    Talk(0, ObjectAccessor::FindPlayer(playerGuid));
-                                IntroTimer = 1000;
+                                    if (Player* player = ObjectAccessor::FindPlayer(playerGuid))
+                                        Talk(0, player);
+                                IntroTimer = 2000;
                                 break;
                             case 2:
                                 if (Is(NPC_AYSA))
                                 {
                                     if (GameObject* mandoriDoor = me->GetMap()->GetGameObject(mandoriDoorGuid))
+                                    {
                                         mandoriDoor->SetGoState(GO_STATE_ACTIVE);
 
-                                    if (Player* player = ObjectAccessor::FindPlayer(playerGuid))
-                                        player->KilledMonsterCredit(59946);
+                                        if (Player* player = ObjectAccessor::FindPlayer(playerGuid))
+                                        {
+                                            player->KilledMonsterCredit(59946);
+                                            Talk(0, player);
+                                        }
+                                    }
+                                    else if (Player* player = ObjectAccessor::FindPlayer(playerGuid))
+                                    {
+                                        if (GameObject* mandoriDoor = me->SummonGameObject(211294, 695.26f, 3600.99f, 142.38f, 3.04f, { }, 0))
+                                        {
+                                            mandoriDoor->SetExplicitSeerGuid(playerGuid);
+                                            mandoriDoor->SetGoState(GO_STATE_ACTIVE);
+                                            mandoriDoor->SetRespawnTime(0);
+                                            mandoriDoorGuid = mandoriDoor->GetGUID();
+                                            player->KilledMonsterCredit(59946);
+                                            Talk(0, player);
+                                        }
+                                    }
                                 }
-                                IntroTimer = 1000;
+                                IntroTimer = 2000;
                                 break;
                             case 3:
                                 Start(false, true);
@@ -200,47 +227,61 @@ class npc_mandori_escort : public CreatureScript
                             case 1:
                                 if (Is(NPC_AYSA))
                                     Talk(1);
-                                doorEventTimer = 2000;
-                                break;
-                            case 2:
-                                if (Is(NPC_AYSA))
-                                    Talk(2);
-                                doorEventTimer = 4000;
-                                break;
-                            case 3:
-                                if (Is(NPC_JI))
-                                    Talk(0);
                                 doorEventTimer = 3000;
                                 break;
-                            case 4:
+                            case 2:
                                 if (Is(NPC_JI))
+                                    Talk(2);
+                                doorEventTimer = 3000;
+                                break;
+                            case 3:
+                                if (Is(NPC_JOJO))
+                                    Talk(0);
+                                doorEventTimer = 2000;
+                                break;
+                            case 4:
+                                if (Is(NPC_AYSA))
                                     Talk(1);
-                                doorEventTimer = 4000;
+                                doorEventTimer = 2000;
                                 break;
                             case 5:
                                 if (Is(NPC_JOJO))
-                                    me->GetMotionMaster()->MoveCharge(567.99f, 3583.41f, 94.74f);
-                                doorEventTimer = 150;
+                                {
+                                    if (GameObject* peiwuDoor = me->GetMap()->GetGameObject(peiwuDoorGuid))
+                                    {
+                                        peiwuDoor->SetGoState(GO_STATE_ACTIVE);
+
+                                        if (Player* player = ObjectAccessor::FindPlayer(playerGuid))
+                                        {
+                                            player->KilledMonsterCredit(59947);
+                                            Talk(0, player);
+                                        }
+                                    }
+                                    else if (Player* player = ObjectAccessor::FindPlayer(playerGuid))
+                                    {
+                                        if (GameObject* peiwuDoor = me->SummonGameObject(211298, 566.52f, 3583.46f, 92.16f, 3.14f, { }, 0))
+                                        {
+                                            peiwuDoor->SetExplicitSeerGuid(playerGuid);
+                                            peiwuDoor->SetGoState(GO_STATE_ACTIVE);
+                                            peiwuDoor->SetRespawnTime(0);
+                                            peiwuDoorGuid = peiwuDoor->GetGUID();
+                                            player->KilledMonsterCredit(59947);
+                                            Talk(0, player);
+                                        }
+                                    }
+                                }
+                                doorEventTimer = 2000;
                                 break;
                             case 6:
-                                if (Is(NPC_AYSA))
-                                    if (GameObject* peiwuDoor = me->GetMap()->GetGameObject(peiwuDoorGuid))
-                                        peiwuDoor->SetGoState(GO_STATE_ACTIVE);
+                                if (Is(NPC_JI))
+                                    Talk(0);
+                                if (!Is(NPC_JOJO))
+                                    SetEscortPaused(false);
                                 doorEventTimer = 2000;
                                 break;
                             case 7:
-                                if (Is(NPC_JI))
-                                    Talk(2);
-                                if (Is(NPC_AYSA))
-                                    if (Player* player = ObjectAccessor::FindPlayer(playerGuid))
-                                        player->KilledMonsterCredit(59947);
-                                if (!Is(NPC_JOJO))
-                                   SetEscortPaused(false);
-                                doorEventTimer = 2000;
-                                break;
-                            case 8:
-                               if (Is(NPC_JOJO))
-                                   SetEscortPaused(false);
+                                if (Is(NPC_JOJO))
+                                    SetEscortPaused(false);
                                 doorEventTimer = 0;
                                 break;
                         }

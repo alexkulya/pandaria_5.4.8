@@ -793,6 +793,7 @@ class WorldSession : public Schedulable
         void HandleCancelAuraOpcode(WorldPacket& recvPacket);
         void HandleCancelModSpeedNoControlAuras(WorldPacket& recvPacket);
         void HandleCancelGrowthAuraOpcode(WorldPacket& recvPacket);
+        void HandleCancelQueuedSpellOpcode(WorldPacket& recvPacket);
         void HandleCancelAutoRepeatSpellOpcode(WorldPacket& recvPacket);
 
         void HandleLearnTalentOpcode(WorldPacket& recvPacket);
