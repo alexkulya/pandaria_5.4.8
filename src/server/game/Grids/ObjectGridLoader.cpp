@@ -223,6 +223,17 @@ void ObjectGridUnloader::Visit(GridRefManager<T> &m)
         //Example: Flame Leviathan Turret 33139 is summoned when a creature is deleted
         /// @todo Check if that script has the correct logic. Do we really need to summons something before deleting?
         obj->CleanupsBeforeDelete();
+
+        // The loader registers objects with custom visibility on the map, and this
+        // is the one path that destroys them without going through
+        // Map::RemoveFromMap, so nothing else takes them back out. Left behind, the
+        // freed pointer stays in the set until the next visibility scan walks it -
+        // which is a crash inside Player::UpdateVisibilityForPlayer on the next
+        // login, reading fields off an object that no longer exists.
+        if (obj->HasCustomVisibility())
+            if (Map* map = obj->FindMap())
+                map->RemoveCustomVisibilityObject(obj, obj->GetCustomVisibilityZoneID());
+
         ///- object will get delinked from the manager when deleted
         delete obj;
     }
