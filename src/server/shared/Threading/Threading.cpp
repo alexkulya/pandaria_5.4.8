@@ -15,6 +15,9 @@
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <chrono>
+#include <thread>
+
 #include "Threading.h"
 #include "Errors.h"
 #include <ace/OS_NS_unistd.h>
@@ -230,5 +233,5 @@ void Thread::setPriority(Priority type)
 
 void Thread::Sleep(unsigned long msecs)
 {
-    ACE_OS::sleep(ACE_Time_Value(0, 1000 * msecs));
+    std::this_thread::sleep_for(std::chrono::milliseconds(msecs));
 }

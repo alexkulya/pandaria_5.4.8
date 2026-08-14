@@ -22,7 +22,7 @@
 #include "Errors.h"
 #include "ByteConverter.h"
 
-#include <ace/OS_NS_time.h>
+#include "TimeUtil.h"
 #include <exception>
 #include <list>
 #include <map>
@@ -749,7 +749,7 @@ public:
     void AppendPackedTime(time_t time)
     {
         tm lt;
-        ACE_OS::localtime_r(&time, &lt);
+        Trinity::LocalTime(time, lt);
         append<uint32>((lt.tm_year - 100) << 24 | lt.tm_mon << 20 | (lt.tm_mday - 1) << 14 | lt.tm_wday << 11 | lt.tm_hour << 6 | lt.tm_min);
     }
 

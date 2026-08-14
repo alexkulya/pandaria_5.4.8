@@ -94,7 +94,7 @@
 #include <ace/Guard_T.h>
 #include <ace/RW_Thread_Mutex.h>
 #include <ace/Thread_Mutex.h>
-#include <ace/OS_NS_time.h>
+#include "Utilities/TimeUtil.h"
 
 #if PLATFORM == PLATFORM_WINDOWS
 #  include <ace/config-all.h>

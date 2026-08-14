@@ -791,7 +791,7 @@ inline std::string TimeStr(time_t toConvert, char const* fmt)
 {
     char buff[100];
     struct tm timeInfo;
-    ACE_OS::localtime_r(&toConvert, &timeInfo);
+    Trinity::LocalTime(toConvert, timeInfo);
     std::strftime(buff, 100, fmt, &timeInfo);
     return std::string(buff);
 }
