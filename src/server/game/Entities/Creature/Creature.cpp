@@ -54,7 +54,7 @@
 #include "WorldPacket.h"
 #include "BattlePetSpawnMgr.h"
 #include "Transport.h"
-#include "ace/Stack_Trace.h"
+#include "StackTrace.h"
 
 TrainerSpell const* TrainerSpellData::Find(uint32 spell_id) const
 {
@@ -889,7 +889,7 @@ void Creature::SetLootRecipient(Unit* unit)
 
     if (IsPet())
     {
-        ACE_Stack_Trace st;
+        Trinity::StackTrace st;
         TC_LOG_ERROR("shitlog", "Creature::SetLootRecipient unit: %s guid: " UI64FMTD "\n%s\n", unit->GetName().c_str(), unit->GetGUID(), st.c_str());
         return;
     }

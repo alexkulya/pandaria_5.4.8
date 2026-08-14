@@ -17,7 +17,7 @@
 
 #include "Errors.h"
 #include "Log.h"
-#include <ace/Stack_Trace.h>
+#include "StackTrace.h"
 #include <ace/OS_NS_unistd.h>
 #include <cstdlib>
 
@@ -47,7 +47,7 @@ void Warning(char const* file, int line, char const* function, char const* messa
 
 void LogAndDie(char const* msg, char const* func)
 {
-    ACE_Stack_Trace st;
+    Trinity::StackTrace st;
     sLog->outError("server", "%s\nIn funtion: %s\n%s", msg, func, st.c_str());
     //std::abort();
 }

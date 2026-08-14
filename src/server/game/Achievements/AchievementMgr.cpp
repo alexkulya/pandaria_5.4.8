@@ -45,7 +45,7 @@
 #include "PetBattle.h"
 #include "Battleground.h"
 #include "BattlegroundSA.h"
-#include <ace/Stack_Trace.h>
+#include "StackTrace.h"
 
 namespace Trinity
 {
@@ -1446,7 +1446,7 @@ void AchievementMgr::UpdateAchievementCriteria(AchievementCriteriaTypes type, ui
     {
         if (referencePlayer->GetMap() != CurrentMap)
         {
-            ACE_Stack_Trace st;
+            Trinity::StackTrace st;
             TC_LOG_ERROR("shitlog", "AchievementMgr::UpdateAchievementCriteria, player: %u, m_currMap: %u, CurrentMap: %u\n%s", referencePlayer->GetGUIDLow(), referencePlayer->GetMap()->GetId(), CurrentMap->GetId(), st.c_str());
             return;
         }

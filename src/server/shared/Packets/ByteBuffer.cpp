@@ -19,14 +19,14 @@
 #include "Common.h"
 #include "Log.h"
 
-#include <ace/Stack_Trace.h>
+#include "StackTrace.h"
 #include <sstream>
 
 ByteBufferPositionException::ByteBufferPositionException(bool add, size_t pos,
                                                          size_t size, size_t valueSize)
 {
     std::ostringstream ss;
-    ACE_Stack_Trace trace;
+    Trinity::StackTrace trace;
 
     ss << "Attempted to " << (add ? "put" : "get") << " value with size: "
        << valueSize << " in ByteBuffer (pos: " << pos << " size: " << size
@@ -39,7 +39,7 @@ ByteBufferSourceException::ByteBufferSourceException(size_t pos, size_t size,
                                                      size_t valueSize)
 {
     std::ostringstream ss;
-    ACE_Stack_Trace trace;
+    Trinity::StackTrace trace;
 
     ss << "Attempted to put a "
        << (valueSize > 0 ? "NULL-pointer" : "zero-sized value")

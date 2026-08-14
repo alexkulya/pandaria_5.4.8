@@ -53,7 +53,7 @@
 #include "Chat.h"
 #include "Transport.h"
 #include "timeless_isle.h"
-#include <ace/Stack_Trace.h>
+#include "StackTrace.h"
 
 #define STEALTH_VISIBILITY_UPDATE_TIMER 500
 
@@ -2620,7 +2620,7 @@ TempSummon* Map::SummonCreature(uint32 entry, Position const& pos, SummonPropert
 {
     if (!Trinity::IsValidMapCoord(pos.GetPositionX(), pos.GetPositionY()))
     {
-        ACE_Stack_Trace st;
+        Trinity::StackTrace st;
         TC_LOG_ERROR("shitlog", "Map::SummonCreature entry: %u, spell: %u, x: %f, y: %f\n%s", entry, spellId, pos.GetPositionX(), pos.GetPositionY(), st.c_str());
         return nullptr;
     }
@@ -2737,7 +2737,7 @@ TempSummon* Map::SummonCreature(uint32 entry, Position const& pos, SummonPropert
             summoner->AddSummon(summon);
         else if (summoner->FindMap() != summon->FindMap()) // Okay, owner isn't in world, just some shit in scripts on instance unload/etc or summon was despawned (yeah, its's possible)
         {
-            ACE_Stack_Trace st;
+            Trinity::StackTrace st;
             TC_LOG_ERROR("shitlog", "Map::SummonCreature spellId: %u, owner (" UI64FMTD ", entry: %u) map: %u (instance: %u), summon (" UI64FMTD ", entry: %u, in world: %u) map: %u (instance: %u)\n%s", spellId, summoner->GetGUID(), summoner->GetEntry(), summoner->GetMap()->GetId(), summoner->GetInstanceId(), summon->GetGUID(), summon->GetEntry(), summon->IsInWorld(), summon->GetMap()->GetId(), summon->GetInstanceId(), st.c_str());
         }
     }
@@ -3737,7 +3737,7 @@ void WorldObject::AddToUpdate()
 
     if (m_currMap != CurrentMap && CurrentMap)
     {
-        ACE_Stack_Trace st;
+        Trinity::StackTrace st;
         TC_LOG_ERROR("shitlog", "WorldObject::AddToUpdate - invalid map, m_currMap ID %u, CurrentMap ID: %u. Object type: %u, entry: %u, GUID: %u, InWorld: %u, position: { %f, %f, %f }.\nStack trace:\n%s",
             m_currMap->GetId(), CurrentMap->GetId(), uint32(GetTypeId()), GetEntry(), GetGUIDLow(), IsInWorld(), GetPositionX(), GetPositionY(), GetPositionZ(), st.c_str());
         return;
@@ -3758,7 +3758,7 @@ void WorldObject::RemoveFromUpdate()
 
     if (m_currMap != CurrentMap && CurrentMap)
     {
-        ACE_Stack_Trace st;
+        Trinity::StackTrace st;
         TC_LOG_ERROR("shitlog", "WorldObject::RemoveFromUpdate - invalid map, m_currMap ID %u, CurrentMap ID: %u. Object type: %u, entry: %u, GUID: %u, InWorld: %u, position: { %f, %f, %f }.\nStack trace:\n%s",
             m_currMap->GetId(), CurrentMap->GetId(), uint32(GetTypeId()), GetEntry(), GetGUIDLow(), IsInWorld(), GetPositionX(), GetPositionY(), GetPositionZ(), st.c_str());
         return;

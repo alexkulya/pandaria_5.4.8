@@ -35,7 +35,7 @@
 #include "Vehicle.h"
 #include "World.h"
 #include "WorldPacket.h"
-#include <ace/Stack_Trace.h>
+#include "StackTrace.h"
 #include <cmath>
 
 ObjectAccessor::ObjectAccessor() { }
