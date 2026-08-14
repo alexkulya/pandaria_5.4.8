@@ -22,7 +22,7 @@
 
 #include <string>
 #include <vector>
-#include <ace/OS_NS_sys_time.h>
+#include <chrono>
 
 #include "Define.h"
 
@@ -139,8 +139,13 @@ namespace MMAP
 
     inline uint32 getMSTime()
     {
-        static const ACE_Time_Value ApplicationStartTime = ACE_OS::gettimeofday();
-        return (ACE_OS::gettimeofday() - ApplicationStartTime).msec();
+        // steady_clock rather than a wall clock: this only ever measures
+        // elapsed time, and gettimeofday would jump if the system clock were
+        // adjusted mid-run. A full mmap generation takes long enough for that
+        // to matter.
+        static const std::chrono::steady_clock::time_point ApplicationStartTime = std::chrono::steady_clock::now();
+        return uint32(std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::steady_clock::now() - ApplicationStartTime).count());
     }
 
     inline uint32 getMSTimeDiff(uint32 oldMSTime, uint32 newMSTime)
