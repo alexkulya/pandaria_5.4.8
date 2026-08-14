@@ -29,8 +29,9 @@
 #include <ace/Sig_Handler.h>
 #include <openssl/opensslv.h>
 #include <openssl/crypto.h>
-
+#include "OpenSSLCrypto.h"
 #include "Common.h"
+#include <boost/dll/runtime_symbol_info.hpp>
 #include "Database/DatabaseEnv.h"
 #include "Configuration/Config.h"
 #include "Log.h"
@@ -40,6 +41,9 @@
 #include "RealmList.h"
 #include "RealmAcceptor.h"
 #include "AppenderDB.h"
+#if defined(OPENSSL_VERSION_MAJOR) && (OPENSSL_VERSION_MAJOR >= 3)
+#include <openssl/provider.h>
+#endif
 
 #ifdef __linux__
 #include <sched.h>
@@ -150,7 +154,7 @@ extern int main(int argc, char** argv)
 
     TC_LOG_INFO("server.authserver", "Using configuration file %s.", configFile);
 
-    TC_LOG_WARN("server.authserver", "%s (Library: %s)", OPENSSL_VERSION_TEXT, SSLeay_version(SSLEAY_VERSION));
+    TC_LOG_WARN("server.authserver", "%s (Library: %s)", OPENSSL_VERSION_TEXT, OpenSSL_version(OPENSSL_VERSION));
 
 #if defined (ACE_HAS_EVENT_POLL) || defined (ACE_HAS_DEV_POLL)
     ACE_Reactor::instance(new ACE_Reactor(new ACE_Dev_Poll_Reactor(ACE::max_handles(), 1), 1), true);
