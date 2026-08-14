@@ -16,6 +16,7 @@
 */
 
 #include <OpenSSLCrypto.h>
+#include "Errors.h"
 #include <openssl/crypto.h>
 #include <ace/Thread_Mutex.h>
 #include <vector>
@@ -33,16 +34,27 @@ void OpenSSLCrypto::threadsSetup([[maybe_unused]] boost::filesystem::path const&
 #if PLATFORM == PLATFORM_WINDOWS
     OSSL_PROVIDER_set_default_search_path(nullptr, providerModulePath.string().c_str());
 #endif
+    // Loading any provider explicitly stops the default one from being loaded
+    // implicitly, so "default" has to be requested alongside "legacy" (which is
+    // where RC4 lives from OpenSSL 3.0 on). Fail here rather than on the first
+    // session, when the cause is no longer obvious.
     LegacyProvider = OSSL_PROVIDER_load(nullptr, "legacy");
+    WPFatal(LegacyProvider, "Failed to load the OpenSSL legacy provider. Check that legacy.so (legacy.dll on Windows) ships with the OpenSSL installation.");
+
     DefaultProvider = OSSL_PROVIDER_load(nullptr, "default");
+    WPFatal(DefaultProvider, "Failed to load the OpenSSL default provider.");
 #endif
 }
 
 void OpenSSLCrypto::threadsCleanup()
 {
 #if OPENSSL_VERSION_NUMBER >= 0x30000000L
-    OSSL_PROVIDER_unload(LegacyProvider);
-    OSSL_PROVIDER_unload(DefaultProvider);
+    if (LegacyProvider)
+        OSSL_PROVIDER_unload(LegacyProvider);
+
+    if (DefaultProvider)
+        OSSL_PROVIDER_unload(DefaultProvider);
+
     OSSL_PROVIDER_set_default_search_path(nullptr, nullptr);
 #endif
 }

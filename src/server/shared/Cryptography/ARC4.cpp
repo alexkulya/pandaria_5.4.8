@@ -22,13 +22,18 @@
 ARC4::ARC4(uint8 len) : _ctx(EVP_CIPHER_CTX_new())
 {
 #if OPENSSL_VERSION_NUMBER >= 0x30000000L
+    // From OpenSSL 3.0 on RC4 lives in the legacy provider, which
+    // OpenSSLCrypto::threadsSetup loads at startup. Without it both EVP_rc4() and
+    // this fetch yield a cipher that fails to initialise, and the unchecked
+    // EVP_CIPHER_CTX_set_key_length below then dereferences a null cipher.
     _cipher = EVP_CIPHER_fetch(nullptr, "RC4", nullptr);
+    WPFatal(_cipher, "Failed to fetch the RC4 cipher. The OpenSSL legacy provider is missing or could not be loaded.");
 #else
     EVP_CIPHER const* _cipher = EVP_rc4();
 #endif
 
     EVP_CIPHER_CTX_init(_ctx);
-    EVP_EncryptInit_ex(_ctx, EVP_rc4(), nullptr, nullptr, nullptr);
+    EVP_EncryptInit_ex(_ctx, _cipher, nullptr, nullptr, nullptr);
     EVP_CIPHER_CTX_set_key_length(_ctx, len);
 }
 
@@ -36,12 +41,13 @@ ARC4::ARC4(uint8 const* seed, size_t len) : _ctx(EVP_CIPHER_CTX_new())
 {
 #if OPENSSL_VERSION_NUMBER >= 0x30000000L
     _cipher = EVP_CIPHER_fetch(nullptr, "RC4", nullptr);
+    WPFatal(_cipher, "Failed to fetch the RC4 cipher. The OpenSSL legacy provider is missing or could not be loaded.");
 #else
     EVP_CIPHER const* _cipher = EVP_rc4();
 #endif
 
     EVP_CIPHER_CTX_init(_ctx);
-    EVP_EncryptInit_ex(_ctx, EVP_rc4(), nullptr, nullptr, nullptr);
+    EVP_EncryptInit_ex(_ctx, _cipher, nullptr, nullptr, nullptr);
     EVP_CIPHER_CTX_set_key_length(_ctx, len);
     EVP_EncryptInit_ex(_ctx, nullptr, nullptr, seed, nullptr);
 }

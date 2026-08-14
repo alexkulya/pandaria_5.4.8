@@ -23,12 +23,17 @@ endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "Windows")
   add_subdirectory(acelite)
-  if(USE_MYSQL_SOURCES)
-      add_subdirectory(mysqllite)
-  endif()
   if(TOOLS)
     add_subdirectory(bzip2)
   endif()
+endif()
+
+# The MySQL client is taken from the system on every platform. The bundled
+# mysqllite is a MySQL 5.5 tree from 2010 that no longer compiles against a
+# modern Windows CRT, and building it gained nothing that the system client
+# does not already provide.
+if(SERVERS)
+  add_subdirectory(mysql)
 endif()
 
 add_subdirectory(zlib)

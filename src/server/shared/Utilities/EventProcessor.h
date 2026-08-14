@@ -19,7 +19,10 @@
 #define __EVENTPROCESSOR_H
 
 #include "Define.h"
+#include "Errors.h"
 
+#include <algorithm>
+#include <functional>
 #include <map>
 
 // Note. All times are in milliseconds here.

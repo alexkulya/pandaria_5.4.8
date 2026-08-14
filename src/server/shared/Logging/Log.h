@@ -24,6 +24,7 @@
 #include "Logger.h"
 
 #include <string>
+#include <unordered_map>
 #include <ace/Singleton.h>
 
 #define LOGGER_ROOT "root"
