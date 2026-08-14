@@ -45,7 +45,7 @@ public:
     explicit Socket(boost::asio::ip::tcp::socket&& socket) :
         _socket(std::move(socket)), _remoteAddress(_socket.remote_endpoint().address()),
         _remotePort(_socket.remote_endpoint().port()), _readBuffer(READ_BLOCK_SIZE),
-        _closed(false), _closing(false), _isWritingAsync(false)
+        _writeQueueSize(0), _closed(false), _closing(false), _isWritingAsync(false)
     {
     }
 
@@ -96,8 +96,25 @@ public:
             });
     }
 
+    // The ACE sockets capped their output queue at 8 MB via the message queue's
+    // high water mark. Without an equivalent, a client that stops reading grows
+    // the queue until the process runs out of memory, so the cap is enforced
+    // here and a peer that hits it is dropped.
+    static std::size_t const WRITE_QUEUE_HIGH_WATER_MARK = 8 * 1024 * 1024;
+
     void QueuePacket(MessageBuffer&& buffer)
     {
+        std::size_t const size = buffer.GetActiveSize();
+
+        if (_writeQueueSize + size > WRITE_QUEUE_HIGH_WATER_MARK)
+        {
+            TC_LOG_ERROR("network", "Socket::QueuePacket: %s exceeded the " SZFMTD " byte output queue limit, closing connection",
+                GetRemoteIpAddress().to_string().c_str(), WRITE_QUEUE_HIGH_WATER_MARK);
+            CloseSocket();
+            return;
+        }
+
+        _writeQueueSize += size;
         _writeQueue.push(std::move(buffer));
         AsyncProcessQueue();
     }
@@ -122,6 +139,7 @@ public:
     void DelayedCloseSocket() { _closing = true; }
 
     MessageBuffer& GetReadBuffer() { return _readBuffer; }
+    MessageBuffer const& GetReadBuffer() const { return _readBuffer; }
 
 protected:
     virtual void OnClose() { }
@@ -184,6 +202,7 @@ private:
 
         // async_write completes only once the whole buffer has gone out, so
         // the front entry is always fully consumed here.
+        _writeQueueSize -= _writeQueue.front().GetActiveSize();
         _writeQueue.pop();
 
         AsyncProcessQueue();
@@ -195,6 +214,7 @@ private:
 
     MessageBuffer _readBuffer;
     std::queue<MessageBuffer> _writeQueue;
+    std::size_t _writeQueueSize;
 
     std::atomic<bool> _closed;
     std::atomic<bool> _closing;
