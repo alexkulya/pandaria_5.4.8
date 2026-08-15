@@ -22,8 +22,8 @@ INSERT INTO `item_template` (`entry`, `class`, `subclass`, `SoundOverrideSubclas
 (110100,0,1,-1,"Profession Boost",30658,4,64,0,0,1,1,1,0,0,0,-1,-1,1,32,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,12883,0,-1,0,4,60000,0,0,0,-1,0,-1,0,0,0,-1,0,-1,0,0,0,-1,0,-1,0,0,0,-1,0,-1,1,"Gives you the ability to level up any of your professions to 600.",0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),
 (110101,0,1,-1,"Minor Profession Boost",30658,4,64,0,0,1,1,1,0,0,0,-1,-1,1,32,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,12883,0,-1,0,4,60000,0,0,0,-1,0,-1,0,0,0,-1,0,-1,0,0,0,-1,0,-1,0,0,0,-1,0,-1,1,"Gives you the opportunity to level up any of your professions to the maximum available (75, 150, 225, 300, 375, 450, 525 or 600 points).",0,0,0,0,0,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 
-DELETE FROM `locales_item` WHERE `ID` IN (110001, 110002, 110003, 110004, 110005, 110006, 110007, 110008, 110009, 110010, 110011, 110012, 110013, 110014, 110015, 110016, 110017, 110018, 110019, 110100, 110101);
-INSERT INTO `locales_item` (`ID`, `locale`, `Name`, `Description`) VALUES
+DELETE FROM `item_template_locale` WHERE `ID` IN (110001, 110002, 110003, 110004, 110005, 110006, 110007, 110008, 110009, 110010, 110011, 110012, 110013, 110014, 110015, 110016, 110017, 110018, 110019, 110100, 110101);
+INSERT INTO `item_template_locale` (`ID`, `locale`, `Name`, `Description`) VALUES
 (110001,"ruRU","Жетон Пандарии (Номинал: 01)","Дает вам 1 виртуальное очко для Pandaria 5.4.8 магазина."),
 (110002,"ruRU","Жетон Пандарии (Номинал: 02)","Дает вам 2 виртуальных очка для Pandaria 5.4.8 магазина."),
 (110003,"ruRU","Жетон Пандарии (Номинал: 05)","Дает вам 5 виртуальных очков для Pandaria 5.4.8 магазина."),
@@ -75,10 +75,10 @@ INSERT INTO `npc_text` (`ID`, `text0_0`, `text0_1`) VALUES
 (20010,"Greetings $n, you have just obtained the profession boost item which allows you to raise any profession you have to level 600.","Greetings $n, you have just obtained the profession boost item which allows you to raise any profession you have to level 600."),
 (20011,"Greetings $n, you have just obtained the minor profession boost item which allows you to raise any profession you have to the maximum level available (75, 150, 225, 300, 375, 450, 525 or 600 points).","Greetings $n, you have just obtained the minor profession boost item which allows you to raise any profession you have to the maximum level available (75, 150, 225, 300, 375, 450, 525 or 600 points).");
 
-DELETE FROM `locales_npc_text` WHERE `ID` IN (20010, 20011);
-INSERT INTO `locales_npc_text` (`ID`, `Text0_0_loc8`, `Text0_1_loc8`) VALUES
-(20010,"Приветствую, $n, вы только что получили предмет повышения профессии, который позволяет повысить уровень любой вашей профессии до 600-го.","Приветствую, $n, вы только что получили предмет повышения профессии, который позволяет повысить уровень любой вашей профессии до 600-го."),
-(20011,"Приветствую $n, вы только что получили предмет незначительного повышения профессии, который позволяет вам поднять любую имеющуюся у вас профессию до максимально доступного уровня (75, 150, 225, 300, 375, 450, 525 или 600 очков).","Приветствую $n, вы только что получили предмет незначительного повышения профессии, который позволяет вам поднять любую имеющуюся у вас профессию до максимально доступного уровня (75, 150, 225, 300, 375, 450, 525 или 600 очков).");
+DELETE FROM `npc_text_locale` WHERE `ID` IN (20010, 20011);
+INSERT INTO `npc_text_locale` (`ID`, `Locale`, `Text0_0`, `Text0_1`) VALUES
+(20010,"ruRU","Приветствую, $n, вы только что получили предмет повышения профессии, который позволяет повысить уровень любой вашей профессии до 600-го.","Приветствую, $n, вы только что получили предмет повышения профессии, который позволяет повысить уровень любой вашей профессии до 600-го."),
+(20011,"ruRU","Приветствую $n, вы только что получили предмет незначительного повышения профессии, который позволяет вам поднять любую имеющуюся у вас профессию до максимально доступного уровня (75, 150, 225, 300, 375, 450, 525 или 600 очков).","Приветствую $n, вы только что получили предмет незначительного повышения профессии, который позволяет вам поднять любую имеющуюся у вас профессию до максимально доступного уровня (75, 150, 225, 300, 375, 450, 525 или 600 очков).");
 
 DELETE FROM `gossip_menu_option` WHERE `menu_id` = 51002;
 INSERT INTO `gossip_menu_option` (`menu_id`, `id`, `option_icon`, `option_text`, `option_text_female`, `option_id`, `npc_option_npcflag`, `action_menu_id`, `action_poi_id`, `box_coded`, `box_money`, `box_text`, `box_text_female`) VALUES
@@ -98,20 +98,23 @@ INSERT INTO `gossip_menu_option` (`menu_id`, `id`, `option_icon`, `option_text`,
 (51002,13,3,"|TInterface/Icons/inv_inscription_tradeskill01:28|t Inscription",NULL,0,1,0,0,0,0,NULL,NULL),
 (51002,14,3,"|TInterface/Icons/trade_archaeology:28|t Archaeology",NULL,0,1,0,0,0,0,NULL,NULL);
 
-DELETE FROM `locales_gossip_menu_option` WHERE `menu_id` = 51002;
-INSERT INTO `locales_gossip_menu_option` (`menu_id`, `id`, `option_text_loc8`, `option_text_female_loc8`, `box_text_loc8`, `box_text_female_loc8`) VALUES
-(51002,0,"|TInterface/Icons/spell_holy_sealofsacrifice:28|t Первая помощь",NULL,NULL,NULL),
-(51002,1,"|TInterface/Icons/trade_blacksmithing:28|t Кузнечное дело",NULL,NULL,NULL),
-(51002,2,"|TInterface/Icons/inv_misc_armorkit_17:28|t Кожевничество",NULL,NULL,NULL),
-(51002,3,"|TInterface/Icons/trade_alchemy:28|t Алхимия",NULL,NULL,NULL),
-(51002,4,"|TInterface/Icons/spell_nature_naturetouchgrow:28|t Травничество",NULL,NULL,NULL),
-(51002,5,"|TInterface/Icons/inv_misc_food_15:28|t Кулинария",NULL,NULL,NULL),
-(51002,6,"|TInterface/Icons/trade_mining:28|t Горное дело",NULL,NULL,NULL),
-(51002,7,"|TInterface/Icons/trade_tailoring:28|t Портняжное дело",NULL,NULL,NULL),
-(51002,8,"|TInterface/Icons/trade_engineering:28|t Инженерное дело",NULL,NULL,NULL),
-(51002,9,"|TInterface/Icons/trade_engraving:28|t Наложение чар",NULL,NULL,NULL),
-(51002,10,"|TInterface/Icons/trade_fishing:28|t Рыбная ловля",NULL,NULL,NULL),
-(51002,11,"|TInterface/Icons/inv_misc_pelt_wolf_01:28|t Снятие шкур",NULL,NULL,NULL),
-(51002,12,"|TInterface/Icons/inv_misc_gem_01:28|t Ювелирное дело",NULL,NULL,NULL),
-(51002,13,"|TInterface/Icons/inv_inscription_tradeskill01:28|t Начертание",NULL,NULL,NULL),
-(51002,14,"|TInterface/Icons/trade_archaeology:28|t Археология",NULL,NULL,NULL);
+-- gossip_menu_option_locale carries no female variants, unlike the old
+-- locales_gossip_menu_option. Every female column here was NULL, so nothing
+-- is lost by dropping them.
+DELETE FROM `gossip_menu_option_locale` WHERE `MenuID` = 51002;
+INSERT INTO `gossip_menu_option_locale` (`MenuID`, `OptionID`, `Locale`, `OptionText`, `BoxText`) VALUES
+(51002,0,"ruRU","|TInterface/Icons/spell_holy_sealofsacrifice:28|t Первая помощь",NULL),
+(51002,1,"ruRU","|TInterface/Icons/trade_blacksmithing:28|t Кузнечное дело",NULL),
+(51002,2,"ruRU","|TInterface/Icons/inv_misc_armorkit_17:28|t Кожевничество",NULL),
+(51002,3,"ruRU","|TInterface/Icons/trade_alchemy:28|t Алхимия",NULL),
+(51002,4,"ruRU","|TInterface/Icons/spell_nature_naturetouchgrow:28|t Травничество",NULL),
+(51002,5,"ruRU","|TInterface/Icons/inv_misc_food_15:28|t Кулинария",NULL),
+(51002,6,"ruRU","|TInterface/Icons/trade_mining:28|t Горное дело",NULL),
+(51002,7,"ruRU","|TInterface/Icons/trade_tailoring:28|t Портняжное дело",NULL),
+(51002,8,"ruRU","|TInterface/Icons/trade_engineering:28|t Инженерное дело",NULL),
+(51002,9,"ruRU","|TInterface/Icons/trade_engraving:28|t Наложение чар",NULL),
+(51002,10,"ruRU","|TInterface/Icons/trade_fishing:28|t Рыбная ловля",NULL),
+(51002,11,"ruRU","|TInterface/Icons/inv_misc_pelt_wolf_01:28|t Снятие шкур",NULL),
+(51002,12,"ruRU","|TInterface/Icons/inv_misc_gem_01:28|t Ювелирное дело",NULL),
+(51002,13,"ruRU","|TInterface/Icons/inv_inscription_tradeskill01:28|t Начертание",NULL),
+(51002,14,"ruRU","|TInterface/Icons/trade_archaeology:28|t Археология",NULL);
