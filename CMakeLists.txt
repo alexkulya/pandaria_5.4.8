@@ -104,6 +104,12 @@ if(MSVC)
     link_directories(${Boost_LIBRARY_DIRS})
   elseif(BOOST_LIBRARYDIR)
     link_directories(${BOOST_LIBRARYDIR})
+  elseif(DEFINED ENV{BOOST_LIBRARYDIR})
+    # find_package honours BOOST_LIBRARYDIR from the environment, but if() only
+    # ever sees CMake variables, so a configure that relied on the environment
+    # found Boost and then linked without its directory - LNK1104 on the
+    # auto-linked libboost_date_time.
+    link_directories($ENV{BOOST_LIBRARYDIR})
   endif()
 endif()
 
