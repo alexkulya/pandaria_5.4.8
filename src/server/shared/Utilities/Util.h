@@ -124,8 +124,12 @@ class SFMTEngine
 public:
     typedef uint32 result_type;
 
-    result_type min() const { return std::numeric_limits<result_type>::min(); }
-    result_type max() const { return std::numeric_limits<result_type>::max(); }
+    // UniformRandomBitGenerator requires min() and max() to be static and
+    // constexpr: <random> reads them as `_Gx::min()` with no object in hand.
+    // They were plain const member functions, which older MSVC releases let
+    // pass and the current STL rejects with C2352/C2737/C3536 from <random>.
+    static constexpr result_type min() { return std::numeric_limits<result_type>::min(); }
+    static constexpr result_type max() { return std::numeric_limits<result_type>::max(); }
     result_type operator()() const { return rand32(); }
 
     static SFMTEngine& Instance();
