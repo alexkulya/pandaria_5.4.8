@@ -13,8 +13,20 @@
 -- (40 NPC-type rows + 12 GO-type rows.)
 -- =====================================================================
 
+-- A database that has already been migrated no longer has `locales_quest_objective`, and
+-- reading a missing table aborts the rest of the file. Run this only when the
+-- old table is actually there.
+SET @copy_orphan_objective_locales := IF(
+    (SELECT COUNT(*) FROM information_schema.TABLES
+      WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'locales_quest_objective') > 0,
+    "
 DELETE l FROM `locales_quest_objective` l
 JOIN `quest_objective` o ON o.`id` = l.`id`
 WHERE (o.`type` IN (0,3) AND o.`objectId` NOT IN (SELECT `entry` FROM `creature_template`))
    OR (o.`type` = 1      AND o.`objectId` NOT IN (SELECT `entry` FROM `item_template`))
-   OR (o.`type` = 2      AND o.`objectId` NOT IN (SELECT `entry` FROM `gameobject_template`));
+   OR (o.`type` = 2      AND o.`objectId` NOT IN (SELECT `entry` FROM `gameobject_template`))
+",
+    'DO 0');
+PREPARE _copy_orphan_objective_locales FROM @copy_orphan_objective_locales;
+EXECUTE _copy_orphan_objective_locales;
+DEALLOCATE PREPARE _copy_orphan_objective_locales;

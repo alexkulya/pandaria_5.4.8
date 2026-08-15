@@ -9,9 +9,8 @@
 -- Named after its base table `quest_objective`, unlike the reference dump,
 -- which is inconsistent with its own.
 
-DROP TABLE IF EXISTS `quest_objective_locale`;
 
-CREATE TABLE `quest_objective_locale` (
+CREATE TABLE IF NOT EXISTS `quest_objective_locale` (
     `ID`            INT UNSIGNED NOT NULL DEFAULT 0,
     `Locale`        VARCHAR(4)   NOT NULL,
     `Description`   TEXT,
@@ -22,14 +21,27 @@ CREATE TABLE `quest_objective_locale` (
 -- Numeric locale -> name. Indices follow localeNames[] in Common.cpp:20:
 -- 1 koKR, 2 frFR, 3 deDE, 4 zhCN, 5 zhTW, 6 esES, 7 esMX, 8 ruRU, 9 itIT,
 -- 10 ptBR, 11 ptPT. Index 0 is enUS and lives in quest_objective.description.
-INSERT INTO `quest_objective_locale` (`ID`, `Locale`, `Description`)
+-- A database that has already been migrated no longer has `locales_quest_objective`, and
+-- `INSERT ... SELECT` from a missing table aborts the rest of the file. Run the
+-- copy only when the old table is actually there, so a fresh install carries its
+-- data over and an up-to-date one is left untouched.
+SET @copy_quest_objective_locale := IF(
+    (SELECT COUNT(*) FROM information_schema.TABLES
+      WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'locales_quest_objective') > 0,
+    "
+INSERT IGNORE INTO `quest_objective_locale` (`ID`, `Locale`, `Description`)
 SELECT `id`,
        CASE `locale` WHEN 1 THEN 'koKR' WHEN 2 THEN 'frFR' WHEN 3 THEN 'deDE' WHEN 4 THEN 'zhCN'
                      WHEN 5 THEN 'zhTW' WHEN 6 THEN 'esES' WHEN 7 THEN 'esMX' WHEN 8 THEN 'ruRU'
                      WHEN 9 THEN 'itIT' WHEN 10 THEN 'ptBR' WHEN 11 THEN 'ptPT' END,
        `description`
   FROM `locales_quest_objective`
- WHERE `locale` BETWEEN 1 AND 11 AND COALESCE(`description`,'') <> '';
+ WHERE `locale` BETWEEN 1 AND 11 AND COALESCE(`description`,'') <> ''
+",
+    'DO 0');
+PREPARE _copy_quest_objective_locale FROM @copy_quest_objective_locale;
+EXECUTE _copy_quest_objective_locale;
+DEALLOCATE PREPARE _copy_quest_objective_locale;
 
 -- INSERT IGNORE: a description this database already had is never replaced.
 INSERT IGNORE INTO `quest_objective_locale` (`ID`, `Locale`, `Description`, `VerifiedBuild`) VALUES
