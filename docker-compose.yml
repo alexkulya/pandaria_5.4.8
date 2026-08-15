@@ -8,6 +8,11 @@ services:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
       - --max-connections=1000
+      # MySQL Connector/C 6.1.11 (built against OpenSSL 1.0.x) cannot negotiate
+      # the TLS that 8.0 offers by default, and fails with "SSL connection
+      # error: unknown error number". require_secure_transport is OFF anyway,
+      # so turn SSL off server-side and let the client connect in plaintext.
+      - --skip-ssl
     environment:
       MYSQL_ROOT_PASSWORD: root
     ports:
