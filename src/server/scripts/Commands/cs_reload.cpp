@@ -111,12 +111,15 @@ public:
             { "item_loot_template",             SEC_ADMINISTRATOR,  true,   &HandleReloadLootTemplatesItemCommand,          },
             { "item_template_locale",           SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesItemCommand,                },
             { "lfg_dungeon_rewards",            SEC_ADMINISTRATOR,  true,   &HandleReloadLfgRewardsCommand,                 },
-            { "locales_creature_text",          SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesCreatureTextCommand,        },
-            { "locales_gameobject",             SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesGameobjectCommand,          },
-            { "locales_npc_text",               SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesNpcTextCommand,             },
-            { "locales_page_text",              SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesPageTextCommand,            },
-            { "locales_points_of_interest",     SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesPointsOfInterestCommand,    },
-            { "locales_quest",                  SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesQuestCommand,               },
+            { "creature_text_locale",           SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesCreatureTextCommand,        },
+            { "gameobject_template_locale",     SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesGameobjectCommand,          },
+            { "npc_text_locale",                SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesNpcTextCommand,             },
+            { "page_text_locale",               SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesPageTextCommand,            },
+            { "points_of_interest_locale",      SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesPointsOfInterestCommand,    },
+            { "quest_template_locale",          SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesQuestCommand,               },
+            { "quest_objective_locale",         SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesQuestObjectiveCommand,      },
+            { "quest_offer_reward_locale",      SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesQuestOfferRewardCommand,    },
+            { "quest_request_items_locale",     SEC_ADMINISTRATOR,  true,   &HandleReloadLocalesQuestRequestItemsCommand,   },
             { "mail_level_reward",              SEC_ADMINISTRATOR,  true,   &HandleReloadMailLevelRewardCommand,            },
             { "mail_loot_template",             SEC_ADMINISTRATOR,  true,   &HandleReloadLootTemplatesMailCommand,          },
             { "milling_loot_template",          SEC_ADMINISTRATOR,  true,   &HandleReloadLootTemplatesMillingCommand,       },
@@ -331,6 +334,9 @@ public:
         HandleReloadLocalesPageTextCommand(handler, "a");
         HandleReloadLocalesPointsOfInterestCommand(handler, "a");
         HandleReloadLocalesQuestCommand(handler, "a");
+        HandleReloadLocalesQuestObjectiveCommand(handler, "a");
+        HandleReloadLocalesQuestOfferRewardCommand(handler, "a");
+        HandleReloadLocalesQuestRequestItemsCommand(handler, "a");
         return true;
     }
 
@@ -1111,7 +1117,7 @@ public:
     {
         TC_LOG_INFO("misc", "Re-Loading Locales Creature Texts...");
         sCreatureTextMgr->LoadCreatureTextLocales();
-        handler->SendGlobalGMSysMessage("DB table `locales_creature_text` reloaded.");
+        handler->SendGlobalGMSysMessage("DB table `creature_text_locale` reloaded.");
         return true;
     }
 
@@ -1119,7 +1125,7 @@ public:
     {
         TC_LOG_INFO("misc", "Re-Loading Locales Gameobject...");
         sObjectMgr->LoadGameObjectLocales();
-        handler->SendGlobalGMSysMessage("DB table `locales_gameobject` reloaded.");
+        handler->SendGlobalGMSysMessage("DB table `gameobject_template_locale` reloaded.");
         return true;
     }
 
@@ -1143,7 +1149,7 @@ public:
     {
         TC_LOG_INFO("misc", "Re-Loading Locales NPC Text...");
         sObjectMgr->LoadNpcTextLocales();
-        handler->SendGlobalGMSysMessage("DB table `locales_npc_text` reloaded.");
+        handler->SendGlobalGMSysMessage("DB table `npc_text_locale` reloaded.");
         return true;
     }
 
@@ -1151,7 +1157,7 @@ public:
     {
         TC_LOG_INFO("misc", "Re-Loading Locales Page Text...");
         sObjectMgr->LoadPageTextLocales();
-        handler->SendGlobalGMSysMessage("DB table `locales_page_text` reloaded.");
+        handler->SendGlobalGMSysMessage("DB table `page_text_locale` reloaded.");
         return true;
     }
 
@@ -1159,15 +1165,39 @@ public:
     {
         TC_LOG_INFO("misc", "Re-Loading Locales Points Of Interest...");
         sObjectMgr->LoadPointOfInterestLocales();
-        handler->SendGlobalGMSysMessage("DB table `locales_points_of_interest` reloaded.");
+        handler->SendGlobalGMSysMessage("DB table `points_of_interest_locale` reloaded.");
         return true;
     }
 
     static bool HandleReloadLocalesQuestCommand(ChatHandler* handler, const char* /*args*/)
     {
-        TC_LOG_INFO("misc", "Re-Loading Locales Quest...");
+        TC_LOG_INFO("misc", "Re-Loading Quest Template Locale ... ");
         sObjectMgr->LoadQuestLocales();
-        handler->SendGlobalGMSysMessage("DB table `locales_quest` reloaded.");
+        handler->SendGlobalGMSysMessage("DB table `quest_template_locale` reloaded.");
+        return true;
+    }
+
+    static bool HandleReloadLocalesQuestObjectiveCommand(ChatHandler* handler, const char* /*args*/)
+    {
+        TC_LOG_INFO("misc", "Re-Loading Quest Objective Locale ... ");
+        sObjectMgr->LoadQuestObjectiveLocales();
+        handler->SendGlobalGMSysMessage("DB table `quest_objective_locale` reloaded.");
+        return true;
+    }
+
+    static bool HandleReloadLocalesQuestOfferRewardCommand(ChatHandler* handler, const char* /*args*/)
+    {
+        TC_LOG_INFO("misc", "Re-Loading Quest Offer Reward Locale ... ");
+        sObjectMgr->LoadQuestOfferRewardLocales();
+        handler->SendGlobalGMSysMessage("DB table `quest_offer_reward_locale` reloaded.");
+        return true;
+    }
+
+    static bool HandleReloadLocalesQuestRequestItemsCommand(ChatHandler* handler, const char* /*args*/)
+    {
+        TC_LOG_INFO("misc", "Re-Loading Quest Request Items Locale ... ");
+        sObjectMgr->LoadQuestRequestItemsLocales();
+        handler->SendGlobalGMSysMessage("DB table `quest_request_items_locale` reloaded.");
         return true;
     }
 

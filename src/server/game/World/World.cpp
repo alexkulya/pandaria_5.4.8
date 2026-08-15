@@ -1858,6 +1858,8 @@ void World::SetInitialWorldSettings()
     sObjectMgr->LoadGameObjectLocales();
     sObjectMgr->LoadItemLocales();
     sObjectMgr->LoadQuestLocales();
+    sObjectMgr->LoadQuestOfferRewardLocales();
+    sObjectMgr->LoadQuestRequestItemsLocales();
     sObjectMgr->LoadNpcTextLocales();
     sObjectMgr->LoadPageTextLocales();
     sObjectMgr->LoadGossipMenuItemsLocales();
