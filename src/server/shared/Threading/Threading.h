@@ -18,12 +18,11 @@
 #ifndef THREADING_H
 #define THREADING_H
 
-#include <ace/Thread.h>
-#include <ace/TSS_T.h>
 #include <atomic>
-#include <assert.h>
+#include <cstdint>
+#include <thread>
 
-namespace ACE_Based
+namespace Trinity
 {
 
     class Runnable
@@ -39,10 +38,17 @@ namespace ACE_Based
                     delete this;
             }
         private:
-            std::atomic<long> m_refs;
+            // Was left uninitialised, so every Runnable started life with an
+            // indeterminate count read as an atomic - undefined behaviour that
+            // happened to leak rather than crash, because the count never
+            // reached zero.
+            std::atomic<long> m_refs{0};
     };
 
-    enum Priority
+    // Scoped on purpose: unscoped, these would land in namespace Trinity as
+    // Trinity::Normal, Trinity::High and friends, and those names are used by
+    // plenty of unrelated enums across the core.
+    enum class Priority
     {
         Idle,
         Lowest,
@@ -53,18 +59,6 @@ namespace ACE_Based
         Realtime
     };
 
-#define MAXPRIORITYNUM (Realtime + 1)
-
-    class ThreadPriority
-    {
-        public:
-            ThreadPriority();
-            int getPriority(Priority p) const;
-
-        private:
-            int m_priority[MAXPRIORITYNUM];
-    };
-
     class Thread
     {
         public:
@@ -72,35 +66,27 @@ namespace ACE_Based
             explicit Thread(Runnable* instance);
             ~Thread();
 
-            bool start();
+            /// Join the thread. False if there is nothing to join.
             bool wait();
-            void destroy();
 
-            void suspend();
-            void resume();
+            /// Abandon the thread without waiting for it. The process is on its
+            /// way out when this is called.
+            void destroy();
 
             void setPriority(Priority type);
 
             static void Sleep(unsigned long msecs);
-            static ACE_thread_t currentId();
-            static ACE_hthread_t currentHandle();
-            static Thread * current();
+            static uint64_t currentId();
 
         private:
             Thread(const Thread&);
             Thread& operator=(const Thread&);
 
-            static ACE_THR_FUNC_RETURN ThreadTask(void * param);
+            bool start();
+            static void ThreadTask(Runnable* task);
 
-            ACE_thread_t m_iThreadId;
-            ACE_hthread_t m_hThreadHandle;
+            std::thread m_thread;
             Runnable* m_task;
-
-            typedef ACE_TSS<Thread> ThreadStorage;
-            //global object - container for Thread class representation of every thread
-            static ThreadStorage m_ThreadStorage;
-            //use this object to determine current OS thread priority values mapped to enum Priority{ }
-            static ThreadPriority m_TpEnum;
     };
 
 }

@@ -1254,7 +1254,7 @@ class WorldSession : public Schedulable
         uint32 recruiterId;
         bool isRecruiter;
         bool m_hasBoost;
-        ACE_Based::LockedQueue<WorldPacket*, std::mutex> _recvQueue;
+        Trinity::LockedQueue<WorldPacket*, std::mutex> _recvQueue;
         time_t timeLastWhoCommand;
         z_stream_s* _compressionStream;
 

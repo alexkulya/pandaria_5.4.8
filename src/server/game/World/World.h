@@ -1542,7 +1542,7 @@ class World
         time_t m_NextServerRestart;
 
         // CLI command holder to be thread safe
-        ACE_Based::LockedQueue<CliCommandHolder*, std::mutex> cliCmdQueue;
+        Trinity::LockedQueue<CliCommandHolder*, std::mutex> cliCmdQueue;
 
         // scheduled reset times
         time_t m_NextDailyQuestReset;
@@ -1557,7 +1557,7 @@ class World
 
         // sessions that are added async
         void AddSession_(WorldSession* s);
-        ACE_Based::LockedQueue<WorldSession*, std::mutex> addSessQueue;
+        Trinity::LockedQueue<WorldSession*, std::mutex> addSessQueue;
 
         // used versions
         std::string m_DBVersion;
@@ -1576,7 +1576,10 @@ class World
         std::shared_timed_mutex _accountCacheDataLock;
 
         void ProcessQueryCallbacks();
-        ACE_Future_Set<PreparedQueryResult> m_realmCharCallbacks;
+        // Was an ACE_Future_Set, whose only use here was "drain whatever has
+        // answered". A plain list does that without the machinery for waiting
+        // on a set of futures, which this never needed.
+        std::list<PreparedQueryResultFuture> m_realmCharCallbacks;
 
         uint32 m_minDiff = 0;
         uint32 m_maxDiff = 0;

@@ -16,95 +16,46 @@
 */
 
 #include <chrono>
+#include <functional>
 #include <thread>
 
 #include "Threading.h"
 #include "Errors.h"
-#include <ace/OS_NS_unistd.h>
-#include <ace/Sched_Params.h>
-#include <vector>
 
-using namespace ACE_Based;
+#ifdef _WIN32
+#  include <windows.h>
+#else
+#  include <pthread.h>
+#  include <sched.h>
+#endif
 
-ThreadPriority::ThreadPriority()
+using namespace Trinity;
+
+namespace
 {
-    for (int i = Idle; i < MAXPRIORITYNUM; ++i)
-        m_priority[i] = ACE_THR_PRI_OTHER_DEF;
-
-    m_priority[Idle] = ACE_Sched_Params::priority_min(ACE_SCHED_OTHER);
-    m_priority[Realtime] = ACE_Sched_Params::priority_max(ACE_SCHED_OTHER);
-
-    std::vector<int> _tmp;
-
-    ACE_Sched_Params::Policy _policy = ACE_SCHED_OTHER;
-    ACE_Sched_Priority_Iterator pr_iter(_policy);
-
-    while (pr_iter.more())
+#ifdef _WIN32
+    int NativePriority(Priority p)
     {
-        _tmp.push_back(pr_iter.priority());
-        pr_iter.next();
-    }
-
-    ASSERT (!_tmp.empty());
-
-    if (_tmp.size() >= MAXPRIORITYNUM)
-    {
-        const size_t max_pos = _tmp.size();
-        size_t min_pos = 1;
-        size_t norm_pos = 0;
-        for (size_t i = 0; i < max_pos; ++i)
+        switch (p)
         {
-            if (_tmp[i] == ACE_THR_PRI_OTHER_DEF)
-            {
-                norm_pos = i + 1;
-                break;
-            }
+            case Priority::Idle:     return THREAD_PRIORITY_IDLE;
+            case Priority::Lowest:   return THREAD_PRIORITY_LOWEST;
+            case Priority::Low:      return THREAD_PRIORITY_BELOW_NORMAL;
+            case Priority::High:     return THREAD_PRIORITY_ABOVE_NORMAL;
+            case Priority::Highest:  return THREAD_PRIORITY_HIGHEST;
+            case Priority::Realtime: return THREAD_PRIORITY_TIME_CRITICAL;
+            case Priority::Normal:
+            default:       return THREAD_PRIORITY_NORMAL;
         }
-
-        // since we have only 7(seven) values in enum Priority
-        // and 3 we know already (Idle, Normal, Realtime) so
-        // we need to split each list [Idle...Normal] and [Normal...Realtime]
-        // into pieces
-        const size_t _divider = 4;
-        size_t _div = (norm_pos - min_pos) / _divider;
-        if (_div == 0)
-            _div = 1;
-
-        min_pos = (norm_pos - 1);
-
-        m_priority[Low] = _tmp[min_pos -= _div];
-        m_priority[Lowest] = _tmp[min_pos -= _div ];
-
-        _div = (max_pos - norm_pos) / _divider;
-        if (_div == 0)
-            _div = 1;
-
-        min_pos = norm_pos - 1;
-
-        m_priority[High] = _tmp[min_pos += _div];
-        m_priority[Highest] = _tmp[min_pos += _div];
     }
+#endif
 }
 
-int ThreadPriority::getPriority(Priority p) const
+Thread::Thread(): m_task(nullptr)
 {
-    if (p < Idle)
-        p = Idle;
-
-    if (p > Realtime)
-        p = Realtime;
-
-    return m_priority[p];
 }
 
-#define THREADFLAG (THR_NEW_LWP | THR_SCHED_DEFAULT| THR_JOINABLE)
-
-Thread::Thread(): m_iThreadId(0), m_hThreadHandle(0), m_task(0)
-{
-
-}
-
-Thread::Thread(Runnable* instance): m_iThreadId(0), m_hThreadHandle(0), m_task(instance)
+Thread::Thread(Runnable* instance): m_task(instance)
 {
     // register reference to m_task to prevent it deeltion until destructor
     if (m_task)
@@ -116,119 +67,85 @@ Thread::Thread(Runnable* instance): m_iThreadId(0), m_hThreadHandle(0), m_task(i
 
 Thread::~Thread()
 {
-    //Wait();
+    // The ACE implementation never joined here - AuthSocket creates a Thread on
+    // the stack and lets it go out of scope immediately while the patcher keeps
+    // running. std::thread calls std::terminate on a joinable thread, so that
+    // same "leave it running" has to be spelled out.
+    if (m_thread.joinable())
+        m_thread.detach();
 
     // deleted runnable object (if no other references)
     if (m_task)
         m_task->decReference();
 }
 
-//initialize Thread's class static member
-Thread::ThreadStorage Thread::m_ThreadStorage;
-ThreadPriority Thread::m_TpEnum;
-
 bool Thread::start()
 {
-    if (m_task == 0 || m_iThreadId != 0)
+    if (m_task == nullptr || m_thread.joinable())
         return false;
 
     // incRef before spawing the thread, otherwise Thread::ThreadTask() might call decRef and delete m_task
     m_task->incReference();
 
-    bool res = (ACE_Thread::spawn(&Thread::ThreadTask, (void*)m_task, THREADFLAG, &m_iThreadId, &m_hThreadHandle) == 0);
-
-    if (!res)
+    try
+    {
+        m_thread = std::thread(&Thread::ThreadTask, m_task);
+    }
+    catch (std::system_error const&)
+    {
         m_task->decReference();
+        return false;
+    }
 
-    return res;
+    return true;
 }
 
 bool Thread::wait()
 {
-    if (!m_hThreadHandle || !m_task)
+    if (!m_thread.joinable() || !m_task)
         return false;
 
-    ACE_THR_FUNC_RETURN _value = ACE_THR_FUNC_RETURN(-1);
-    int _res = ACE_Thread::join(m_hThreadHandle, &_value);
-
-    m_iThreadId = 0;
-    m_hThreadHandle = 0;
-
-    return (_res == 0);
+    m_thread.join();
+    return true;
 }
 
 void Thread::destroy()
 {
-    if (!m_iThreadId || !m_task)
-        return;
-
-    if (ACE_Thread::kill(m_iThreadId, -1) != 0)
-        return;
-
-    m_iThreadId = 0;
-    m_hThreadHandle = 0;
-
-    // reference set at ACE_Thread::spawn
-    m_task->decReference();
+    // ACE_Thread::kill with a signal number of -1 was never able to take a
+    // thread down: pthread_kill rejects the signal and the call returned early.
+    // This is only ever reached with the process already shutting down, so
+    // letting the thread go is what actually happened before.
+    if (m_thread.joinable())
+        m_thread.detach();
 }
 
-void Thread::suspend()
+void Thread::ThreadTask(Runnable* task)
 {
-    ACE_Thread::suspend(m_hThreadHandle);
-}
-
-void Thread::resume()
-{
-    ACE_Thread::resume(m_hThreadHandle);
-}
-
-ACE_THR_FUNC_RETURN Thread::ThreadTask(void * param)
-{
-    Runnable* _task = (Runnable*)param;
-    _task->run();
+    task->run();
 
     // task execution complete, free referecne added at
-    _task->decReference();
-
-    return (ACE_THR_FUNC_RETURN)0;
+    task->decReference();
 }
 
-ACE_thread_t Thread::currentId()
+uint64_t Thread::currentId()
 {
-    return ACE_Thread::self();
-}
-
-ACE_hthread_t Thread::currentHandle()
-{
-    ACE_hthread_t _handle;
-    ACE_Thread::self(_handle);
-
-    return _handle;
-}
-
-Thread * Thread::current()
-{
-    Thread * _thread = m_ThreadStorage.ts_object();
-    if (!_thread)
-    {
-        _thread = new Thread();
-        _thread->m_iThreadId = Thread::currentId();
-        _thread->m_hThreadHandle = Thread::currentHandle();
-
-        Thread * _oldValue = m_ThreadStorage.ts_object(_thread);
-        if (_oldValue)
-            delete _oldValue;
-    }
-
-    return _thread;
+    // Only ever used to label log lines, so any stable per-thread number does.
+    return static_cast<uint64_t>(std::hash<std::thread::id>()(std::this_thread::get_id()));
 }
 
 void Thread::setPriority(Priority type)
 {
-    int _priority = m_TpEnum.getPriority(type);
-    int _ok = ACE_Thread::setprio(m_hThreadHandle, _priority);
-    //remove this ASSERT in case you don't want to know is thread priority change was successful or not
-    ASSERT (_ok == 0);
+#ifdef _WIN32
+    if (m_thread.joinable())
+        SetThreadPriority(static_cast<HANDLE>(m_thread.native_handle()), NativePriority(type));
+#else
+    // Under SCHED_OTHER, which is what the server runs on, Linux reports a
+    // priority range of exactly one value, so the elaborate mapping ACE built
+    // collapsed to a single number and setting it did nothing. Kept as a no-op
+    // rather than pretending otherwise; nice(2) is the knob that would work,
+    // and it applies to the whole process.
+    (void)type;
+#endif
 }
 
 void Thread::Sleep(unsigned long msecs)

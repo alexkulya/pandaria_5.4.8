@@ -26,7 +26,6 @@
 #include <string>
 #include <vector>
 #include <list>
-#include <ace/INET_Addr.h>
 #include <ctime>
 #include <array>
 
@@ -370,11 +369,11 @@ void vutf8printf(FILE* out, const char *str, va_list* ap);
 
 bool IsIPAddress(char const* ipaddress);
 
-/// Checks if address belongs to the a network with specified submask
-bool IsIPAddrInNetwork(ACE_INET_Addr const& net, ACE_INET_Addr const& addr, ACE_INET_Addr const& subnetMask);
-
-/// Transforms ACE_INET_Addr address into string format "dotted_ip:port"
-std::string GetAddressString(ACE_INET_Addr const& addr);
+// IsIPAddrInNetwork and GetAddressString lived here and both took an
+// ACE_INET_Addr, which dragged <ace/INET_Addr.h> into every translation unit
+// that includes Util.h - most of the core. The first had no callers at all, and
+// the second had exactly one, in the authserver, where it is now a two-line
+// format on a Boost endpoint at the point of use.
 
 uint32 CreatePIDFile(const std::string& filename);
 

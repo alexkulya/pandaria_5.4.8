@@ -18,7 +18,7 @@
 #ifndef _QUERYHOLDER_H
 #define _QUERYHOLDER_H
 
-#include <ace/Future.h>
+#include "Threading/Future.h"
 
 class SQLQueryHolder
 {
@@ -39,7 +39,7 @@ class SQLQueryHolder
         void SetPreparedResult(size_t index, PreparedResultSet* result);
 };
 
-typedef ACE_Future<SQLQueryHolder*> QueryResultHolderFuture;
+typedef Trinity::Future<SQLQueryHolder*> QueryResultHolderFuture;
 
 class SQLQueryHolderTask : public SQLOperation
 {

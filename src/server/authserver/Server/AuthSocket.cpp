@@ -146,7 +146,7 @@ typedef struct AuthHandler
 #endif
 
 // Launch a thread to transfer a patch to the client
-class PatcherRunnable: public ACE_Based::Runnable
+class PatcherRunnable: public Trinity::Runnable
 {
 public:
     PatcherRunnable(class AuthSocket*);
@@ -869,7 +869,11 @@ bool AuthSocket::_HandleReconnectProof()
     }
 }
 
-ACE_INET_Addr const& AuthSocket::GetAddressForClient(Realm const& realm, ACE_INET_Addr const& clientAddr)
+// The client address parameter is gone: this had picked between a local and an
+// external address depending on where the client came from, but that logic was
+// dropped long ago and the argument was ignored, so callers were preparing a
+// value that never reached anything.
+boost::asio::ip::tcp::endpoint const& AuthSocket::GetAddressForClient(Realm const& realm)
 {
     return realm.ExternalAddress;
 }
@@ -900,11 +904,6 @@ bool AuthSocket::_HandleRealmList()
 
     // Update realm list if need
     sRealmList->UpdateIfNeed();
-
-    // Built from the address the socket recorded on accept rather than from the
-    // ACE peer stream, which no longer exists. Realm still stores addresses as
-    // ACE_INET_Addr, so the type here is unchanged.
-    ACE_INET_Addr clientAddr(socket().getRemotePort(), socket().getRemoteAddress().c_str());
 
     // Circle through realms in the RealmList and construct the return packet (including # of user characters in each realm)
     ByteBuffer pkt;
@@ -938,9 +937,6 @@ bool AuthSocket::_HandleRealmList()
             name = ss.str();
         }
 
-        // We don't need the port number from which client connects with but the realm's port
-        clientAddr.set_port_number(realm.ExternalAddress.get_port_number());
-
         uint8 lock = (realm.allowedSecurityLevel > _accountSecurityLevel) ? 1 : 0;
 
         uint8 AmountOfCharacters = 0;
@@ -956,7 +952,11 @@ bool AuthSocket::_HandleRealmList()
             pkt << lock;                                    // if 1, then realm locked
         pkt << uint8(flag);                                 // RealmFlags
         pkt << name;
-        pkt << GetAddressString(GetAddressForClient(realm, clientAddr));
+        // "dotted_ip:port", the format the client expects. This used to go
+        // through GetAddressString in Util.h, which existed only for this one
+        // line and forced <ace/INET_Addr.h> on everything that includes Util.h.
+        boost::asio::ip::tcp::endpoint const& realmAddr = GetAddressForClient(realm);
+        pkt << (realmAddr.address().to_string() + ':' + std::to_string(realmAddr.port()));
         pkt << realm.populationLevel;
         pkt << AmountOfCharacters;
         pkt << realm.timezone;                              // realm category
@@ -1023,7 +1023,7 @@ bool AuthSocket::_HandleXferResume()
     socket().recv((char*)&start, sizeof(start));
     fseek(pPatch, long(start), 0);
 
-    ACE_Based::Thread u(new PatcherRunnable(this));
+    Trinity::Thread u(new PatcherRunnable(this));
     return true;
 }
 
@@ -1055,7 +1055,7 @@ bool AuthSocket::_HandleXferAccept()
     socket().recv_skip(1);                                         // clear input buffer
     fseek(pPatch, 0, 0);
 
-    ACE_Based::Thread u(new PatcherRunnable(this));
+    Trinity::Thread u(new PatcherRunnable(this));
     return true;
 }
 

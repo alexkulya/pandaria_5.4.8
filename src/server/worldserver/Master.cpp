@@ -19,11 +19,10 @@
     \ingroup Trinityd
 */
 
-#include <ace/Sig_Handler.h>
+#include <csignal>
 
 #include "Common.h"
 #include "SystemConfig.h"
-#include "SignalHandler.h"
 #include "World.h"
 #include "WorldRunnable.h"
 #include "WorldSocket.h"
@@ -66,29 +65,30 @@ extern int m_ServiceStatus;
 #define PROCESS_HIGH_PRIORITY -15 // [-20, 19], default is 0
 #endif
 
-/// Handle worldservers's termination signals
-class WorldServerSignalHandler : public Trinity::SignalHandler
+/// Handle worldserver's termination signals
+///
+/// std::signal takes a plain function pointer, so this replaces the
+/// ACE_Event_Handler subclass ACE_Sig_Handler needed. It runs in signal
+/// context and only reaches World::StopNow, which stores to an atomic flag and
+/// a byte - no allocation, no locks, no logging.
+extern "C" void WorldServerSignalHandler(int sigNum)
 {
-    public:
-        virtual void HandleSignal(int sigNum)
-        {
-            switch (sigNum)
-            {
-                case SIGINT:
-                    World::StopNow(RESTART_EXIT_CODE);
-                    break;
-                case SIGTERM:
+    switch (sigNum)
+    {
+        case SIGINT:
+            World::StopNow(RESTART_EXIT_CODE);
+            break;
+        case SIGTERM:
 #ifdef _WIN32
-                case SIGBREAK:
-                    if (m_ServiceStatus != 1)
+        case SIGBREAK:
+            if (m_ServiceStatus != 1)
 #endif
-                    World::StopNow(SHUTDOWN_EXIT_CODE);
-                    break;
-            }
-        }
-};
+            World::StopNow(SHUTDOWN_EXIT_CODE);
+            break;
+    }
+}
 
-class FreezeDetectorRunnable : public ACE_Based::Runnable
+class FreezeDetectorRunnable : public Trinity::Runnable
 {
 private:
     uint32 _loops;
@@ -109,7 +109,7 @@ public:
         _lastChange = 0;
         while (!World::IsStopped())
         {
-            ACE_Based::Thread::Sleep(1000);
+            Trinity::Thread::Sleep(1000);
             uint32 curtime = getMSTime();
             // normal work
             uint32 worldLoopCounter = World::m_worldLoopCounter.load();
@@ -221,25 +221,18 @@ int Master::Run()
     // After loadeding comfig from DB
     RunAuthserverIfNeed();
 
-    ///- Initialize the signal handlers
-    WorldServerSignalHandler signalINT, signalTERM;
-    #ifdef _WIN32
-    WorldServerSignalHandler signalBREAK;
-    #endif /* _WIN32 */
-
     ///- Register worldserver's signal handlers
-    ACE_Sig_Handler handle;
-    handle.register_handler(SIGINT, &signalINT);
-    handle.register_handler(SIGTERM, &signalTERM);
+    std::signal(SIGINT, &WorldServerSignalHandler);
+    std::signal(SIGTERM, &WorldServerSignalHandler);
 #ifdef _WIN32
-    handle.register_handler(SIGBREAK, &signalBREAK);
+    std::signal(SIGBREAK, &WorldServerSignalHandler);
 #endif
 
     ///- Launch WorldRunnable thread
-    ACE_Based::Thread worldThread(new WorldRunnable);
-    worldThread.setPriority(ACE_Based::Highest);
+    Trinity::Thread worldThread(new WorldRunnable);
+    worldThread.setPriority(Trinity::Priority::Highest);
 
-    ACE_Based::Thread* cliThread = NULL;
+    Trinity::Thread* cliThread = NULL;
 
 #ifdef _WIN32
     if (sConfigMgr->GetBoolDefault("Console.Enable", true) && (m_ServiceStatus == -1)/* need disable console in service mode*/)
@@ -248,10 +241,10 @@ int Master::Run()
 #endif
     {
         ///- Launch CliRunnable thread
-        cliThread = new ACE_Based::Thread(new CliRunnable);
+        cliThread = new Trinity::Thread(new CliRunnable);
     }
 
-    ACE_Based::Thread rarThread(new RARunnable);
+    Trinity::Thread rarThread(new RARunnable);
 
 #if defined(_WIN32) || defined(__linux__)
     ///- Handle affinity for multiple processors and process priority
@@ -329,8 +322,8 @@ int Master::Run()
     {
         FreezeDetectorRunnable* fdr = new FreezeDetectorRunnable();
         fdr->SetDelayTime(freezeDelay * 1000);
-        ACE_Based::Thread freezeThread(fdr);
-        freezeThread.setPriority(ACE_Based::Highest);
+        Trinity::Thread freezeThread(fdr);
+        freezeThread.setPriority(Trinity::Priority::Highest);
     }
 
     ///- Launch the world listener socket

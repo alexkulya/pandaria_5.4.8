@@ -19,13 +19,11 @@
 #define LOCKEDQUEUE_H
 
 #include <mutex>
-#include <ace/Guard_T.h>
-#include <ace/Thread_Mutex.h>
 #include <deque>
 #include <assert.h>
 #include "Debugging/Errors.h"
 
-namespace ACE_Based
+namespace Trinity
 {
     template <class T, class LockType, typename StorageType=std::deque<T> >
         class LockedQueue

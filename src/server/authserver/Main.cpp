@@ -23,10 +23,15 @@
 * authentication server
 */
 
-#include <ace/ACE.h>
-#include <ace/Sig_Handler.h>
+#include <atomic>
 #include <boost/asio/io_context.hpp>
 #include <chrono>
+#include <csignal>
+#ifdef _WIN32
+#include <cstdio>
+#else
+#include <sys/resource.h>
+#endif
 #include <openssl/opensslv.h>
 #include <openssl/crypto.h>
 #include "OpenSSLCrypto.h"
@@ -37,7 +42,6 @@
 #include "Log.h"
 #include "SystemConfig.h"
 #include "Util.h"
-#include "SignalHandler.h"
 #include "RealmList.h"
 #include "RealmSocketMgr.h"
 #include "AppenderDB.h"
@@ -73,25 +77,44 @@ void AppenderDB::_write(LogMessage const& message)
 bool StartDB();
 void StopDB();
 
-bool stopEvent = false;                                     // Setting it to true stops the server
+// Written from the signal handler and polled by the main loop, so it has to be
+// atomic: a plain bool is a data race, and the compiler is free to hoist the
+// read out of the loop and never see the store.
+std::atomic<bool> stopEvent(false);                         // Setting it to true stops the server
 
 LoginDatabaseWorkerPool LoginDatabase;                      // Accessor to the authserver database
 
-/// Handle authserver's termination signals
-class AuthServerSignalHandler : public Trinity::SignalHandler
+/// Replaces ACE::max_handles(). Windows caps the stdio layer rather than the
+/// socket layer, so it reports the C runtime limit; elsewhere this is the
+/// soft RLIMIT_NOFILE, which is what ACE reported too.
+static int MaxOpenFiles()
 {
-public:
-    virtual void HandleSignal(int sigNum)
+#ifdef _WIN32
+    return _getmaxstdio();
+#else
+    rlimit limit;
+    if (getrlimit(RLIMIT_NOFILE, &limit) == 0)
+        return int(limit.rlim_cur);
+    return -1;
+#endif
+}
+
+/// Handle authserver's termination signals
+///
+/// std::signal takes a plain function pointer, so this replaces the
+/// ACE_Event_Handler subclass ACE_Sig_Handler needed. It runs in signal
+/// context, so it does nothing but store to an atomic - no allocation, no
+/// locks, no logging.
+extern "C" void AuthServerSignalHandler(int sigNum)
+{
+    switch (sigNum)
     {
-        switch (sigNum)
-        {
-        case SIGINT:
-        case SIGTERM:
-            stopEvent = true;
-            break;
-        }
+    case SIGINT:
+    case SIGTERM:
+        stopEvent = true;
+        break;
     }
-};
+}
 
 /// Print out the usage string for this program on the console.
 void usage(const char* prog)
@@ -161,7 +184,7 @@ extern int main(int argc, char** argv)
     // listener and the shutdown poll.
     boost::asio::io_context ioContext;
 
-    TC_LOG_DEBUG("server.authserver", "Max allowed open files is %d", ACE::max_handles());
+    TC_LOG_DEBUG("server.authserver", "Max allowed open files is %d", MaxOpenFiles());
 
     // authserver PID file creation
     std::string pidFile = sConfigMgr->GetStringDefault("PidFile", "");
@@ -213,13 +236,9 @@ extern int main(int argc, char** argv)
         return 1;
     }
 
-    // Initialize the signal handlers
-    AuthServerSignalHandler SignalINT, SignalTERM;
-
-    // Register authservers's signal handlers
-    ACE_Sig_Handler Handler;
-    Handler.register_handler(SIGINT, &SignalINT);
-    Handler.register_handler(SIGTERM, &SignalTERM);
+    // Register authserver's signal handlers
+    std::signal(SIGINT, &AuthServerSignalHandler);
+    std::signal(SIGTERM, &AuthServerSignalHandler);
 
 #if defined(_WIN32) || defined(__linux__)
 

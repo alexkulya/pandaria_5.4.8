@@ -19,8 +19,7 @@
 #define SF_REALMLIST_H
 
 #include "Singleton.h"
-#include <ace/Null_Mutex.h>
-#include <ace/INET_Addr.h>
+#include <boost/asio/ip/tcp.hpp>
 #include "Common.h"
 
 enum RealmFlags
@@ -39,7 +38,7 @@ enum RealmFlags
 // Storage object for a realm
 struct Realm
 {
-    ACE_INET_Addr ExternalAddress;
+    boost::asio::ip::tcp::endpoint ExternalAddress;
     std::string name;
     uint8 icon;
     RealmFlags flag;
@@ -71,7 +70,7 @@ public:
 
 private:
     void UpdateRealms(bool init=false);
-    void UpdateRealm(uint32 id, const std::string& name, ACE_INET_Addr const& address, uint8 icon, RealmFlags flag, uint8 timezone, AccountTypes allowedSecurityLevel, float popu, uint32 build);
+    void UpdateRealm(uint32 id, const std::string& name, boost::asio::ip::tcp::endpoint const& address, uint8 icon, RealmFlags flag, uint8 timezone, AccountTypes allowedSecurityLevel, float popu, uint32 build);
 
     RealmMap m_realms;
     uint32   m_UpdateInterval;

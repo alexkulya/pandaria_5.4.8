@@ -20,32 +20,38 @@
 #include "utf8.h"
 #include "SFMT.h"
 #include "Errors.h" // for ASSERT
-#include <ace/TSS_T.h>
 
-typedef ACE_TSS<SFMTRand> SFMTRandTSS;
-static SFMTRandTSS sfmtRand;
+// One generator per thread, which is what ACE_TSS<SFMTRand> provided. The
+// function wrapper rather than a namespace-scope thread_local keeps the first
+// caller on a thread paying for construction, instead of leaving it to the
+// order in which translation units initialise.
+static SFMTRand& sfmtRand()
+{
+    static thread_local SFMTRand generator;
+    return generator;
+}
 
 int32 irand(int32 min, int32 max)
 {
     ASSERT(max >= min);
-    return int32(sfmtRand->IRandom(min, max));
+    return int32(sfmtRand().IRandom(min, max));
 }
 
 uint32 urand(uint32 min, uint32 max)
 {
     ASSERT(max >= min);
-    return sfmtRand->URandom(min, max);
+    return sfmtRand().URandom(min, max);
 }
 
 float frand(float min, float max)
 {
     ASSERT(max >= min);
-    return float(sfmtRand->Random() * (max - min) + min);
+    return float(sfmtRand().Random() * (max - min) + min);
 }
 
 int32 rand32()
 {
-    return int32(sfmtRand->BRandom());
+    return int32(sfmtRand().BRandom());
 }
 
 Milliseconds randtime(Milliseconds const& min, Milliseconds const& max)
@@ -58,12 +64,12 @@ Milliseconds randtime(Milliseconds const& min, Milliseconds const& max)
 
 double rand_norm(void)
 {
-    return sfmtRand->Random();
+    return sfmtRand().Random();
 }
 
 double rand_chance(void)
 {
-    return sfmtRand->Random() * 100.0;
+    return sfmtRand().Random() * 100.0;
 }
 
 SFMTEngine& SFMTEngine::Instance()
@@ -250,21 +256,6 @@ bool IsIPAddress(char const* ipaddress)
     // Let the big boys do it.
     // Drawback: all valid ip address formats are recognized e.g.: 12.23, 121234, 0xABCD)
     return inet_addr(ipaddress) != INADDR_NONE;
-}
-
-std::string GetAddressString(ACE_INET_Addr const& addr)
-{
-    char buf[ACE_MAX_FULLY_QUALIFIED_NAME_LEN + 16];
-    addr.addr_to_string(buf, ACE_MAX_FULLY_QUALIFIED_NAME_LEN + 16);
-    return buf;
-}
-
-bool IsIPAddrInNetwork(ACE_INET_Addr const& net, ACE_INET_Addr const& addr, ACE_INET_Addr const& subnetMask)
-{
-    uint32 mask = subnetMask.get_ip_address();
-    if ((net.get_ip_address() & mask) == (addr.get_ip_address() & mask))
-        return true;
-    return false;
 }
 
 /// create PID file

@@ -30,10 +30,10 @@
 
 class AsyncAcceptor;
 
-// Owns the RA listener. Still an ACE_Based::Runnable so Master.cpp keeps
+// Owns the RA listener. Still a Trinity::Runnable so Master.cpp keeps
 // starting it the same way -- the thread abstraction is a separate migration
 // from the socket one, and mixing the two would widen this change for nothing.
-class RARunnable : public ACE_Based::Runnable
+class RARunnable : public Trinity::Runnable
 {
 public:
     RARunnable();

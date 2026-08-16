@@ -23,7 +23,7 @@
 #define __CLIRUNNABLE_H
 
 /// Command Line Interface handling thread
-class CliRunnable : public ACE_Based::Runnable
+class CliRunnable : public Trinity::Runnable
 {
     public:
         void run() override;

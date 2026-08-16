@@ -23,7 +23,6 @@
 #include "BigNumber.h"
 #include "RealmSocket.h"
 
-class ACE_INET_Addr;
 struct Realm;
 
 // Handle login commands
@@ -39,7 +38,7 @@ public:
     virtual void OnAccept(void);
     virtual void OnClose(void);
 
-    static ACE_INET_Addr const& GetAddressForClient(Realm const& realm, ACE_INET_Addr const& clientAddr);
+    static boost::asio::ip::tcp::endpoint const& GetAddressForClient(Realm const& realm);
 
     bool _HandleLogonChallenge();
     bool _HandleLogonProof();

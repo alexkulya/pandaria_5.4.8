@@ -152,7 +152,9 @@ __m128i const &c, __m128i const &d, __m128i const &mask) {
 
 // Class for SFMT generator
 class SFMTRand {                              // Encapsulate random number generator
-    friend class ACE_TSS<SFMTRand>;
+    // Was a friend declaration for ACE_TSS<SFMTRand>, the per-thread holder
+    // Util.cpp used. That is a plain thread_local now, and the constructor
+    // below is public, so nothing needs privileged access any more.
 
 public:
     SFMTRand()
