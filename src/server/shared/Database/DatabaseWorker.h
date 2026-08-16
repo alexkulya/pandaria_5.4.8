@@ -18,7 +18,7 @@
 #ifndef _WORKERTHREAD_H
 #define _WORKERTHREAD_H
 
-#include <ace/Activation_Queue.h>
+#include "Threading/ActivationQueue.h"
 #include <thread>
 #include <atomic>
 #include "SQLOperation.h"
@@ -42,7 +42,7 @@ public:
 private:
     void Run();
 
-    ACE_Activation_Queue m_queue;
+    Trinity::ActivationQueue m_queue;
     MySQLConnection* m_conn = nullptr;
     std::thread _thr;
     std::atomic<int32> _count{ 0 };

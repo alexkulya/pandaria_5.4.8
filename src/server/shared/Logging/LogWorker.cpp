@@ -18,28 +18,30 @@
 #include "LogWorker.h"
 
 LogWorker::LogWorker()
-    : m_queue(HIGH_WATERMARK, LOW_WATERMARK)
+    : m_queue(HIGH_WATERMARK / sizeof(LogOperation))
 {
-    ACE_Task_Base::activate(THR_NEW_LWP | THR_JOINABLE | THR_INHERIT_SCHED, 1);
+    m_thread = std::thread([this] { svc(); });
 }
 
 LogWorker::~LogWorker()
 {
     m_queue.deactivate();
-    wait();
+
+    if (m_thread.joinable())
+        m_thread.join();
 }
 
 int LogWorker::enqueue(LogOperation* op)
 {
-    return m_queue.enqueue(op);
+    return m_queue.enqueue(op) ? 0 : -1;
 }
 
 int LogWorker::svc()
 {
     while (1)
     {
-        LogOperation* request;
-        if (m_queue.dequeue(request) == -1)
+        Trinity::MethodRequest* request = m_queue.dequeue();
+        if (!request)
             break;
 
         request->call();

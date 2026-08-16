@@ -29,7 +29,7 @@ DatabaseWorker::DatabaseWorker(MySQLConnection* conn)
 
 DatabaseWorker::~DatabaseWorker()
 {
-    m_queue.queue()->deactivate();
+    m_queue.deactivate();
     if (_thr.joinable())
         _thr.join();
 

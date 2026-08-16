@@ -14,10 +14,9 @@
 * You should have received a copy of the GNU General Public License along
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
- 
+
 #include "Singleton.h"
-#include <ace/Thread_Mutex.h>
-#include <ace/Log_Msg.h>
+#include "Log.h"
 
 #include "DelayExecutor.h"
 
@@ -46,8 +45,13 @@ int DelayExecutor::deactivate()
         return -1;
 
     activated(false);
-    queue_.queue()->deactivate();
-    wait();
+    queue_.deactivate();
+
+    for (std::thread& worker : threads_)
+        if (worker.joinable())
+            worker.join();
+
+    threads_.clear();
 
     return 0;
 }
@@ -59,7 +63,7 @@ int DelayExecutor::svc()
 
     for (;;)
     {
-        ACE_Method_Request* rq = queue_.dequeue();
+        Trinity::MethodRequest* rq = queue_.dequeue();
 
         if (!rq)
             break;
@@ -74,7 +78,7 @@ int DelayExecutor::svc()
     return 0;
 }
 
-int DelayExecutor::start(int num_threads, ACE_Method_Request* pre_svc_hook, ACE_Method_Request* post_svc_hook)
+int DelayExecutor::start(int num_threads, Trinity::MethodRequest* pre_svc_hook, Trinity::MethodRequest* post_svc_hook)
 {
     if (activated())
         return -1;
@@ -91,25 +95,29 @@ int DelayExecutor::start(int num_threads, ACE_Method_Request* pre_svc_hook, ACE_
     pre_svc_hook_ = pre_svc_hook;
     post_svc_hook_ = post_svc_hook;
 
-    queue_.queue()->activate();
+    queue_.activate();
 
-    if (ACE_Task_Base::activate(THR_NEW_LWP | THR_JOINABLE | THR_INHERIT_SCHED, num_threads) == -1)
-        return -1;
+    // ACE_Task_Base::activate spawned num_threads threads all running svc().
+    threads_.reserve(num_threads);
+    for (int i = 0; i < num_threads; ++i)
+        threads_.emplace_back([this] { svc(); });
 
     activated(true);
 
     return true;
 }
 
-int DelayExecutor::execute(ACE_Method_Request* new_req)
+int DelayExecutor::execute(Trinity::MethodRequest* new_req)
 {
     if (new_req == NULL)
         return -1;
 
-    if (queue_.enqueue(new_req, (ACE_Time_Value*)&ACE_Time_Value::zero) == -1)
+    // enqueue takes ownership either way: it destroys the request itself when
+    // the queue is closed, where the ACE version leaked it.
+    if (!queue_.enqueue(new_req))
     {
-        delete new_req;
-        ACE_ERROR_RETURN((LM_ERROR, ACE_TEXT("(%t) %p\n"), ACE_TEXT("DelayExecutor::execute enqueue")), -1);
+        TC_LOG_ERROR("server", "DelayExecutor::execute enqueue failed, queue is not active");
+        return -1;
     }
 
     return 0;

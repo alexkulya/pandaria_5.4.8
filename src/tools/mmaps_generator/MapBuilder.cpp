@@ -29,7 +29,7 @@
 
 #include "DisableMgr.h"
 #include "Logging/AppenderDB.h"
-#include <ace/OS_NS_unistd.h>
+#include <sstream>
 
 bool DisableMgr::IsDisabledFor(DisableType type, uint32 entry, Unit const* unit, uint8 flags) { return false; }
 void AppenderDB::_write(LogMessage const& message) { }
@@ -207,6 +207,11 @@ namespace MMAP
             }
         }
 
+        // Everything that will ever be built is queued by now, so close the
+        // queue before the workers start: they drain it and then stop on their
+        // own, with no timeout to guess at.
+        pool->Close();
+
         for (int i = 0; i < threads; ++i)
             _threads.push_back(new BuilderThread(this, pool->Queue()));
 
@@ -367,7 +372,9 @@ namespace MMAP
     void MapBuilder::buildMap(uint32 mapID)
     {
 #ifndef __APPLE__
-        printf("[Thread %u] Building map %04u:\n", uint32(ACE_Thread::self()), mapID);
+        std::ostringstream threadId;
+        threadId << std::this_thread::get_id();
+        printf("[Thread %s] Building map %04u:\n", threadId.str().c_str(), mapID);
 #endif
 
         std::set<uint32>* tiles = getTileList(mapID);

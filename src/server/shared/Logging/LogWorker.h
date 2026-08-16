@@ -19,29 +19,33 @@
 #define LOGWORKER_H
 
 #include "LogOperation.h"
+#include "Threading/ActivationQueue.h"
 
-#include <ace/Task.h>
-#include <ace/Activation_Queue.h>
+#include <thread>
 
-class LogWorker: protected ACE_Task_Base
+class LogWorker
 {
     public:
         LogWorker();
         ~LogWorker();
 
-        typedef ACE_Message_Queue_Ex<LogOperation, ACE_MT_SYNCH> LogMessageQueueType;
-
         enum
         {
-            HIGH_WATERMARK = 8 * 1024 * 1024,
-            LOW_WATERMARK  = 8 * 1024 * 1024
+            // ACE_Message_Queue_Ex counted bytes and wrapped each entry in a
+            // block of sizeof(LogOperation), so the 8 MB mark was really a cap
+            // on how many messages could pile up. Kept as that count, so a
+            // stalled appender still blocks the caller instead of growing
+            // without bound.
+            HIGH_WATERMARK = 8 * 1024 * 1024
         };
 
-        int enqueue(LogOperation *op);
+        int enqueue(LogOperation* op);
 
     private:
-        virtual int svc();
-        LogMessageQueueType m_queue;
+        int svc();
+
+        Trinity::ActivationQueue m_queue;
+        std::thread m_thread;
 };
 
 #endif

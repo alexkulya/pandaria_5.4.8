@@ -92,7 +92,7 @@ AuctionHouseMgr::AuctionHouseMgr()
     {
         while (true)
         {
-            ACE_Method_Request* request = searchQueries.dequeue();
+            Trinity::MethodRequest* request = searchQueries.dequeue();
             if (!request)
                 break;
 
@@ -110,7 +110,7 @@ AuctionHouseMgr::~AuctionHouseMgr()
 
 void AuctionHouseMgr::Unload()
 {
-    searchQueries.queue()->close();
+    searchQueries.deactivate();
     if (searchThread.joinable())
         searchThread.join();
 }

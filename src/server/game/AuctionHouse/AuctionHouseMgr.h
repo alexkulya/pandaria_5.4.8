@@ -103,7 +103,7 @@ struct AuctionEntry
     std::string BuildAuctionMailBody(MailAuctionAnswers response) const;
 };
 
-struct AuctionQueryContext : public ACE_Method_Request
+struct AuctionQueryContext : public Trinity::MethodRequest
 {
     ~AuctionQueryContext();
 
@@ -252,7 +252,7 @@ class AuctionHouseMgr
         ItemMap mAitems;
         std::shared_timed_mutex mAitemsLock;
         std::thread searchThread;
-        ACE_Activation_Queue searchQueries;
+        Trinity::ActivationQueue searchQueries;
         std::unique_ptr<LogFile> logger;
 };
 

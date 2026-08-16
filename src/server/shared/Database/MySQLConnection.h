@@ -16,7 +16,7 @@
 */
 
 #include <mutex>
-#include <ace/Activation_Queue.h>
+#include "Threading/ActivationQueue.h"
 
 #include "DatabaseWorkerPool.h"
 #include "Transaction.h"
@@ -130,7 +130,7 @@ class MySQLConnection
         bool _HandleMySQLErrno(uint32 errNo);
 
     private:
-        ACE_Activation_Queue* m_queue;                      //! Queue shared with other asynchronous connections.
+        Trinity::ActivationQueue* m_queue;                      //! Queue shared with other asynchronous connections.
         DatabaseWorker*       m_worker;                     //! Core worker task.
         MYSQL *               m_Mysql;                      //! MySQL Handle.
         MySQLConnectionInfo&  m_connectionInfo;             //! Connection info (used for logging)

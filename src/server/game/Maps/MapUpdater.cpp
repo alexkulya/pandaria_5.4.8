@@ -22,12 +22,11 @@
 #include "MapInstanced.h"
 #include "DatabaseEnv.h"
 
-#include <ace/Guard_T.h>
-#include <ace/Method_Request.h>
+#include "Threading/ActivationQueue.h"
 
 thread_local Map* CurrentMap = nullptr;
 
-class WDBThreadStartReq1 : public ACE_Method_Request
+class WDBThreadStartReq1 : public Trinity::MethodRequest
 {
     public:
 
@@ -41,7 +40,7 @@ class WDBThreadStartReq1 : public ACE_Method_Request
         }
 };
 
-class WDBThreadEndReq1 : public ACE_Method_Request
+class WDBThreadEndReq1 : public Trinity::MethodRequest
 {
     public:
 
@@ -55,17 +54,17 @@ class WDBThreadEndReq1 : public ACE_Method_Request
         }
 };
 
-class MapUpdateRequest : public ACE_Method_Request
+class MapUpdateRequest : public Trinity::MethodRequest
 {
     private:
 
         Map& m_map;
         MapUpdater& m_updater;
-        ACE_UINT32 m_diff;
+        uint32 m_diff;
 
     public:
 
-        MapUpdateRequest(Map& m, MapUpdater& u, ACE_UINT32 d)
+        MapUpdateRequest(Map& m, MapUpdater& u, uint32 d)
             : m_map(m), m_updater(u), m_diff(d)
         {
         }
@@ -112,7 +111,7 @@ int MapUpdater::wait()
     return 0;
 }
 
-int MapUpdater::schedule_update(Map& map, ACE_UINT32 diff)
+int MapUpdater::schedule_update(Map& map, uint32 diff)
 {
     MapUpdateRequest* rq = new MapUpdateRequest(map, *this, diff);
     rq->priority(calculate_priority(map));
@@ -123,7 +122,7 @@ int MapUpdater::schedule_update(Map& map, ACE_UINT32 diff)
 
     if (m_executor.execute(rq) == -1)
     {
-        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) \n"), ACE_TEXT("Failed to schedule Map Update")));
+        TC_LOG_ERROR("maps", "Failed to schedule Map Update");
 
         --pending_requests;
         return -1;
@@ -143,7 +142,7 @@ void MapUpdater::update_finished()
 
     if (pending_requests == 0)
     {
-        ACE_ERROR((LM_ERROR, ACE_TEXT("(%t)\n"), ACE_TEXT("MapUpdater::update_finished BUG, report to devs")));
+        TC_LOG_ERROR("maps", "MapUpdater::update_finished BUG, report to devs");
         return;
     }
 
