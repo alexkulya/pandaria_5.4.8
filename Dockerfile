@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         zlib1g-dev libbz2-dev \
         libboost-system-dev libboost-locale-dev libboost-filesystem-dev \
         libboost-thread-dev libboost-regex-dev libboost-serialization-dev \
+        libboost-date-time-dev \
     && rm -rf /var/lib/apt/lists/*
 
 COPY . /src
