@@ -154,7 +154,6 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/RemoteAccess
   ${CMAKE_CURRENT_SOURCE_DIR}/TCSoap
   ${CMAKE_CURRENT_SOURCE_DIR}/WorldThread
-  ${ACE_INCLUDE_DIR}
   ${MYSQL_INCLUDE_DIR}
   ${OPENSSL_INCLUDE_DIR}
 )
@@ -193,7 +192,6 @@ target_link_libraries(worldserver
   ${JEMALLOC_LIBRARY}
   ${READLINE_LIBRARY}
   ${TERMCAP_LIBRARY}
-  ${ACE_LIBRARY}
   ${Boost_LIBRARIES}
   mysql
   ${OPENSSL_LIBRARIES}

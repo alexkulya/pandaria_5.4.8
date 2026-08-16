@@ -87,7 +87,6 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/Threading
   ${CMAKE_CURRENT_SOURCE_DIR}/Utilities
   ${CMAKE_SOURCE_DIR}/src/server/game/Entities/Object
-  ${ACE_INCLUDE_DIR}
   ${MYSQL_INCLUDE_DIR}
   ${OPENSSL_INCLUDE_DIR}
 )
@@ -105,7 +104,6 @@ add_library(shared STATIC
 # Boost.System, which is itself header-only since 1.69, so this mainly carries
 # the include directories through to anything linking shared.
 target_link_libraries(shared
-  ${ACE_LIBRARY}
   ${Boost_LIBRARIES}
 )
 

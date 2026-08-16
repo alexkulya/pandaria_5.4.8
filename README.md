@@ -21,7 +21,6 @@ Pandaria 5.4.8 docker [(Thanks diff3)](https://github.com/diff3): https://github
 | MySQL **client** | 5.7 or 8.0 — **required on every platform, Windows included** |
 | OpenSSL | 1.0.x, 1.1.x or 3.x |
 | Boost | ≥ 1.70 |
-| ACE | Windows: included in `dep/acelite`, built statically. Linux: from the system (`libace-dev`) |
 
 ### MySQL
 

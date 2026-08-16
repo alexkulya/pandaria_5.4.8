@@ -72,14 +72,12 @@ include(CheckPlatform)
 
 # basic packagesearching and setup (further support will be needed, this is a preliminary release!)
 set(OPENSSL_EXPECTED_VERSION 1.0.0)
-set(ACE_EXPECTED_VERSION 5.8.3)
 # Matches the minimum documented in README.md. io_context (Boost 1.66) and
 # Boost.DLL (1.61) are the newest pieces the core reaches for, so 1.70 leaves
 # room to spare; the CI image builds against 1.71 and Windows against 1.74.
 set(BOOST_EXPECTED_VERSION 1.70)
 
 find_package(PCHSupport)
-find_package(ACE REQUIRED)
 # 1.0.x, 1.1.x and 3.x are all supported: HMACSHA1 carries the shim for the
 # pre-1.1.0 HMAC_CTX API, and OpenSSLCrypto loads the legacy provider that
 # 3.0 moved RC4 into.
