@@ -15,16 +15,13 @@
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <chrono>
+#include <cstring>
+#include <memory>
+#include <thread>
+
 #include <ace/Message_Block.h>
-#include <ace/OS_NS_string.h>
-#include <ace/OS_NS_unistd.h>
-#include <ace/os_include/arpa/os_inet.h>
-#include <ace/os_include/netinet/os_tcp.h>
-#include <ace/os_include/sys/os_types.h>
-#include <ace/os_include/sys/os_socket.h>
-#include <ace/OS_NS_string.h>
 #include <ace/Reactor.h>
-#include <ace/Auto_Ptr.h>
 
 #include "WorldSocket.h"
 #include "Common.h"
@@ -99,7 +96,7 @@ struct WorldClientPktHeader
 #endif
 
 WorldSocket::WorldSocket (void): WorldHandler(),
-m_LastPingTime(ACE_Time_Value::zero), m_OverSpeedPings(0), m_Session(0),
+m_LastPingTime(), m_OverSpeedPings(0), m_Session(0),
 m_RecvWPct(0), m_RecvPct(), m_Header(sizeof(AuthClientPktHeader)),
 m_WorldHeader(sizeof(WorldClientPktHeader)), m_OutBuffer(0),
 m_OutBufferSize(65536), m_OutActive(false),
@@ -251,7 +248,7 @@ int WorldSocket::open (void *a)
 
     if (peer().get_remote_addr(remote_addr) == -1)
     {
-        TC_LOG_ERROR("network", "WorldSocket::open: peer().get_remote_addr errno = %s", ACE_OS::strerror (errno));
+        TC_LOG_ERROR("network", "WorldSocket::open: peer().get_remote_addr errno = %s", strerror(errno));
         return -1;
         CloseSocket();
     }
@@ -269,7 +266,7 @@ int WorldSocket::open (void *a)
     // Register with ACE Reactor
     if (reactor()->register_handler(this, ACE_Event_Handler::READ_MASK | ACE_Event_Handler::WRITE_MASK) == -1)
     {
-        TC_LOG_ERROR("network", "WorldSocket::open: unable to register client handler errno = %s", ACE_OS::strerror (errno));
+        TC_LOG_ERROR("network", "WorldSocket::open: unable to register client handler errno = %s", strerror(errno));
         return -1;
     }
 
@@ -305,7 +302,7 @@ int WorldSocket::handle_input (ACE_HANDLE)
                 return Update();                           // interesting line, isn't it ?
             }
 
-            TC_LOG_DEBUG("network", "WorldSocket::handle_input: Peer error closing connection errno = %s", ACE_OS::strerror (errno));
+            TC_LOG_DEBUG("network", "WorldSocket::handle_input: Peer error closing connection errno = %s", strerror(errno));
 
             errno = ECONNRESET;
             return -1;
@@ -750,7 +747,9 @@ int WorldSocket::ProcessIncoming(WorldPacket* new_pct)
     ASSERT(new_pct);
 
     // manage memory ;)
-    ACE_Auto_Ptr<WorldPacket> aptr(new_pct);
+    // release() means the same in both: give up ownership without deleting,
+    // which is what the hand-off to QueuePacket below relies on.
+    std::unique_ptr<WorldPacket> aptr(new_pct);
 
     Opcodes opcode = new_pct->GetOpcode();
 
@@ -1140,7 +1139,9 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
 
     // Sleep this Network thread for
     uint32 sleepTime = sWorld->getIntConfig(CONFIG_SESSION_ADD_DELAY);
-    ACE_OS::sleep(ACE_Time_Value(0, sleepTime));
+    // ACE_Time_Value(0, sleepTime) put the config in the microseconds field,
+    // so SessionAddDelay's default of 10000 is 10 ms, not 10 seconds.
+    std::this_thread::sleep_for(std::chrono::microseconds(sleepTime));
 
     sWorld->AddSession(m_Session);
     return 0;
@@ -1155,16 +1156,15 @@ int WorldSocket::HandlePing (WorldPacket& recvPacket)
     recvPacket >> latency;
     recvPacket >> ping;
 
-    if (m_LastPingTime == ACE_Time_Value::zero)
-        m_LastPingTime = ACE_OS::gettimeofday(); // for 1st ping
+    if (m_LastPingTime == std::chrono::steady_clock::time_point())
+        m_LastPingTime = std::chrono::steady_clock::now(); // for 1st ping
     else
     {
-        ACE_Time_Value cur_time = ACE_OS::gettimeofday();
-        ACE_Time_Value diff_time (cur_time);
-        diff_time -= m_LastPingTime;
+        std::chrono::steady_clock::time_point cur_time = std::chrono::steady_clock::now();
+        std::chrono::steady_clock::duration diff_time = cur_time - m_LastPingTime;
         m_LastPingTime = cur_time;
 
-        if (diff_time < ACE_Time_Value (27))
+        if (diff_time < std::chrono::seconds(27))
         {
             ++m_OverSpeedPings;
 

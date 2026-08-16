@@ -28,6 +28,7 @@
 #include <ace/Synch_Traits.h>
 #include <ace/Svc_Handler.h>
 #include <ace/SOCK_Stream.h>
+#include <chrono>
 #include <mutex>
 #include <ace/Unbounded_Queue.h>
 #include <ace/Message_Block.h>
@@ -167,8 +168,12 @@ class WorldSocket : public WorldHandler
 
     private:
         void SendAuthResponseError(uint8);
-        /// Time in which the last ping was received
-        ACE_Time_Value m_LastPingTime;
+        /// Time in which the last ping was received.
+        /// steady_clock rather than the wall clock ACE_OS::gettimeofday read:
+        /// this is only ever used to measure the gap between two pings, and a
+        /// clock stepped backwards by NTP would otherwise produce a negative
+        /// gap and kick an honest client for flooding.
+        std::chrono::steady_clock::time_point m_LastPingTime;
 
         /// Keep track of over-speed pings, to prevent ping flood.
         uint32 m_OverSpeedPings;
