@@ -28,6 +28,7 @@
 
 #include "WorldSocket.h"
 #include "Common.h"
+#include "Errors.h"
 #include "Player.h"
 #include "Util.h"
 #include "World.h"
@@ -131,7 +132,7 @@ bool WorldSocket::IsClosed (void) const
 void WorldSocket::CloseSocket (void)
 {
     {
-        ACE_GUARD (LockType, Guard, m_OutBufferLock);
+        GuardType Guard(m_OutBufferLock);
 
         if (closing_)
             return;
@@ -141,7 +142,7 @@ void WorldSocket::CloseSocket (void)
     }
 
     {
-        ACE_GUARD (LockType, Guard, m_SessionLock);
+        GuardType Guard(m_SessionLock);
 
         m_Session = NULL;
     }
@@ -154,7 +155,7 @@ const std::string& WorldSocket::GetRemoteAddress (void) const
 
 int WorldSocket::SendPacket(WorldPacket const& pct)
 {
-    ACE_GUARD_RETURN (LockType, Guard, m_OutBufferLock, -1);
+    GuardType Guard(m_OutBufferLock);
 
     if (closing_)
         return -1;
@@ -187,11 +188,11 @@ int WorldSocket::SendPacket(WorldPacket const& pct)
     {
         // Put the packet on the buffer.
         if (m_OutBuffer->copy((char*) header.header, header.getHeaderLength()) == -1)
-            ACE_ASSERT (false);
+            ASSERT(false);
 
         if (!pkt->empty())
             if (m_OutBuffer->copy((char*) pkt->contents(), pkt->size()) == -1)
-                ACE_ASSERT (false);
+                ASSERT(false);
     }
     else
     {
@@ -327,7 +328,7 @@ int WorldSocket::handle_input (ACE_HANDLE)
 
 int WorldSocket::handle_output (ACE_HANDLE)
 {
-    ACE_GUARD_RETURN (LockType, Guard, m_OutBufferLock, -1);
+    GuardType Guard(m_OutBufferLock);
 
     if (closing_)
         return -1;
@@ -436,7 +437,7 @@ int WorldSocket::handle_close (ACE_HANDLE h, ACE_Reactor_Mask)
 {
     // Critical section
     {
-        ACE_GUARD_RETURN (LockType, Guard, m_OutBufferLock, -1);
+        GuardType Guard(m_OutBufferLock);
 
         closing_ = true;
 
@@ -446,7 +447,7 @@ int WorldSocket::handle_close (ACE_HANDLE h, ACE_Reactor_Mask)
 
     // Critical section
     {
-        ACE_GUARD_RETURN (LockType, Guard, m_SessionLock, -1);
+        GuardType Guard(m_SessionLock);
 
         m_Session = NULL;
     }
@@ -464,7 +465,7 @@ int WorldSocket::Update (void)
         return 0;
 
     {
-        ACE_GUARD_RETURN (LockType, Guard, m_OutBufferLock, 0);
+        GuardType Guard(m_OutBufferLock);
         if (m_OutBuffer->length() == 0 && msg_queue()->is_empty())
             return 0;
     }
@@ -479,12 +480,12 @@ int WorldSocket::Update (void)
 
 int WorldSocket::handle_input_header (void)
 {
-    ACE_ASSERT(m_RecvWPct == NULL);
+    ASSERT(m_RecvWPct == NULL);
 
 
     if (m_Crypt.IsInitialized())
     {
-        ACE_ASSERT(m_WorldHeader.length() == sizeof(WorldClientPktHeader));
+        ASSERT(m_WorldHeader.length() == sizeof(WorldClientPktHeader));
         uint8* uintHeader = (uint8*)m_WorldHeader.rd_ptr();
         m_Crypt.DecryptRecv(uintHeader, sizeof(WorldClientPktHeader));
         WorldClientPktHeader& header = *(WorldClientPktHeader*)uintHeader;
@@ -510,11 +511,11 @@ int WorldSocket::handle_input_header (void)
             m_RecvPct.base ((char*) m_RecvWPct->contents(), m_RecvWPct->size());
         }
         else
-            ACE_ASSERT(m_RecvPct.space() == 0);
+            ASSERT(m_RecvPct.space() == 0);
     }
     else
     {
-        ACE_ASSERT(m_Header.length() == sizeof(AuthClientPktHeader));
+        ASSERT(m_Header.length() == sizeof(AuthClientPktHeader));
         uint8* uintHeader = (uint8*)m_Header.rd_ptr();
         AuthClientPktHeader& header = *((AuthClientPktHeader*)uintHeader);
 
@@ -538,7 +539,7 @@ int WorldSocket::handle_input_header (void)
             m_RecvPct.base ((char*) m_RecvWPct->contents(), m_RecvWPct->size());
         }
         else
-            ACE_ASSERT(m_RecvPct.space() == 0);
+            ASSERT(m_RecvPct.space() == 0);
     }
 
     return 0;
@@ -550,9 +551,9 @@ int WorldSocket::handle_input_payload (void)
 
     if (m_Crypt.IsInitialized())
     {
-        ACE_ASSERT (m_RecvPct.space() == 0);
-        ACE_ASSERT (m_WorldHeader.space() == 0);
-        ACE_ASSERT (m_RecvWPct != NULL);
+        ASSERT(m_RecvPct.space() == 0);
+        ASSERT(m_WorldHeader.space() == 0);
+        ASSERT(m_RecvWPct != NULL);
 
         const int ret = ProcessIncoming (m_RecvWPct);
 
@@ -569,9 +570,9 @@ int WorldSocket::handle_input_payload (void)
     }
     else
     {
-        ACE_ASSERT(m_RecvPct.space() == 0);
-        ACE_ASSERT(m_Header.space() == 0);
-        ACE_ASSERT(m_RecvWPct != NULL);
+        ASSERT(m_RecvPct.space() == 0);
+        ASSERT(m_Header.space() == 0);
+        ASSERT(m_RecvWPct != NULL);
 
         const int ret = ProcessIncoming(m_RecvWPct);
 
@@ -628,7 +629,7 @@ int WorldSocket::handle_input_missing_data (void)
                 if (m_WorldHeader.space() > 0)
                 {
                     // Couldn't receive the whole header this time.
-                    ACE_ASSERT (message_block.length() == 0);
+                    ASSERT(message_block.length() == 0);
                     errno = EWOULDBLOCK;
                     return -1;
                 }
@@ -636,7 +637,7 @@ int WorldSocket::handle_input_missing_data (void)
                 // We just received nice new header
                 if (handle_input_header() == -1)
                 {
-                    ACE_ASSERT ((errno != EWOULDBLOCK) && (errno != EAGAIN));
+                    ASSERT((errno != EWOULDBLOCK) && (errno != EAGAIN));
                     return -1;
                 }
             }
@@ -653,7 +654,7 @@ int WorldSocket::handle_input_missing_data (void)
                 if (m_Header.space() > 0)
                 {
                     // Couldn't receive the whole header this time.
-                    ACE_ASSERT (message_block.length() == 0);
+                    ASSERT(message_block.length() == 0);
                     errno = EWOULDBLOCK;
                     return -1;
                 }
@@ -661,7 +662,7 @@ int WorldSocket::handle_input_missing_data (void)
                 // We just received nice new header
                 if (handle_input_header() == -1)
                 {
-                    ACE_ASSERT ((errno != EWOULDBLOCK) && (errno != EAGAIN));
+                    ASSERT((errno != EWOULDBLOCK) && (errno != EAGAIN));
                     return -1;
                 }
             }
@@ -688,7 +689,7 @@ int WorldSocket::handle_input_missing_data (void)
             if (m_RecvPct.space() > 0)
             {
                 // Couldn't receive the whole data this time.
-                ACE_ASSERT (message_block.length() == 0);
+                ASSERT(message_block.length() == 0);
                 errno = EWOULDBLOCK;
                 return -1;
             }
@@ -697,7 +698,7 @@ int WorldSocket::handle_input_missing_data (void)
         //just received fresh new payload
         if (handle_input_payload() == -1)
         {
-            ACE_ASSERT ((errno != EWOULDBLOCK) && (errno != EAGAIN));
+            ASSERT((errno != EWOULDBLOCK) && (errno != EAGAIN));
             return -1;
         }
     }
@@ -712,7 +713,7 @@ int WorldSocket::cancel_wakeup_output (GuardType& g)
 
     m_OutActive = false;
 
-    g.release();
+    g.unlock();
 
     if (reactor()->cancel_wakeup
         (this, ACE_Event_Handler::WRITE_MASK) == -1)
@@ -732,7 +733,7 @@ int WorldSocket::schedule_wakeup_output (GuardType& g)
 
     m_OutActive = true;
 
-    g.release();
+    g.unlock();
 
     if (reactor()->schedule_wakeup
         (this, ACE_Event_Handler::WRITE_MASK) == -1)
@@ -746,7 +747,7 @@ int WorldSocket::schedule_wakeup_output (GuardType& g)
 
 int WorldSocket::ProcessIncoming(WorldPacket* new_pct)
 {
-    ACE_ASSERT (new_pct);
+    ASSERT(new_pct);
 
     // manage memory ;)
     ACE_Auto_Ptr<WorldPacket> aptr(new_pct);
@@ -805,7 +806,7 @@ int WorldSocket::ProcessIncoming(WorldPacket* new_pct)
             }*/
             default:
             {
-                ACE_GUARD_RETURN(LockType, Guard, m_SessionLock, -1);
+                GuardType Guard(m_SessionLock);
                 if (!m_Session)
                 {
                     TC_LOG_ERROR("network.opcode", "ProcessIncoming: Client not authed opcode = %u", GetRemoteAddress().c_str(),uint32(opcode));
@@ -1171,7 +1172,7 @@ int WorldSocket::HandlePing (WorldPacket& recvPacket)
 
             if (max_count && m_OverSpeedPings > max_count)
             {
-                ACE_GUARD_RETURN (LockType, Guard, m_SessionLock, -1);
+                GuardType Guard(m_SessionLock);
 
                 if (m_Session && m_Session->GetSecurity() == SEC_PLAYER)
                 {
@@ -1188,7 +1189,7 @@ int WorldSocket::HandlePing (WorldPacket& recvPacket)
 
     // critical section
     {
-        ACE_GUARD_RETURN (LockType, Guard, m_SessionLock, -1);
+        GuardType Guard(m_SessionLock);
 
         if (m_Session)
         {
