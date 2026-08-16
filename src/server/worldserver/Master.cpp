@@ -36,7 +36,9 @@
 #if defined(OPENSSL_VERSION_MAJOR) && (OPENSSL_VERSION_MAJOR >= 3)
 #include <openssl/provider.h>
 #endif
+#include <boost/asio/io_context.hpp>
 #include <boost/dll/runtime_symbol_info.hpp>
+#include <thread>
 
 #include "CliRunnable.h"
 #include "Log.h"
@@ -330,12 +332,30 @@ int Master::Run()
     uint16 worldPort = uint16(sWorld->getIntConfig(CONFIG_PORT_WORLD));
     std::string bindIp = sConfigMgr->GetStringDefault("BindIP", "0.0.0.0");
 
-    if (sWorldSocketMgr->StartNetwork(worldPort, bindIp.c_str()) == -1)
+    // The acceptor runs on this context; each NetworkThread owns its own, so
+    // this one only ever handles the listener. It is pumped by a dedicated
+    // thread because the world loop below never returns to an event loop.
+    boost::asio::io_context _ioContext;
+
+    // One network thread matches the single-reactor behaviour the ACE build
+    // had; the pool exists so this can be raised without touching code.
+    int32 networkThreads = sConfigMgr->GetIntDefault("Network.Threads", 1);
+    if (networkThreads <= 0)
+    {
+        TC_LOG_ERROR("server.worldserver", "Network.Threads must be greater than 0");
+        World::StopNow(ERROR_EXIT_CODE);
+        return 1;
+    }
+
+    if (!sWorldSocketMgr->StartNetwork(_ioContext, bindIp, worldPort, networkThreads))
     {
         TC_LOG_ERROR("server.worldserver", "Failed to start network");
         World::StopNow(ERROR_EXIT_CODE);
         // go down and shutdown the server
     }
+
+    auto ioContextGuard = boost::asio::make_work_guard(_ioContext);
+    std::thread ioContextThread([&_ioContext]() { _ioContext.run(); });
 
     // set server online (allow connecting now)
     LoginDatabase.DirectPExecute("UPDATE realmlist SET flag = flag & ~%u, population = 0 WHERE id = '%u'", REALM_FLAG_INVALID, realmID);
@@ -410,6 +430,12 @@ int Master::Run()
     // for some unknown reason, unloading scripts here and not in worldrunnable
     // fixes a memory leak related to detaching threads from the module
     //UnloadScriptingModule();
+
+    // The listener stops before the process does, or run() never returns.
+    ioContextGuard.reset();
+    _ioContext.stop();
+    if (ioContextThread.joinable())
+        ioContextThread.join();
 
     OpenSSLCrypto::threadsCleanup();
     // Exit the process with specified return value

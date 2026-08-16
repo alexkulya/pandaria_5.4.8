@@ -15,59 +15,60 @@
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-/** \addtogroup u2w User to World Communication
- *  @{
- *  \file WorldSocketMgr.h
- *  \author Derex <derex101@gmail.com>
+/** \addtogroup u2w
+ * @{
+ * \file WorldSocketMgr.h
  */
 
-#ifndef SF_WORLDSOCKETMGR_H
-#define SF_WORLDSOCKETMGR_H
+#ifndef __WORLDSOCKETMGR_H
+#define __WORLDSOCKETMGR_H
 
-#include <ace/Basic_Types.h>
-#include "Singleton.h"
-#include <ace/Thread_Mutex.h>
+#include "SocketMgr.h"
+#include "WorldSocket.h"
 
-class WorldSocket;
-class ReactorRunnable;
-class ACE_Event_Handler;
-
-/// Manages all sockets connected to peers and network threads
-class WorldSocketMgr
+/// Manages all sockets connected to peers and network threads.
+///
+/// Replaces the ACE ReactorRunnable pool. The accept loop, the out-of-
+/// descriptors backoff and the per-thread socket lists all live in
+/// AsyncAcceptor, SocketMgr and NetworkThread now, so what is left here is the
+/// world-specific configuration: send buffer sizes and TCP_NODELAY.
+class WorldSocketMgr : public SocketMgr<WorldSocket>
 {
+    typedef SocketMgr<WorldSocket> BaseSocketMgr;
+
 public:
-    friend class WorldSocket;
-    friend class Trinity::Singleton<WorldSocketMgr>;
+    static WorldSocketMgr& Instance()
+    {
+        static WorldSocketMgr instance;
+        return instance;
+    }
 
-    /// Start network, listen at address:port .
-    int StartNetwork(ACE_UINT16 port, const char* address);
+    bool StartNetwork(boost::asio::io_context& ioContext, std::string const& bindIp, uint16 port, int threadCount) override;
 
-    /// Stops all network threads, It will wait for all running threads .
-    void StopNetwork();
+    void OnSocketOpen(boost::asio::ip::tcp::socket&& sock, uint32 threadIndex) override;
 
-    /// Wait untill all network threads have "joined" .
-    void Wait();
+    /// Kernel send buffer size, in bytes. -1 leaves the system default alone.
+    int GetSocketSendBufferSize() const { return m_SockOutKBuff; }
 
-private:
-    int OnSocketOpen(WorldSocket* sock);
+    /// Userspace coalescing buffer size for each socket.
+    int GetSocketOutUBuffSize() const { return m_SockOutUBuff; }
 
-    int StartReactiveIO(ACE_UINT16 port, const char* address);
+    bool UseNoDelay() const { return m_UseNoDelay; }
 
-private:
+protected:
     WorldSocketMgr();
-    virtual ~WorldSocketMgr();
 
-    ReactorRunnable* m_NetThreads;
-    size_t m_NetThreadsCount;
+    NetworkThread<WorldSocket>* CreateThreads() const override;
+
+private:
+    static void OnSocketAccept(boost::asio::ip::tcp::socket&& sock, uint32 threadIndex);
 
     int m_SockOutKBuff;
     int m_SockOutUBuff;
     bool m_UseNoDelay;
-
-    class WorldSocketAcceptor* m_Acceptor;
 };
 
-#define sWorldSocketMgr Trinity::Singleton<WorldSocketMgr>::instance()
+#define sWorldSocketMgr (&WorldSocketMgr::Instance())
 
 #endif
 /// @}
