@@ -21,7 +21,6 @@
 #include <mutex>
 #include "IVMapManager.h"
 #include "Define.h"
-#include <ace/Thread_Mutex.h>
 #include <unordered_map>
 
 //===========================================================

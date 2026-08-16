@@ -21,7 +21,6 @@
 #include <mutex>
 #include "Define.h"
 #include "Singleton.h"
-#include <ace/Thread_Mutex.h>
 #include <list>
 #include <map>
 #include "DatabaseEnv.h"

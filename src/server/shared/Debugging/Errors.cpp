@@ -18,7 +18,6 @@
 #include "Errors.h"
 #include "Log.h"
 #include "StackTrace.h"
-#include <ace/OS_NS_unistd.h>
 #include <cstdlib>
 
 namespace Trinity {

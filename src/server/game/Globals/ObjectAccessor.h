@@ -21,7 +21,6 @@
 #include <shared_mutex>
 #include "Define.h"
 #include "Singleton.h"
-#include <ace/Thread_Mutex.h>
 
 #include "UpdateData.h"
 

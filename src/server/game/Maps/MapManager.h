@@ -25,7 +25,6 @@
 #include "MapUpdater.h"
 
 #include "Singleton.h"
-#include <ace/Thread_Mutex.h>
 
 
 class Transport;
