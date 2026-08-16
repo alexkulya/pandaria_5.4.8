@@ -20,19 +20,22 @@
 
 #include "CompilerDefs.h"
 
-#include <ace/ACE_export.h>
 #include <cinttypes>
 #include <cstddef>
+#include <cstdint>
 
 #define TRINITY_LITTLEENDIAN 0
 #define TRINITY_BIGENDIAN    1
 
 #if !defined(TRINITY_ENDIAN)
-#  if defined (ACE_BIG_ENDIAN)
+// GCC and Clang publish the byte order; MSVC does not, but every target it
+// builds for here is little-endian. Same shape as the ACE_BIG_ENDIAN test this
+// replaces: big-endian only when the compiler says so, little otherwise.
+#  if defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)
 #    define TRINITY_ENDIAN TRINITY_BIGENDIAN
-#  else //ACE_BYTE_ORDER != ACE_BIG_ENDIAN
+#  else
 #    define TRINITY_ENDIAN TRINITY_LITTLEENDIAN
-#  endif //ACE_BYTE_ORDER
+#  endif
 #endif //TRINITY_ENDIAN
 
 #if PLATFORM == PLATFORM_WINDOWS
@@ -68,13 +71,17 @@
 #  define ATTR_DEPRECATED
 #endif //COMPILER == COMPILER_GNU
 
-#define UI64FMTD ACE_UINT64_FORMAT_SPECIFIER
-#define UI64LIT(N) ACE_UINT64_LITERAL(N)
+// The ACE specifiers these replace carried their own '%', and every call site
+// relies on that - they are written as `", " UI64FMTD ", "` with no percent of
+// their own - so the '%' stays part of the macro rather than moving to the
+// hundreds of format strings that use them.
+#define UI64FMTD "%" PRIu64
+#define UI64LIT(N) UINT64_C(N)
 
-#define SI64FMTD ACE_INT64_FORMAT_SPECIFIER
-#define SI64LIT(N) ACE_INT64_LITERAL(N)
+#define SI64FMTD "%" PRId64
+#define SI64LIT(N) INT64_C(N)
 
-#define SIZEFMTD ACE_SIZE_T_FORMAT_SPECIFIER
+#define SIZEFMTD "%zu"
 
 #if COMPILER == COMPILER_MICROSOFT
 #  define SZFMTD "%Iu"

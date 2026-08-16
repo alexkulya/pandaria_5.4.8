@@ -93,17 +93,21 @@
 #include <mutex>
 #include <shared_mutex>
 
-#include <ace/Basic_Types.h>
-#include <ace/Guard_T.h>
-#include <ace/RW_Thread_Mutex.h>
-#include <ace/Thread_Mutex.h>
 #include "Utilities/TimeUtil.h"
 
 #if PLATFORM == PLATFORM_WINDOWS
-#  include <ace/config-all.h>
 // XP winver - needed to compile with standard leak check in MemoryLeaks.h
 // uncomment later if needed
 //#define _WIN32_WINNT 0x0501
+// ace/config-all.h stood here and defined this before the Windows headers were
+// reached. Without it windows.h drags in the whole shell and COM surface, which
+// collides with the core in two places that give no hint of the cause: ole2.h
+// defines `interface` as a macro for `struct` and Unit.h has a parameter of
+// that name, and winioctl.h declares a MEDIA_TYPE whose first enumerator is
+// `Unknown`, which a Tirisfal script also uses in an enum of its own.
+#  ifndef WIN32_LEAN_AND_MEAN
+#    define WIN32_LEAN_AND_MEAN
+#  endif
 #  include <ws2tcpip.h>
 //#undef WIN32_WINNT
 #else

@@ -18,6 +18,9 @@
 #ifndef _VMAPDEFINITIONS_H
 #define _VMAPDEFINITIONS_H
 #include <cstring>
+// readChunk below takes a FILE*. That used to arrive through the chain of ACE
+// headers Define.h pulled in; with those gone it has to be asked for.
+#include <cstdio>
 
 #define LIQUID_TILE_SIZE (533.333f / 128.f)
 

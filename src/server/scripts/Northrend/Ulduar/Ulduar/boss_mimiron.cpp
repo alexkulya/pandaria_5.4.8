@@ -25,7 +25,6 @@
 
 #include <limits>
 #include <map>
-#include "ace/Mutex.h"
 
 enum Yells
 {
