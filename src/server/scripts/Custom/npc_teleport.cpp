@@ -30,11 +30,6 @@
 #include "DatabaseEnv.h"
 #include <sstream>
 
-/*
-  alexkulya: Необходимо добавить локации Катаклизма и Пандарии для телепорта.
-             Проверить доступ Альянса и Орды для некоторых точек телепорта.
-*/
-
 struct TeleportStructure
 {
     uint32 menu_id, next_menu_id;
@@ -64,8 +59,8 @@ Data Tele [] =
     {1, 3, GOSSIP_ICON_BATTLE, "|TInterface/ICONS/inv_helmet_90:25|t Подземелья BC", 0, 0, 0, 0, 0, 0, 0, 0},
     {1, 4, GOSSIP_ICON_BATTLE, "|TInterface/ICONS/inv_helmet_151:25|t Подземелья WotLK", 0, 0, 0, 0, 0, 0, 0, 0},
     {1, 5, GOSSIP_ICON_BATTLE, "|TInterface/ICONS/inv_helmet_100:25|t Подземелья Cataclysm", 0, 0, 0, 0, 0, 0, 0, 0},
-    {1, 6, GOSSIP_ICON_BATTLE, "|TInterface/ICONS/inv_helmet_mail_panda_b_01:25|t Подземелья Pandaria", 0, 0, 0, 0, 0, 0, 0, 0},
-    {1, 7, GOSSIP_ICON_BATTLE, "|TInterface/ICONS/thumbup:25|t Рейдовые телепорты", 0, 0, 0, 0, 0, 0, 0, 0},
+    {1, 6, GOSSIP_ICON_BATTLE, "|TInterface/ICONS/inv_helmet_189:25|t Подземелья Pandaria", 0, 0, 0, 0, 0, 0, 0, 0},
+    {1, 7, GOSSIP_ICON_BATTLE, "|TInterface/ICONS/ability_rogue_stayofexecution:25|t Рейдовые телепорты", 0, 0, 0, 0, 0, 0, 0, 0},
     {1, 8, GOSSIP_ICON_TRAINER, "|TInterface/ICONS/achievement_zone_easternkingdoms_01:25|t Восточные королевства", 0, 0, 0, 0, 0, 0, 0, 0},
     {1, 9, GOSSIP_ICON_TRAINER, "|TInterface/ICONS/achievement_zone_kalimdor_01:25|t Калимдор", 0, 0, 0, 0, 0, 0, 0, 0},
     {1, 10, GOSSIP_ICON_TRAINER, "|TInterface/ICONS/achievement_zone_outland_01:25|t Запределье", 0, 0, 0, 0, 0, 0, 0, 0},
@@ -131,14 +126,14 @@ Data Tele [] =
     {5, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/Achievement_Boss_ArchmageArugal:25|t Крепость Темного клыка", 0, 0, 1, 0, -234.675f, 1561.63f, 76.8921f, 1.24031f},
     {5, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/Achievement_Boss_EdwinVancleef:25|t Мертвые Копи", 0, 0, 2, 0, -11209.6f, 1666.54f, 24.6974f, 1.42053f},
     {5, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_dungeon_blackrockcaverns:25|t Пещеры Черной горы", 0, 0, 0, 0, -7571.42f, -1320.84f, 245.537f, 4.82323f},
-    {5, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_dungeon_throne-of-the-tides:25|t Трон Приливов", 0, 0, 0, 0, -5599.09f, 5412.06f, -1798.73f, 5.715f},
+    {5, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/Achievement_Dungeon_Throne of the Tides:25|t Трон Приливов", 0, 0, 0, 0, -5599.09f, 5412.06f, -1798.73f, 5.715f},
     {5, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_dungeon_skywall:25|t Вершина Смерча", 0, 0, 0, 1, -11513.3f, -2309.88f, 608.393f, 3.80963f},
     {5, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_dungeon_deepholm:25|t Каменные Недра", 0, 0, 0, 646, 1027.44f, 628.709f, 156.672f, 4.96118f},
-    {5, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_dungeon_lostcity-of-tolvir:25|t Затерянный город Тол'вир", 0, 0, 0, 1, -10679.7f, -1307.1f, 17.342f, 3.40863f},
-    {5, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_dungeon_halls-of-origination:25|t Чертоги Созидания", 0, 0, 0, 1, -10210.5f, -1837.61f, 20.127f, 3.14945f},
+    {5, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/Achievement_Dungeon_LostCity of Tolvir:25|t Затерянный город Тол'вир", 0, 0, 0, 1, -10679.7f, -1307.1f, 17.342f, 3.40863f},
+    {5, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/Achievement_Dungeon_Halls of Origination:25|t Чертоги Созидания", 0, 0, 0, 1, -10210.5f, -1837.61f, 20.127f, 3.14945f},
     {5, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_dungeon_grimbatol:25|t Грим Батол", 0, 0, 0, 0, -4053.51f, -3447.71f, 283.403f, 0.278495f},
     {5, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_boss_nefarion:25|t Твердыня Крыла Тьмы", 0, 0, 0, 0, -7539.44f, -1196.08f, 477.769f, 1.94431f},
-    {5, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/spell_fire_twilightcano:25|t Сумеречный бастион", 0, 0, 0, 0, -4888.41f, -4239.17f, 827.763f, 2.14347f},
+    {5, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/Achievement_Dungeon_Bastion of Twilight_LadySinestra:25|t Сумеречный бастион", 0, 0, 0, 0, -4888.41f, -4239.17f, 827.763f, 2.14347f},
     {5, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_boss_murmur:25|t Трон Четырех Ветров", 0, 0, 0, 1, -11355.f, 58.1567f, 723.882f, 1.88463f},
     {5, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_boss_magtheridon:25|t Крепость Барадин", 0, 0, 0, 732, -1266.98f, 1049.99f, 106.995f, 3.17061f},
     {5, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_firelands:25|t Огненные Просторы", 0, 0, 0, 1, 3987.92f, -2945.83f, 1002.55f, 1.94685f},
@@ -214,7 +209,7 @@ Data Tele [] =
     {8, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_westernplaguelands_01:25|t Западные Чумные земли", 0, 0, 0, 0, 1743.69f, -1723.86f, 59.6648f, 5.23722f},
     {8, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_easternplaguelands:25|t Восточные Чумные земли", 0, 0, 0, 0, 2280.64f, -5275.05f, 82.0166f, 4.7479f},
     {8, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_deadwindpass:25|t Перевал Мертвого Ветра", 0, 0, 0, 0, -10438.8f, -1932.75f, 104.617f, 4.77402f},
-    {8, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_isleofqueldanas:25|t Остров Кель'Данас", 0, 70, 0, 0, 12806.5f, -6911.11f, 41.1156f, 2.22935f},
+    {8, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_isleofqueldanas:25|t Остров Кель'Данас", 0, 0, 0, 0, 12806.5f, -6911.11f, 41.1156f, 2.22935f},
     {8, 1, GOSSIP_ICON_TALK, "|TInterface/PaperDollInfoFrame/UI-GearManager-Undo:25|t [Назад]", 0, 0, 0, 0, 0, 0, 0, 0},
 
     {9, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_azuremystisle_01:25|t Остров лазурной дымки", 0, 0, 2, 530, -4192.62f, -12576.7f, 36.7598f, 1.62813f},
@@ -259,22 +254,35 @@ Data Tele [] =
     {11, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_icecrown_01:25|t Ледяная корона", 0, 0, 0, 571, 8323.28f, 2763.5f, 655.093f, 2.87223f},
     {11, 1, GOSSIP_ICON_TALK, "|TInterface/PaperDollInfoFrame/UI-GearManager-Undo:25|t [Назад]", 0, 0, 0, 0, 0, 0, 0, 0},
 
+    {12, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/Achievement_Zone_Mount Hyjal:25|t Хиджал", 0, 0, 0, 1, 5534.0801f, -3624.68994f, 1567.04004f, 5.20932f},
+    {12, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_vashjir:25|t Вайш'ир", 0, 0, 0, 0, -5430.4878f, 3822.64185f, 1.011662f, 2.027201f},
+    {12, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_deepholm:25|t Подземье", 0, 0, 0, 646, 915.004028f, 503.842010f, -49.23f, 0.196921f},
+    {12, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_uldum:25|t Ульдум", 0, 0, 0, 1, -8846.045898f, -823.183533f, 170.16069f, 3.209724f},
+    {12, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_twilighthighlands:25|t Сумеречное нагорье", 0, 0, 0, 0, -3487.399658f, -4909.05713f, 77.895363f, 4.678765f},
     {12, 1, GOSSIP_ICON_TALK, "|TInterface/PaperDollInfoFrame/UI-GearManager-Undo:25|t [Назад]", 0, 0, 0, 0, 0, 0, 0, 0},
 
+    {13, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_jadeforest:25|t Нефритовый лес", 0, 0, 0, 870, 1377.432251f, -1776.351074f, 213.823044f, 5.565532f},
+    {13, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_valleyoffourwinds:25|t Долина Четырех Ветров", 0, 0, 0, 870, -47.922428f, 271.607391f, 161.959961f, 1.067548f},
+    {13, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_krasarangwilds:25|t Красарангские джунгли", 0, 0, 0, 870, -1337.726563f, 735.620972f, 15.87304f, 4.170093f},
+    {13, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_kunlaisummit:25|t Вершина Кунь-Лай", 0, 0, 0, 870, 2386.637695f, 1008.933044f, 501.1315f, 5.475534f},
+    {13, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_townlongsteppes:25|t Танлунские степи", 0, 0, 0, 870, 1533.877441f, 2778.042725f, 300.430573f, 1.134529f},
+    {13, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_dreadwastes:25|t Жуткие пустоши", 0, 0, 0, 870, -959.124634f, 3377.993652f, 46.34745f, 0.916983f},
+    {13, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_valeofeternalblossoms:25|t Вечноцветущий дол", 0, 0, 0, 870, 925.847778f, 1866.536743f, 343.70166f, 4.161781f},
     {13, 1, GOSSIP_ICON_TALK, "|TInterface/PaperDollInfoFrame/UI-GearManager-Undo:25|t [Назад]", 0, 0, 0, 0, 0, 0, 0, 0},
 
-    {20, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/Achievement_BG_killingblow_most:25|t Пиратская бухта", 0, 30, 0, 0, -14281.9f, 552.564f, 8.90422f, 0.860144f},
-    {20, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/Achievement_BG_killingblow_most:25|t Прибамбасск", 0, 40, 0, 1, -7177.15f, -3785.34f, 8.36981f, 6.10237f},
-    {20, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/Achievement_BG_killingblow_most:25|t Кабестан", 0, 10, 0, 1, -956.664f, -3754.709f, 5.33239f, 0.99663f },
+    {20, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/Achievement_BG_killingblow_most:25|t Пиратская бухта", 0, 0, 0, 0, -14281.9f, 552.564f, 8.90422f, 0.860144f},
+    {20, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/Achievement_BG_killingblow_most:25|t Прибамбасск", 0, 0, 0, 1, -7177.15f, -3785.34f, 8.36981f, 6.10237f},
+    {20, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/Achievement_BG_killingblow_most:25|t Кабестан", 0, 0, 0, 1, -956.664f, -3754.709f, 5.33239f, 0.99663f },
     {20, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/spell_arcane_teleportmoonglade:25|t Ночная гавань", 0, 0, 0, 1, 7966.85f, -2491.04f, 487.734f, 3.205620f },
-    {20, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_nagrand_01:25|t Халаа", 0, 64, 0, 530, -1563.05f, 7945.6699f, -22.556f, 1.13572f },
-    {20, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_netherstorm_01:25|t Зона 52", 0, 67, 0, 530, 3043.33f, 3681.33f, 143.0418f, 5.07464f },
-    {20, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_winterspring:25|t Круговзор", 0, 55, 0, 1, 6729.276f, -4646.653f, 721.8131f, 4.2781f },
-    {20, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_stormpeaks_01:25|t К-З", 0, 77, 0, 571, 6123.6362f, -1060.933f, 402.585f, 5.8718f },
-    {20, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/Achievement_Arena_2v2_7:25|t Арена Гурубаши", 0, 30, 0, 0, -13181.8f, 339.356f, 42.9805f, 1.18013f},
-    {20, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/Achievement_Arena_2v2_7:25|t Арена в Круге Крови", 0, 57, 0, 530, 2839.44f, 5930.17f, 11.1002f, 3.16284f},
-    {20, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/Achievement_Arena_2v2_7:25|t Круг Испытаний", 0, 57, 0, 530, -1999.94f, 6581.71f, 11.32f, 2.36528f},
+    {20, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_nagrand_01:25|t Халаа", 0, 0, 0, 530, -1563.05f, 7945.6699f, -22.556f, 1.13572f },
+    {20, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_netherstorm_01:25|t Зона 52", 0, 0, 0, 530, 3043.33f, 3681.33f, 143.0418f, 5.07464f },
+    {20, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_winterspring:25|t Круговзор", 0, 0, 0, 1, 6729.276f, -4646.653f, 721.8131f, 4.2781f },
+    {20, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_stormpeaks_01:25|t К-З", 0, 0, 0, 571, 6123.6362f, -1060.933f, 402.585f, 5.8718f },
+    {20, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/Achievement_Arena_2v2_7:25|t Арена Гурубаши", 0, 0, 0, 0, -13181.8f, 339.356f, 42.9805f, 1.18013f},
+    {20, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/Achievement_Arena_2v2_7:25|t Арена в Круге Крови", 0, 0, 0, 530, 2839.44f, 5930.17f, 11.1002f, 3.16284f},
+    {20, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/Achievement_Arena_2v2_7:25|t Круг Испытаний", 0, 0, 0, 530, -1999.94f, 6581.71f, 11.32f, 2.36528f},
     {20, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_stormpeaks_03:25|t Озеро ледяных оков", 0, 0, 0, 571, 4522.23f, 2828.01f, 389.975f, 0.215009f},
+    {20, 0, GOSSIP_ICON_TAXI, "|TInterface/ICONS/achievement_zone_tolbarad:25|t Тол Барад", 0, 0, 0, 732, -1350.012f, 981.211f, 123.136f, 6.279091f},
     {20, 1, GOSSIP_ICON_TALK, "|TInterface/PaperDollInfoFrame/UI-GearManager-Undo:25|t [Назад]", 0, 0, 0, 0, 0, 0, 0, 0},
 };
 
