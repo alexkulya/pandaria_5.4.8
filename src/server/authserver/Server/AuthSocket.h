@@ -18,11 +18,11 @@
 #ifndef SF_AUTHSOCKET_H
 #define SF_AUTHSOCKET_H
 
+#include <mutex>
 #include "Common.h"
 #include "BigNumber.h"
 #include "RealmSocket.h"
 
-class ACE_INET_Addr;
 struct Realm;
 
 // Handle login commands
@@ -38,7 +38,7 @@ public:
     virtual void OnAccept(void);
     virtual void OnClose(void);
 
-    static ACE_INET_Addr const& GetAddressForClient(Realm const& realm, ACE_INET_Addr const& clientAddr);
+    static boost::asio::ip::tcp::endpoint const& GetAddressForClient(Realm const& realm);
 
     bool _HandleLogonChallenge();
     bool _HandleLogonProof();
@@ -54,7 +54,7 @@ public:
     void _SetVSFields(const std::string& rI);
 
     FILE* pPatch;
-    ACE_Thread_Mutex patcherLock;
+    std::mutex patcherLock;
 
 private:
     RealmSocket& socket_;

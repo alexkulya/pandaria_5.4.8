@@ -30,7 +30,7 @@ void RealmList::Initialize(uint32 updateInterval)
     UpdateRealms(true);
 }
 
-void RealmList::UpdateRealm(uint32 id, const std::string& name, ACE_INET_Addr const& address, uint8 icon, RealmFlags flag, uint8 timezone, AccountTypes allowedSecurityLevel, float popu, uint32 build)
+void RealmList::UpdateRealm(uint32 id, const std::string& name, boost::asio::ip::tcp::endpoint const& address, uint8 icon, RealmFlags flag, uint8 timezone, AccountTypes allowedSecurityLevel, float popu, uint32 build)
 {
     // Create new if not exist or update existed
     Realm& realm = m_realms[name];
@@ -87,12 +87,37 @@ void RealmList::UpdateRealms(bool init)
             float pop                   = fields[8].GetFloat();
             uint32 build                = fields[9].GetUInt32();
 
-            ACE_INET_Addr externalAddr(port, externalAddress.c_str(), AF_INET);
+            // ACE_INET_Addr took either a dotted address or a host name and
+            // resolved whichever it got. Parse first, which covers the usual
+            // case without touching the network, and only resolve if that
+            // fails, so a bad row is skipped instead of registering a realm
+            // clients cannot reach.
+            boost::system::error_code error;
+            boost::asio::ip::address parsed = boost::asio::ip::make_address(externalAddress, error);
+            boost::asio::ip::tcp::endpoint externalAddr;
+
+            if (!error)
+                externalAddr = boost::asio::ip::tcp::endpoint(parsed, port);
+            else
+            {
+                boost::asio::io_context resolverContext;
+                boost::asio::ip::tcp::resolver resolver(resolverContext);
+                boost::system::error_code resolveError;
+                auto endpoints = resolver.resolve(boost::asio::ip::tcp::v4(), externalAddress, std::to_string(port), resolveError);
+
+                if (resolveError || endpoints.empty())
+                {
+                    TC_LOG_ERROR("server.authserver", "Realm \"%s\" has an unusable address '%s', skipped.", name.c_str(), externalAddress.c_str());
+                    continue;
+                }
+
+                externalAddr = *endpoints.begin();
+            }
 
             UpdateRealm(realmId, name, externalAddr, icon, flag, timezone, (allowedSecurityLevel <= SEC_ADMINISTRATOR ? AccountTypes(allowedSecurityLevel) : SEC_ADMINISTRATOR), pop, build);
 
             if (init)
-                TC_LOG_INFO("server.authserver", "Added realm \"%s\" at %s:%u.", name.c_str(), m_realms[name].ExternalAddress.get_host_addr(), port);
+                TC_LOG_INFO("server.authserver", "Added realm \"%s\" at %s:%u.", name.c_str(), m_realms[name].ExternalAddress.address().to_string().c_str(), port);
         }
         while (result->NextRow());
     }

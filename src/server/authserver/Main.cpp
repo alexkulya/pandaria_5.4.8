@@ -23,10 +23,15 @@
 * authentication server
 */
 
-#include <ace/Dev_Poll_Reactor.h>
-#include <ace/TP_Reactor.h>
-#include <ace/ACE.h>
-#include <ace/Sig_Handler.h>
+#include <atomic>
+#include <boost/asio/io_context.hpp>
+#include <chrono>
+#include <csignal>
+#ifdef _WIN32
+#include <cstdio>
+#else
+#include <sys/resource.h>
+#endif
 #include <openssl/opensslv.h>
 #include <openssl/crypto.h>
 #include "OpenSSLCrypto.h"
@@ -37,9 +42,8 @@
 #include "Log.h"
 #include "SystemConfig.h"
 #include "Util.h"
-#include "SignalHandler.h"
 #include "RealmList.h"
-#include "RealmAcceptor.h"
+#include "RealmSocketMgr.h"
 #include "AppenderDB.h"
 #if defined(OPENSSL_VERSION_MAJOR) && (OPENSSL_VERSION_MAJOR >= 3)
 #include <openssl/provider.h>
@@ -73,25 +77,44 @@ void AppenderDB::_write(LogMessage const& message)
 bool StartDB();
 void StopDB();
 
-bool stopEvent = false;                                     // Setting it to true stops the server
+// Written from the signal handler and polled by the main loop, so it has to be
+// atomic: a plain bool is a data race, and the compiler is free to hoist the
+// read out of the loop and never see the store.
+std::atomic<bool> stopEvent(false);                         // Setting it to true stops the server
 
 LoginDatabaseWorkerPool LoginDatabase;                      // Accessor to the authserver database
 
-/// Handle authserver's termination signals
-class AuthServerSignalHandler : public Trinity::SignalHandler
+/// Replaces ACE::max_handles(). Windows caps the stdio layer rather than the
+/// socket layer, so it reports the C runtime limit; elsewhere this is the
+/// soft RLIMIT_NOFILE, which is what ACE reported too.
+static int MaxOpenFiles()
 {
-public:
-    virtual void HandleSignal(int sigNum)
+#ifdef _WIN32
+    return _getmaxstdio();
+#else
+    rlimit limit;
+    if (getrlimit(RLIMIT_NOFILE, &limit) == 0)
+        return int(limit.rlim_cur);
+    return -1;
+#endif
+}
+
+/// Handle authserver's termination signals
+///
+/// std::signal takes a plain function pointer, so this replaces the
+/// ACE_Event_Handler subclass ACE_Sig_Handler needed. It runs in signal
+/// context, so it does nothing but store to an atomic - no allocation, no
+/// locks, no logging.
+extern "C" void AuthServerSignalHandler(int sigNum)
+{
+    switch (sigNum)
     {
-        switch (sigNum)
-        {
-        case SIGINT:
-        case SIGTERM:
-            stopEvent = true;
-            break;
-        }
+    case SIGINT:
+    case SIGTERM:
+        stopEvent = true;
+        break;
     }
-};
+}
 
 /// Print out the usage string for this program on the console.
 void usage(const char* prog)
@@ -156,13 +179,12 @@ extern int main(int argc, char** argv)
 
     TC_LOG_WARN("server.authserver", "%s (Library: %s)", OPENSSL_VERSION_TEXT, OpenSSL_version(OPENSSL_VERSION));
 
-#if defined (ACE_HAS_EVENT_POLL) || defined (ACE_HAS_DEV_POLL)
-    ACE_Reactor::instance(new ACE_Reactor(new ACE_Dev_Poll_Reactor(ACE::max_handles(), 1), 1), true);
-#else
-    ACE_Reactor::instance(new ACE_Reactor(new ACE_TP_Reactor(), true), true);
-#endif
+    // The io_context the acceptor runs on. Accepted sockets are moved onto the
+    // RealmSocketMgr's own network threads, so this one only ever handles the
+    // listener and the shutdown poll.
+    boost::asio::io_context ioContext;
 
-    TC_LOG_DEBUG("server.authserver", "Max allowed open files is %d", ACE::max_handles());
+    TC_LOG_DEBUG("server.authserver", "Max allowed open files is %d", MaxOpenFiles());
 
     // authserver PID file creation
     std::string pidFile = sConfigMgr->GetStringDefault("PidFile", "");
@@ -190,8 +212,6 @@ extern int main(int argc, char** argv)
     }
 
     // Launch the listening network socket
-    RealmAcceptor acceptor;
-
     int32 rmport = sConfigMgr->GetIntDefault("RealmServerPort", 3724);
     if (rmport < 0 || rmport > 0xFFFF)
     {
@@ -201,21 +221,24 @@ extern int main(int argc, char** argv)
 
     std::string bind_ip = sConfigMgr->GetStringDefault("BindIP", "0.0.0.0");
 
-    ACE_INET_Addr bind_addr(uint16(rmport), bind_ip.c_str());
+    // One network thread matches the single-reactor behaviour the ACE build
+    // had; the pool exists so this can be raised without touching code.
+    int32 networkThreads = sConfigMgr->GetIntDefault("Network.Threads", 1);
+    if (networkThreads <= 0)
+    {
+        TC_LOG_ERROR("server.authserver", "Network.Threads must be greater than 0");
+        return 1;
+    }
 
-    if (acceptor.open(bind_addr, ACE_Reactor::instance(), ACE_NONBLOCK) == -1)
+    if (!sRealmSocketMgr.StartNetwork(ioContext, bind_ip, uint16(rmport), networkThreads))
     {
         TC_LOG_ERROR("server.authserver", "Auth server can not bind to %s:%d", bind_ip.c_str(), rmport);
         return 1;
     }
 
-    // Initialize the signal handlers
-    AuthServerSignalHandler SignalINT, SignalTERM;
-
-    // Register authservers's signal handlers
-    ACE_Sig_Handler Handler;
-    Handler.register_handler(SIGINT, &SignalINT);
-    Handler.register_handler(SIGTERM, &SignalTERM);
+    // Register authserver's signal handlers
+    std::signal(SIGINT, &AuthServerSignalHandler);
+    std::signal(SIGTERM, &AuthServerSignalHandler);
 
 #if defined(_WIN32) || defined(__linux__)
 
@@ -289,11 +312,11 @@ extern int main(int argc, char** argv)
     // Wait for termination signal
     while (!stopEvent)
     {
-        // dont move this outside the loop, the reactor will modify it
-        ACE_Time_Value interval(0, 100000);
-
-        if (ACE_Reactor::instance()->run_reactor_event_loop(interval) == -1)
-            break;
+        // Same 100ms slice the reactor loop used, so the MySQL keepalive
+        // cadence below and the shutdown latency are both unchanged.
+        // run_for stops the context at the deadline, hence the restart().
+        ioContext.run_for(std::chrono::milliseconds(100));
+        ioContext.restart();
 
         if ((++loopCounter) == numLoops)
         {
@@ -302,6 +325,11 @@ extern int main(int argc, char** argv)
             LoginDatabase.KeepAlive();
         }
     }
+
+    // Stop the network before the database: sockets in flight may still be
+    // issuing login queries, and tearing the pool down underneath them would
+    // fault instead of failing cleanly.
+    sRealmSocketMgr.StopNetwork();
 
     // Close the Database Pool and library
     StopDB();

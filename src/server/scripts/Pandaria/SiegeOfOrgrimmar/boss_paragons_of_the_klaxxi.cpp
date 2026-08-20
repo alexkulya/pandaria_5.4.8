@@ -18,7 +18,7 @@
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "siege_of_orgrimmar.h"
-#include <ace/Stack_Trace.h>
+#include "StackTrace.h"
 
 enum Spells
 {                                   
@@ -549,7 +549,7 @@ class boss_paragon_of_the_klaxxi : public CreatureScript
                     {
                         if (paragonSequence.size() < 4)
                         {
-                            ACE_Stack_Trace st;
+                            Trinity::StackTrace st;
                             TC_LOG_ERROR("shitlog", "boss_paragon_of_the_klaxxi paragonSequence.size() %u, boss state %u\n%s", uint32(paragonSequence.size()), instance ? instance->GetBossState(DATA_PARAGONS_OF_THE_KLAXXI) : 0, st.c_str());
                             return;
                         }

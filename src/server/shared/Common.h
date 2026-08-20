@@ -90,17 +90,24 @@
 #include "Threading/LockedQueue.h"
 #include "Threading/Threading.h"
 
-#include <ace/Basic_Types.h>
-#include <ace/Guard_T.h>
-#include <ace/RW_Thread_Mutex.h>
-#include <ace/Thread_Mutex.h>
-#include <ace/OS_NS_time.h>
+#include <mutex>
+#include <shared_mutex>
+
+#include "Utilities/TimeUtil.h"
 
 #if PLATFORM == PLATFORM_WINDOWS
-#  include <ace/config-all.h>
 // XP winver - needed to compile with standard leak check in MemoryLeaks.h
 // uncomment later if needed
 //#define _WIN32_WINNT 0x0501
+// ace/config-all.h stood here and defined this before the Windows headers were
+// reached. Without it windows.h drags in the whole shell and COM surface, which
+// collides with the core in two places that give no hint of the cause: ole2.h
+// defines `interface` as a macro for `struct` and Unit.h has a parameter of
+// that name, and winioctl.h declares a MEDIA_TYPE whose first enumerator is
+// `Unknown`, which a Tirisfal script also uses in an enum of its own.
+#  ifndef WIN32_LEAN_AND_MEAN
+#    define WIN32_LEAN_AND_MEAN
+#  endif
 #  include <ws2tcpip.h>
 //#undef WIN32_WINNT
 #else
@@ -224,20 +231,22 @@ struct DbcStr
 
 #define MAX_QUERY_LEN 32*1024
 
+//! The ACE versions of these macros checked locked() and asserted when a guard
+//! failed to acquire, because an ACE guard reported failure by staying
+//! unlocked. The standard lock types cannot be constructed unlocked: they throw
+//! on failure, so the check has no equivalent and is gone rather than being
+//! faked.
 #define TRINITY_GUARD(MUTEX, LOCK) \
-  ACE_Guard< MUTEX > TRINITY_GUARD_OBJECT (LOCK); \
-    if (TRINITY_GUARD_OBJECT.locked() == 0) ASSERT(false);
+  std::lock_guard< MUTEX > TRINITY_GUARD_OBJECT (LOCK)
 
 //! For proper implementation of multiple-read, single-write pattern, use
-//! ACE_RW_Mutex as underlying @MUTEX
+//! std::shared_timed_mutex as underlying @MUTEX
 # define TRINITY_WRITE_GUARD(MUTEX, LOCK) \
-  ACE_Write_Guard< MUTEX > TRINITY_GUARD_OBJECT (LOCK); \
-    if (TRINITY_GUARD_OBJECT.locked() == 0) ASSERT(false);
+  std::unique_lock< MUTEX > TRINITY_GUARD_OBJECT (LOCK)
 
 //! For proper implementation of multiple-read, single-write pattern, use
-//! ACE_RW_Mutex as underlying @MUTEX
+//! std::shared_timed_mutex as underlying @MUTEX
 # define TRINITY_READ_GUARD(MUTEX, LOCK) \
-  ACE_Read_Guard< MUTEX > TRINITY_GUARD_OBJECT (LOCK); \
-    if (TRINITY_GUARD_OBJECT.locked() == 0) ASSERT(false);
+  std::shared_lock< MUTEX > TRINITY_GUARD_OBJECT (LOCK)
 
 #endif

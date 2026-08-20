@@ -18,7 +18,7 @@
 #ifndef SF_GUILDFINDER_H
 #define SF_GUILDFINDER_H
 
-#include <ace/Singleton.h>
+#include "Singleton.h"
 #include "Common.h"
 #include "World.h"
 #include "GuildMgr.h"
@@ -186,7 +186,7 @@ typedef std::map<uint32 /* guildGuid */, std::vector<MembershipRequest> > Member
 
 class GuildFinderMgr
 {
-    friend class ACE_Singleton<GuildFinderMgr, ACE_Null_Mutex>;
+    friend class Trinity::Singleton<GuildFinderMgr>;
 
     private:
         GuildFinderMgr();
@@ -267,6 +267,6 @@ class GuildFinderMgr
         void SendMembershipRequestListUpdate(Player& player);
 };
 
-#define sGuildFinderMgr ACE_Singleton<GuildFinderMgr, ACE_Null_Mutex>::instance()
+#define sGuildFinderMgr Trinity::Singleton<GuildFinderMgr>::instance()
 
 #endif // __TRINITY_GUILDFINDER_H

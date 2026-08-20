@@ -18,9 +18,9 @@
 #ifndef TRINITY_OBJECTACCESSOR_H
 #define TRINITY_OBJECTACCESSOR_H
 
+#include <shared_mutex>
 #include "Define.h"
-#include <ace/Singleton.h>
-#include <ace/Thread_Mutex.h>
+#include "Singleton.h"
 
 #include "UpdateData.h"
 
@@ -46,7 +46,7 @@ class HashMapHolder
     public:
 
         typedef std::unordered_map<uint64, T*> MapType;
-        typedef ACE_RW_Thread_Mutex LockType;
+        typedef std::shared_timed_mutex LockType;
 
         static void Insert(T* o)
         {
@@ -81,7 +81,7 @@ class HashMapHolder
 
 class ObjectAccessor
 {
-    friend class ACE_Singleton<ObjectAccessor, ACE_Null_Mutex>;
+    friend class Trinity::Singleton<ObjectAccessor>;
     private:
         ObjectAccessor();
         ~ObjectAccessor();
@@ -212,8 +212,8 @@ class ObjectAccessor
 
         Player2CorpsesMapType i_player2corpse;
 
-        ACE_RW_Thread_Mutex i_corpseLock;
+        std::shared_timed_mutex i_corpseLock;
 };
 
-#define sObjectAccessor ACE_Singleton<ObjectAccessor, ACE_Null_Mutex>::instance()
+#define sObjectAccessor Trinity::Singleton<ObjectAccessor>::instance()
 #endif

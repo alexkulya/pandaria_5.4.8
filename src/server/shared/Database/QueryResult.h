@@ -18,7 +18,6 @@
 #ifndef QUERYRESULT_H
 #define QUERYRESULT_H
 
-#include <ace/Thread_Mutex.h>
 
 #include "Field.h"
 

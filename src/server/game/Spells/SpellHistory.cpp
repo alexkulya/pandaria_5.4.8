@@ -327,7 +327,7 @@ void SpellHistory::StartCooldown(SpellInfo const* spellInfo, uint32 itemId, Spel
         {
             tm date;
             time_t now = curTime.ToSeconds();
-            ACE_OS::localtime_r(&now, &date);
+            Trinity::LocalTime(now, date);
             cooldown.CategoryRecoveryTime = cooldown.CategoryRecoveryTime * DAY - (date.tm_hour * HOUR + date.tm_min * MINUTE + date.tm_sec) * IN_MILLISECONDS;
         }
     }

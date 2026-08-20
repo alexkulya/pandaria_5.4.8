@@ -116,7 +116,7 @@ void WorldSession::HandleCalendarGetCalendar(WorldPacket& /*recvData*/)
             else if (holiday->CalendarFilterType == 0 && !dateIndex) // Custom date for the first Fishing event occurrence
             {
                 tm lt = tm();
-                ACE_OS::localtime_r(&event.start, &lt);
+                Trinity::LocalTime(event.start, lt);
                 *holidaysInfoBuffer << uint32(holiday->Date[dateIndex] & ~0x7FF | ((lt.tm_wday & 0x7) << 11) | ((lt.tm_hour & 0x1F) << 6) | (lt.tm_min & 0x3F)); // HH:mm and weekday custom, every other number is -1
             }
             else if (original)

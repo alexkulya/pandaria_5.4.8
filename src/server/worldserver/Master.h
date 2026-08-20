@@ -22,6 +22,7 @@
 #ifndef _MASTER_H
 #define _MASTER_H
 
+#include "Singleton.h"
 #include "Common.h"
 
 /// Start the server
@@ -37,7 +38,7 @@ class Master
         void ClearOnlineAccounts();
 };
 
-#define sMaster ACE_Singleton<Master, ACE_Null_Mutex>::instance()
+#define sMaster Trinity::Singleton<Master>::instance()
 
 #endif
 

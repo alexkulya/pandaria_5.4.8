@@ -19,7 +19,7 @@
 #define TRINITY_PACKETLOG_H
 
 #include "Common.h"
-#include <ace/Singleton.h>
+#include "Singleton.h"
 
 enum Direction
 {
@@ -31,7 +31,7 @@ class WorldPacket;
 
 class PacketLog
 {
-    friend class ACE_Singleton<PacketLog, ACE_Thread_Mutex>;
+    friend class Trinity::Singleton<PacketLog>;
 
     private:
         PacketLog();
@@ -46,5 +46,5 @@ class PacketLog
         FILE* _file;
 };
 
-#define sPacketLog ACE_Singleton<PacketLog, ACE_Thread_Mutex>::instance()
+#define sPacketLog Trinity::Singleton<PacketLog>::instance()
 #endif

@@ -20,7 +20,7 @@
 
 #include "Define.h"
 #include "Errors.h"
-#include <ace/Singleton.h>
+#include "Singleton.h"
 #include <list>
 #include <map>
 
@@ -247,7 +247,7 @@ typedef std::map<uint32, ConditionList> ConditionReferenceContainer;//only used 
 
 class ConditionMgr
 {
-    friend class ACE_Singleton<ConditionMgr, ACE_Null_Mutex>;
+    friend class Trinity::Singleton<ConditionMgr>;
 
     private:
         ConditionMgr();
@@ -297,6 +297,6 @@ class ConditionMgr
         std::unordered_set<VehicleAIBase*> m_vehicleAIs;
 };
 
-#define sConditionMgr ACE_Singleton<ConditionMgr, ACE_Null_Mutex>::instance()
+#define sConditionMgr Trinity::Singleton<ConditionMgr>::instance()
 
 #endif

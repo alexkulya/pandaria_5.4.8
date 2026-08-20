@@ -18,7 +18,7 @@
 #ifndef  TASK_H
 #define  TASK_H
 
-#include <ace/Future.h>
+#include "Future.h"
 #include "Common.h"
 #include "TaskMgr.h"
 
@@ -117,7 +117,7 @@ template <typename T>
 class WaitResultTask : public Task<T>
 {
 public:
-    WaitResultTask(ACE_Future<T> const& future)
+    WaitResultTask(Trinity::Future<T> const& future)
     {
         _future = future;
     }
@@ -140,7 +140,7 @@ public:
     }
 
 private:
-    ACE_Future<T> _future;
+    Trinity::Future<T> _future;
 };
 
 //! Just callback for execution in scheduler context.

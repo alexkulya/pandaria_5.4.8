@@ -18,7 +18,7 @@
 #ifndef SF_ACCMGR_H
 #define SF_ACCMGR_H
 
-#include <ace/Singleton.h>
+#include "Singleton.h"
 
 enum class AccountOpResult : uint8
 {
@@ -45,7 +45,7 @@ enum PasswordChangeSecurity
 
 class AccountMgr
 {
-    friend class ACE_Singleton<AccountMgr, ACE_Null_Mutex>;
+    friend class Trinity::Singleton<AccountMgr>;
 
     private:
         AccountMgr();

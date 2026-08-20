@@ -19,7 +19,6 @@
 #define SF_TICKETINFO_H
 
 #include <string>
-#include <ace/Singleton.h>
 
 #include "ObjectMgr.h"
 

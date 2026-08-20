@@ -72,10 +72,12 @@ include(CheckPlatform)
 
 # basic packagesearching and setup (further support will be needed, this is a preliminary release!)
 set(OPENSSL_EXPECTED_VERSION 1.0.0)
-set(ACE_EXPECTED_VERSION 5.8.3)
+# Matches the minimum documented in README.md. io_context (Boost 1.66) and
+# Boost.DLL (1.61) are the newest pieces the core reaches for, so 1.70 leaves
+# room to spare; the CI image builds against 1.71 and Windows against 1.74.
+set(BOOST_EXPECTED_VERSION 1.70)
 
 find_package(PCHSupport)
-find_package(ACE REQUIRED)
 # 1.0.x, 1.1.x and 3.x are all supported: HMACSHA1 carries the shim for the
 # pre-1.1.0 HMAC_CTX API, and OpenSSLCrypto loads the legacy provider that
 # 3.0 moved RC4 into.
@@ -91,21 +93,22 @@ if( UNIX )
 endif()
 
 set(Boost_USE_STATIC_LIBS ON)
-find_package(Boost COMPONENTS system locale filesystem thread regex serialization
+# date_time is not used directly anywhere in the core. It is listed because
+# Boost's MSVC headers auto-link it through #pragma comment(lib), emitting a
+# bare file name for the linker to resolve on its own; leaving it out builds
+# fine and then dies at link time with LNK1104. Naming it here hands the linker
+# the full path of the right per-configuration variant instead, which is also
+# what makes a plain link_directories() unnecessary.
+find_package(Boost ${BOOST_EXPECTED_VERSION} COMPONENTS
+    system
+    locale
+    filesystem
+    thread
+    regex
+    serialization
+    date_time
     REQUIRED
 )
-
-# Boost's MSVC headers auto-link further libraries through #pragma comment(lib),
-# date_time among them, emitting a bare file name the linker has to resolve on
-# its own. Those libraries are never in the component list above, so without the
-# directory on the search path the link dies with LNK1104.
-if(MSVC)
-  if(Boost_LIBRARY_DIRS)
-    link_directories(${Boost_LIBRARY_DIRS})
-  elseif(BOOST_LIBRARYDIR)
-    link_directories(${BOOST_LIBRARYDIR})
-  endif()
-endif()
 
 # Find revision ID and hash of the sourcetree
 include(cmake/genrev.cmake)

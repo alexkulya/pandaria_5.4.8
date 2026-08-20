@@ -14,15 +14,16 @@
 * You should have received a copy of the GNU General Public License along
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
- 
+
 #ifndef _M_DELAY_EXECUTOR_H
 #define _M_DELAY_EXECUTOR_H
 
-#include <ace/Task.h>
-#include <ace/Activation_Queue.h>
-#include <ace/Method_Request.h>
+#include "ActivationQueue.h"
 
-class DelayExecutor : protected ACE_Task_Base
+#include <thread>
+#include <vector>
+
+class DelayExecutor
 {
     public:
 
@@ -31,9 +32,9 @@ class DelayExecutor : protected ACE_Task_Base
 
         static DelayExecutor* instance();
 
-        int execute(ACE_Method_Request* new_req);
+        int execute(Trinity::MethodRequest* new_req);
 
-        int start(int num_threads = 1, ACE_Method_Request* pre_svc_hook = NULL, ACE_Method_Request* post_svc_hook = NULL);
+        int start(int num_threads = 1, Trinity::MethodRequest* pre_svc_hook = NULL, Trinity::MethodRequest* post_svc_hook = NULL);
 
         int deactivate();
 
@@ -43,10 +44,13 @@ class DelayExecutor : protected ACE_Task_Base
 
     private:
 
-        ACE_Activation_Queue queue_;
-        ACE_Method_Request* pre_svc_hook_;
-        ACE_Method_Request* post_svc_hook_;
+        Trinity::ActivationQueue queue_;
+        Trinity::MethodRequest* pre_svc_hook_;
+        Trinity::MethodRequest* post_svc_hook_;
         bool activated_;
+        // ACE_Task_Base kept its own thread list; with it gone the pool is held
+        // here so deactivate() can still join every worker.
+        std::vector<std::thread> threads_;
 
         void activated(bool s);
 };

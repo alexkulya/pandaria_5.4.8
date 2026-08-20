@@ -19,7 +19,7 @@
 #define BATTLEFIELD_MGR_H_
 
 #include "Battlefield.h"
-#include "ace/Singleton.h"
+#include "Singleton.h"
 
 class Player;
 class GameObject;
@@ -74,6 +74,6 @@ class BattlefieldMgr
     uint32 m_UpdateTimer;
 };
 
-#define sBattlefieldMgr ACE_Singleton<BattlefieldMgr, ACE_Null_Mutex>::instance()
+#define sBattlefieldMgr Trinity::Singleton<BattlefieldMgr>::instance()
 
 #endif

@@ -18,13 +18,13 @@
 #ifndef TRINITY_MAPMANAGER_H
 #define TRINITY_MAPMANAGER_H
 
+#include <mutex>
 #include "Object.h"
 #include "Map.h"
 #include "GridStates.h"
 #include "MapUpdater.h"
 
-#include <ace/Singleton.h>
-#include <ace/Thread_Mutex.h>
+#include "Singleton.h"
 
 
 class Transport;
@@ -32,7 +32,7 @@ struct TransportCreatureProto;
 
 class MapManager
 {
-    friend class ACE_Singleton<MapManager, ACE_Thread_Mutex>;
+    friend class Trinity::Singleton<MapManager>;
 
     public:
         Map* CreateBaseMap(uint32 mapId);
@@ -145,7 +145,7 @@ class MapManager
         MapManager(const MapManager &);
         MapManager& operator=(const MapManager &);
 
-        ACE_Thread_Mutex Lock;
+        std::mutex Lock;
         uint32 i_gridCleanUpDelay;
         MapMapType i_maps;
         IntervalTimer i_timer;
@@ -154,5 +154,5 @@ class MapManager
         uint32 _nextInstanceId;
         MapUpdater m_updater;
 };
-#define sMapMgr ACE_Singleton<MapManager, ACE_Thread_Mutex>::instance()
+#define sMapMgr Trinity::Singleton<MapManager>::instance()
 #endif

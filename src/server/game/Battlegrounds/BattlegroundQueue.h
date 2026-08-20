@@ -18,6 +18,7 @@
 #ifndef SF_BATTLEGROUNDQUEUE_H
 #define SF_BATTLEGROUNDQUEUE_H
 
+#include <mutex>
 #include "Common.h"
 #include "DBCEnums.h"
 #include "Battleground.h"

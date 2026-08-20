@@ -18,10 +18,12 @@
 #ifndef LOGOPERATION_H
 #define LOGOPERATION_H
 
+#include "Threading/ActivationQueue.h"
+
 class Logger;
 struct LogMessage;
 
-class LogOperation
+class LogOperation : public Trinity::MethodRequest
 {
     public:
         LogOperation(Logger const* _logger, LogMessage* _msg)
@@ -30,7 +32,7 @@ class LogOperation
 
         ~LogOperation();
 
-        int call();
+        int call() override;
 
     protected:
         Logger const* logger;

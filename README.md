@@ -21,7 +21,6 @@ Pandaria 5.4.8 docker [(Thanks diff3)](https://github.com/diff3): https://github
 | MySQL **client** | 5.7 or 8.0 — **required on every platform, Windows included** |
 | OpenSSL | 1.0.x, 1.1.x or 3.x |
 | Boost | ≥ 1.70 |
-| ACE | Windows: included in `dep/acelite`, built statically. Linux: from the system (`libace-dev`) |
 
 ### MySQL
 
@@ -82,9 +81,11 @@ cmake -S . -B build -G "Visual Studio 16 2019" -A x64 -T v142 ^
 cmake --build build --config Release --parallel
 ```
 
-`BOOST_LIBRARYDIR` is not optional: Boost's headers auto-link libraries such as
-`date_time` through `#pragma comment(lib, ...)`, which emits a bare file name that the
-linker can only resolve if the directory is on its search path.
+`BOOST_LIBRARYDIR` points CMake at the prebuilt libraries; `BOOST_ROOT` alone finds the
+headers but not always the binaries. Boost's headers also auto-link libraries such as
+`date_time` through `#pragma comment(lib, ...)`, which emits a bare file name — that one
+is listed as a component in `CMakeLists.txt`, so CMake passes its full path to the
+linker and no library directory has to be guessed.
 
 If msys2 or another MinGW toolchain is installed, keep CMake away from its libraries
 with `-DCMAKE_IGNORE_PREFIX_PATH="<msys>/ucrt64;<msys>/mingw64"`. They will be found

@@ -10,15 +10,6 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 # Package overloads
-set(ACE_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/dep/acelite)
-set(ACE_LIBRARY "ace")
-
-# ACE is always built static from dep/acelite here. The ace target marks this
-# PUBLIC, but that only reaches targets that link it, and game/scripts pull ACE
-# headers in without a target_link_libraries of their own - so their objects end
-# up referencing __declspec(dllimport) symbols that the static library does not
-# export, and the final link fails with LNK2001 on ACE_RW_Mutex and friends.
-add_definitions(-DACE_AS_STATIC_LIBS)
 set(BZIP2_LIBRARIES "bzip2")
 set(ZLIB_LIBRARIES "zlib")
 

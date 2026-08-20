@@ -18,14 +18,13 @@
 #ifndef _CALLBACK_H
 #define _CALLBACK_H
 
-#include <ace/Future.h>
-#include <ace/Future_Set.h>
+#include "Future.h"
 #include "QueryResult.h"
 
-typedef ACE_Future<QueryResult> QueryResultFuture;
-typedef ACE_Future<PreparedQueryResult> PreparedQueryResultFuture;
+typedef Trinity::Future<QueryResult> QueryResultFuture;
+typedef Trinity::Future<PreparedQueryResult> PreparedQueryResultFuture;
 
-/*! A simple template using ACE_Future to manage callbacks from the thread and object that
+/*! A simple template using Trinity::Future to manage callbacks from the thread and object that
     issued the request. <ParamType> is variable type of parameter that is used as parameter
     for the callback function.
 */
@@ -38,12 +37,12 @@ class QueryCallback
         QueryCallback() : _param(), _stage(chain ? 0 : CALLBACK_STAGE_INVALID)  { }
 
         //! The parameter of this function should be a resultset returned from either .AsyncQuery or .AsyncPQuery
-        void SetFutureResult(ACE_Future<Result> value)
+        void SetFutureResult(Trinity::Future<Result> value)
         {
             _result = value;
         }
 
-        ACE_Future<Result> GetFutureResult()
+        Trinity::Future<Result> GetFutureResult()
         {
             return _result;
         }
@@ -106,7 +105,7 @@ class QueryCallback
         }
 
     private:
-        ACE_Future<Result> _result;
+        Trinity::Future<Result> _result;
         ParamType _param;
         uint8 _stage;
 };
@@ -118,12 +117,12 @@ class QueryCallback_2
         QueryCallback_2() : _stage(chain ? 0 : CALLBACK_STAGE_INVALID) { }
 
         //! The parameter of this function should be a resultset returned from either .AsyncQuery or .AsyncPQuery
-        void SetFutureResult(ACE_Future<Result> value)
+        void SetFutureResult(Trinity::Future<Result> value)
         {
             _result = value;
         }
 
-        ACE_Future<Result> GetFutureResult()
+        Trinity::Future<Result> GetFutureResult()
         {
             return _result;
         }
@@ -197,7 +196,7 @@ class QueryCallback_2
         }
 
     private:
-        ACE_Future<Result> _result;
+        Trinity::Future<Result> _result;
         ParamType1 _param_1;
         ParamType2 _param_2;
         uint8 _stage;

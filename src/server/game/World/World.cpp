@@ -19,6 +19,7 @@
     \ingroup world
 */
 
+#include <shared_mutex>
 #include "Common.h"
 #include "Memory.h"
 #include "DatabaseEnv.h"
@@ -95,9 +96,9 @@
 
 void AFDRoyaleUpdateHook(uint32 diff);
 
-ACE_Atomic_Op<ACE_Thread_Mutex, bool> World::m_stopEvent = false;
+std::atomic<bool> World::m_stopEvent = false;
 uint8 World::m_ExitCode = SHUTDOWN_EXIT_CODE;
-ACE_Atomic_Op<ACE_Thread_Mutex, uint32> World::m_worldLoopCounter = 0;
+std::atomic<uint32> World::m_worldLoopCounter = 0;
 
 float World::m_MaxVisibleDistanceOnContinents = DEFAULT_VISIBILITY_DISTANCE;
 float World::m_MaxVisibleDistanceInInstances  = DEFAULT_VISIBILITY_INSTANCE;
@@ -2335,7 +2336,7 @@ void World::SetInitialWorldSettings()
     //one second is 1000 -(tested on win system)
     /// @todo Get rid of magic numbers
     tm localTm;
-    ACE_OS::localtime_r(&m_gameTime, &localTm);
+    Trinity::LocalTime(m_gameTime, localTm);
     mail_timer = ((((localTm.tm_hour + 20) % 24)* HOUR * IN_MILLISECONDS) / m_timers[WUPDATE_AUCTIONS].GetInterval());
                                                             //1440
     mail_timer_expires = ((DAY * IN_MILLISECONDS) / (m_timers[WUPDATE_AUCTIONS].GetInterval()));
@@ -3355,7 +3356,7 @@ void World::ShutdownMsg(bool show, Player* player)
 void World::ShutdownCancel()
 {
     // nothing cancel or too later
-    if (!m_ShutdownTimer || m_stopEvent.value())
+    if (!m_ShutdownTimer || m_stopEvent.load())
         return;
 
     ServerMessageType msgid = (m_ShutdownMask & SHUTDOWN_MASK_RESTART) ? SERVER_MSG_RESTART_CANCELLED : SERVER_MSG_SHUTDOWN_CANCELLED;
@@ -3498,7 +3499,7 @@ void World::UpdateRealmCharCount(uint32 accountId)
     PreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_SEL_CHARACTER_COUNT);
     stmt->setUInt32(0, accountId);
     PreparedQueryResultFuture result = CharacterDatabase.AsyncQuery(stmt);
-    m_realmCharCallbacks.insert(result);
+    m_realmCharCallbacks.push_back(result);
 }
 
 void World::_UpdateRealmCharCount(PreparedQueryResult resultCharCount)
@@ -3546,7 +3547,7 @@ void World::InitDailyQuestResetTime()
     // FIX ME: client not show day start time
     time_t curTime = time(NULL);
     tm localTm;
-    ACE_OS::localtime_r(&curTime, &localTm);
+    Trinity::LocalTime(curTime, localTm);
     localTm.tm_hour = 6;
     localTm.tm_min  = 0;
     localTm.tm_sec  = 0;
@@ -3580,7 +3581,7 @@ void World::InitRandomBGResetTime()
     // generate time by config
     time_t curTime = time(NULL);
     tm localTm;
-    ACE_OS::localtime_r(&curTime, &localTm);
+    Trinity::LocalTime(curTime, localTm);
     localTm.tm_hour = getIntConfig(CONFIG_RANDOM_BG_RESET_HOUR);
     localTm.tm_min = 0;
     localTm.tm_sec = 0;
@@ -3608,7 +3609,7 @@ void World::InitGuildResetTime()
     // generate time by config
     time_t curTime = time(NULL);
     tm localTm;
-    ACE_OS::localtime_r(&curTime, &localTm);
+    Trinity::LocalTime(curTime, localTm);
     localTm.tm_hour = getIntConfig(CONFIG_GUILD_RESET_HOUR);
     localTm.tm_min = 0;
     localTm.tm_sec = 0;
@@ -3825,7 +3826,7 @@ void World::ResetMonthlyQuests()
     // generate time
     time_t curTime = time(NULL);
     tm localTm;
-    ACE_OS::localtime_r(&curTime, &localTm);
+    Trinity::LocalTime(curTime, localTm);
 
     int month   = localTm.tm_mon;
     int year    = localTm.tm_year;
@@ -4006,19 +4007,20 @@ void World::ProcessQueryCallbacks()
 {
     PreparedQueryResult result;
 
-    while (!m_realmCharCallbacks.is_empty())
+    // Drain every callback that has answered and leave the rest for the next
+    // tick. ACE_Future_Set::next_readable with a zero timeout did the same
+    // thing, one element at a time.
+    for (auto itr = m_realmCharCallbacks.begin(); itr != m_realmCharCallbacks.end(); )
     {
-        ACE_Future<PreparedQueryResult> lResult;
-        ACE_Time_Value timeout = ACE_Time_Value::zero;
-        if (m_realmCharCallbacks.next_readable(lResult, &timeout) != 1)
-            break;
-
-        if (lResult.ready())
+        if (!itr->ready())
         {
-            lResult.get(result);
-            _UpdateRealmCharCount(result);
-            lResult.cancel();
+            ++itr;
+            continue;
         }
+
+        itr->get(result);
+        _UpdateRealmCharCount(result);
+        itr = m_realmCharCallbacks.erase(itr);
     }
 }
 
@@ -4261,7 +4263,7 @@ std::vector<Quest const*> const* World::GetprojectDailyQuestRelation(uint32 entr
 
 void World::ResetprojectDailyQuests()
 {
-    TRINITY_READ_GUARD(ACE_RW_Thread_Mutex, m_projectMemberInfosLock);
+    TRINITY_READ_GUARD(std::shared_timed_mutex, m_projectMemberInfosLock);
     for (auto&& info : m_projectMemberInfos)
     {
         info.second.CompletedDailyQuestsCount = 0;
@@ -4389,13 +4391,13 @@ bool World::LoadprojectMemberInfoIfNeeded(uint32 accountId)
 
 void World::AddprojectMemberInfo(uint32 memberId, projectMemberInfo const& info)
 {
-    TRINITY_WRITE_GUARD(ACE_RW_Thread_Mutex, m_projectMemberInfosLock);
+    TRINITY_WRITE_GUARD(std::shared_timed_mutex, m_projectMemberInfosLock);
     m_projectMemberInfos[memberId] = info;
 }
 
 projectMemberInfo* World::GetprojectMemberInfo(uint32 memberId, bool logError)
 {
-    TRINITY_READ_GUARD(ACE_RW_Thread_Mutex, m_projectMemberInfosLock);
+    TRINITY_READ_GUARD(std::shared_timed_mutex, m_projectMemberInfosLock);
     auto itr = m_projectMemberInfos.find(memberId);
     if (itr == m_projectMemberInfos.end())
     {
@@ -4408,7 +4410,7 @@ projectMemberInfo* World::GetprojectMemberInfo(uint32 memberId, bool logError)
 
 void World::SendprojectMemberInfoContainer()
 {
-    TRINITY_READ_GUARD(ACE_RW_Thread_Mutex, m_projectMemberInfosLock);
+    TRINITY_READ_GUARD(std::shared_timed_mutex, m_projectMemberInfosLock);
     //sCross->SendUpdate(m_projectMemberInfos);
 }
 
@@ -4867,7 +4869,7 @@ void World::UpdateprojectMemberInfos()
 #ifndef CROSS_SERVER
     time_t now = time(nullptr);
 
-    TRINITY_READ_GUARD(ACE_RW_Thread_Mutex, m_projectMemberInfosLock);
+    TRINITY_READ_GUARD(std::shared_timed_mutex, m_projectMemberInfosLock);
     for (auto&& pair : m_projectMemberInfos)
     {
         projectMemberInfo& info = pair.second;
@@ -5115,7 +5117,7 @@ void World::UpdateBonusRatesState()
 {
     time_t curTime = time(NULL);
     tm localTm;
-    ACE_OS::localtime_r(&curTime, &localTm);
+    Trinity::LocalTime(curTime, localTm);
 
     for (auto&& bonusRates : m_bonusRates)
         bonusRates.second.Update(curTime, localTm);

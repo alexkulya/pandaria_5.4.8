@@ -18,8 +18,9 @@
 #ifndef SF_MAP_UPDATER_H_INCLUDED
 #define SF_MAP_UPDATER_H_INCLUDED
 
-#include <ace/Thread_Mutex.h>
-#include <ace/Condition_Thread_Mutex.h>
+#include <mutex>
+
+#include <condition_variable>
 
 #include "DelayExecutor.h"
 
@@ -36,7 +37,7 @@ class MapUpdater
 
         friend class MapUpdateRequest;
 
-        int schedule_update(Map& map, ACE_UINT32 diff);
+        int schedule_update(Map& map, uint32 diff);
 
         int wait();
 
@@ -49,8 +50,8 @@ class MapUpdater
     private:
 
         DelayExecutor m_executor;
-        ACE_Thread_Mutex m_mutex;
-        ACE_Condition_Thread_Mutex m_condition;
+        std::mutex m_mutex;
+        std::condition_variable m_condition;
         size_t pending_requests;
 
         void update_finished();

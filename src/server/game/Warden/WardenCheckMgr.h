@@ -18,6 +18,8 @@
 #ifndef SF_WARDENCHECKMGR_H
 #define SF_WARDENCHECKMGR_H
 
+#include <shared_mutex>
+#include "Singleton.h"
 #include <map>
 #include "Cryptography/BigNumber.h"
 
@@ -54,7 +56,7 @@ struct WardenCheckResult
 
 class WardenCheckMgr
 {
-    friend class ACE_Singleton<WardenCheckMgr, ACE_Null_Mutex>;
+    friend class Trinity::Singleton<WardenCheckMgr>;
     WardenCheckMgr();
     ~WardenCheckMgr();
 
@@ -72,13 +74,13 @@ class WardenCheckMgr
 
         void LoadWardenChecks(bool reload = false);
 
-        ACE_RW_Mutex _checkStoreLock;
+        std::shared_timed_mutex _checkStoreLock;
 
     private:
         CheckContainer CheckStore;
         CheckResultContainer CheckResultStore;
 };
 
-#define sWardenCheckMgr ACE_Singleton<WardenCheckMgr, ACE_Null_Mutex>::instance()
+#define sWardenCheckMgr Trinity::Singleton<WardenCheckMgr>::instance()
 
 #endif

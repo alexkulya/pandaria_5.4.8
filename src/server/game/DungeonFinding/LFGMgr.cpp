@@ -35,7 +35,7 @@
 #include "ReputationMgr.h"
 #include "Config.h"
 #include "Guild.h"
-#include <ace/Stack_Trace.h>
+#include "StackTrace.h"
 #include "ScenarioMgr.h"
 #include "Guild.h"
 #include "Chat.h"
@@ -50,7 +50,7 @@ static void AlmostAssert(char const* filter, Args... args)
 {
     auto str = Format(filter, args...);
     TC_LOG_ERROR("lfg", str.c_str());
-    ACE_Stack_Trace st;
+    Trinity::StackTrace st;
     TC_LOG_ERROR("shitlog", "%s\n%s", str.c_str(), st.c_str());
 }
 
@@ -2644,7 +2644,7 @@ void LFGMgr::SetState(uint64 guid, uint32 queueId, LfgState state)
         bool validCase = state == LFG_STATE_FINISHED_DUNGEON && GetOldState(guid, queueId) == LFG_STATE_DUNGEON;
         if (!validCase && GetQueueManager(guid).Contains(Queuer{ guid, queueId }))
         {
-            ACE_Stack_Trace st;
+            Trinity::StackTrace st;
             std::ostringstream ss;
             Queuer(guid, queueId).OutDebug(ss, nullptr);
             TC_LOG_ERROR("lfg", "LFGMgr::SetState(" UI64FMTD " (%s), state: %u, queueId: %u) while queuer still in queues, stack trace:\n%s", GetGuidForLog(guid), ss.str().c_str(), (uint32)state, queueId, st.c_str());

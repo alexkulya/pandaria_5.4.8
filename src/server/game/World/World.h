@@ -22,10 +22,12 @@
 #ifndef SF_WORLD_H
 #define SF_WORLD_H
 
+#include <shared_mutex>
+#include <mutex>
 #include "Common.h"
 #include "Timer.h"
-#include <ace/Singleton.h>
-#include <ace/Atomic_Op.h>
+#include "Singleton.h"
+#include <atomic>
 #include "SharedDefines.h"
 #include "QueryResult.h"
 #include "Callback.h"
@@ -1168,7 +1170,7 @@ class World
         World();
         ~World();
     public:
-        static ACE_Atomic_Op<ACE_Thread_Mutex, uint32> m_worldLoopCounter;
+        static std::atomic<uint32> m_worldLoopCounter;
 
         static World* instance()
         {
@@ -1293,7 +1295,7 @@ class World
         void ShutdownMsg(bool show = false, Player* player = NULL);
         static uint8 GetExitCode() { return m_ExitCode; }
         static void StopNow(uint8 exitcode) { m_stopEvent = true; m_ExitCode = exitcode; }
-        static bool IsStopped() { return m_stopEvent.value(); }
+        static bool IsStopped() { return m_stopEvent.load(); }
 
         void Update(uint32 diff);
 
@@ -1475,7 +1477,7 @@ class World
         void DBCleanup();
 
     private:
-        static ACE_Atomic_Op<ACE_Thread_Mutex, bool> m_stopEvent;
+        static std::atomic<bool> m_stopEvent;
         static uint8 m_ExitCode;
         uint32 m_ShutdownTimer;
         uint32 m_ShutdownMask;
@@ -1501,7 +1503,7 @@ class World
         uint32 m_MaxPlayerCount;
 
         std::map<uint32, projectMemberInfo> m_projectMemberInfos;
-        ACE_RW_Thread_Mutex m_projectMemberInfosLock;
+        std::shared_timed_mutex m_projectMemberInfosLock;
         void UpdateprojectMemberInfos();
 
         std::string m_newCharString;
@@ -1540,7 +1542,7 @@ class World
         time_t m_NextServerRestart;
 
         // CLI command holder to be thread safe
-        ACE_Based::LockedQueue<CliCommandHolder*, ACE_Thread_Mutex> cliCmdQueue;
+        Trinity::LockedQueue<CliCommandHolder*, std::mutex> cliCmdQueue;
 
         // scheduled reset times
         time_t m_NextDailyQuestReset;
@@ -1555,7 +1557,7 @@ class World
 
         // sessions that are added async
         void AddSession_(WorldSession* s);
-        ACE_Based::LockedQueue<WorldSession*, ACE_Thread_Mutex> addSessQueue;
+        Trinity::LockedQueue<WorldSession*, std::mutex> addSessQueue;
 
         // used versions
         std::string m_DBVersion;
@@ -1571,10 +1573,13 @@ class World
         void LoadAccountCacheData();
 
         std::map<uint32, AccountCacheData> _accountCacheData;
-        ACE_RW_Thread_Mutex _accountCacheDataLock;
+        std::shared_timed_mutex _accountCacheDataLock;
 
         void ProcessQueryCallbacks();
-        ACE_Future_Set<PreparedQueryResult> m_realmCharCallbacks;
+        // Was an ACE_Future_Set, whose only use here was "drain whatever has
+        // answered". A plain list does that without the machinery for waiting
+        // on a set of futures, which this never needed.
+        std::list<PreparedQueryResultFuture> m_realmCharCallbacks;
 
         uint32 m_minDiff = 0;
         uint32 m_maxDiff = 0;

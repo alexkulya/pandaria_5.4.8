@@ -15,6 +15,7 @@
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <shared_mutex>
 #include "Cryptography/HMACSHA1.h"
 #include "Cryptography/WardenKeyGeneration.h"
 #include "Common.h"
@@ -204,7 +205,7 @@ void WardenWin::RequestData(WardenRequestContext* context)
     buff << uint8(exename.size());
     buff.append(exename.c_str(), exename.size());
 
-    ACE_READ_GUARD(ACE_RW_Mutex, g, sWardenCheckMgr->_checkStoreLock);
+    std::shared_lock<std::shared_timed_mutex> g(sWardenCheckMgr->_checkStoreLock);
 
     if (context && context->CustomOtherCheck)
     {
@@ -433,7 +434,7 @@ void WardenWin::HandleData(ByteBuffer &buff)
     uint16 checkFailed = 0;
     std::vector<std::tuple<WardenCheck*, bool, std::string>> checksFailed;
 
-    ACE_READ_GUARD(ACE_RW_Mutex, g, sWardenCheckMgr->_checkStoreLock);
+    std::shared_lock<std::shared_timed_mutex> g(sWardenCheckMgr->_checkStoreLock);
 
     for (auto&& check : _currentChecks)
     {

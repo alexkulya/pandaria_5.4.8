@@ -15,18 +15,18 @@
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <mutex>
 #include "MapUpdater.h"
 #include "DelayExecutor.h"
 #include "Map.h"
 #include "MapInstanced.h"
 #include "DatabaseEnv.h"
 
-#include <ace/Guard_T.h>
-#include <ace/Method_Request.h>
+#include "Threading/ActivationQueue.h"
 
 thread_local Map* CurrentMap = nullptr;
 
-class WDBThreadStartReq1 : public ACE_Method_Request
+class WDBThreadStartReq1 : public Trinity::MethodRequest
 {
     public:
 
@@ -40,7 +40,7 @@ class WDBThreadStartReq1 : public ACE_Method_Request
         }
 };
 
-class WDBThreadEndReq1 : public ACE_Method_Request
+class WDBThreadEndReq1 : public Trinity::MethodRequest
 {
     public:
 
@@ -54,17 +54,17 @@ class WDBThreadEndReq1 : public ACE_Method_Request
         }
 };
 
-class MapUpdateRequest : public ACE_Method_Request
+class MapUpdateRequest : public Trinity::MethodRequest
 {
     private:
 
         Map& m_map;
         MapUpdater& m_updater;
-        ACE_UINT32 m_diff;
+        uint32 m_diff;
 
     public:
 
-        MapUpdateRequest(Map& m, MapUpdater& u, ACE_UINT32 d)
+        MapUpdateRequest(Map& m, MapUpdater& u, uint32 d)
             : m_map(m), m_updater(u), m_diff(d)
         {
         }
@@ -80,7 +80,7 @@ class MapUpdateRequest : public ACE_Method_Request
 };
 
 MapUpdater::MapUpdater():
-m_executor(), m_mutex(), m_condition(m_mutex), pending_requests(0) { }
+m_executor(), m_mutex(), m_condition(), pending_requests(0) { }
 
 MapUpdater::~MapUpdater()
 {
@@ -101,26 +101,28 @@ int MapUpdater::deactivate()
 
 int MapUpdater::wait()
 {
-    TRINITY_GUARD(ACE_Thread_Mutex, m_mutex);
+    // Explicit unique_lock rather than TRINITY_GUARD: condition_variable::wait
+    // has to release and reacquire the mutex, which lock_guard cannot do.
+    std::unique_lock<std::mutex> guard(m_mutex);
 
     while (pending_requests > 0)
-        m_condition.wait();
+        m_condition.wait(guard);
 
     return 0;
 }
 
-int MapUpdater::schedule_update(Map& map, ACE_UINT32 diff)
+int MapUpdater::schedule_update(Map& map, uint32 diff)
 {
     MapUpdateRequest* rq = new MapUpdateRequest(map, *this, diff);
     rq->priority(calculate_priority(map));
 
-    TRINITY_GUARD(ACE_Thread_Mutex, m_mutex);
+    TRINITY_GUARD(std::mutex, m_mutex);
 
     ++pending_requests;
 
     if (m_executor.execute(rq) == -1)
     {
-        ACE_DEBUG((LM_ERROR, ACE_TEXT("(%t) \n"), ACE_TEXT("Failed to schedule Map Update")));
+        TC_LOG_ERROR("maps", "Failed to schedule Map Update");
 
         --pending_requests;
         return -1;
@@ -136,17 +138,17 @@ bool MapUpdater::activated()
 
 void MapUpdater::update_finished()
 {
-    TRINITY_GUARD(ACE_Thread_Mutex, m_mutex);
+    TRINITY_GUARD(std::mutex, m_mutex);
 
     if (pending_requests == 0)
     {
-        ACE_ERROR((LM_ERROR, ACE_TEXT("(%t)\n"), ACE_TEXT("MapUpdater::update_finished BUG, report to devs")));
+        TC_LOG_ERROR("maps", "MapUpdater::update_finished BUG, report to devs");
         return;
     }
 
     --pending_requests;
 
-    m_condition.broadcast();
+    m_condition.notify_all();
 }
 
 uint32 MapUpdater::calculate_priority(Map& map)

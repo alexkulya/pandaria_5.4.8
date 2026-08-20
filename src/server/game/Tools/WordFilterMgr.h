@@ -20,12 +20,12 @@
 
 #include <string>
 #include <map>
-#include <ace/Singleton.h>
+#include "Singleton.h"
 
 class WordFilterMgr
 {
     private:
-        friend class ACE_Singleton<WordFilterMgr, ACE_Null_Mutex>;
+        friend class Trinity::Singleton<WordFilterMgr>;
 
         WordFilterMgr();
         ~WordFilterMgr();
@@ -59,6 +59,6 @@ class WordFilterMgr
         BadWordMapMail m_badWordsMail;
 };
 
-#define sWordFilterMgr ACE_Singleton<WordFilterMgr, ACE_Null_Mutex>::instance()
+#define sWordFilterMgr Trinity::Singleton<WordFilterMgr>::instance()
 
 #endif

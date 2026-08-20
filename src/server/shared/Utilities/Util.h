@@ -26,7 +26,6 @@
 #include <string>
 #include <vector>
 #include <list>
-#include <ace/INET_Addr.h>
 #include <ctime>
 #include <array>
 
@@ -124,8 +123,12 @@ class SFMTEngine
 public:
     typedef uint32 result_type;
 
-    result_type min() const { return std::numeric_limits<result_type>::min(); }
-    result_type max() const { return std::numeric_limits<result_type>::max(); }
+    // UniformRandomBitGenerator requires min() and max() to be static and
+    // constexpr: <random> reads them as `_Gx::min()` with no object in hand.
+    // They were plain const member functions, which older MSVC releases let
+    // pass and the current STL rejects with C2352/C2737/C3536 from <random>.
+    static constexpr result_type min() { return std::numeric_limits<result_type>::min(); }
+    static constexpr result_type max() { return std::numeric_limits<result_type>::max(); }
     result_type operator()() const { return rand32(); }
 
     static SFMTEngine& Instance();
@@ -366,11 +369,11 @@ void vutf8printf(FILE* out, const char *str, va_list* ap);
 
 bool IsIPAddress(char const* ipaddress);
 
-/// Checks if address belongs to the a network with specified submask
-bool IsIPAddrInNetwork(ACE_INET_Addr const& net, ACE_INET_Addr const& addr, ACE_INET_Addr const& subnetMask);
-
-/// Transforms ACE_INET_Addr address into string format "dotted_ip:port"
-std::string GetAddressString(ACE_INET_Addr const& addr);
+// IsIPAddrInNetwork and GetAddressString lived here and both took an
+// ACE_INET_Addr, which dragged <ace/INET_Addr.h> into every translation unit
+// that includes Util.h - most of the core. The first had no callers at all, and
+// the second had exactly one, in the authserver, where it is now a two-line
+// format on a Boost endpoint at the point of use.
 
 uint32 CreatePIDFile(const std::string& filename);
 
@@ -791,7 +794,7 @@ inline std::string TimeStr(time_t toConvert, char const* fmt)
 {
     char buff[100];
     struct tm timeInfo;
-    ACE_OS::localtime_r(&toConvert, &timeInfo);
+    Trinity::LocalTime(toConvert, timeInfo);
     std::strftime(buff, 100, fmt, &timeInfo);
     return std::string(buff);
 }

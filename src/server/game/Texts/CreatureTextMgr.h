@@ -18,6 +18,7 @@
 #ifndef TRINITY_CREATURE_TEXT_MGR_H
 #define TRINITY_CREATURE_TEXT_MGR_H
 
+#include "Singleton.h"
 #include "Creature.h"
 #include "GridNotifiers.h"
 #include "ObjectAccessor.h"
@@ -81,7 +82,7 @@ typedef std::unordered_map<uint64, CreatureTextRepeatGroup> CreatureTextRepeatMa
 
 class CreatureTextMgr
 {
-    friend class ACE_Singleton<CreatureTextMgr, ACE_Null_Mutex>;
+    friend class Trinity::Singleton<CreatureTextMgr>;
     CreatureTextMgr() { }
 
     public:
@@ -112,7 +113,7 @@ class CreatureTextMgr
         LocaleCreatureTextMap mLocaleTextMap;
 };
 
-#define sCreatureTextMgr ACE_Singleton<CreatureTextMgr, ACE_Null_Mutex>::instance()
+#define sCreatureTextMgr Trinity::Singleton<CreatureTextMgr>::instance()
 
 template<class Builder>
 class CreatureTextLocalizer

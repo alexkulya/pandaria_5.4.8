@@ -18,7 +18,7 @@
 #ifndef BLACK_MARKET_H
 #define BLACK_MARKET_H
 
-#include <ace/Singleton.h>
+#include "Singleton.h"
 
 #include "Common.h"
 #include "DatabaseEnv.h"
@@ -128,7 +128,7 @@ typedef std::map<uint32, BlackMarketAuction*> BMAuctionStore;
 
 class BlackMarketMgr
 {
-    friend class ACE_Singleton<BlackMarketMgr, ACE_Null_Mutex>;
+    friend class Trinity::Singleton<BlackMarketMgr>;
 
 private:
     BlackMarketMgr();
@@ -162,6 +162,6 @@ private:
     time_t _lastUpdate = time_t(0);
 };
 
-#define sBlackMarketMgr ACE_Singleton<BlackMarketMgr, ACE_Null_Mutex>::instance()
+#define sBlackMarketMgr Trinity::Singleton<BlackMarketMgr>::instance()
 
 #endif

@@ -22,6 +22,8 @@
 #ifndef __WORLDSESSION_H
 #define __WORLDSESSION_H
 
+#include <mutex>
+#include <memory>
 #include "Common.h"
 #include "SharedDefines.h"
 #include "AddonMgr.h"
@@ -256,7 +258,7 @@ struct MuteInfo
 class WorldSession : public Schedulable
 {
     public:
-        WorldSession(uint32 id, WorldSocket* sock, AccountTypes sec, uint8 expansion, time_t mute_time, LocaleConstant locale, uint32 recruiter, uint32 flags, bool isARecruiter, bool hasBoost);
+        WorldSession(uint32 id, std::shared_ptr<WorldSocket> sock, AccountTypes sec, uint8 expansion, time_t mute_time, LocaleConstant locale, uint32 recruiter, uint32 flags, bool isARecruiter, bool hasBoost);
         ~WorldSession();
 
         bool PlayerLoading() const { return m_playerLoading; }
@@ -434,10 +436,10 @@ class WorldSession : public Schedulable
         void SetLatency(uint32 latency) { m_latency = latency; }
         uint32 getDialogStatus(Player* player, Object* questgiver, uint32 defstatus);
 
-        ACE_Atomic_Op<ACE_Thread_Mutex, time_t> m_timeOutTime;
+        std::atomic<time_t> m_timeOutTime;
         void UpdateTimeOutTime(uint32 diff)
         {
-            if (time_t(diff) > m_timeOutTime.value())
+            if (time_t(diff) > m_timeOutTime.load())
                 m_timeOutTime = 0;
             else
                 m_timeOutTime -= diff;
@@ -1218,7 +1220,7 @@ class WorldSession : public Schedulable
 
         uint32 m_GUIDLow;                                   // set loggined or recently logout player (while m_playerRecentlyLogout set)
         Player* _player;
-        WorldSocket* m_Socket;
+        std::shared_ptr<WorldSocket> m_Socket;
         std::string m_Address;
 
         AccountTypes _security;
@@ -1253,7 +1255,7 @@ class WorldSession : public Schedulable
         uint32 recruiterId;
         bool isRecruiter;
         bool m_hasBoost;
-        ACE_Based::LockedQueue<WorldPacket*, ACE_Thread_Mutex> _recvQueue;
+        Trinity::LockedQueue<WorldPacket*, std::mutex> _recvQueue;
         time_t timeLastWhoCommand;
         z_stream_s* _compressionStream;
 

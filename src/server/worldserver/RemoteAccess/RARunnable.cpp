@@ -19,66 +19,83 @@
     \ingroup Trinityd
  */
 
+#include "RARunnable.h"
+#include "AsyncAcceptor.h"
 #include "Common.h"
 #include "Config.h"
 #include "Log.h"
-#include "RARunnable.h"
+#include "RASession.h"
 #include "World.h"
 
-#include <ace/Reactor_Impl.h>
-#include <ace/TP_Reactor.h>
-#include <ace/Dev_Poll_Reactor.h>
-#include <ace/Acceptor.h>
-#include <ace/SOCK_Acceptor.h>
+#include <chrono>
+#include <thread>
 
-#include "RASocket.h"
+RARunnable::RARunnable() { }
 
-RARunnable::RARunnable()
-{
-    ACE_Reactor_Impl* imp;
-
-#if defined (ACE_HAS_EVENT_POLL) || defined (ACE_HAS_DEV_POLL)
-    imp = new ACE_Dev_Poll_Reactor();
-    imp->max_notify_iterations (128);
-    imp->restart (1);
-#else
-    imp = new ACE_TP_Reactor();
-    imp->max_notify_iterations (128);
-#endif
-
-    m_Reactor = new ACE_Reactor (imp, 1);
-}
-
-RARunnable::~RARunnable()
-{
-    delete m_Reactor;
-}
+RARunnable::~RARunnable() { }
 
 void RARunnable::run()
 {
     if (!sConfigMgr->GetBoolDefault("Ra.Enable", false))
         return;
 
-    ACE_Acceptor<RASocket, ACE_SOCK_ACCEPTOR> acceptor;
+    uint16 const raPort = uint16(sConfigMgr->GetIntDefault("Ra.Port", 3443));
+    std::string const stringIp = sConfigMgr->GetStringDefault("Ra.IP", "0.0.0.0");
 
-    uint16 raPort = uint16(sConfigMgr->GetIntDefault("Ra.Port", 3443));
-    std::string stringIp = sConfigMgr->GetStringDefault("Ra.IP", "0.0.0.0");
-    ACE_INET_Addr listenAddress(raPort, stringIp.c_str());
-
-    if (acceptor.open(listenAddress, m_Reactor) == -1)
+    try
     {
-        TC_LOG_ERROR("server.worldserver", "Trinity RA can not bind to port %d on %s", raPort, stringIp.c_str());
+        _acceptor.reset(new AsyncAcceptor(_ioContext, stringIp, raPort));
+    }
+    catch (boost::system::system_error const& err)
+    {
+        TC_LOG_ERROR("server.worldserver", "Trinity RA can not bind to port %u on %s: %s", raPort, stringIp.c_str(), err.what());
         return;
     }
 
-    TC_LOG_INFO("server.worldserver", "Starting Trinity RA on port %d on %s", raPort, stringIp.c_str());
-
-    while (!World::IsStopped())
+    if (!_acceptor->Bind())
     {
-        ACE_Time_Value interval(0, 100000);
-        if (m_Reactor->run_reactor_event_loop(interval) == -1)
-            break;
+        TC_LOG_ERROR("server.worldserver", "Trinity RA can not bind to port %u on %s", raPort, stringIp.c_str());
+        return;
     }
 
+    TC_LOG_INFO("server.worldserver", "Starting Trinity RA on port %u on %s", raPort, stringIp.c_str());
+
+    _acceptor->AsyncAcceptSocket([this](boost::asio::ip::tcp::socket&& socket)
+    {
+        OnAccept(std::move(socket));
+    });
+
+    // Same 100ms cadence the ACE reactor loop used, so shutdown latency is
+    // unchanged. run_for stops the context when the deadline passes, hence the
+    // restart() before going round again.
+    while (!World::IsStopped())
+    {
+        _ioContext.run_for(std::chrono::milliseconds(100));
+        _ioContext.restart();
+    }
+
+    _acceptor->Close();
+
     TC_LOG_DEBUG("server.worldserver", "Trinity RA thread exiting");
+}
+
+void RARunnable::OnAccept(boost::asio::ip::tcp::socket&& socket)
+{
+    // One thread per connection, as ACE_Svc_Handler::activate() did. The
+    // session blocks on reads and, while a command runs, on a future; giving it
+    // its own thread is what keeps that model simple.
+    std::thread([](boost::asio::ip::tcp::socket&& sock)
+    {
+        try
+        {
+            RASession session(std::move(sock));
+            session.Start();
+        }
+        catch (std::exception const& ex)
+        {
+            // A client that vanishes mid-handshake makes remote_endpoint()
+            // throw; that must not take the worldserver down with it.
+            TC_LOG_DEBUG("commands.ra", "RA session ended with exception: %s", ex.what());
+        }
+    }, std::move(socket)).detach();
 }

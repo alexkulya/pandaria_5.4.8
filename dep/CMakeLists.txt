@@ -22,7 +22,6 @@ if(CMAKE_SYSTEM_NAME MATCHES "Linux")
 endif()
 
 if(CMAKE_SYSTEM_NAME MATCHES "Windows")
-  add_subdirectory(acelite)
   if(TOOLS)
     add_subdirectory(bzip2)
   endif()

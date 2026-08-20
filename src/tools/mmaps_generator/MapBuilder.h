@@ -31,9 +31,8 @@
 #include "Recast.h"
 #include "DetourNavMesh.h"
 
-#include <ace/Task.h>
-#include <ace/Activation_Queue.h>
-#include <ace/Method_Request.h>
+#include "Threading/ActivationQueue.h"
+#include <thread>
 
 using namespace VMAP;
 
@@ -151,7 +150,7 @@ namespace MMAP
             rcContext* m_rcContext;
     };
 
-    class MapBuildRequest : public ACE_Method_Request
+    class MapBuildRequest : public Trinity::MethodRequest
     {
         public:
             MapBuildRequest(uint32 mapId) : _mapId(mapId) {}
@@ -166,21 +165,33 @@ namespace MMAP
             uint32 _mapId;
     };
 
-    class BuilderThread : public ACE_Task_Base
+    class BuilderThread
     {
     private:
         MapBuilder* _builder;
-        ACE_Activation_Queue* _queue;
+        Trinity::ActivationQueue* _queue;
+        std::thread _thread;
 
     public:
-        BuilderThread(MapBuilder* builder, ACE_Activation_Queue* queue) : _builder(builder), _queue(queue) { activate(); }
+        BuilderThread(MapBuilder* builder, Trinity::ActivationQueue* queue) : _builder(builder), _queue(queue)
+        {
+            _thread = std::thread([this] { svc(); });
+        }
+
+        void wait()
+        {
+            if (_thread.joinable())
+                _thread.join();
+        }
 
         int svc()
         {
-            /// @ Set a timeout for dequeue attempts (only used when the queue is empty) as it will never get populated after thread starts
-            ACE_Time_Value timeout(5);
-            ACE_Method_Request* request = NULL;
-            while ((request = _queue->dequeue(&timeout)) != NULL)
+            // The queue is filled completely before any thread starts and is
+            // closed straight after, so dequeue returns null the moment the
+            // work runs out. ACE had no way to say "closed but drain what is
+            // left" and made do with a five second timeout on an empty queue.
+            Trinity::MethodRequest* request = NULL;
+            while ((request = _queue->dequeue()) != NULL)
             {
                 _builder->buildMap(request->call());
                 delete request;
@@ -194,18 +205,21 @@ namespace MMAP
     class BuilderThreadPool
     {
         public:
-            BuilderThreadPool() : _queue(new ACE_Activation_Queue()) {}
-            ~BuilderThreadPool() { _queue->queue()->close(); delete _queue; }
+            BuilderThreadPool() : _queue(new Trinity::ActivationQueue()) {}
+            ~BuilderThreadPool() { delete _queue; }
 
             void Enqueue(MapBuildRequest* request)
             {
                 _queue->enqueue(request);
             }
 
-            ACE_Activation_Queue* Queue() { return _queue; }
+            /// Stop accepting work. Whatever is queued still gets built.
+            void Close() { _queue->deactivate(); }
+
+            Trinity::ActivationQueue* Queue() { return _queue; }
 
         private:
-            ACE_Activation_Queue* _queue;
+            Trinity::ActivationQueue* _queue;
     };
 }
 

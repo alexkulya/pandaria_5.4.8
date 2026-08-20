@@ -35,7 +35,7 @@
 #include "SpellScript.h"
 #include "Vehicle.h"
 #include "SpellHistory.h"
-#include <ace/Stack_Trace.h>
+#include "StackTrace.h"
 
 bool AFDRoyaleIsSpecialAuraHook(Aura const* aura, Unit const* target);
 
@@ -535,7 +535,7 @@ Aura* Aura::Create(SpellInfo const* spellproto, uint32 effMask, WorldObject* own
 
     if (caster && caster->FindMap() != owner->FindMap())
     {
-        ACE_Stack_Trace st;
+        Trinity::StackTrace st;
         TC_LOG_ERROR("shitlog", "Aura::Create caster->FindMap() != owner->FindMap() main thread: %u, aura: %u, caster: " UI64FMTD " (entry: %u), owner: " UI64FMTD " (entry: %u)\n%s",
             CurrentMap ? 0 : 1, spellproto->Id, caster->GetGUID(), caster->GetEntry(), owner->GetGUID(), owner->GetEntry(), st.c_str());
         if (CurrentMap) // Not main thread, it's 146% unsafe

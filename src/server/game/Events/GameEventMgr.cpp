@@ -2301,7 +2301,7 @@ void GameEventMgr::SetHolidayEventTime(GameEventData& event)
 
         if (singleDate)
         {
-            ACE_OS::localtime_r(&curTime, &timeInfo);
+            Trinity::LocalTime(curTime, timeInfo);
             timeInfo.tm_year -= 1; // First try last year (event active through New Year)
         }
         else
@@ -2325,7 +2325,7 @@ void GameEventMgr::SetHolidayEventTime(GameEventData& event)
         else if (singleDate)
         {
             tm tmCopy;
-            ACE_OS::localtime_r(&curTime, &tmCopy);
+            Trinity::LocalTime(curTime, tmCopy);
             int year = tmCopy.tm_year; // This year
             tmCopy = timeInfo;
             tmCopy.tm_year = year;

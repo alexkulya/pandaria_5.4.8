@@ -21,15 +21,14 @@
 #include <string>
 #include <memory>
 #include <list>
-#include <ace/Singleton.h>
-#include <ace/Configuration_Import_Export.h>
-#include <ace/Thread_Mutex.h>
+#include <mutex>
+#include "Singleton.h"
 
-typedef std::shared_ptr<ACE_Configuration_Heap> Config;
+#include <boost/property_tree/ptree.hpp>
 
 class ConfigMgr
 {
-    friend class ACE_Singleton<ConfigMgr, ACE_Null_Mutex>;
+    friend class Trinity::Singleton<ConfigMgr>;
     friend class ConfigLoader;
 
     ConfigMgr() { }
@@ -60,20 +59,24 @@ public:
     std::list<std::string> GetKeysByString(std::string const& name);
 
 private:
-    bool GetValueHelper(const char* name, ACE_TString &result);
+    bool GetValueHelper(const char* name, std::string& result);
     bool LoadData(char const* file);
 
-    typedef ACE_Thread_Mutex LockType;
-    typedef ACE_Guard<LockType> GuardType;
+    typedef std::mutex LockType;
+    typedef std::lock_guard<LockType> GuardType;
 
     std::string _filename;
-    Config _config;
+    // Was an ACE_Configuration_Heap. The section names are only structure for
+    // the file itself: every lookup scans all of them for the key, so this is a
+    // flat namespace with an INI file on top, and it stays that way.
+    boost::property_tree::ptree _config;
+    bool _loaded = false;
     LockType _configLock;
 
     ConfigMgr(ConfigMgr const&);
     ConfigMgr& operator=(ConfigMgr const&);
 };
 
-#define sConfigMgr ACE_Singleton<ConfigMgr, ACE_Null_Mutex>::instance()
+#define sConfigMgr Trinity::Singleton<ConfigMgr>::instance()
 
 #endif

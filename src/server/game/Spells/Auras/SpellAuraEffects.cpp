@@ -41,7 +41,7 @@
 #include "Pet.h"
 #include "ReputationMgr.h"
 #include "InstanceScript.h"
-#include "ace/Stack_Trace.h"
+#include "StackTrace.h"
 
 class Aura;
 //
@@ -5680,7 +5680,7 @@ void AuraEffect::HandleAuraSetVehicle(AuraApplication const* aurApp, uint8 mode,
 
     if (apply && target->IsPet())
     {
-        ACE_Stack_Trace st;
+        Trinity::StackTrace st;
         TC_LOG_ERROR("shitlog", "AuraEffect::HandleAuraSetVehicle, target is pet, spell: %u, caster: " UI64FMTD "\n%s", GetSpellInfo()->Id, GetCasterGUID(), st.c_str());
     }
 
