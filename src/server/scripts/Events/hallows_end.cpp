@@ -1195,7 +1195,7 @@ class at_shopping_around : public AreaTriggerScript
 
         bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
         {
-            if (trigger->id == 6922 && player->GetQuestStatus(29425) == QUEST_STATUS_INCOMPLETE)
+            if (trigger->ID == 6922 && player->GetQuestStatus(29425) == QUEST_STATUS_INCOMPLETE)
             {
                 Creature* delian = player->FindNearestCreature(54146, 50.0f);
                 Creature* dran = player->FindNearestCreature(6986, 50.0f);
@@ -1221,7 +1221,7 @@ class at_shopping_around : public AreaTriggerScript
                 }
             }
 
-            if (trigger->id == 6914 && player->GetQuestStatus(29399) == QUEST_STATUS_INCOMPLETE)
+            if (trigger->ID == 6914 && player->GetQuestStatus(29399) == QUEST_STATUS_INCOMPLETE)
             {
                 Creature* hudson = player->FindNearestCreature(54021, 50.0f);
                 Creature* quincy = player->FindNearestCreature(53991, 50.0f);
@@ -1278,7 +1278,7 @@ class at_the_collectors_agent : public AreaTriggerScript
                             sanath->SetStandState(UNIT_STAND_STATE_STAND);
                             sanath->HandleEmoteStateCommand(EMOTE_ONESHOT_NONE);
 
-                            Position pos = trigger->id == 6924 ? Position({ 1579.189f, 61.371f, 62.5377f, 6.26843f }) : Position({ -8496.792f, 758.109f, 72.758f, 2.210720f });
+                            Position pos = trigger->ID == 6924 ? Position({ 1579.189f, 61.371f, 62.5377f, 6.26843f }) : Position({ -8496.792f, 758.109f, 72.758f, 2.210720f });
                             if (Creature* uvoid = sanath->SummonCreature(54114, pos, TEMPSUMMON_TIMED_OR_DEAD_DESPAWN, MINUTE * 2 * IN_MILLISECONDS))
                                 if (Player* player = sObjectAccessor->GetPlayer(*sanath, guid))
                                     uvoid->Attack(player, true);

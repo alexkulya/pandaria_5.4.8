@@ -15,10 +15,6 @@
 * with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* Script Data Start
-SDName: Boss Malygos
-Script Data End */
-
 #include "ScriptMgr.h"
 #include "ScriptedCreature.h"
 #include "SpellScript.h"
@@ -446,6 +442,8 @@ public:
 
         void DoAction(int32 action) override
         {
+            Position _zToLift;
+
             switch (action)
             {
                 case ACTION_LAND_ENCOUNTER_START:
@@ -469,8 +467,8 @@ public:
                     DoCast(me, SPELL_VORTEX_3, true);
                     break;
                 case ACTION_LIFT_IN_AIR:
-                    Position _zToLift;
                     me->GetPosition(&_zToLift);
+
                     if (_phase == PHASE_ONE)
                     {
                         _zToLift.m_positionZ += 20.0f;

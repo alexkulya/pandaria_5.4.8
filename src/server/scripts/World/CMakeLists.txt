@@ -32,6 +32,7 @@ set(scripts_STAT_SRCS
   World/BrawlersGuild/brawlers_guild.h
   World/transmog_scripts.cpp
   World/world_map_scripts.cpp
+  World/zeppelins.cpp
 )
 
 message("  -> Prepared: World")

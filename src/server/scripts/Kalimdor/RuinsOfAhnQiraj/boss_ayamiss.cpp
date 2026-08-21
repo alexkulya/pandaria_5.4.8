@@ -175,6 +175,8 @@ class boss_ayamiss : public CreatureScript
                     _enraged = true;
                 }
 
+                Position Pos;
+
                 while (uint32 eventId = events.ExecuteEvent())
                 {
                     switch (eventId)
@@ -207,7 +209,6 @@ class boss_ayamiss : public CreatureScript
                             events.ScheduleEvent(EVENT_SWARMER_ATTACK, 60000);
                             break;
                         case EVENT_SUMMON_SWARMER:
-                            Position Pos;
                             me->GetRandomPoint(SwarmerPos, 80.0f, Pos);
                             me->SummonCreature(NPC_SWARMER, Pos);
                             events.ScheduleEvent(EVENT_SUMMON_SWARMER, 5000);

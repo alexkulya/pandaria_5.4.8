@@ -2516,13 +2516,13 @@ class AreaTrigger_in_quadrant_lei_shen : public AreaTriggerScript
     
         bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
         {
-            if (!player->HasAura(invQuadrantSideType.find(trigger->id)->second))
+            if (!player->HasAura(invQuadrantSideType.find(trigger->ID)->second))
             {
                 // we haven`t hook on default areatrigger remove - just remove whole spells if not find currently
                 for (auto&& itr : invQuadrantSideType)
                     player->RemoveAurasDueToSpell(itr.second);
 
-                player->CastSpell(player, invQuadrantSideType.find(trigger->id)->second, true);
+                player->CastSpell(player, invQuadrantSideType.find(trigger->ID)->second, true);
             }
     
             return false;

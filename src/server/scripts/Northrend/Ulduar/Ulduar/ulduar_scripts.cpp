@@ -1778,7 +1778,7 @@ class at_ulduar_event_areatrigger : public AreaTriggerScript
         bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
         {
             if (InstanceScript* instance = player->GetInstanceScript())
-                instance->SetData(DATA_AREATRIGGER_EVENT, trigger->id);
+                instance->SetData(DATA_AREATRIGGER_EVENT, trigger->ID);
 
             return true;
         }

@@ -1200,7 +1200,7 @@ class AreaTrigger_at_greenstone_village : public AreaTriggerScript
             {
                 Creature* m_owner = NULL;
 
-                switch (trigger->id)
+                switch (trigger->ID)
                 {
                     case AT_INTRO:
                         m_owner = ObjectAccessor::GetCreature(*player, instance->GetData64(NPC_COWARDLY_ZUE));

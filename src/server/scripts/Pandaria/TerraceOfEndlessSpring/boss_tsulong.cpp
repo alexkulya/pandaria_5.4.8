@@ -684,6 +684,8 @@ class boss_tsulong : public CreatureScript
                     if (!UpdateVictim())
                         return;
 
+                    Position pos;
+
                     while (uint32 eventId = events.ExecuteEvent())
                     {
                         switch (eventId)
@@ -698,7 +700,6 @@ class boss_tsulong : public CreatureScript
                                     pSunbeam->DisappearAndDie();
 
                                 Talk(EMOTE_SUNBEAM, me);
-                                Position pos;
                                 me->GetRandomNearPosition(pos, 30.0f);
                                 me->SummonCreature(SUNBEAM_DUMMY_ENTRY, pos);
 

@@ -854,20 +854,20 @@ enum TransferAbortReason
 
 enum InstanceResetWarningType
 {
-    RAID_INSTANCE_WARNING_HOURS = 1,                    // WARNING! %s is scheduled to reset in %d hour(s).
-    RAID_INSTANCE_WARNING_MIN = 2,                    // WARNING! %s is scheduled to reset in %d minute(s)!
-    RAID_INSTANCE_WARNING_MIN_SOON = 3,                    // WARNING! %s is scheduled to reset in %d minute(s). Please exit the zone or you will be returned to your bind location!
-    RAID_INSTANCE_WELCOME = 4,                    // Welcome to %s. This raid instance is scheduled to reset in %s.
+    RAID_INSTANCE_WARNING_HOURS = 1,                     // WARNING! %s is scheduled to reset in %d hour(s).
+    RAID_INSTANCE_WARNING_MIN = 2,                       // WARNING! %s is scheduled to reset in %d minute(s)!
+    RAID_INSTANCE_WARNING_MIN_SOON = 3,                  // WARNING! %s is scheduled to reset in %d minute(s). Please exit the zone or you will be returned to your bind location!
+    RAID_INSTANCE_WELCOME = 4,                           // Welcome to %s. This raid instance is scheduled to reset in %s.
     RAID_INSTANCE_EXPIRED = 5
 };
 
 class InstanceSave;
 
-enum RestType
+enum RestFlag
 {
-    REST_TYPE_NO = 0,
-    REST_TYPE_IN_TAVERN = 1,
-    REST_TYPE_IN_CITY = 2
+    REST_FLAG_IN_TAVERN = 0x1,
+    REST_FLAG_IN_CITY = 0x2,
+    REST_FLAG_IN_FACTION_AREA = 0x4, // used with AREA_FLAG_REST_ZONE_*
 };
 
 enum TeleportToOptions
@@ -1513,6 +1513,7 @@ class Player : public Unit, public GridObject<Player>
         return m_isInWater;
     }
     bool IsUnderWater() const override;
+    bool IsInAreaTriggerRadius(const AreaTriggerEntry* trigger) const;
 
     void SendInitialPacketsBeforeAddToMap();
     void SendInitialPacketsAfterAddToMap();
@@ -1633,48 +1634,16 @@ class Player : public Unit, public GridObject<Player>
 
     void setDeathState(DeathState s) override;                   // overwrite Unit::setDeathState
 
-    void InnEnter(time_t time, uint32 mapid, float x, float y, float z);
-
-    float GetRestBonus() const
-    {
-        return m_rest_bonus;
-    }
+    float GetRestBonus() const { return m_rest_bonus; }
     void SetRestBonus(float rest_bonus_new);
 
-    RestType GetRestType() const
-    {
-        return rest_type;
-    }
-    void SetRestType(RestType n_r_type)
-    {
-        rest_type = n_r_type;
-    }
+    bool HasRestFlag(RestFlag restFlag) const { return (_restFlagMask & restFlag) != 0; }
+    void SetRestFlag(RestFlag restFlag, uint32 triggerId = 0);
+    void RemoveRestFlag(RestFlag restFlag);
 
-    uint32 GetInnPosMapId() const
-    {
-        return inn_pos_mapid;
-    }
-    float GetInnPosX() const
-    {
-        return inn_pos_x;
-    }
-    float GetInnPosY() const
-    {
-        return inn_pos_y;
-    }
-    float GetInnPosZ() const
-    {
-        return inn_pos_z;
-    }
+    uint32 GetXPRestBonus(uint32 xp);
 
-    time_t GetTimeInnEnter() const
-    {
-        return time_inn_enter;
-    }
-    void UpdateInnerTime(time_t time)
-    {
-        time_inn_enter = time;
-    }
+    uint32 GetInnTriggerId() const { return inn_triggerId; }
 
     Pet* GetPet() const;
     Pet* SummonPet(uint32 entry, float x, float y, float z, float ang, uint32 despwtime);
@@ -3033,24 +3002,6 @@ public:
     bool IsOutdoorPvPActive();
 
     /*********************************************************/
-    /***                    REST SYSTEM                    ***/
-    /*********************************************************/
-
-    bool isRested() const
-    {
-        return GetRestTime() >= 10 * IN_MILLISECONDS;
-    }
-    uint32 GetXPRestBonus(uint32 xp);
-    uint32 GetRestTime() const
-    {
-        return m_restTime;
-    }
-    void SetRestTime(uint32 v)
-    {
-        m_restTime = v;
-    }
-
-    /*********************************************************/
     /***              ENVIROMENTAL SYSTEM                  ***/
     /*********************************************************/
 
@@ -3823,8 +3774,6 @@ protected:
     uint32 m_deathTimer;
     time_t m_deathExpireTime;
 
-    uint32 m_restTime;
-
     uint32 m_WeaponProficiency;
     uint32 m_ArmorProficiency;
     bool m_canParry;
@@ -3833,13 +3782,10 @@ protected:
     uint8 m_swingErrorMsg;
 
     ////////////////////Rest System/////////////////////
-    time_t time_inn_enter;
-    uint32 inn_pos_mapid;
-    float  inn_pos_x;
-    float  inn_pos_y;
-    float  inn_pos_z;
+    time_t _restTime;
+    uint32 inn_triggerId;
     float m_rest_bonus;
-    RestType rest_type;
+    uint32 _restFlagMask;
     ////////////////////Rest System/////////////////////
 
     // Social

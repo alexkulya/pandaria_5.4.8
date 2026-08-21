@@ -109,6 +109,8 @@ class boss_mechano_lord_capacitus : public CreatureScript
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
+                Position pos;
+
                 while (uint32 eventId = events.ExecuteEvent())
                 {
                     switch (eventId)
@@ -132,7 +134,6 @@ class boss_mechano_lord_capacitus : public CreatureScript
                             events.ScheduleEvent(EVENT_POSITIVE_SHIFT, urand(45, 60) * IN_MILLISECONDS);
                             break;
                         case EVENT_SUMMON_NETHER_CHARGE:
-                            Position pos;
                             me->GetRandomNearPosition(pos, 5.0f);
                             me->SummonCreature(NPC_NETHER_CHARGE, pos, TEMPSUMMON_TIMED_DESPAWN, 18000);
                             events.ScheduleEvent(EVENT_SUMMON_NETHER_CHARGE, 10 * IN_MILLISECONDS);

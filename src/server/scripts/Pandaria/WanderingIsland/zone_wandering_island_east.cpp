@@ -69,14 +69,26 @@ class AreaTrigger_at_bassin_curse : public AreaTriggerScript
 
         bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
         {
-            switch (trigger->id)
+            switch (trigger->ID)
             {
-                case AREA_CRANE:     AddOrRemoveSpell(player, SPELL_CRANE);     break;
-                case AREA_SKUNK:     AddOrRemoveSpell(player, SPELL_SKUNK);     break;
-                case AREA_FROG:      AddOrRemoveSpell(player, SPELL_FROG);      break;
-                case AREA_FROG_EXIT: RemoveAllSpellsExcept(player, 0);          break;
-                case AREA_TURTLE:    AddOrRemoveSpell(player, SPELL_TURTLE);    break;
-                case AREA_CROCODILE: AddOrRemoveSpell(player, SPELL_CROCODILE); break;
+                case AREA_CRANE:
+                    AddOrRemoveSpell(player, SPELL_CRANE);
+                    break;
+                case AREA_SKUNK:
+                    AddOrRemoveSpell(player, SPELL_SKUNK);
+                    break;
+                case AREA_FROG:
+                    AddOrRemoveSpell(player, SPELL_FROG);
+                    break;
+                case AREA_FROG_EXIT:
+                    RemoveAllSpellsExcept(player, 0);
+                    break;
+                case AREA_TURTLE:
+                    AddOrRemoveSpell(player, SPELL_TURTLE);
+                    break;
+                case AREA_CROCODILE:
+                    AddOrRemoveSpell(player, SPELL_CROCODILE);
+                    break;
             }
             return true;
         }

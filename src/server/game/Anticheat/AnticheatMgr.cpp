@@ -432,8 +432,8 @@ void AnticheatMgr::BuildReport(Player* player, AnticheatData& data, uint8 report
             case TIME_MANIPULATION_REPORT:      reportTypeName = "TimeManipulation";    break;
             default:                            reportTypeName = "?";                   break;
         }
-        TC_LOG_DEBUG("network", "Icore GUARD: %s detected as possible cheater. HackType: %u.", player->GetName().c_str(), reportType);
-        sWorld->SendGMText(LANG_CHEATER_CHATLOG, "ICORE GUARD", player->GetName().c_str(), player->GetName().c_str(), reportTypeName, count < 10 ? "|cFF00FF00" : count < 20 ? "|cFFFF8000" : "|cFFFF0000", count);
+        TC_LOG_DEBUG("network", "Anticheat: %s detected as possible cheater. HackType: %u.", player->GetName().c_str(), reportType);
+        sWorld->SendGMText(LANG_CHEATER_CHATLOG, "Anticheat", player->GetName().c_str(), player->GetName().c_str(), reportTypeName, count < 10 ? "|cFF00FF00" : count < 20 ? "|cFFFF8000" : "|cFFFF0000", count);
         count = 0;
     }
 }

@@ -2091,7 +2091,7 @@ class AreaTrigger_into_megaera_water : public AreaTriggerScript
     
         bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
         {
-            player->JumpTo(trigger->id == 8954 ? 9.0f : 10.0f, trigger->id == 8954 ? 40.0f : 10.0f, false);
+            player->JumpTo(trigger->ID == 8954 ? 9.0f : 10.0f, trigger->ID == 8954 ? 40.0f : 10.0f, false);
     
             return true;
         }

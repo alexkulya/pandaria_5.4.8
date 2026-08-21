@@ -1281,61 +1281,6 @@ void Object::IndexGetAssertFailed(uint32 index) const
     std::abort();
 }
 
-bool Position::operator==(Position const &a)
-{
-    return (G3D::fuzzyEq(a.m_positionX, m_positionX) &&
-            G3D::fuzzyEq(a.m_positionY, m_positionY) &&
-            G3D::fuzzyEq(a.m_positionZ, m_positionZ) &&
-            G3D::fuzzyEq(a.m_orientation, m_orientation));
-}
-
-bool Position::HasInLine(WorldObject const* target, float width) const
-{
-    if (!HasInArc(M_PI, target))
-        return false;
-    width += target->GetObjectSize();
-    float angle = GetRelativeAngle(target);
-    return fabs(sin(angle)) * GetExactDist2d(target->GetPositionX(), target->GetPositionY()) < width;
-}
-
-std::string Position::ToString() const
-{
-    std::stringstream sstr;
-    sstr << "X: " << m_positionX << " Y: " << m_positionY << " Z: " << m_positionZ << " O: " << m_orientation;
-    return sstr.str();
-}
-
-ByteBuffer& operator>>(ByteBuffer& buf, Position::PositionXYZOStreamer const& streamer)
-{
-    float x, y, z, o;
-    buf >> x >> y >> z >> o;
-    streamer.m_pos->Relocate(x, y, z, o);
-    return buf;
-}
-ByteBuffer& operator<<(ByteBuffer& buf, Position::PositionXYZStreamer const& streamer)
-{
-    float x, y, z;
-    streamer.m_pos->GetPosition(x, y, z);
-    buf << x << y << z;
-    return buf;
-}
-
-ByteBuffer& operator>>(ByteBuffer& buf, Position::PositionXYZStreamer const& streamer)
-{
-    float x, y, z;
-    buf >> x >> y >> z;
-    streamer.m_pos->Relocate(x, y, z);
-    return buf;
-}
-
-ByteBuffer& operator<<(ByteBuffer& buf, Position::PositionXYZOStreamer const& streamer)
-{
-    float x, y, z, o;
-    streamer.m_pos->GetPosition(x, y, z, o);
-    buf << x << y << z << o;
-    return buf;
-}
-
 void MovementInfo::OutDebug()
 {
     TC_LOG_INFO("misc", "MOVEMENT INFO");
@@ -1773,93 +1718,6 @@ bool WorldObject::IsInRange3d(float x, float y, float z, float minRange, float m
     return distsq < maxdist * maxdist;
 }
 
-void Position::RelocateOffset(const Position & offset)
-{
-    m_positionX = GetPositionX() + (offset.GetPositionX() * std::cos(GetOrientation()) + offset.GetPositionY() * std::sin(GetOrientation() + M_PI));
-    m_positionY = GetPositionY() + (offset.GetPositionY() * std::cos(GetOrientation()) + offset.GetPositionX() * std::sin(GetOrientation()));
-    m_positionZ = GetPositionZ() + offset.GetPositionZ();
-    SetOrientation(GetOrientation() + offset.GetOrientation());
-}
-
-void Position::RelocateOffset(float angle, float distance, float offsetZ)
-{
-    angle += m_orientation;
-    m_positionX += cos(angle) * distance;
-    m_positionY += sin(angle) * distance;
-    m_positionZ += offsetZ;
-}
-
-void Position::GetPositionOffsetTo(const Position & endPos, Position & retOffset) const
-{
-    float dx = endPos.GetPositionX() - GetPositionX();
-    float dy = endPos.GetPositionY() - GetPositionY();
-
-    retOffset.m_positionX = dx * std::cos(GetOrientation()) + dy * std::sin(GetOrientation());
-    retOffset.m_positionY = dy * std::cos(GetOrientation()) - dx * std::sin(GetOrientation());
-    retOffset.m_positionZ = endPos.GetPositionZ() - GetPositionZ();
-    retOffset.SetOrientation(endPos.GetOrientation() - GetOrientation());
-}
-
-float Position::GetAngle(const Position* obj) const
-{
-    if (!obj)
-        return 0;
-
-    return GetAngle(obj->GetPositionX(), obj->GetPositionY());
-}
-
-// Return angle in range 0..2*pi
-float Position::GetAngle(const float x, const float y) const
-{
-    float dx = x - GetPositionX();
-    float dy = y - GetPositionY();
-
-    float ang = atan2(dy, dx);
-    ang = (ang >= 0) ? ang : 2 * M_PI + ang;
-    return ang;
-}
-
-void Position::GetSinCos(const float x, const float y, float &vsin, float &vcos) const
-{
-    float dx = GetPositionX() - x;
-    float dy = GetPositionY() - y;
-
-    if (fabs(dx) < 0.001f && fabs(dy) < 0.001f)
-    {
-        float angle = (float)rand_norm()*static_cast<float>(2*M_PI);
-        vcos = std::cos(angle);
-        vsin = std::sin(angle);
-    }
-    else
-    {
-        float dist = sqrt((dx*dx) + (dy*dy));
-        vcos = dx / dist;
-        vsin = dy / dist;
-    }
-}
-
-bool Position::HasInArc(float arc, const Position* obj, float border) const
-{
-    // always have self in arc
-    if (obj == this)
-        return true;
-
-    // move arc to range 0.. 2*pi
-    arc = NormalizeOrientation(arc);
-
-    float angle = GetAngle(obj);
-    angle -= m_orientation;
-
-    // move angle to range -pi ... +pi
-    angle = NormalizeOrientation(angle);
-    if (angle > M_PI)
-        angle -= 2.0f*M_PI;
-
-    float lborder = -1 * (arc/border);                        // in range -pi..0
-    float rborder = (arc/border);                             // in range 0..pi
-    return ((angle >= lborder) && (angle <= rborder));
-}
-
 bool WorldObject::IsInBetween(const Position* obj1, const Position* obj2, float size) const
 {
     if (!obj1 || !obj2)
@@ -2036,11 +1894,6 @@ void WorldObject::UpdateAllowedPositionZ(float x, float y, float &z, float offse
             break;
         }
     }
-}
-
-bool Position::IsPositionValid() const
-{
-    return Trinity::IsValidMapCoord(m_positionX, m_positionY, m_positionZ, m_orientation);
 }
 
 float WorldObject::GetGridActivationRange() const

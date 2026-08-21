@@ -2059,7 +2059,7 @@ class npc_bt_instance_portal: public CreatureScript
                         at = sAreaTriggerStore.LookupEntry(6437);
                     
                     if (at)
-                        clicker->NearTeleportTo(at->x, at->y, at->z, clicker->GetOrientation(), false);
+                        clicker->NearTeleportTo(at->Pos.X, at->Pos.Y, at->Pos.Z, clicker->GetOrientation(), false);
                 }
             }
 

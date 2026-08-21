@@ -922,7 +922,7 @@ class AreaTrigger_cavern_of_endless_echoes : public AreaTriggerScript
             if (!summons.empty())
                 fish = summons.back();
 
-            switch (trigger->id)
+            switch (trigger->ID)
             {
                 case AT_CAVE_ENTRANCE:
                     if (!player->GetQuestObjectiveCounter(OBJ_FIND_CAVE_ENTRANCE))
