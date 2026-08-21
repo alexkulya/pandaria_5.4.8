@@ -242,4 +242,4 @@ ByteBuffer& operator>>(ByteBuffer& buf, Position::PositionXYZStreamer const& str
 ByteBuffer& operator<<(ByteBuffer& buf, Position::PositionXYZOStreamer const& streamer);
 ByteBuffer& operator>>(ByteBuffer& buf, Position::PositionXYZOStreamer const& streamer);
 
-#endif // Destiny_game_Position_h__
+#endif // _Position_h__
