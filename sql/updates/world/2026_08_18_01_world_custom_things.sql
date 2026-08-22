@@ -1,10 +1,10 @@
+DELETE FROM `creature_addon` WHERE `guid` IN (SELECT `guid` FROM `creature` WHERE `id` IN (190001, 190002, 190003, 190004, 190005, 190006, 190007, 190008, 190009, 190010, 190011, 190013));
 UPDATE `creature_template` SET `name` = "Turtle", `subname` = "Daily Quests", `modelid1` = 29161, `modelid2` = 0, `scale` = 1.2, `npcflag` = 3, `ScriptName` = "", `flags_extra` = 0 WHERE `entry` = 190001;
 UPDATE `creature_template` SET `name` = "Orc", `subname` = "Master of Transmogrification", `modelid1` = 29187, `modelid2` = 0, `scale` = 1, `npcflag` = 1, `ScriptName` = "npc_transmogrifier", `flags_extra` = 0 WHERE `entry` = 190002;
 DELETE FROM `creature` WHERE `id` IN (190001, 190002, 190003, 190004, 190005, 190006, 190007, 190008, 190009, 190010, 190011, 190013);
 DELETE FROM `creature_template` WHERE `entry` IN (190003, 190004, 190005, 190006, 190007, 190008, 190009, 190010, 190011, 190013);
 DELETE FROM `creature_template_locale` WHERE `entry` IN (190003, 190004, 190005, 190006, 190007, 190008, 190009, 190010, 190011, 190013);
 DELETE FROM `creature_template_addon` WHERE `entry` IN (190001, 190002, 190003, 190004, 190005, 190006, 190007, 190008, 190009, 190010, 190011, 190013);
-DELETE FROM `creature_addon` WHERE `guid` IN (SELECT `guid` FROM `creature` WHERE `id` IN (190001, 190002, 190003, 190004, 190005, 190006, 190007, 190008, 190009, 190010, 190011, 190013));
 DELETE FROM `gossip_menu_option` WHERE `menu_id` BETWEEN 63000 AND 63021;
 DELETE FROM `gossip_menu_option_locale` WHERE `MenuID` BETWEEN 63000 AND 63021;
 DELETE FROM `gossip_menu` WHERE `entry` BETWEEN 63000 AND 63021;
