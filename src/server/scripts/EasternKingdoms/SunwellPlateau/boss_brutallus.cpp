@@ -61,6 +61,11 @@ enum Spells
     SPELL_SUMMON_BRUTALLUS_DEATH_CLOUD  = 45884,
 };
 
+enum Actions
+{
+    ACTION_START_INTRO = 1,
+};
+
 class boss_brutallus : public CreatureScript
 {
     public:
@@ -141,6 +146,23 @@ class boss_brutallus : public CreatureScript
             void KilledUnit(Unit* /*victim*/) override
             {
                 Talk(YELL_KILL);
+            }
+
+            void DoAction(int32 action) override
+            {
+                if (action == ACTION_START_INTRO)
+                {
+                    if (instance && instance->GetData(DATA_KALECGOS_EVENT) != DONE)
+                    {
+                        instance->DoCastSpellOnPlayers(SPELL_ELEPORT_TO_APEX_POINT);
+                        return;
+                    }
+
+                    if (instance && instance->GetData(DATA_BRUTALLUS_EVENT) != DONE)
+                        instance->SetData(DATA_BRUTALLUS_EVENT, SPECIAL);
+
+                    StartIntro();
+                }
             }
 
             void JustDied(Unit* /*killer*/) override
@@ -395,8 +417,30 @@ class boss_brutallus : public CreatureScript
         }
 };
 
+class at_madrigosa : public AreaTriggerScript
+{
+    public:
+        at_madrigosa() : AreaTriggerScript("at_madrigosa") { }
+
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        {
+            if (player->IsGameMaster())
+                return false;
+
+            InstanceScript* instance = player->GetInstanceScript();
+            if (!instance || instance->GetData(DATA_BRUTALLUS_EVENT) == DONE)
+                return false;
+
+            if (Creature* brutallus = player->GetMap()->GetCreature(instance->GetData64(DATA_BRUTALLUS)))
+                if (brutallus->IsAIEnabled)
+                    brutallus->AI()->DoAction(ACTION_START_INTRO);
+
+            return true;
+        }
+};
 
 void AddSC_boss_brutallus()
 {
     new boss_brutallus();
+    new at_madrigosa();
 }
