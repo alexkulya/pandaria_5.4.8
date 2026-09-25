@@ -93,6 +93,10 @@ if( UNIX )
 endif()
 
 set(Boost_USE_STATIC_LIBS ON)
+set(Boost_NO_BOOST_CMAKE ON)
+if(POLICY CMP0167)
+  cmake_policy(SET CMP0167 OLD)
+endif()
 # date_time is not used directly anywhere in the core. It is listed because
 # Boost's MSVC headers auto-link it through #pragma comment(lib), emitting a
 # bare file name for the linker to resolve on its own; leaving it out builds
