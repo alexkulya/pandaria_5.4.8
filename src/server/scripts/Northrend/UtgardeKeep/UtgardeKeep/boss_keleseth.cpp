@@ -378,9 +378,21 @@ class npc_vrykul_skeleton : public CreatureScript
         }
 };
 
+class achievement_on_the_rocks : public AchievementCriteriaScript
+{
+    public:
+        achievement_on_the_rocks() : AchievementCriteriaScript("achievement_on_the_rocks") { }
+
+        bool OnCheck(Player* source, Unit* /*target*/) override
+        {
+            return source && source->GetMap()->IsHeroic() && !ShatterFrostTomb;
+        }
+};
+
 void AddSC_boss_keleseth()
 {
     new boss_keleseth();
     new npc_frost_tomb();
     new npc_vrykul_skeleton();
+    new achievement_on_the_rocks();
 }
