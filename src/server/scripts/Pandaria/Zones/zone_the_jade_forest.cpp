@@ -4629,7 +4629,7 @@ struct npc_jade_forest_alliance_barricade : public customCreatureAI
             }
 
             scheduler
-                .Schedule(Seconds(15), [this](TaskContext context)
+                .Schedule(Minutes(3), [this](TaskContext context)
             {
                 for (auto&& itr : barricadeGUIDS)
                     if (GameObject* go = ObjectAccessor::GetGameObject(*me, itr))
