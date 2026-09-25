@@ -231,8 +231,20 @@ class spell_ashbery_asphyxate_dmg : public SpellScriptLoader
         }
 };
 
+class achievement_pardon_denied : public AchievementCriteriaScript
+{
+    public:
+        achievement_pardon_denied() : AchievementCriteriaScript("achievement_pardon_denied") { }
+
+        bool OnCheck(Player* source, Unit* /*target*/) override
+        {
+            return source && source->GetMap()->IsHeroic() && source->GetMap()->GetWorldState(WORLDSTATE_PARDON_DENIED) == 1;
+        }
+};
+
 void AddSC_boss_baron_ashbury()
 {
     new boss_baron_ashbury();
     new spell_ashbery_asphyxate_dmg();
+    new achievement_pardon_denied();
 }
