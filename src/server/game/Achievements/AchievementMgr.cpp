@@ -47,6 +47,43 @@
 #include "BattlegroundSA.h"
 #include "StackTrace.h"
 
+namespace
+{
+    bool AchievementMapDifficultyMatches(Map const* map, uint32 achievementDifficulty)
+    {
+        if (!map)
+            return false;
+
+        Difficulty const mapDifficulty = map->GetDifficulty();
+        if (map->IsRaid())
+        {
+            switch (achievementDifficulty)
+            {
+                case 0:
+                    return mapDifficulty == RAID_DIFFICULTY_10MAN_NORMAL;
+                case 1:
+                    return mapDifficulty == RAID_DIFFICULTY_25MAN_NORMAL;
+                case 2:
+                    return mapDifficulty == RAID_DIFFICULTY_10MAN_HEROIC;
+                case 3:
+                    return mapDifficulty == RAID_DIFFICULTY_25MAN_HEROIC;
+                default:
+                    return false;
+            }
+        }
+
+        switch (achievementDifficulty)
+        {
+            case 0:
+                return mapDifficulty == DUNGEON_DIFFICULTY_NORMAL || mapDifficulty == REGULAR_DIFFICULTY;
+            case 1:
+                return mapDifficulty == DUNGEON_DIFFICULTY_HEROIC;
+            default:
+                return uint32(mapDifficulty) == achievementDifficulty;
+        }
+    }
+}
+
 namespace Trinity
 {
     class AchievementChatBuilder
@@ -219,6 +256,14 @@ bool AchievementCriteriaData::IsValid(CriteriaEntry const* criteria)
                 return false;
             }
             return true;
+        case ACHIEVEMENT_CRITERIA_DATA_TYPE_MAP_DIFFICULTY:
+            if (difficulty.difficulty > 3 || raw.value2)
+            {
+                TC_LOG_ERROR("sql.sql", "Table `achievement_criteria_data` (Entry: %u Type: %u) for data type ACHIEVEMENT_CRITERIA_DATA_TYPE_MAP_DIFFICULTY (%u) has wrong values (%u, %u), ignored.",
+                    criteria->ID, criteria->Type, dataType, difficulty.difficulty, raw.value2);
+                return false;
+            }
+            return true;
         case ACHIEVEMENT_CRITERIA_DATA_TYPE_MAP_PLAYER_COUNT:
             if (map_players.maxcount <= 0)
             {
@@ -358,6 +403,8 @@ bool AchievementCriteriaData::Meets(uint32 criteria_id, Player const* source, Un
             return target->GetGender() == gender.gender;
         case ACHIEVEMENT_CRITERIA_DATA_TYPE_SCRIPT:
             return sScriptMgr->OnCriteriaCheck(ScriptId, const_cast<Player*>(source), const_cast<Unit*>(target));
+        case ACHIEVEMENT_CRITERIA_DATA_TYPE_MAP_DIFFICULTY:
+            return source && source->IsInWorld() && AchievementMapDifficultyMatches(source->GetMap(), difficulty.difficulty);
         case ACHIEVEMENT_CRITERIA_DATA_TYPE_MAP_PLAYER_COUNT:
             return source->GetMap()->GetPlayersCountExceptGMs() <= map_players.maxcount;
         case ACHIEVEMENT_CRITERIA_DATA_TYPE_T_TEAM:
