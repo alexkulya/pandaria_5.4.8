@@ -3,6 +3,7 @@
 /out/build
 /.vs
 build
+server/
 
 # Extracted DB dumps (kept compressed in sql/base)
 sql/base/*.sql
