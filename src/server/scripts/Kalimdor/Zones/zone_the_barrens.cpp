@@ -292,6 +292,11 @@ enum TwiggyFlathead
 {
     NPC_BIG_WILL                = 6238,
     NPC_AFFRAY_CHALLENGER       = 6240,
+    NPC_TWIGGY_FLATHEAD         = 6248,
+
+    QUEST_THE_AFFRAY            = 1719,
+
+    ACTION_START_AFFRAY         = 1,
 
     SAY_BIG_WILL_READY          = 0,
     SAY_TWIGGY_FLATHEAD_BEGIN   = 0,
@@ -355,6 +360,27 @@ public:
 
         void EnterCombat(Unit* /*who*/) override { }
 
+        void StartAffray(Player* player)
+        {
+            if (!player || EventInProgress || player->GetQuestStatus(QUEST_THE_AFFRAY) != QUEST_STATUS_INCOMPLETE)
+                return;
+
+            PlayerGUID = player->GetGUID();
+            EventInProgress = true;
+        }
+
+        void DoAction(int32 action) override
+        {
+            if (action == ACTION_START_AFFRAY)
+                if (Player* player = ObjectAccessor::GetPlayer(*me, PlayerGUID))
+                    StartAffray(player);
+        }
+
+        void SetGUID(uint64 guid, int32 /*type*/) override
+        {
+            PlayerGUID = guid;
+        }
+
         void MoveInLineOfSight(Unit* who) override
 
         {
@@ -363,11 +389,7 @@ public:
 
             if (who->GetTypeId() == TYPEID_PLAYER && me->IsWithinDistInMap(who, 10.0f))
                 if (Player* player = who->ToPlayer())
-                    if (player->GetQuestStatus(1719) == QUEST_STATUS_INCOMPLETE)
-                    {
-                        PlayerGUID = who->GetGUID();
-                        EventInProgress = true;
-                    }
+                    StartAffray(player);
         }
 
         void KilledUnit(Unit* /*victim*/) override { }
@@ -384,10 +406,10 @@ public:
                 if (!warrior)
                     return;
 
-                if (!warrior->IsAlive() && warrior->GetQuestStatus(1719) == QUEST_STATUS_INCOMPLETE)
+                if (!warrior->IsAlive() && warrior->GetQuestStatus(QUEST_THE_AFFRAY) == QUEST_STATUS_INCOMPLETE)
                 {
                     Talk(SAY_TWIGGY_FLATHEAD_DOWN);
-                    warrior->FailQuest(1719);
+                    warrior->FailQuest(QUEST_THE_AFFRAY);
 
                     for (uint8 i = 0; i < 6; ++i) // unsummon challengers
                     {
@@ -415,7 +437,7 @@ public:
 
                     if (x >= -1684 && x <= -1674 && y >= -4334 && y <= -4324)
                     {
-                        warrior->AreaExploredOrEventHappens(1719);
+                        warrior->AreaExploredOrEventHappens(QUEST_THE_AFFRAY);
                         Talk(SAY_TWIGGY_FLATHEAD_BEGIN, warrior);
 
                         for (uint8 i = 0; i < 6; ++i)
@@ -498,6 +520,27 @@ public:
         }
     };
 
+};
+
+class at_twiggy_flathead : public AreaTriggerScript
+{
+    public:
+        at_twiggy_flathead() : AreaTriggerScript("at_twiggy_flathead") { }
+
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        {
+            if (player->IsGameMaster() || player->GetQuestStatus(QUEST_THE_AFFRAY) != QUEST_STATUS_INCOMPLETE)
+                return false;
+
+            if (Creature* twiggy = player->FindNearestCreature(NPC_TWIGGY_FLATHEAD, 50.0f, true))
+            {
+                twiggy->AI()->SetGUID(player->GetGUID());
+                twiggy->AI()->DoAction(ACTION_START_AFFRAY);
+                return true;
+            }
+
+            return false;
+        }
 };
 
 /*#####
@@ -907,6 +950,8 @@ class spell_barrens_bandage : public SpellScript
 
 void AddSC_the_barrens()
 {
+    new npc_twiggy_flathead();
+    new at_twiggy_flathead();
     new npc_wizzlecrank_shredder();
     new npc_razormane_pillager();
     new spell_script<spell_groldom_net>("spell_groldom_net");
