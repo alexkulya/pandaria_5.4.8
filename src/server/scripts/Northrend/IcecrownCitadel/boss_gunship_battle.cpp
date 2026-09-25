@@ -3105,5 +3105,5 @@ void AddSC_boss_gunship_battle()
     new spell_gb_rocket_artillery_explosion();
     new spell_rocket_pack();
     new spell_rocket_pack_periodic();
-    //new achievement_im_on_a_boat(); // check if no achiv
+    new achievement_im_on_a_boat();
 }
