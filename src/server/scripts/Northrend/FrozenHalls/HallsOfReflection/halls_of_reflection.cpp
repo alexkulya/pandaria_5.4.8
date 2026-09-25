@@ -1855,20 +1855,38 @@ class npc_jaina_and_sylvanas_hor_part2 : public CreatureScript
         }
 };
 
+static bool StartHallsOfReflectionIntro(Player* player)
+{
+    InstanceScript* instance = player->GetInstanceScript();
+    if (!instance)
+        return false;
+
+    if (instance->GetData(DATA_INTRO_EVENT) != NOT_STARTED)
+        return true;
+
+    instance->SetData(DATA_INTRO_EVENT, IN_PROGRESS);
+    return true;
+}
+
+class at_hor_intro_start : public AreaTriggerScript
+{
+    public:
+        at_hor_intro_start() : AreaTriggerScript("at_hor_intro_start") { }
+
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        {
+            return StartHallsOfReflectionIntro(player);
+        }
+};
+
 class at_hor_intro_npc_spawn : public AreaTriggerScript
 {
     public:
         at_hor_intro_npc_spawn() : AreaTriggerScript("at_hor_intro_npc_spawn") { }
 
-        bool OnTrigger(Player* player, AreaTriggerEntry const* trigger) override
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
         {
-            InstanceScript* instance = player->GetInstanceScript();
-
-            if (instance->GetData(DATA_INTRO_EVENT) != NOT_STARTED)
-                return true;
-
-            instance->SetData(DATA_INTRO_EVENT, IN_PROGRESS);
-            return true;
+            return StartHallsOfReflectionIntro(player);
         }
 };
 
@@ -2181,6 +2199,7 @@ void AddSC_halls_of_reflection()
     new npc_shadowy_mercenary();
     new npc_spectral_footman();
     new npc_tortured_rifleman();
+    new at_hor_intro_start();
     new at_hor_intro_npc_spawn();
     new at_hor_waves_restarter();
     new npc_frostworn_general();

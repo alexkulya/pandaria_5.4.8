@@ -2104,5 +2104,6 @@ void AddSC_bastion_of_twilight()
     new at_bt_council_2();
     new at_bt_council_3();
     new at_bt_chogall();
+    new at_bt_sinestra();
     new npc_bt_instance_portal();
 }

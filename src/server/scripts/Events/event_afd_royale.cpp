@@ -1278,10 +1278,4 @@ void AddSC_event_afd_royale()
 {
     new npc_afd_royale_controller();
     new npc_afd_royale_ring();
-    new spell_afd_royale_in_map();
-    new spell_afd_royale_leaving_game();
-    new spell_afd_royale_drop();
-    new spell_afd_royale_out_of_ring_damage_aura();
-    new spell_afd_royale_buff_trigger();
-    new spell_afd_royale_portal_trigger();
 }

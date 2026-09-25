@@ -2246,6 +2246,31 @@ class spell_alexstrasza_bunny_destroy_platform_event : public SpellScriptLoader
         }
 };
 
+class at_eye_of_eternity_improvised_floor : public AreaTriggerScript
+{
+    public:
+        at_eye_of_eternity_improvised_floor() : AreaTriggerScript("at_eye_of_eternity_improvised_floor") { }
+
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        {
+            if (player->IsGameMaster() || player->GetVehicleBase())
+                return false;
+
+            InstanceScript* instance = player->GetInstanceScript();
+            if (!instance || instance->GetBossState(DATA_MALYGOS_EVENT) != IN_PROGRESS)
+                return false;
+
+            Creature* malygos = player->GetMap()->GetCreature(instance->GetData64(DATA_MALYGOS));
+            if (!malygos || !malygos->IsAIEnabled || malygos->AI()->GetData(DATA_PHASE) < PHASE_TWO)
+                return false;
+
+            if (!player->HasAura(SPELL_RIDE_RED_DRAGON_BUDDY))
+                player->CastSpell(player, SPELL_SUMMON_RED_DRAGON_BUDDY_F_CAST, true);
+
+            return true;
+        }
+};
+
 class spell_wyrmrest_skytalon_summon_red_dragon_buddy : public SpellScriptLoader
 {
     public:
@@ -2573,6 +2598,7 @@ void AddSC_boss_malygos()
     new spell_malygos_destroy_platform_channel();
     new spell_alexstrasza_bunny_destroy_platform_boom_visual();
     new spell_alexstrasza_bunny_destroy_platform_event();
+    new at_eye_of_eternity_improvised_floor();
     new spell_wyrmrest_skytalon_summon_red_dragon_buddy();
     new spell_wyrmrest_skytalon_ride_red_dragon_buddy_trigger();
     new spell_malygos_surge_of_power_warning_selector_25();

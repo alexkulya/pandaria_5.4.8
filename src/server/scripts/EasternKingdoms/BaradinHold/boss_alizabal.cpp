@@ -311,10 +311,22 @@ class spell_alizabal_blade_dance_dmg : public SpellScriptLoader
         }
 };
 
+class at_alizabal_intro : public AreaTriggerScript
+{
+    public:
+        at_alizabal_intro() : AreaTriggerScript("at_alizabal_intro") { }
+
+        bool OnTrigger(Player* /*player*/, AreaTriggerEntry const* /*trigger*/) override
+        {
+            return false;
+        }
+};
+
 void AddSC_boss_alizabal()
 {
     new boss_alizabal();
     new spell_alizabal_seething_hate();
     new spell_alizabal_blade_dance();
     new spell_alizabal_blade_dance_dmg();
+    new at_alizabal_intro();
 }

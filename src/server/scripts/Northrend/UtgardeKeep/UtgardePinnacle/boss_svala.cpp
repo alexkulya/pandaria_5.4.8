@@ -84,6 +84,11 @@ enum Misc
     DATA_SVALA_DISPLAY_ID                    = 25944,
 };
 
+enum Actions
+{
+    ACTION_START_INTRO = 1,
+};
+
 enum IntroPhase
 {
     IDLE,
@@ -145,25 +150,36 @@ class boss_svala : public CreatureScript
                 uiDoodadMirror = instance? instance->GetData64(DATA_DOODAD_UTGARDE_MIRROR_FX01) : 0;
             }
 
+            void StartIntro()
+            {
+                if (Phase != IDLE)
+                    return;
+
+                Phase = INTRO;
+                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+
+                if (Creature* pArthas = me->SummonCreature(NPC_ARTHAS, 295.81f, -366.16f, 92.57f, 1.58f, TEMPSUMMON_MANUAL_DESPAWN))
+                {
+                    pArthas->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE|UNIT_FLAG_DISABLE_MOVE);
+                    uiArthas = pArthas->GetGUID();
+                    if (GameObject* go = GameObject::GetGameObject(*me, uiDoodadMirror))
+                        go->Use(me);
+                }
+            }
+
+            void DoAction(int32 action) override
+            {
+                if (action == ACTION_START_INTRO)
+                    StartIntro();
+            }
+
             void MoveInLineOfSight(Unit* who) override
             {
                 if (!who)
                     return;
 
                 if (Phase == IDLE && who->isTargetableForAttack() && me->IsHostileTo(who) && me->IsWithinDistInMap(who, 40))
-                {
-                    Phase = INTRO;
-                    me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-
-                    if (Creature* pArthas = me->SummonCreature(NPC_ARTHAS, 295.81f, -366.16f, 92.57f, 1.58f, TEMPSUMMON_MANUAL_DESPAWN))
-                    {
-                        pArthas->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE|UNIT_FLAG_NOT_SELECTABLE|UNIT_FLAG_DISABLE_MOVE);
-                        uiArthas = pArthas->GetGUID();
-                        if (GameObject* go = GameObject::GetGameObject(*me, uiDoodadMirror))
-                            go->Use(me);
-                    }
-                
-                }
+                    StartIntro();
             }
 
             void AttackStart(Unit* who) override { }
@@ -500,9 +516,32 @@ class boss_svala_sorrowgrave : public CreatureScript
         }
 };
 
+class at_svala_intro : public AreaTriggerScript
+{
+    public:
+        at_svala_intro() : AreaTriggerScript("at_svala_intro") { }
+
+        bool OnTrigger(Player* player, AreaTriggerEntry const* /*trigger*/) override
+        {
+            if (player->IsGameMaster())
+                return false;
+
+            InstanceScript* instance = player->GetInstanceScript();
+            if (!instance || instance->GetData(DATA_SVALA_SORROWGRAVE_EVENT) == DONE)
+                return false;
+
+            if (Creature* svala = player->GetMap()->GetCreature(instance->GetData64(DATA_SVALA)))
+                if (svala->IsAIEnabled)
+                    svala->AI()->DoAction(ACTION_START_INTRO);
+
+            return true;
+        }
+};
+
 void AddSC_boss_svala()
 {
     new boss_svala();
     new npc_ritual_channeler();
     new boss_svala_sorrowgrave();
+    new at_svala_intro();
 }
