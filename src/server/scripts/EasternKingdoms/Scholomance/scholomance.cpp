@@ -170,7 +170,7 @@ class go_chillheart_iron_door : public GameObjectScript
 class go_polyformic_acid_potion : public GameObjectScript
 {
     public:
-        go_polyformic_acid_potion() : GameObjectScript("go_alchemy_bottle_white") { }
+        go_polyformic_acid_potion() : GameObjectScript("go_polyformic_acid_potion") { }
 
         bool OnGossipHello(Player* player, GameObject* go) override
         {
