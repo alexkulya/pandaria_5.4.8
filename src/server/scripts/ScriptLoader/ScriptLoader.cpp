@@ -123,6 +123,7 @@ void AddSC_achievement_scripts();
 void AddSC_brawlers_guild();
 void AddSC_on_duel();
 void AddSC_transmog();
+void AddSC_tarecgosa_scripts();
 void AddSC_world_map_scripts();
 void AddSC_zeppelins();
 
@@ -1159,6 +1160,7 @@ void AddWorldScripts()
     AddSC_chat_log();
     AddSC_on_duel();
     AddSC_transmog();
+    AddSC_tarecgosa_scripts();
     AddSC_world_map_scripts();
     AddSC_zeppelins();
 #endif
