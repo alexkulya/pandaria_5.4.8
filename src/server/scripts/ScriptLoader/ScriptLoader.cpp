@@ -110,6 +110,7 @@ void AddSC_areatrigger_scripts();
 void AddSC_argent_tournament();
 void AddSC_darkmoon_island();
 void AddSC_emerald_dragons();
+void AddSC_fangs_of_father_scripts();
 void AddSC_generic_creature();
 void AddSC_go_scripts();
 void AddSC_guards();
@@ -1145,6 +1146,7 @@ void AddWorldScripts()
     AddSC_argent_tournament();
     AddSC_darkmoon_island();
     AddSC_emerald_dragons();
+    AddSC_fangs_of_father_scripts();
     AddSC_generic_creature();
     AddSC_go_scripts();
     AddSC_guards();
