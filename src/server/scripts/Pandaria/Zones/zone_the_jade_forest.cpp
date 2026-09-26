@@ -23,6 +23,7 @@
 #include "DBCStores.h"
 #include "Map.h"
 #include "MotionMaster.h"
+#include "Player.h"
 #include "TemporarySummon.h"
 #include "Vehicle.h"
 
@@ -4982,7 +4983,12 @@ public:
             });
         }
         else
+        {
+            if (Player* player = passenger->ToPlayer())
+                player->SetFallInformation(0, player->GetPositionZ());
+
             passenger->SetDisableGravity(false);
+        }
     }
 
     void MovementInform(uint32 type, uint32 pointId) override
@@ -5045,12 +5051,6 @@ class spell_jade_forest_rappelling_rope : public SpellScript
         }
     }
 
-    void HandleSummon(SpellEffIndex effIndex)
-    {
-        PreventHitDefaultEffect(effIndex);
-        SummonRope(effIndex);
-    }
-
     void HandleTeleport(SpellEffIndex effIndex)
     {
         // In this 5.4.8 DBC build 130960 is exposed as a teleport effect.
@@ -5069,7 +5069,6 @@ class spell_jade_forest_rappelling_rope : public SpellScript
 
     void Register() override
     {
-        OnEffectLaunch += SpellEffectFn(spell_jade_forest_rappelling_rope::HandleSummon, EFFECT_0, SPELL_EFFECT_SUMMON);
         OnEffectHitTarget += SpellEffectFn(spell_jade_forest_rappelling_rope::HandleTeleport, EFFECT_0, SPELL_EFFECT_TELEPORT_UNITS);
         OnEffectHitTarget += SpellEffectFn(spell_jade_forest_rappelling_rope::HandleInstantLanding, EFFECT_2, SPELL_EFFECT_TRIGGER_SPELL);
     }
