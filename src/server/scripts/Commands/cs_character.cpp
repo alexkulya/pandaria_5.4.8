@@ -31,6 +31,7 @@ EndScriptData */
 #include "ScriptMgr.h"
 #include "ServiceMgr.h"
 #include "ServiceBoost.h"
+#include "World.h"
 
 class character_commandscript : public CommandScript
 {
@@ -470,8 +471,9 @@ public:
         if (newlevel < 1)
             return false;                                       // invalid level
 
-        if (newlevel > STRONG_MAX_LEVEL)                         // hardcoded maximum level
-            newlevel = STRONG_MAX_LEVEL;
+        int32 maxPlayerLevel = sWorld->getIntConfig(CONFIG_MAX_PLAYER_LEVEL);
+        if (newlevel > maxPlayerLevel)
+            newlevel = maxPlayerLevel;
 
         HandleCharacterLevel(target, targetGuid, oldlevel, newlevel, handler);
         if (!handler->GetSession() || handler->GetSession()->GetPlayer() != target)      // including player == NULL
@@ -845,8 +847,9 @@ public:
         if (newlevel < 1)
             newlevel = 1;
 
-        if (newlevel > STRONG_MAX_LEVEL)                         // hardcoded maximum level
-            newlevel = STRONG_MAX_LEVEL;
+        int32 maxPlayerLevel = sWorld->getIntConfig(CONFIG_MAX_PLAYER_LEVEL);
+        if (newlevel > maxPlayerLevel)
+            newlevel = maxPlayerLevel;
 
         HandleCharacterLevel(target, targetGuid, oldlevel, newlevel, handler);
 

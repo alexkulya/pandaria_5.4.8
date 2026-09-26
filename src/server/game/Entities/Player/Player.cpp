@@ -19546,6 +19546,14 @@ bool Player::LoadFromDB(uint32 guid, SQLQueryHolder *holder)
     SetUInt64Value(PLAYER_FIELD_DUEL_ARBITER, 0);
     SetUInt32Value(PLAYER_FIELD_DUEL_TEAM, 0);
 
+    uint32 maxPlayerLevel = sWorld->getIntConfig(CONFIG_MAX_PLAYER_LEVEL);
+    if (GetLevel() > maxPlayerLevel)
+    {
+        TC_LOG_ERROR("entities.player", "Player %s (GUID: %u) has level %u above MaxPlayerLevel %u, clamping.",
+            GetName().c_str(), GetGUIDLow(), GetLevel(), maxPlayerLevel);
+        SetLevel(maxPlayerLevel);
+    }
+
     // reset stats before loading any modifiers
     InitStatsForLevel();
     InitGlyphsForLevel();
