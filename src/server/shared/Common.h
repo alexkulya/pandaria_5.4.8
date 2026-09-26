@@ -126,7 +126,9 @@
 #define I32FMT "%08I32X"
 #define I64FMT "%016I64X"
 #define atoll _atoi64
+#if _MSC_VER < 1900
 #define vsnprintf _vsnprintf
+#endif
 #define finite(X) _finite(X)
 #define llabs _abs64
 
