@@ -4936,6 +4936,8 @@ enum RappellingRopeData
     SPELL_RAPPELLING_ROPE           = 130960,
     SPELL_REVERSE_CAST_RIDE_SEAT_1  = 85299,
     SPELL_RAPPELLING_ROPE_AURA      = 130970,
+    SPELL_PARACHUTE                 = 45472,
+    SPELL_PARACHUTE_BUFF            = 44795,
     POINT_RAPPELLING_DESTINATION    = 1,
 };
 
@@ -4956,13 +4958,20 @@ const Position RappellingRopeDestinations[3]
 class npc_jade_forest_rappelling_rope : public ScriptedAI
 {
 public:
-    npc_jade_forest_rappelling_rope(Creature* creature) : ScriptedAI(creature) { }
+    npc_jade_forest_rappelling_rope(Creature* creature) : ScriptedAI(creature), _passengerGUID(0) { }
 
     void PassengerBoarded(Unit* passenger, int8 /*seatId*/, bool apply) override
     {
         if (apply)
         {
+            _passengerGUID = passenger->GetGUID();
             passenger->SetDisableGravity(true);
+            if (Player* player = passenger->ToPlayer())
+            {
+                player->CastSpell(player, SPELL_PARACHUTE_BUFF, true);
+                player->SetFeatherFall(true);
+                player->SetFallInformation(0, player->GetPositionZ());
+            }
 
             _scheduler.Schedule(Milliseconds(1500), [this](TaskContext /*context*/)
             {
@@ -4982,7 +4991,18 @@ public:
             });
         }
         else
+        {
+            if (Player* player = passenger->ToPlayer())
+            {
+                player->CastSpell(player, SPELL_PARACHUTE_BUFF, true);
+                player->SetFeatherFall(true);
+                player->SetFallInformation(0, player->GetPositionZ());
+            }
+
             passenger->SetDisableGravity(false);
+            if (passenger->GetGUID() == _passengerGUID)
+                _passengerGUID = 0;
+        }
     }
 
     void MovementInform(uint32 type, uint32 pointId) override
@@ -4990,8 +5010,40 @@ public:
         if (type != POINT_MOTION_TYPE || pointId != POINT_RAPPELLING_DESTINATION)
             return;
 
+        uint8 closest = 0;
+        float distance = me->GetDistance(RappellingRopeDestinations[0]);
+        for (uint8 i = 1; i < 3; ++i)
+        {
+            float candidate = me->GetDistance(RappellingRopeDestinations[i]);
+            if (candidate < distance)
+            {
+                closest = i;
+                distance = candidate;
+            }
+        }
+
+        Unit* passenger = ObjectAccessor::GetUnit(*me, _passengerGUID);
+        if (Player* player = passenger ? passenger->ToPlayer() : nullptr)
+        {
+            player->SetFeatherFall(true);
+            player->CastSpell(player, SPELL_PARACHUTE_BUFF, true);
+            me->CastSpell(player, SPELL_PARACHUTE, true);
+            player->SetFallInformation(0, player->GetPositionZ());
+        }
+
         if (Vehicle* vehicle = me->GetVehicleKit())
             vehicle->RemoveAllPassengers();
+
+        if (Player* player = passenger ? passenger->ToPlayer() : nullptr)
+        {
+            Position const& landing = RappellingRopeDestinations[closest];
+            player->SetDisableGravity(false);
+            player->SetFeatherFall(true);
+            player->NearTeleportTo(landing.GetPositionX(), landing.GetPositionY(), landing.GetPositionZ(), player->GetOrientation());
+            player->CastSpell(player, SPELL_PARACHUTE_BUFF, true);
+            player->CastSpell(player, SPELL_PARACHUTE, true);
+            player->SetFallInformation(0, landing.GetPositionZ());
+        }
 
         me->DespawnOrUnsummon(1000);
     }
@@ -5003,6 +5055,7 @@ public:
 
 private:
     TaskScheduler _scheduler;
+    uint64 _passengerGUID;
 };
 
 // 130960 - Rappelling Rope
@@ -5336,8 +5389,11 @@ void AddSC_jade_forest()
 
     // Quest 31766 "Touching Ground"
     new creature_script<npc_jade_forest_rappelling_rope>("npc_jade_forest_rappelling_rope");
+    new creature_script<npc_jade_forest_rappelling_rope>("npc_rappelling_rope");
     new spell_script<spell_jade_forest_rappelling_rope>("spell_jade_forest_rappelling_rope");
+    new spell_script<spell_jade_forest_rappelling_rope>("spell_rappelling_rope");
     new aura_script<spell_jade_forest_rappelling_rope_aura>("spell_jade_forest_rappelling_rope_aura");
+    new aura_script<spell_jade_forest_rappelling_rope_aura>("spell_rappelling_rope_aura");
 
     // Quest 31765 "Paint it Red!"
     new aura_script<spell_summon_gunship_turret>("spell_summon_gunship_turret");
