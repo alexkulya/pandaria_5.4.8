@@ -24,9 +24,11 @@
 #ifndef SF_WORLDSOCKET_H
 #define SF_WORLDSOCKET_H
 
+#include <atomic>
 #include <chrono>
 #include <memory>
 #include <mutex>
+#include <vector>
 
 #include <boost/asio/ip/tcp.hpp>
 
@@ -60,6 +62,10 @@ class WorldSession;
  * std::shared_ptr<WorldSocket> and the socket dies when the last owner, which
  * is normally the network thread's list, lets go of it.
  *
+ * Threading: SendPacket() and CloseSocket() may be called from any thread;
+ * everything else runs on the socket's NetworkThread. SendPacket() only buffers
+ * under m_OutBufferLock; Update() hands the buffers to QueuePacket().
+ *
  * doc/WorldSocketGuards.md lists every check the ACE implementation performed.
  * They are numbered there and referenced from the implementation, because
  * upstream lost two of them in this same migration and did not notice for
@@ -79,7 +85,7 @@ public:
     void Start() override;
     bool Update() override;
 
-    /// Send a packet on the socket, this function is reentrant.
+    /// Send a packet on the socket; safe from any thread, sent by Update().
     /// @param pct packet to send
     /// @return -1 on failure. The return is kept for WorldSession, which
     ///         checks it to decide whether to drop the session.
@@ -117,7 +123,7 @@ private:
 
     void SendAuthResponseError(uint8 code);
 
-    /// Flush whatever the output buffer holds. Caller holds m_OutBufferLock.
+    /// Move the output buffer to m_PendingBuffers. Caller holds m_OutBufferLock.
     void FlushOutBuffer();
 
     /// Time in which the last ping was received.
@@ -137,10 +143,16 @@ private:
     AuthCrypt m_Crypt;
 
     /// Mutex lock to protect m_Session
+    /// Lock order: m_SessionLock, then m_OutBufferLock. Never close the socket
+    /// with m_OutBufferLock held, nor send or close with m_SessionLock held
+    /// (OnClose() takes m_SessionLock).
     std::mutex m_SessionLock;
 
     /// Session to which received packets are routed
     WorldSession* m_Session;
+
+    /// Account id of m_Session, so SendPacket can log it without touching m_Session.
+    std::atomic<uint32> m_AccountId;
 
     /// Packet currently being received, and how much of its payload is already
     /// in it. The ACE version aliased a Message_Block onto the packet's storage
@@ -154,13 +166,20 @@ private:
     MessageBuffer m_Header;
     MessageBuffer m_WorldHeader;
 
-    /// Mutex for protecting output related data.
+    /// Mutex for protecting output related data, including the send side of
+    /// m_Crypt: its RC4 stream must advance in the order packets are buffered.
     std::mutex m_OutBufferLock;
 
     /// Coalescing buffer for outgoing packets, and the deadline at which it is
     /// flushed even if it has not filled.
     MessageBuffer m_OutBuffer;
     std::chrono::steady_clock::time_point m_LastFlushTime;
+
+    /// Buffers ready to be written, oldest first; drained by Update().
+    std::vector<MessageBuffer> m_PendingBuffers;
+
+    /// Bytes in m_PendingBuffers, capped at WRITE_QUEUE_HIGH_WATER_MARK.
+    std::size_t m_PendingSize;
 
     uint32 m_Seed;
 };

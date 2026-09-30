@@ -21,6 +21,7 @@
 
 #include <boost/asio/buffer.hpp>
 #include <boost/asio/ip/tcp.hpp>
+#include <boost/asio/post.hpp>
 #include <boost/asio/write.hpp>
 
 #include <atomic>
@@ -33,11 +34,11 @@
 // Replacement for ACE_Svc_Handler. CRTP base for a connection: the derived
 // class T supplies the protocol by overriding Start() and ReadHandler().
 //
-// THREADING CONTRACT: a socket is created on the acceptor's io_context and
-// then moved onto exactly one NetworkThread's io_context. Every member below
-// runs on that single thread, which is why none of this is locked. Calling
-// into a socket from another thread (the world thread, a script, a command
-// handler) is a data race -- post the work to the socket's io_context instead.
+// THREADING CONTRACT: a socket is accepted onto exactly one NetworkThread's
+// io_context and every member runs on that thread, which is why none of this
+// is locked. Only IsOpen(), CloseSocket() and DelayedCloseSocket() are safe from
+// other threads. Derived classes that send from other threads must buffer under
+// their own lock and hand the data to QueuePacket() from Update().
 template<class T>
 class Socket : public std::enable_shared_from_this<T>
 {
@@ -102,6 +103,7 @@ public:
     // here and a peer that hits it is dropped.
     static std::size_t const WRITE_QUEUE_HIGH_WATER_MARK = 8 * 1024 * 1024;
 
+    // Owning thread only.
     void QueuePacket(MessageBuffer&& buffer)
     {
         std::size_t const size = buffer.GetActiveSize();
@@ -121,21 +123,22 @@ public:
 
     bool IsOpen() const { return !_closed && !_closing; }
 
+    // Safe from any thread; the Asio shutdown is posted to the owning thread.
     void CloseSocket()
     {
         if (_closed.exchange(true))
             return;
 
-        boost::system::error_code shutdownError;
-        _socket.shutdown(boost::asio::socket_base::shutdown_send, shutdownError);
-        if (shutdownError)
-            TC_LOG_DEBUG("network", "Socket::CloseSocket: %s errored when shutting down socket: %s",
-                GetRemoteIpAddress().to_string().c_str(), shutdownError.message().c_str());
+        boost::asio::post(_socket.get_executor(), [self = this->shared_from_this()]()
+        {
+            self->ShutdownSocket();
+        });
 
         OnClose();
     }
 
     // Stop accepting new writes but let the queue drain first.
+    // Safe from any thread.
     void DelayedCloseSocket() { _closing = true; }
 
     MessageBuffer& GetReadBuffer() { return _readBuffer; }
@@ -171,6 +174,16 @@ private:
 
         if (!ReadHandler())
             CloseSocket();
+    }
+
+    // Runs on the owning thread, posted there by CloseSocket().
+    void ShutdownSocket()
+    {
+        boost::system::error_code shutdownError;
+        _socket.shutdown(boost::asio::socket_base::shutdown_send, shutdownError);
+        if (shutdownError)
+            TC_LOG_DEBUG("network", "Socket::CloseSocket: %s errored when shutting down socket: %s",
+                GetRemoteIpAddress().to_string().c_str(), shutdownError.message().c_str());
     }
 
     void AsyncProcessQueue()

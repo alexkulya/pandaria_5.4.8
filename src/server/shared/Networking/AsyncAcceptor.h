@@ -101,14 +101,18 @@ public:
             {
                 try
                 {
-                    // The socket is moved out before the next accept is armed,
-                    // so the factory's socket is free for reuse.
+                    // The socket is moved out (or closed below) before the next
+                    // accept is armed, so the factory's socket is free for reuse.
                     acceptCallback(std::move(*socket), threadIndex);
                 }
                 catch (boost::system::system_error const& err)
                 {
                     TC_LOG_INFO("network", "Failed to retrieve client's remote address %s", err.what());
                 }
+
+                // Not taken by the callback (e.g. set_option failed): the next
+                // accept into it would fail with already_open forever.
+                CloseUnconsumed(*socket);
             }
             else if (error == boost::asio::error::operation_aborted)
                 return;                                     // Close() cancelled us; do not re-arm
@@ -158,6 +162,8 @@ public:
                 {
                     TC_LOG_INFO("network", "Failed to retrieve client's remote address %s", err.what());
                 }
+
+                CloseUnconsumed(_socket);
             }
             else if (error == boost::asio::error::operation_aborted)
                 return;
@@ -184,6 +190,15 @@ public:
     }
 
 private:
+    static void CloseUnconsumed(boost::asio::ip::tcp::socket& socket)
+    {
+        if (socket.is_open())
+        {
+            boost::system::error_code err;
+            socket.close(err);
+        }
+    }
+
     static bool IsDescriptorExhaustion(boost::system::error_code const& error)
     {
         return error == boost::system::errc::too_many_files_open ||

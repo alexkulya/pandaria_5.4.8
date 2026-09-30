@@ -95,10 +95,10 @@ struct WorldClientPktHeader
 #endif
 
 WorldSocket::WorldSocket(boost::asio::ip::tcp::socket&& socket) : Base(std::move(socket)),
-m_LastPingTime(), m_OverSpeedPings(0), m_Session(nullptr),
+m_LastPingTime(), m_OverSpeedPings(0), m_Session(nullptr), m_AccountId(0),
 m_RecvWPct(nullptr), m_RecvPctReceived(0),
 m_Header(sizeof(AuthClientPktHeader)), m_WorldHeader(sizeof(WorldClientPktHeader)),
-m_OutBuffer(), m_LastFlushTime(std::chrono::steady_clock::now()),
+m_OutBuffer(), m_LastFlushTime(std::chrono::steady_clock::now()), m_PendingSize(0),
 m_Seed(static_cast<uint32>(rand32()))
 {
     m_Address = GetRemoteIpAddress().to_string();
@@ -156,6 +156,8 @@ bool WorldSocket::Update()
     if (!IsOpen())
         return Base::Update();
 
+    std::vector<MessageBuffer> outgoing;
+
     {
         std::unique_lock<std::mutex> guard(m_OutBufferLock);
 
@@ -168,13 +170,24 @@ bool WorldSocket::Update()
                 m_LastFlushTime = now;
             }
         }
+
+        outgoing.swap(m_PendingBuffers);
+        m_PendingSize = 0;
+    }
+
+    // Outside the lock: QueuePacket() may close the socket (see lock order).
+    for (MessageBuffer& buffer : outgoing)
+    {
+        if (!IsOpen())
+            break;
+
+        QueuePacket(std::move(buffer));
     }
 
     return Base::Update();
 }
 
-// Caller holds m_OutBufferLock. Hands the accumulated bytes to Socket<T>, which
-// owns the async write and enforces the 8 MB queue cap (guard 17).
+// Caller holds m_OutBufferLock.
 void WorldSocket::FlushOutBuffer()
 {
     if (m_OutBuffer.GetActiveSize() == 0)
@@ -184,7 +197,8 @@ void WorldSocket::FlushOutBuffer()
     outgoing.Write(m_OutBuffer.GetReadPointer(), m_OutBuffer.GetActiveSize());
     m_OutBuffer.Reset();
 
-    QueuePacket(std::move(outgoing));
+    m_PendingSize += outgoing.GetActiveSize();
+    m_PendingBuffers.push_back(std::move(outgoing));
 }
 
 int WorldSocket::SendPacket(WorldPacket const& pct)
@@ -200,17 +214,30 @@ int WorldSocket::SendPacket(WorldPacket const& pct)
 
     uint16 opcodeNumber = serverOpcodeTable[pkt->GetOpcode()]->OpcodeNumber;
 
-    if (m_Session)
-        TC_LOG_TRACE("network.opcode", "S->C: %u %s", m_Session->GetAccountId(), GetOpcodeNameForLogging(pkt->GetOpcode(), true).c_str());
+    // Not m_Session: this runs on any thread and the session may be deleted.
+    if (uint32 accountId = m_AccountId.load(std::memory_order_relaxed))
+        TC_LOG_TRACE("network.opcode", "S->C: %u %s", accountId, GetOpcodeNameForLogging(pkt->GetOpcode(), true).c_str());
 
     sScriptMgr->OnPacketSend(this, *pkt);
 
+    std::unique_lock<std::mutex> guard(m_OutBufferLock);
+
     // Guard 19: the header sizes differently depending on the crypt state.
+    // Under the lock: the RC4 stream must advance in buffer order.
     ServerPktHeader header(!m_Crypt.IsInitialized() ? pkt->size() + 2 : pct.size(), opcodeNumber, &m_Crypt);
 
     std::size_t const needed = header.getHeaderLength() + pkt->size();
 
-    std::unique_lock<std::mutex> guard(m_OutBufferLock);
+    // Also cap what Update() has not handed to Socket<T> yet, in case the
+    // NetworkThread stalls. Close after unlocking: OnClose() takes m_SessionLock.
+    if (m_PendingSize + m_OutBuffer.GetActiveSize() + needed > WRITE_QUEUE_HIGH_WATER_MARK)
+    {
+        guard.unlock();
+        TC_LOG_ERROR("network", "WorldSocket::SendPacket: %s exceeded the " SZFMTD " byte output queue limit, closing connection",
+            GetRemoteAddress().c_str(), WRITE_QUEUE_HIGH_WATER_MARK);
+        CloseSocket();
+        return -1;
+    }
 
     // A packet that will not fit in what is left of the buffer forces the
     // buffer out first; one larger than the buffer itself goes on its own.
@@ -224,7 +251,8 @@ int WorldSocket::SendPacket(WorldPacket const& pct)
         if (!pkt->empty())
             single.Write(pkt->contents(), pkt->size());
 
-        QueuePacket(std::move(single));
+        m_PendingSize += needed;
+        m_PendingBuffers.push_back(std::move(single));
         return 0;
     }
 
@@ -399,8 +427,11 @@ int WorldSocket::ProcessIncoming(WorldPacket* new_pct)
         sPacketLog->LogPacket(*new_pct, CLIENT_TO_SERVER);
 
     std::string opcodeName = GetOpcodeNameForLogging(opcode, false);
-    if (m_Session)
-        TC_LOG_TRACE("network.opcode", "C->S: %u %s", m_Session->GetAccountId(), GetOpcodeNameForLogging(opcode,false).c_str());
+    {
+        std::lock_guard<std::mutex> guard(m_SessionLock);
+        if (m_Session)
+            TC_LOG_TRACE("network.opcode", "C->S: %u %s", m_Session->GetAccountId(), GetOpcodeNameForLogging(opcode,false).c_str());
+    }
 
     try
     {
@@ -409,11 +440,14 @@ int WorldSocket::ProcessIncoming(WorldPacket* new_pct)
             case CMSG_PING:
                 return HandlePing(*new_pct);
             case CMSG_AUTH_SESSION:
+            {
+                std::lock_guard<std::mutex> guard(m_SessionLock);
                 if (m_Session)
                 {
                     TC_LOG_ERROR("network", "WorldSocket::ProcessIncoming: received duplicate CMSG_AUTH_SESSION from %u", m_Session->GetAccountId());
                     return -1;
                 }
+            }
 
                 sScriptMgr->OnPacketReceive(this, WorldPacket(*new_pct));
                 return HandleAuthSession(*new_pct);
@@ -446,9 +480,8 @@ int WorldSocket::ProcessIncoming(WorldPacket* new_pct)
                 std::unique_lock<std::mutex> Guard(m_SessionLock);
                 if (!m_Session)
                 {
-                    TC_LOG_ERROR("network.opcode", "ProcessIncoming: Client not authed opcode = %u", GetRemoteAddress().c_str(),uint32(opcode));
-                    return -1;
-                    CloseSocket();
+                    TC_LOG_ERROR("network.opcode", "ProcessIncoming: Client %s not authed, opcode = %u", GetRemoteAddress().c_str(), uint32(opcode));
+                    return -1;              // the caller closes the socket on -1
                 }
 
                 // prevent invalid memory access/crash with custom opcodes
@@ -458,9 +491,7 @@ int WorldSocket::ProcessIncoming(WorldPacket* new_pct)
                 OpcodeHandler const* handler = clientOpcodeTable[opcode];
                 if (!handler || handler->Status == STATUS_UNHANDLED)
                 {
-                    TC_LOG_ERROR("network.opcode", "No defined handler for opcode %s sent by %u", GetRemoteAddress().c_str() ,GetOpcodeNameForLogging(new_pct->GetOpcode(), false, new_pct->GetReceivedOpcode()).c_str(), m_Session->GetAccountId());
-                    if (m_Session->GetPlayer() && !handler && sWorld->getBoolConfig(CONFIG_DEBUG_OPCODES))
-                        ChatHandler(m_Session->GetPlayer()).PSendSysMessage("Ваш клиент отправил некий пакет %s. Если вы случайно обнаружили гарантированный способ повторения данной ошибки, сообщите об этом администрации сервера.", GetOpcodeNameForLogging(new_pct->GetOpcode(), false, new_pct->GetReceivedOpcode()).c_str());
+                    TC_LOG_ERROR("network.opcode", "No defined handler for opcode %s sent by %s (account %u)", GetOpcodeNameForLogging(new_pct->GetOpcode(), false, new_pct->GetReceivedOpcode()).c_str(), GetRemoteAddress().c_str(), m_Session->GetAccountId());
                     return 0;
                 }
 
@@ -479,6 +510,7 @@ int WorldSocket::ProcessIncoming(WorldPacket* new_pct)
     }
     catch (ByteBufferException &)
     {
+        std::lock_guard<std::mutex> guard(m_SessionLock);
         TC_LOG_ERROR("network", "WorldSocket::ProcessIncoming ByteBufferException occured while parsing an instant handled packet %s from client %s, accountid=%i. Disconnected client.",
                        GetOpcodeNameForLogging(opcode,false).c_str(), GetRemoteAddress().c_str(), m_Session ? int32(m_Session->GetAccountId()) : -1);
         new_pct->hexlike();
@@ -759,11 +791,21 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
             hasBoost = true;
     }
 
-    // NOTE ATM the socket is single-threaded, have this in mind ...
-    m_Session = new WorldSession(id, shared_from_this(), AccountTypes(security), expansion, mutetime, locale, recruiter, flags, isRecruiter, hasBoost);
+    // The unlocked uses below are safe: no other thread can reach the session
+    // before sWorld->AddSession().
+    WorldSession* session = new WorldSession(id, shared_from_this(), AccountTypes(security), expansion, mutetime, locale, recruiter, flags, isRecruiter, hasBoost);
+    {
+        std::lock_guard<std::mutex> guard(m_SessionLock);
+        m_Session = session;
+        m_AccountId.store(id, std::memory_order_relaxed);
+    }
     m_Session->SetMute({ onlineMuteTimer, mutedBy, muteReason, mutedInPublicChannelsOnly });
 
-    m_Crypt.Init(&k);
+    {
+        // The send side of the crypt is used under this lock by SendPacket().
+        std::lock_guard<std::mutex> guard(m_OutBufferLock);
+        m_Crypt.Init(&k);
+    }
 
     m_Session->LoadGlobalAccountData();
     m_Session->LoadTutorialsData();

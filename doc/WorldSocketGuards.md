@@ -71,5 +71,9 @@ design a socket lives on exactly one `NetworkThread`, but `m_Session` is still
 reachable from the world thread, so the boundary has to be reasoned about again,
 not copied across.
 
+Resolution: `m_Session` is accessed under `m_SessionLock` on every thread;
+`SendPacket` logs the cached `m_AccountId` instead. Lock order is
+`m_SessionLock` before `m_OutBufferLock`.
+
 Guards 9 and 10 deserve a deliberate test with a crafted packet: they are the
 two that upstream lost, and neither shows up in normal play.
