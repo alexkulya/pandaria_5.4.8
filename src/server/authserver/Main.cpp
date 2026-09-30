@@ -222,12 +222,18 @@ extern int main(int argc, char** argv)
     std::string bind_ip = sConfigMgr->GetStringDefault("BindIP", "0.0.0.0");
 
     // One network thread matches the single-reactor behaviour the ACE build
-    // had; the pool exists so this can be raised without touching code.
+    // had. More are not supported: AuthSocket uses sRealmList without locking.
     int32 networkThreads = sConfigMgr->GetIntDefault("Network.Threads", 1);
     if (networkThreads <= 0)
     {
         TC_LOG_ERROR("server.authserver", "Network.Threads must be greater than 0");
         return 1;
+    }
+
+    if (networkThreads > 1)
+    {
+        TC_LOG_WARN("server.authserver", "Network.Threads = %d is not supported by the authserver (the realm list is not thread-safe), using 1", networkThreads);
+        networkThreads = 1;
     }
 
     if (!sRealmSocketMgr.StartNetwork(ioContext, bind_ip, uint16(rmport), networkThreads))

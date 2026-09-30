@@ -72,6 +72,28 @@ bool WorldSocketMgr::StartNetwork(boost::asio::io_context& ioContext, std::strin
     return true;
 }
 
+void WorldSocketMgr::SetAcceptorStop(std::function<void()> stop)
+{
+    std::lock_guard<std::mutex> guard(m_AcceptorStopLock);
+    m_AcceptorStop = std::move(stop);
+}
+
+// Stop and join the acceptor's thread first (as TrinityCore does): an accept
+// completing meanwhile would run after the acceptor and threads are freed.
+void WorldSocketMgr::StopNetwork()
+{
+    {
+        std::lock_guard<std::mutex> guard(m_AcceptorStopLock);
+        if (m_AcceptorStop)
+        {
+            m_AcceptorStop();
+            m_AcceptorStop = nullptr;
+        }
+    }
+
+    BaseSocketMgr::StopNetwork();
+}
+
 void WorldSocketMgr::OnSocketOpen(boost::asio::ip::tcp::socket&& sock, uint32 threadIndex)
 {
     // The ACE version applied these in WorldSocket::open through

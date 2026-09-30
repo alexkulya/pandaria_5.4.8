@@ -357,6 +357,16 @@ int Master::Run()
     auto ioContextGuard = boost::asio::make_work_guard(_ioContext);
     std::thread ioContextThread([&_ioContext]() { _ioContext.run(); });
 
+    // Run by WorldSocketMgr::StopNetwork before it frees the network threads.
+    // Idempotent with the stop at the end of this function.
+    sWorldSocketMgr->SetAcceptorStop([&_ioContext, &ioContextGuard, &ioContextThread]()
+    {
+        ioContextGuard.reset();
+        _ioContext.stop();
+        if (ioContextThread.joinable())
+            ioContextThread.join();
+    });
+
     // set server online (allow connecting now)
     LoginDatabase.DirectPExecute("UPDATE realmlist SET flag = flag & ~%u, population = 0 WHERE id = '%u'", REALM_FLAG_INVALID, realmID);
 
@@ -366,6 +376,9 @@ int Master::Run()
     // since worldrunnable uses them, it will crash if unloaded after master
     worldThread.wait();
     rarThread.wait();
+
+    // The hook refers to locals of this function; drop it if it did not run.
+    sWorldSocketMgr->SetAcceptorStop(nullptr);
 
     // set server offline
     LoginDatabase.DirectPExecute("UPDATE realmlist SET flag = flag | %u WHERE id = '%d'", REALM_FLAG_OFFLINE, realmID);

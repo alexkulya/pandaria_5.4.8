@@ -77,7 +77,8 @@ public:
 
     virtual void StopNetwork()
     {
-        _acceptor->Close();
+        if (_acceptor)                      // null when StartNetwork failed before creating it
+            _acceptor->Close();
 
         if (_threadCount != 0)
             for (int32 i = 0; i < _threadCount; ++i)

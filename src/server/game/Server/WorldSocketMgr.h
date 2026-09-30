@@ -26,6 +26,9 @@
 #include "SocketMgr.h"
 #include "WorldSocket.h"
 
+#include <functional>
+#include <mutex>
+
 /// Manages all sockets connected to peers and network threads.
 ///
 /// Replaces the ACE ReactorRunnable pool. The accept loop, the out-of-
@@ -47,6 +50,11 @@ public:
 
     void OnSocketOpen(boost::asio::ip::tcp::socket&& sock, uint32 threadIndex) override;
 
+    void StopNetwork() override;
+
+    /// Set by Master: stops the acceptor's io_context and joins its thread.
+    void SetAcceptorStop(std::function<void()> stop);
+
     /// Kernel send buffer size, in bytes. -1 leaves the system default alone.
     int GetSocketSendBufferSize() const { return m_SockOutKBuff; }
 
@@ -66,6 +74,9 @@ private:
     int m_SockOutKBuff;
     int m_SockOutUBuff;
     bool m_UseNoDelay;
+
+    std::mutex m_AcceptorStopLock;
+    std::function<void()> m_AcceptorStop;
 };
 
 #define sWorldSocketMgr (&WorldSocketMgr::Instance())
