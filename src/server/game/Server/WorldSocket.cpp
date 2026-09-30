@@ -151,9 +151,14 @@ void WorldSocket::OnClose()
 // per packet. The ACE version got the same effect by not arming the reactor for
 // output until Update() ran; here the packets accumulate in m_OutBuffer and go
 // out in one write.
+//
+// While a delayed close is pending, flush at once: a buffered auth rejection
+// must be queued before Base::Update() sees the queue empty and closes.
 bool WorldSocket::Update()
 {
-    if (!IsOpen())
+    bool const closing = IsClosing();
+
+    if (!IsOpen() && !closing)
         return Base::Update();
 
     std::vector<MessageBuffer> outgoing;
@@ -164,7 +169,7 @@ bool WorldSocket::Update()
         if (m_OutBuffer.GetActiveSize() > 0)
         {
             std::chrono::steady_clock::time_point const now = std::chrono::steady_clock::now();
-            if (now - m_LastFlushTime >= std::chrono::milliseconds(10))
+            if (closing || now - m_LastFlushTime >= std::chrono::milliseconds(10))
             {
                 FlushOutBuffer();
                 m_LastFlushTime = now;
@@ -178,7 +183,7 @@ bool WorldSocket::Update()
     // Outside the lock: QueuePacket() may close the socket (see lock order).
     for (MessageBuffer& buffer : outgoing)
     {
-        if (!IsOpen())
+        if (!IsOpen() && !IsClosing())
             break;
 
         QueuePacket(std::move(buffer));
@@ -221,6 +226,10 @@ int WorldSocket::SendPacket(WorldPacket const& pct)
     sScriptMgr->OnPacketSend(this, *pkt);
 
     std::unique_lock<std::mutex> guard(m_OutBufferLock);
+
+    // Rechecked under the lock so nothing slips in after Update()'s final drain.
+    if (!IsOpen())
+        return -1;
 
     // Guard 19: the header sizes differently depending on the crypt state.
     // Under the lock: the RC4 stream must advance in buffer order.
@@ -266,10 +275,12 @@ int WorldSocket::SendPacket(WorldPacket const& pct)
 // Consumes everything the last read delivered, which may be part of a header,
 // several whole packets, or anything in between. Returning false closes the
 // connection, which is how the guards below reject bad input.
+// Once closed or closing, it stops reading and returns true: false would
+// close at once and drop a pending auth rejection.
 bool WorldSocket::ReadHandler()
 {
     if (!IsOpen())
-        return false;
+        return true;
 
     MessageBuffer& packet = GetReadBuffer();
 
@@ -321,6 +332,9 @@ bool WorldSocket::ReadHandler()
 
         if (!ReadDataHandler())
             return false;
+
+        if (!IsOpen())
+            return true;
     }
 
     AsyncRead();
@@ -538,6 +552,8 @@ int WorldSocket::HandleSendAuthSession()
 
 }
 
+// Rejections send SMSG_AUTH_RESPONSE, call DelayedCloseSocket() and return 0
+// (as TrinityCore does): -1 would close at once and drop the buffered reply.
 int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
 {
     uint8 digest[20];
@@ -596,7 +612,8 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
     {
         SendAuthResponseError(AUTH_REJECT);
         TC_LOG_ERROR("network", "WorldSocket::HandleAuthSession: World closed, denying client (%s).", GetRemoteAddress().c_str());
-        return -1;
+        DelayedCloseSocket();
+        return 0;
     }
 
     // Get the account information from the realmd database
@@ -613,7 +630,8 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
     {
         SendAuthResponseError(AUTH_UNKNOWN_ACCOUNT);
         TC_LOG_ERROR("network", "WorldSocket::HandleAuthSession: Sent Auth Response (unknown account).");
-        return -1;
+        DelayedCloseSocket();
+        return 0;
     }
 
     Field* fields = result->Fetch();
@@ -632,7 +650,8 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
         {
             SendAuthResponseError(AUTH_FAILED);
             TC_LOG_DEBUG("network", "WorldSocket::HandleAuthSession: Sent Auth Response (Account IP differs).");
-            return -1;
+            DelayedCloseSocket();
+            return 0;
         }
     }
 
@@ -654,7 +673,8 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
     {
         SendAuthResponseError(AUTH_REJECT);
         TC_LOG_ERROR("network", "WorldSocket::HandleAuthSession: Client %s attempted to log in using invalid client OS (%s).", GetRemoteAddress().c_str(), os.c_str());
-        return -1;
+        DelayedCloseSocket();
+        return 0;
     }
 
     // get boost info
@@ -703,7 +723,8 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
         if (!betaTest)
         {
             SendAuthResponseError(AUTH_REJECT);
-            return -1;
+            DelayedCloseSocket();
+            return 0;
         }
     }
 
@@ -719,7 +740,8 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
     {
         SendAuthResponseError(AUTH_BANNED);
         TC_LOG_ERROR("network", "WorldSocket::HandleAuthSession: Sent Auth Response (Account banned).");
-        return -1;
+        DelayedCloseSocket();
+        return 0;
     }
 
     // Check locked state for server
@@ -729,7 +751,8 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
     {
         SendAuthResponseError(AUTH_UNAVAILABLE);
         TC_LOG_INFO("network", "WorldSocket::HandleAuthSession: User tries to login but his security level is not enough");
-        return -1;
+        DelayedCloseSocket();
+        return 0;
     }
 
     // Check that Key and account name are the same on client and server
@@ -749,7 +772,8 @@ int WorldSocket::HandleAuthSession(WorldPacket& recvPacket)
     {
         SendAuthResponseError(AUTH_FAILED);
         TC_LOG_ERROR("network", "WorldSocket::HandleAuthSession: Authentication failed for account: %u ('%s') address: %s", id, account.c_str(), address.c_str());
-        return -1;
+        DelayedCloseSocket();
+        return 0;
     }
 
     TC_LOG_DEBUG("network", "WorldSocket::HandleAuthSession: Client '%s' authenticated successfully from %s.",

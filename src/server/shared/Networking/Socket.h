@@ -25,6 +25,7 @@
 #include <boost/asio/write.hpp>
 
 #include <atomic>
+#include <chrono>
 #include <memory>
 #include <queue>
 #include <type_traits>
@@ -68,10 +69,26 @@ public:
 
         // A socket asked to close politely stays alive until its queued bytes
         // have gone out; that is what lets a disconnect reason reach the client.
-        if (_closing && _writeQueue.empty() && !_isWritingAsync)
+        if (_closing)
         {
-            CloseSocket();
-            return false;
+            if (_writeQueue.empty() && !_isWritingAsync)
+            {
+                CloseSocket();
+                return false;
+            }
+
+            // Nothing new is queued once closing, so the 8 MB cap cannot end a
+            // peer that stops reading; the deadline does.
+            std::chrono::steady_clock::time_point const now = std::chrono::steady_clock::now();
+            if (_closingDeadline == std::chrono::steady_clock::time_point())
+                _closingDeadline = now + std::chrono::seconds(DELAYED_CLOSE_TIMEOUT_SECONDS);
+            else if (now >= _closingDeadline)
+            {
+                TC_LOG_DEBUG("network", "Socket::Update: %s did not take its remaining output in time, closing connection",
+                    GetRemoteIpAddress().to_string().c_str());
+                CloseSocket();
+                return false;
+            }
         }
 
         return true;
@@ -103,6 +120,10 @@ public:
     // here and a peer that hits it is dropped.
     static std::size_t const WRITE_QUEUE_HIGH_WATER_MARK = 8 * 1024 * 1024;
 
+    // Enum, not static constexpr: C++14 would need an out-of-line definition
+    // once the chrono constructors bind it to a reference.
+    enum { DELAYED_CLOSE_TIMEOUT_SECONDS = 10 };
+
     // Owning thread only.
     void QueuePacket(MessageBuffer&& buffer)
     {
@@ -122,6 +143,9 @@ public:
     }
 
     bool IsOpen() const { return !_closed && !_closing; }
+
+    // DelayedCloseSocket() called but not closed yet; IsOpen() is false too.
+    bool IsClosing() const { return _closing && !_closed; }
 
     // Safe from any thread; the Asio shutdown is posted to the owning thread.
     void CloseSocket()
@@ -228,6 +252,8 @@ private:
     MessageBuffer _readBuffer;
     std::queue<MessageBuffer> _writeQueue;
     std::size_t _writeQueueSize;
+
+    std::chrono::steady_clock::time_point _closingDeadline;
 
     std::atomic<bool> _closed;
     std::atomic<bool> _closing;
