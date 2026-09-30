@@ -28,20 +28,27 @@
 #include <atomic>
 #include <functional>
 #include <string>
+#include <utility>
 
 // Replacement for ACE_Acceptor. Owns the listening socket and hands every
-// accepted connection to a callback, which is responsible for deciding where
-// the new socket lives (see SocketMgr).
+// accepted connection to a callback. The socket factory supplies the socket to
+// accept into, bound to the target NetworkThread's io_context: an Asio socket
+// keeps its executor when moved.
 class AsyncAcceptor
 {
 public:
     typedef void(*AcceptCallback)(boost::asio::ip::tcp::socket&& newSocket, uint32 threadIndex);
+    typedef std::function<std::pair<boost::asio::ip::tcp::socket*, uint32>()> SocketFactory;
 
     AsyncAcceptor(boost::asio::io_context& ioContext, std::string const& bindIp, uint16 port) :
         _acceptor(ioContext), _endpoint(boost::asio::ip::make_address(bindIp), port),
-        _socket(ioContext), _closed(false), _retryTimer(ioContext)
+        _socket(ioContext), _closed(false), _retryTimer(ioContext),
+        _socketFactory([this]() { return std::make_pair(&_socket, uint32(0)); })
     {
     }
+
+    // Must be set before the first AsyncAcceptWithCallback.
+    void SetSocketFactory(SocketFactory factory) { _socketFactory = std::move(factory); }
 
     // Separated from the constructor so a bind failure is reported to the
     // caller as a bool rather than an exception escaping daemon startup.
@@ -82,17 +89,21 @@ public:
         return true;
     }
 
-    void AsyncAcceptWithCallback(AcceptCallback acceptCallback, uint32 threadIndex)
+    void AsyncAcceptWithCallback(AcceptCallback acceptCallback)
     {
-        _acceptor.async_accept(_socket, [this, acceptCallback, threadIndex](boost::system::error_code error)
+        std::pair<boost::asio::ip::tcp::socket*, uint32> target = _socketFactory();
+        boost::asio::ip::tcp::socket* socket = target.first;
+        uint32 threadIndex = target.second;
+
+        _acceptor.async_accept(*socket, [this, acceptCallback, socket, threadIndex](boost::system::error_code error)
         {
             if (!error)
             {
                 try
                 {
                     // The socket is moved out before the next accept is armed,
-                    // so _socket is always free when async_accept reuses it.
-                    acceptCallback(std::move(_socket), threadIndex);
+                    // so the factory's socket is free for reuse.
+                    acceptCallback(std::move(*socket), threadIndex);
                 }
                 catch (boost::system::system_error const& err)
                 {
@@ -111,12 +122,12 @@ public:
                 TC_LOG_ERROR("network", "Out of file descriptors, suspending incoming connections for 10 seconds");
 
                 _retryTimer.expires_after(std::chrono::seconds(10));
-                _retryTimer.async_wait([this, acceptCallback, threadIndex](boost::system::error_code const& timerError)
+                _retryTimer.async_wait([this, acceptCallback](boost::system::error_code const& timerError)
                 {
                     if (!timerError && !_closed)
                     {
                         TC_LOG_INFO("network", "Resuming acceptor");
-                        AsyncAcceptWithCallback(acceptCallback, threadIndex);
+                        AsyncAcceptWithCallback(acceptCallback);
                     }
                 });
 
@@ -126,12 +137,13 @@ public:
                 TC_LOG_ERROR("network", "Failed to accept connection: %s", error.message().c_str());
 
             if (!_closed)
-                AsyncAcceptWithCallback(acceptCallback, threadIndex);
+                AsyncAcceptWithCallback(acceptCallback);
         });
     }
 
     // Variant for a single listener that needs a stateful callback (RA), where
     // the fn-pointer form above would not bind to a member function.
+    // Accepts onto the acceptor's io_context; fine, RA only does blocking I/O.
     void AsyncAcceptSocket(std::function<void(boost::asio::ip::tcp::socket&&)> callback)
     {
         _acceptor.async_accept(_socket, [this, callback](boost::system::error_code error)
@@ -183,6 +195,7 @@ private:
     boost::asio::ip::tcp::socket _socket;
     std::atomic<bool> _closed;
     boost::asio::steady_timer _retryTimer;
+    SocketFactory _socketFactory;
 };
 
 #endif // SF_ASYNCACCEPTOR_H

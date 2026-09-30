@@ -40,7 +40,7 @@ public:
         if (!BaseSocketMgr::StartNetwork(ioContext, bindIp, port, threadCount))
             return false;
 
-        _acceptor->AsyncAcceptWithCallback(&OnSocketAccept, 0);
+        _acceptor->AsyncAcceptWithCallback(&OnSocketAccept);
         return true;
     }
 
@@ -53,12 +53,10 @@ protected:
     }
 
 private:
-    // The index handed over by the acceptor is ignored on purpose: spreading by
-    // current load keeps a login burst off a single thread.
-    static void OnSocketAccept(boost::asio::ip::tcp::socket&& sock, uint32 /*threadIndex*/)
+    // sock is already bound to threadIndex's io_context, so it must be filed there.
+    static void OnSocketAccept(boost::asio::ip::tcp::socket&& sock, uint32 threadIndex)
     {
-        RealmSocketMgr& mgr = Instance();
-        mgr.OnSocketOpen(std::move(sock), mgr.SelectThreadWithMinConnections());
+        Instance().OnSocketOpen(std::move(sock), threadIndex);
     }
 };
 

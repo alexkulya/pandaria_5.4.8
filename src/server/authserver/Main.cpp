@@ -179,9 +179,9 @@ extern int main(int argc, char** argv)
 
     TC_LOG_WARN("server.authserver", "%s (Library: %s)", OPENSSL_VERSION_TEXT, OpenSSL_version(OPENSSL_VERSION));
 
-    // The io_context the acceptor runs on. Accepted sockets are moved onto the
-    // RealmSocketMgr's own network threads, so this one only ever handles the
-    // listener and the shutdown poll.
+    // The io_context the acceptor runs on. Connections are accepted straight
+    // onto the io_context of one of the RealmSocketMgr's network threads, so
+    // this one only ever handles the listener and the shutdown poll.
     boost::asio::io_context ioContext;
 
     TC_LOG_DEBUG("server.authserver", "Max allowed open files is %d", MaxOpenFiles());

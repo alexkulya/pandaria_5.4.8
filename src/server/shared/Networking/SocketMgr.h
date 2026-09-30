@@ -20,9 +20,11 @@
 #include "NetworkThread.h"
 
 #include <boost/asio/ip/tcp.hpp>
+#include <boost/asio/post.hpp>
 
 #include <memory>
 #include <string>
+#include <utility>
 
 // Replacement for the ACE reactor pool behind WorldSocketMgr. Owns the pool of
 // NetworkThreads and decides which one a freshly accepted socket belongs to.
@@ -68,6 +70,8 @@ public:
         for (int32 i = 0; i < _threadCount; ++i)
             _threads[i].Start();
 
+        _acceptor->SetSocketFactory([this]() { return GetSocketForAccept(); });
+
         return true;
     }
 
@@ -95,12 +99,26 @@ public:
                 _threads[i].Wait();
     }
 
+    // Runs on the acceptor's thread; sock is bound to threadIndex's io_context.
     virtual void OnSocketOpen(boost::asio::ip::tcp::socket&& sock, uint32 threadIndex)
     {
         try
         {
             std::shared_ptr<SocketType> newSocket = std::make_shared<SocketType>(std::move(sock));
-            newSocket->Start();
+
+            // Start() must run on the owning thread like every other member.
+            boost::asio::post(_threads[threadIndex].GetIoContext(), [newSocket]()
+            {
+                try
+                {
+                    newSocket->Start();
+                }
+                catch (boost::system::system_error const& err)
+                {
+                    TC_LOG_ERROR("network", "Failed to start socket: %s", err.what());
+                    newSocket->CloseSocket();
+                }
+            });
 
             _threads[threadIndex].AddSocket(newSocket);
         }
@@ -123,6 +141,12 @@ public:
                 min = i;
 
         return min;
+    }
+
+    std::pair<boost::asio::ip::tcp::socket*, uint32> GetSocketForAccept()
+    {
+        uint32 threadIndex = SelectThreadWithMinConnections();
+        return std::make_pair(_threads[threadIndex].GetSocketForAccept(), threadIndex);
     }
 
 protected:

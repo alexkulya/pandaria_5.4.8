@@ -66,7 +66,7 @@ bool WorldSocketMgr::StartNetwork(boost::asio::io_context& ioContext, std::strin
     if (!BaseSocketMgr::StartNetwork(ioContext, bindIp, port, threadCount))
         return false;
 
-    _acceptor->AsyncAcceptWithCallback(&OnSocketAccept, 0);
+    _acceptor->AsyncAcceptWithCallback(&OnSocketAccept);
 
     TC_LOG_INFO("misc", "Max allowed socket connections %d", max_connections);
     return true;

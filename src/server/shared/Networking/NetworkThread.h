@@ -20,6 +20,7 @@
 
 #include <boost/asio/executor_work_guard.hpp>
 #include <boost/asio/io_context.hpp>
+#include <boost/asio/ip/tcp.hpp>
 #include <boost/asio/steady_timer.hpp>
 
 #include <algorithm>
@@ -38,7 +39,7 @@ class NetworkThread
 {
 public:
     NetworkThread() : _connections(0), _stopped(false), _ioContext(1),
-        _updateTimer(_ioContext) { }
+        _acceptSocket(_ioContext), _updateTimer(_ioContext) { }
 
     virtual ~NetworkThread()
     {
@@ -73,8 +74,8 @@ public:
 
     int32 GetConnectionCount() const { return _connections; }
 
-    // Called from the acceptor's thread, not ours: this is the one hand-off
-    // point in the design that crosses threads, hence the only lock.
+    // Called from the acceptor's thread, not ours: the socket list hand-off
+    // crosses threads, hence the lock.
     virtual void AddSocket(std::shared_ptr<SocketType> sock)
     {
         std::lock_guard<std::mutex> lock(_newSocketsLock);
@@ -85,6 +86,9 @@ public:
     }
 
     boost::asio::io_context& GetIoContext() { return _ioContext; }
+
+    // Accept target bound to this io_context; only the acceptor's thread uses it.
+    boost::asio::ip::tcp::socket* GetSocketForAccept() { return &_acceptSocket; }
 
 protected:
     virtual void SocketAdded(std::shared_ptr<SocketType> /*sock*/) { }
@@ -166,6 +170,7 @@ private:
     std::vector<std::shared_ptr<SocketType>> _newSockets;
 
     boost::asio::io_context _ioContext;
+    boost::asio::ip::tcp::socket _acceptSocket;
     boost::asio::steady_timer _updateTimer;
 };
 
