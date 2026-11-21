@@ -125,10 +125,18 @@ void CasterAI::InitializeAI()
     CombatAI::InitializeAI();
 
     m_attackDist = 30.0f;
-    for (SpellVct::iterator itr = spells.begin(); itr != spells.end(); ++itr)
-        if (AISpellInfo[*itr].condition == AICOND_COMBAT && m_attackDist > GetAISpellInfo(*itr)->maxRange)
-            m_attackDist = GetAISpellInfo(*itr)->maxRange;
-    if (m_attackDist == 30.0f)
+    bool hasCombatSpell = false;
+    for (uint32 spellId : spells)
+    {
+        AISpellInfoType const& info = AISpellInfo[spellId];
+        if (info.condition != AICOND_COMBAT)
+            continue;
+
+        hasCombatSpell = true;
+        m_attackDist = std::min(m_attackDist, info.maxRange);
+    }
+
+    if (!hasCombatSpell)
         m_attackDist = MELEE_RANGE;
 }
 
